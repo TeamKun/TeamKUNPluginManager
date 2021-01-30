@@ -1,3 +1,4 @@
+
 # User-specific stuff
 .idea/
 
@@ -8,6 +9,8 @@
 # IntelliJ
 out/
 
+
+>>>>>>> origin/main
 # Compiled class file
 *.class
 
@@ -16,6 +19,7 @@ out/
 
 # BlueJ files
 *.ctxt
+
 
 # Package Files #
 *.jar
