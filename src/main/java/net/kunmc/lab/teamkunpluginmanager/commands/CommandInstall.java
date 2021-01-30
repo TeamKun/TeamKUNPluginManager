@@ -1,8 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.install.Installer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class CommandInstall
 {
@@ -14,6 +16,14 @@ public class CommandInstall
             sender.sendMessage(ChatColor.RED + "使用法：/kpm i <Repo|url|name>");
         }
 
-        Installer.installFromURLAsync(sender, args[0]);
+
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                Installer.install(sender, args[0]);
+            }
+        }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }
 }

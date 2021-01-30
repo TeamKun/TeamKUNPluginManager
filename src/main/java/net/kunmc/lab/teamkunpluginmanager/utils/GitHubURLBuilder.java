@@ -76,9 +76,6 @@ public class GitHubURLBuilder
                 tagName = tag;
         }
 
-        System.out.println(repoName + " " + tagName);
-        System.out.println(new Gson().toJson(matcher));
-
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
 
         switch (urlPair.getKey())
@@ -94,7 +91,7 @@ public class GitHubURLBuilder
                 for(JsonElement elem: array)
                     for(JsonElement asset: ((JsonObject) elem).get("assets").getAsJsonArray())
                         return ((JsonObject) asset).get("browser_download_url").getAsString();
-                return "ERROR Unknown";
+                return "ERROR " + json;
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {

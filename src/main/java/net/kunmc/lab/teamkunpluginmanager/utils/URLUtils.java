@@ -1,11 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -21,10 +21,11 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
-            if (connection.getResponseCode() != 200)
+            if (connection.getResponseCode() != 200 && connection.getResponseCode() != 404 && connection.getResponseCode() != 403)
                 return "[]";
 
-            return IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
+            String a = IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
+            return a;
 
         }
         catch (Exception e)
@@ -55,8 +56,11 @@ public class URLUtils
             if (connection.getResponseCode() != 200)
                 return "";
 
-            try (DataInputStream dis = new DataInputStream(connection.getInputStream());
-                 DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("plugins/" + fileName))))
+            try (InputStream stream = connection.getInputStream();
+                 DataInputStream dis = new DataInputStream(stream);
+                 FileOutputStream fos = new FileOutputStream("plugins/" + fileName);
+                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
+                 DataOutputStream dos = new DataOutputStream(bufferedOutputStream))
             {
                 byte[] b = new byte[1919];
                 int read;
