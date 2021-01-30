@@ -1,6 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import javafx.util.Pair;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -45,12 +47,22 @@ public class URLUtils
      * @param url URL
      * @return ローカルのパス
      */
-    public static String downloadFile(String url)
+    public static Pair<Boolean, String> downloadFile(String url)
     {
         String fileName = url.substring(url.lastIndexOf("/") + 1);
 
+        boolean duplicateFile = false;
+
         if (fileName.equals(""))
             fileName = "tmp1.jar";
+
+        int tryna = 0;
+        String original = fileName;
+        while(new File("plugins/" + fileName).exists())
+        {
+            fileName = original + "." + ++tryna;
+            duplicateFile = true;
+        }
 
         try
         {
@@ -62,25 +74,16 @@ public class URLUtils
             connection.setRequestProperty("User-Agent", "TeamKUN Client");
             connection.connect();
             if (connection.getResponseCode() != 200)
-                return "";
+                return new Pair<>(false, "");
 
-            try (InputStream stream = connection.getInputStream();
-                 DataInputStream dis = new DataInputStream(stream);
-                 FileOutputStream fos = new FileOutputStream("plugins/" + fileName);
-                 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
-                 DataOutputStream dos = new DataOutputStream(bufferedOutputStream))
-            {
-                byte[] b = new byte[1919];
-                int read;
-                while ((read = dis.read(b)) != -1)
-                    dos.write(b, 0, read);
-            }
-            return fileName;
+            FileUtils.copyURLToFile(urlObj, new File("plugins/" + fileName));
+            return new Pair<>(duplicateFile, fileName);
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return "";
+            return new Pair<>(false, "");
+
         }
     }
 }

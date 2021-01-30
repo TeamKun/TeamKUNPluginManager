@@ -22,7 +22,7 @@ public class CommandInstall
             @Override
             public void run()
             {
-                Installer.install(sender, args[0]);
+                Installer.install(sender, args[0], false);
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }
