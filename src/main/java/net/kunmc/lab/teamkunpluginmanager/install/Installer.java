@@ -30,9 +30,9 @@ public class Installer
                 if (!UrlValidator.getInstance().isValid(atomicURL.get()))
                 {
                     if (StringUtils.split(atomicURL.get(), "/").length == 2)
-                        atomicURL.set(atomicURL.get() + "https://github.com/");
-                    if (KnownPlugins.isKnown(atomicURL.get()))
-                        atomicURL.set(atomicURL.get() + KnownPlugins.getKnown(atomicURL.get()).url);
+                        atomicURL.set("https://github.com/" + atomicURL.get());
+                    else if (KnownPlugins.isKnown(atomicURL.get()))
+                        atomicURL.set(KnownPlugins.getKnown(atomicURL.get()).url);
                 }
 
                 atomicURL.set(GitHubURLBuilder.urlValidate(atomicURL.get())); //GitHubのURLを正規化

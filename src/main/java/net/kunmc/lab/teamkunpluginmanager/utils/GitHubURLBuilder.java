@@ -38,7 +38,7 @@ public class GitHubURLBuilder
             return new Pair<>("GITHUB_REPO_RELEASE_NAME_URL", String.format(GITHUB_REPO_RELEASE_NAME_URL, repository, tagName));
     }
 
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})/?(releases/?(tag/?)?)(?<tagName>.*)?$");
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})/?((releases/?(tag/?)?)(?<tagName>.*)?)?$");
     /**
      * GitHubのURLを適正化
      * https://github.com/examples/ExamplePlugin => https://github.com/examples/ExamplePlugin/releases/download/1.0/ExamplePlugin-1.0.jar
@@ -75,6 +75,9 @@ public class GitHubURLBuilder
             if (!tag.equals(""))
                 tagName = tag;
         }
+
+        System.out.println(repoName + " " + tagName);
+        System.out.println(new Gson().toJson(matcher));
 
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
 
