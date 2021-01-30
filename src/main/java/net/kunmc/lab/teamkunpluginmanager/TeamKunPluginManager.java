@@ -16,6 +16,14 @@ public final class TeamKunPluginManager extends JavaPlugin
         plugin = this;
         config = getConfig();
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
+
+        if (config.getString("oauth", "").equals(""))
+        {
+            System.out.println("Please set OAuth token in config.yml");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
     }
 
     @Override

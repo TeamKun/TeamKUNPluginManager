@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedOutputStream;
@@ -18,8 +19,12 @@ public class URLUtils
     {
         try
         {
-            HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            if (url.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+            connection.setRequestProperty("User-Agent", "TeamKUN Client");
             connection.connect();
             if (connection.getResponseCode() != 200 && connection.getResponseCode() != 404 && connection.getResponseCode() != 403)
                 return "[]";
@@ -52,6 +57,9 @@ public class URLUtils
             URL urlObj = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
             connection.setRequestMethod("GET");
+            if (urlObj.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+            connection.setRequestProperty("User-Agent", "TeamKUN Client");
             connection.connect();
             if (connection.getResponseCode() != 200)
                 return "";
