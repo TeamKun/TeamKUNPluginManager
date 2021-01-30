@@ -72,7 +72,7 @@ public class GitHubURLBuilder
             String tag = matcher.group("tagName");
             if (!repository.equals(""))
                 repoName = repository;
-            if (!tag.equals(""))
+            if (tag != null && !tag.equals(""))
                 tagName = tag;
         }
 
@@ -115,9 +115,16 @@ public class GitHubURLBuilder
 
     private static String error(String json)
     {
-        JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
-        if (!jsonObject.has("message"))
+        try
+        {
+            JsonObject jsonObject = new Gson().fromJson(json, JsonObject.class);
+            if (!jsonObject.has("message"))
+                return "";
+            return jsonObject.get("message").getAsString();
+        }
+        catch (Exception ignored)
+        {
             return "";
-        return jsonObject.get("message").getAsString();
+        }
     }
 }
