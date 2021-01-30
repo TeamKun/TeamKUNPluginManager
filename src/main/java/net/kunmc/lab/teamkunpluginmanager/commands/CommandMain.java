@@ -28,7 +28,7 @@ public class CommandMain implements CommandExecutor
             return true;
         }
 
-        ArrayList<String> argsList = (ArrayList<String>) Arrays.asList(args);
+        ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
 
         argsList.remove(0);
 
