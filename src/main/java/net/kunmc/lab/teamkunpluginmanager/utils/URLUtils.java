@@ -28,8 +28,14 @@ public class URLUtils
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
             connection.setRequestProperty("User-Agent", "TeamKUN Client");
             connection.connect();
-            if (connection.getResponseCode() != 200 && connection.getResponseCode() != 404 && connection.getResponseCode() != 403)
-                return "[]";
+
+            if (connection.getResponseCode() == 404)
+                return "{'message': 'プラグインが見つかりませんでした。'}";
+            if (connection.getResponseCode() == 403)
+                return "{'message': 'プラグインを取得できません。しばらくしてからもう一度インストールしてください。'}";
+
+            if (connection.getResponseCode() != 200)
+                return "{'message': '不明なエラーが発生しました。'}";
 
             String a = IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
             return a;
@@ -60,7 +66,7 @@ public class URLUtils
         String original = fileName;
         while(new File("plugins/" + fileName).exists())
         {
-            fileName = original + "." + ++tryna;
+            fileName = original + "." + ++tryna + ".jar";
             duplicateFile = true;
         }
 

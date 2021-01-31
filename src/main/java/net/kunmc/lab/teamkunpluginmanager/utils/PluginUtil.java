@@ -20,50 +20,57 @@ public class PluginUtil
 {
     public static ArrayList<String> mathLoadOrder(ArrayList<Pair<String, String>> files)
     {
-        ArrayList<String> order = new ArrayList<>();
-        AtomicReference<ArrayList<Pair<String, String>>> filesCopy = new AtomicReference<>(new ArrayList<>(files));
-        AtomicBoolean ab = new AtomicBoolean(false);
+        ArrayList<String> order = new ArrayList<>(); //読み込む順番
+        ArrayList<Pair<String, String>> want = (ArrayList<Pair<String, String>>) files.clone(); //処理待ち
         files.stream().parallel()
-                .forEach(s -> {
-                    String filename = "plugins/" + s.getKey();
-
-                    PluginDescriptionFile desc;
+                .forEach(stringStringPair -> {
+                    if (!want.contains(stringStringPair)) //既に処理されていた(処理待ちになかった)場合は無視
+                        return;
+                    PluginDescriptionFile desc; //dependとか
                     try
                     {
-                        desc = PluginUtil.loadDescription(new File(filename));
+                        desc = loadDescription(new File("plugins/" + stringStringPair.getKey())); //読み込み順番を取得
                     }
-                    catch (InvalidDescriptionException | IOException e)
+                    catch (Exception e)
                     {
-                        e.printStackTrace();
-                        return;
+                       e.printStackTrace();
+                       return;
                     }
 
-                    desc.getDepend().forEach(s1 -> {
-                        if (containValue(s1, files))
-                        {
-                            ab.set(true);
-                            order.add(filename);
-                            filesCopy.set(removeByValue(filesCopy.get(), s1));
-                        }
-                    });
+                    desc.getDepend().stream().parallel()
+                            .forEach(pluginName -> {
+                                if (containValue(pluginName, want)) //dependに含まれていたものがインスコ対象ににあった
+                                {
+                                    order.add(getContainsEntry(pluginName, want).getKey()); //読み込み指示
+                                    want.remove(getContainsEntry(pluginName, want)); //後始末
+                                }
+                            });
 
-                    if (ab.get())
-                        return;
+                    desc.getSoftDepend().stream().parallel()
+                            .forEach(pluginName -> {
+                                if (containValue(pluginName, want)) //softDependに含まれていたものがインスコ対象ににあった
+                                {
+                                    order.add(getContainsEntry(pluginName, want).getKey()); //読み込み指示
+                                    want.remove(getContainsEntry(pluginName, want)); //後始末
+                                }
+                            });
+                });
 
-                    desc.getSoftDepend().forEach(s1 -> {
-                        if (containValue(s1, files))
-                        {
-                            ab.set(true);
-                            order.add(filename);
-                            filesCopy.set(removeByValue(filesCopy.get(), s1));
-                        }
-                    });
-                });
-        filesCopy.get().stream().parallel()
-                .forEach(foa -> {
-                    order.add("plugins/" + foa.getKey());
-                });
+        want.forEach(stringStringPair -> {
+            if (order.contains(stringStringPair.getKey()))
+                return;
+            order.add(stringStringPair.getKey()); //後回しプラグインの指示
+        });
         return order;
+    }
+
+    private static Pair<String, String> getContainsEntry(String contain, ArrayList<Pair<String, String>> keys)
+    {
+        AtomicReference<Pair<String, String>> ab = new AtomicReference<>();
+        keys.stream()
+                .filter(stringStringPair -> stringStringPair.getValue().equals(contain))
+                .forEach(ab::set);
+        return ab.get();
     }
 
     private static boolean containValue(String contain, ArrayList<Pair<String, String>> keys)
@@ -109,6 +116,7 @@ public class PluginUtil
 
         PluginDescriptionFile desc =  new PluginDescriptionFile(is);
         is.close();
+        zip.close();
 
         return desc;
     }
