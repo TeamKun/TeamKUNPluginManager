@@ -30,7 +30,7 @@ public class CommandAutoRemove
             return rem;
         }
 
-        for (String removable: removables)
+        for (String removable : removables)
         {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(removable);
             if (plugin != null)

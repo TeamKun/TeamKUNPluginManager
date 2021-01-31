@@ -34,12 +34,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -80,7 +77,14 @@ public class Installer
                     file.delete();
                 DependencyTree.wipePlugin(plugin);
                 finalSender.sendMessage(ChatColor.RED + "- " + plugin.getName() + ":" + plugin.getDescription().getVersion());
-                finalSender.sendMessage(Messages.getUnInstallableMessage());
+                String statusError = Messages.getErrorMessage();
+                if (!statusError.equals(""))
+                    finalSender.sendMessage(statusError);
+
+                String autoRemovable = Messages.getUnInstallableMessage();
+
+                if (!autoRemovable.equals(""))
+                    finalSender.sendMessage(autoRemovable);
                 finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
                 finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
             }
@@ -360,7 +364,13 @@ public class Installer
         }
 
 
-        finalSender.sendMessage(Messages.getUnInstallableMessage());
+        String statusError = Messages.getErrorMessage();
+        if (!statusError.equals(""))
+            sender.sendMessage(statusError);
+        String autoRemovable = Messages.getUnInstallableMessage();
+        if (!autoRemovable.equals(""))
+            sender.sendMessage(autoRemovable);
+
         finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
         finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
         return new Pair<>(downloadResult.getValue(), description.getName());

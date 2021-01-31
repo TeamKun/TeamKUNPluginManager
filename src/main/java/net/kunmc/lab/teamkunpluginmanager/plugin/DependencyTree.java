@@ -6,7 +6,6 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import javax.sound.sampled.DataLine.Info;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DependencyTree
 {
@@ -56,7 +56,7 @@ public class DependencyTree
             dependBySQL.setString(1, plugin.getName());
 
             ResultSet pl = pluginSQL.executeQuery();
-            while(pl.next())
+            while (pl.next())
             {
                 result.name = pl.getString("PLUGIN");
                 result.version = pl.getString("VERSION");
@@ -68,7 +68,7 @@ public class DependencyTree
 
             ResultSet dp = dependSQL.executeQuery();
             ArrayList<Info.Depend> dps = new ArrayList<>();
-            while(dp.next())
+            while (dp.next())
             {
                 Info.Depend depend = new Info.Depend();
                 depend.depend = dp.getString("DEPEND");
@@ -79,7 +79,7 @@ public class DependencyTree
 
             ResultSet rdp = dependSQL.executeQuery();
             ArrayList<Info.Depend> rdps = new ArrayList<>();
-            while(rdp.next())
+            while (rdp.next())
             {
                 Info.Depend depend = new Info.Depend();
                 depend.depend = rdp.getString("DEPEND");
@@ -97,7 +97,6 @@ public class DependencyTree
         }
         return null;
     }
-
 
     public static void initializeTable()
     {
@@ -172,8 +171,8 @@ public class DependencyTree
     public static void purge(String name)
     {
         try (Connection con = dataSource.getConnection();
-            PreparedStatement dp = con.prepareStatement("DELETE FROM DEPEND WHERE PLUGIN=?");
-            PreparedStatement rdp = con.prepareStatement("DELETE FROM DEPENDBY WHERE PLUGIN=?"))
+             PreparedStatement dp = con.prepareStatement("DELETE FROM DEPEND WHERE PLUGIN=?");
+             PreparedStatement rdp = con.prepareStatement("DELETE FROM DEPENDBY WHERE PLUGIN=?"))
         {
             dp.setString(1, name);
             rdp.setString(1, name);
@@ -230,10 +229,10 @@ public class DependencyTree
     {
         ArrayList<String> result = new ArrayList<>();
         try (Connection con = dataSource.getConnection();
-             Statement pluginSQL = con.createStatement();)
+             Statement pluginSQL = con.createStatement())
         {
             ResultSet set = pluginSQL.executeQuery("SELECT * FROM DEPENDBY");
-            while(set.next())
+            while (set.next())
             {
                 String name = set.getString("PLUGIN");       //Depend
                 String dependBy = set.getString("DEPENDBY"); //Dependしてるプラグ
@@ -251,16 +250,47 @@ public class DependencyTree
         return result;
     }
 
+    public static boolean isErrors()
+    {
+        ArrayList<String> plugin = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel().map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+
+        try (Connection con = dataSource.getConnection();
+             Statement pluginSQL = con.createStatement())
+        {
+            ResultSet set = pluginSQL.executeQuery("SELECT * FROM PLUGIN");
+            while (set.next())
+            {
+                String name = set.getString("PLUGIN");
+                if (!plugin.contains(name))
+                    return true;
+                plugin.remove(name);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return plugin.size() != 0;
+    }
+
+    public static void fix()
+    {
+        wipeAllPlugin();
+        crawlAllPlugins();
+    }
+
     public static class Info
     {
         public String name;
         public String version;
         public List<Depend> depends;
-        public  List<Depend> rdepends;
+        public List<Depend> rdepends;
+
         public static class Depend
         {
-            public  String name;
-            public  String depend;
+            public String name;
+            public String depend;
         }
     }
 }

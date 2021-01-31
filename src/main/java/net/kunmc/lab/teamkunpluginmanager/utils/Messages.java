@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import org.bukkit.ChatColor;
 
-import javax.swing.*;
 import java.util.List;
 
 public class Messages
@@ -16,6 +15,13 @@ public class Messages
                 "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
                 "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +
                 "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n";
+    }
+
+    public static String getErrorMessage()
+    {
+        if (!DependencyTree.isErrors())
+            return "";
+        return ChatColor.RED + "重大なエラーが検出されました。/kpm fix で修正を行ってください。";
     }
 
     public static String getUnInstallableMessage()

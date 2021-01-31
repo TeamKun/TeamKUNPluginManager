@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,7 +12,6 @@ import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,8 +44,8 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "i":
                 CommandInstall.onCommand(sender, argsList.toArray(new String[0]));
                 break;
-            case "remove":
             case "uninstall":
+            case "remove":
             case "rm":
                 CommandUninstall.onCommand(sender, argsList.toArray(new String[0]));
                 break;
@@ -56,6 +54,9 @@ public class CommandMain implements CommandExecutor, TabCompleter
                 break;
             case "autoremove":
                 CommandAutoRemove.onCommand(sender, argsList.toArray(new String[0]));
+                break;
+            case "fix":
+                CommandFix.onCommand(sender, argsList.toArray(new String[0]));
                 break;
             default:
                 sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
@@ -77,7 +78,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "uninstall", "autoremove", "status"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix"));
                 break;
             case 2:
                 String cmd = args[0];
