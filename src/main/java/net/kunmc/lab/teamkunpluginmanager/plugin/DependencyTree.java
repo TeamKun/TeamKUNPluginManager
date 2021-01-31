@@ -6,11 +6,15 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import javax.sound.sampled.DataLine.Info;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class DependencyTree
 {
@@ -29,6 +33,72 @@ public class DependencyTree
         dataSource = new HikariDataSource(config);
     }
 
+    public static Info getInfo(String plugin, boolean allowEmpty)
+    {
+        return getInfo(Bukkit.getPluginManager().getPlugin(plugin), allowEmpty);
+    }
+
+    public static Info getInfo(Plugin plugin, boolean allowEmpty)
+    {
+        if (plugin == null)
+            return null;
+
+        Info result = new Info();
+
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement pluginSQL = con.prepareStatement("SELECT * FROM PLUGIN WHERE PLUGIN=?");
+             PreparedStatement dependSQL = con.prepareStatement("SELECT * FROM DEPEND WHERE PLUGIN=?");
+             PreparedStatement dependBySQL = con.prepareStatement("SELECT * FROM DEPENDBY WHERE PLUGIN=?")
+        )
+        {
+            pluginSQL.setString(1, plugin.getName());
+            dependSQL.setString(1, plugin.getName());
+            dependBySQL.setString(1, plugin.getName());
+
+            ResultSet pl = pluginSQL.executeQuery();
+            while(pl.next())
+            {
+                result.name = pl.getString("PLUGIN");
+                result.version = pl.getString("VERSION");
+            }
+            pl.close();
+
+            if (result.name == null && !allowEmpty)
+                return null;
+
+            ResultSet dp = dependSQL.executeQuery();
+            ArrayList<Info.Depend> dps = new ArrayList<>();
+            while(dp.next())
+            {
+                Info.Depend depend = new Info.Depend();
+                depend.depend = dp.getString("DEPEND");
+                dps.add(depend);
+            }
+            result.depends = dps;
+            dp.close();
+
+            ResultSet rdp = dependSQL.executeQuery();
+            ArrayList<Info.Depend> rdps = new ArrayList<>();
+            while(rdp.next())
+            {
+                Info.Depend depend = new Info.Depend();
+                depend.depend = rdp.getString("DEPEND");
+                dps.add(depend);
+            }
+            result.depends = rdps;
+            rdp.close();
+
+            return result;
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public static void initializeTable()
     {
         try (Connection con = dataSource.getConnection();
@@ -43,8 +113,8 @@ public class DependencyTree
                     "DEPEND TEXT UNIQUE" +
                     ")");
             stmt.execute("CREATE TABLE IF NOT EXISTS DEPENDBY(" +
-                    "PLUGIN TEXT," +
-                    "DEPENDBY TEXT UNIQUE" +
+                    "PLUGIN TEXT UNIQUE," +
+                    "DEPENDBY TEXT" +
                     ")");
         }
         catch (Exception e)
@@ -64,6 +134,19 @@ public class DependencyTree
         crawlPlugin(Bukkit.getPluginManager().getPlugin(name));
     }
 
+    public static void wipeAllPlugin()
+    {
+        try (Connection con = dataSource.getConnection();
+             Statement stmt = con.createStatement())
+        {
+            stmt.execute("DELETE FROM PLUGIN");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static void wipePlugin(String name)
     {
         wipePlugin(Bukkit.getPluginManager().getPlugin(name));
@@ -79,6 +162,23 @@ public class DependencyTree
         {
             p.setString(1, plugin.getName());
             p.execute();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void purge(String name)
+    {
+        try (Connection con = dataSource.getConnection();
+            PreparedStatement dp = con.prepareStatement("DELETE FROM DEPEND WHERE PLUGIN=?");
+            PreparedStatement rdp = con.prepareStatement("DELETE FROM DEPENDBY WHERE PLUGIN=?"))
+        {
+            dp.setString(1, name);
+            rdp.setString(1, name);
+            dp.execute();
+            rdp.execute();
         }
         catch (Exception e)
         {
@@ -123,6 +223,44 @@ public class DependencyTree
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<String> unusedPlugins()
+    {
+        ArrayList<String> result = new ArrayList<>();
+        try (Connection con = dataSource.getConnection();
+             Statement pluginSQL = con.createStatement();)
+        {
+            ResultSet set = pluginSQL.executeQuery("SELECT * FROM DEPENDBY");
+            while(set.next())
+            {
+                String name = set.getString("PLUGIN");       //Depend
+                String dependBy = set.getString("DEPENDBY"); //Dependしてるプラグ
+
+                Info info = getInfo(dependBy, false);
+
+                if (info == null)
+                    result.add(name);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static class Info
+    {
+        public String name;
+        public String version;
+        public List<Depend> depends;
+        public  List<Depend> rdepends;
+        public static class Depend
+        {
+            public  String name;
+            public  String depend;
         }
     }
 }

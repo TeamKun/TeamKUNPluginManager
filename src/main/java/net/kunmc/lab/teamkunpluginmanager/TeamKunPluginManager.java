@@ -20,6 +20,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         plugin = this;
         config = getConfig();
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
+        Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
         if (config.getString("oauth", "").equals(""))
         {
@@ -36,6 +37,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             @Override
             public void run()
             {
+                DependencyTree.wipeAllPlugin();
                 getLogger().info("依存関係ツリーを構築中...");
                 DependencyTree.crawlAllPlugins();
                 getLogger().info("依存関係ツリーの構築完了");
@@ -48,6 +50,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onDisable()
     {
-        // Plugin shutdown logic
+        if (DependencyTree.dataSource != null)
+            DependencyTree.dataSource.close();
     }
 }

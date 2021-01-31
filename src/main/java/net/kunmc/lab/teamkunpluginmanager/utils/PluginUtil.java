@@ -2,12 +2,16 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import javafx.util.Pair;
 import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,6 +21,25 @@ import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+
+    public static File getFile(Plugin plugin)
+    {
+        Method getFileMethod;
+        try
+        {
+            getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
+            getFileMethod.setAccessible(true);
+            File file = (File) getFileMethod.invoke(plugin);
+
+            return file;
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static ArrayList<String> mathLoadOrder(ArrayList<Pair<String, String>> files)
     {
         ArrayList<String> order = new ArrayList<>(); //読み込む順番

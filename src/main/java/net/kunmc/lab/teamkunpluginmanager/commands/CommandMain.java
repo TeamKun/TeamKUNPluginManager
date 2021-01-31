@@ -1,15 +1,24 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class CommandMain implements CommandExecutor
+public class CommandMain implements CommandExecutor, TabCompleter
 {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
@@ -37,6 +46,17 @@ public class CommandMain implements CommandExecutor
             case "i":
                 CommandInstall.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "remove":
+            case "uninstall":
+            case "rm":
+                CommandUninstall.onCommand(sender, argsList.toArray(new String[0]));
+                break;
+            case "status":
+                CommandStatus.onCommand(sender, argsList.toArray(new String[0]));
+                break;
+            case "autoremove":
+                CommandAutoRemove.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
@@ -46,5 +66,34 @@ public class CommandMain implements CommandExecutor
         return true;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args)
+    {
+        ArrayList<String> completes = new ArrayList<>();
 
+        if (!sender.hasPermission("kpm.use"))
+            return new ArrayList<>();
+
+        switch (args.length)
+        {
+            case 1:
+                completes.addAll(Arrays.asList("install", "uninstall", "autoremove", "status"));
+                break;
+            case 2:
+                String cmd = args[0];
+                switch (cmd)
+                {
+                    case "uninstall":
+                    case "rm":
+                    case "rermove":
+                        completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+                        break;
+                }
+        }
+
+        ArrayList<String> asCopy = new ArrayList<>();
+        StringUtil.copyPartialMatches(args[args.length - 1], completes, asCopy);
+        Collections.sort(asCopy);
+        return asCopy;
+    }
 }

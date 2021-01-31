@@ -1,18 +1,31 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import org.bukkit.ChatColor;
+
+import javax.swing.*;
+import java.util.List;
 
 public class Messages
 {
     public static String getCommandNotFoundMessage()
     {
-        StringBuilder result = new StringBuilder();
-        result.append(ChatColor.RED + "使用可能なコマンド：\n");
 
-        result.append("    ").append(commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i")).append("\n");
-        result.append("    ").append(commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm")).append("\n");
+        return ChatColor.RED + "使用可能なコマンド：\n" +
+                "    " + commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i") + "\n" +
+                "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm") + "\n";
+    }
 
-        return result.toString();
+    public static String getUnInstallableMessage()
+    {
+
+        List<String> rmble = DependencyTree.unusedPlugins();
+
+        if (rmble.size() == 0)
+            return "";
+
+        return ChatColor.BLUE + "以下のプラグインを削除可能です。/kpm autoremove で削除します。" + "\n" +
+                ChatColor.AQUA + String.join(", ", rmble) + "\n\n";
     }
 
     private static String commandMessageBuilder(String label, String help, String... aliases)

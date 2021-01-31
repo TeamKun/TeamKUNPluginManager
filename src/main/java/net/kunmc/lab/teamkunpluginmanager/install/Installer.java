@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.util.Pair;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -38,6 +39,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -47,7 +49,42 @@ public class Installer
 
     public static void unInstall(CommandSender sender, String name)
     {
+        if (sender == null)
+            sender = dummySender();
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
+        DependencyTree.Info info = DependencyTree.getInfo(name, false);
+        if (info == null)
+        {
+            sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
+            return;
+        }
 
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(info.name);
+
+        if (plugin == null)
+        {
+            sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
+            return;
+        }
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを削除中...");
+
+        com.rylinaux.plugman.util.PluginUtil.unload(plugin);
+        CommandSender finalSender = sender;
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                File file = PluginUtil.getFile(plugin);
+                if (file != null)
+                    file.delete();
+                DependencyTree.wipePlugin(plugin);
+                finalSender.sendMessage(ChatColor.RED + "- " + plugin.getName() + ":" + plugin.getDescription().getVersion());
+                finalSender.sendMessage(Messages.getUnInstallableMessage());
+                finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
+                finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
+            }
+        }.runTaskLater(TeamKunPluginManager.plugin, 20L);
     }
 
     private static String error(String json)
@@ -123,9 +160,9 @@ public class Installer
         finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadResult.getValue()));
         add++;
 
-        finalSender.sendMessage(new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
+        finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
 
-        finalSender.sendMessage("情報を読み込み中...");
+        finalSender.sendMessage(ChatColor.LIGHT_PURPLE + "情報を読み込み中...");
 
         PluginDescriptionFile description;
 
@@ -151,7 +188,31 @@ public class Installer
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+            return new Pair<>("", "");
+        }
 
+        DependencyTree.Info info = DependencyTree.getInfo(description.getName(), false);
+
+        if (info != null && new Version(info.version).isHigherThan(description.getVersion()))
+        {
+            add--;
+            finalSender.sendMessage(ChatColor.YELLOW + "W: 既に同じプラグインが存在します。");
+            if (new File("plugins/" + downloadResult.getValue()).exists())
+            {
+                try
+                {
+                    File f = new File("plugins/" + downloadResult.getValue());
+                    f.setWritable(true);
+                    f.delete();
+                }
+                catch (Exception e)
+                {
+                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました：" + downloadResult.getValue());
+                }
+            }
+            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+            finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+            return new Pair<>(downloadResult.getValue(), description.getName());
         }
 
         added.add(new Pair<>(downloadResult.getValue(), description.getName()));
@@ -181,7 +242,13 @@ public class Installer
                 failedResolve.add(dependency);
             else
             {
-                finalSender.sendMessage(ChatColor.GREEN + "+ " + dependUrl.substring(dependUrl.lastIndexOf("/") + 1));
+                if (Bukkit.getPluginManager().getPlugin(dependUrl.substring(dependUrl.lastIndexOf("/"))) == null)
+                    finalSender.sendMessage(ChatColor.GREEN + "+ " + dependUrl.substring(dependUrl.lastIndexOf("/") + 1));
+                else
+                {
+                    Plugin dependPlugin = Bukkit.getPluginManager().getPlugin(dependUrl.substring(dependUrl.lastIndexOf("/")));
+                    finalSender.sendMessage(ChatColor.GREEN + "+ " + dependPlugin.getName() + ":" + dependPlugin.getDescription().getVersion());
+                }
                 added.add(dependResolve);
                 add++;
             }
@@ -226,7 +293,7 @@ public class Installer
         }
 
 
-        finalSender.sendMessage(new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
+        finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
         if (sender.equals(dummySender()) && failedResolve.size() > 0)
             return new Pair<>("", "");
 
@@ -234,7 +301,7 @@ public class Installer
         {
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.YELLOW + "W: " + description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
-            finalSender.sendMessage(String.join(", ", failedResolve));
+            finalSender.sendMessage(ChatColor.RED + String.join(", ", failedResolve));
             return new Pair<>(downloadResult.getValue(), description.getName());
         }
         AtomicBoolean success = new AtomicBoolean(true);
@@ -263,20 +330,9 @@ public class Installer
                             @Override
                             public void run()
                             {
-                                Method getFileMethod;
-                                try
-                                {
-                                    getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
-                                    getFileMethod.setAccessible(true);
-                                    File file = (File) getFileMethod.invoke(plugin);
-
+                                File file = PluginUtil.getFile(plugin);
+                                if (file != null)
                                     file.delete();
-                                }
-                                catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
-                                {
-                                    e.printStackTrace();
-                                }
-
                             }
                         }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 1000L);
                     }
@@ -304,6 +360,7 @@ public class Installer
         }
 
 
+        finalSender.sendMessage(Messages.getUnInstallableMessage());
         finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
         finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
         return new Pair<>(downloadResult.getValue(), description.getName());
@@ -376,7 +433,7 @@ public class Installer
         }
     }
 
-    private static CommandSender dummySender()
+    public static CommandSender dummySender()
     {
         return new CommandSender()
         {
