@@ -13,7 +13,9 @@ public class Messages
 
         return ChatColor.RED + "使用可能なコマンド：\n" +
                 "    " + commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i") + "\n" +
-                "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm") + "\n";
+                "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
+                "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +
+                "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n";
     }
 
     public static String getUnInstallableMessage()

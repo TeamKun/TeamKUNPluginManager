@@ -145,7 +145,7 @@ public class Installer
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new Pair<>("", "");
         }
-        finalSender.sendMessage("ファイルのダウンロード中...");
+        finalSender.sendMessage(ChatColor.GOLD + "ファイルのダウンロード中...");
 
         long startTime = System.currentTimeMillis();
 
@@ -225,7 +225,7 @@ public class Installer
                 continue;
             if (dependFirst)
             {
-                finalSender.sendMessage("依存関係をダウンロード中...");
+                finalSender.sendMessage(ChatColor.GOLD + "依存関係をダウンロード中...");
                 startTime = System.currentTimeMillis();
                 dependFirst = false;
             }
