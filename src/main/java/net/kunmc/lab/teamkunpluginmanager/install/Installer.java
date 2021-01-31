@@ -29,6 +29,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import sun.net.util.URLUtil;
 
@@ -38,6 +40,8 @@ import java.io.FileNotFoundException;
 import java.io.IOError;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -150,8 +154,48 @@ public class Installer
             return new Pair<>("", "");
         }
 
+        if (com.rylinaux.plugman.util.PluginUtil.isIgnored(description.getName()))
+        {
+            sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
+            add--;
+            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+
+        }
+
         added.add(new Pair<>(downloadResult.getValue(), description.getName()));
-        
+
+        boolean dependFirst = true;
+        ArrayList<String> failedResolve = new ArrayList<>();
+        for (String dependency: description.getDepend())
+        {
+            if (Bukkit.getPluginManager().isPluginEnabled(dependency))
+                continue;
+            if (dependFirst)
+            {
+                finalSender.sendMessage("依存関係をダウンロード中...");
+                startTime = System.currentTimeMillis();
+                dependFirst = false;
+            }
+
+            String dependUrl = resolveDepend(dependency);
+            if (dependUrl.equals("ERROR"))
+            {
+                failedResolve.add(dependency);
+                continue;
+            }
+
+            Pair<String, String> dependResolve = Installer.install(null, dependUrl, true);
+            if (dependResolve.getKey().equals(""))
+                failedResolve.add(dependency);
+            else
+            {
+                finalSender.sendMessage(ChatColor.GREEN + "+ " + dependUrl.substring(dependUrl.lastIndexOf("/") + 1));
+                added.add(dependResolve);
+                add++;
+            }
+
+        }
+
         if (downloadResult.getKey())
         {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(description.getName());
@@ -187,37 +231,7 @@ public class Installer
             }
         }
 
-        boolean dependFirst = true;
-        ArrayList<String> failedResolve = new ArrayList<>();
-        for (String dependency: description.getDepend())
-        {
-            if (Bukkit.getPluginManager().isPluginEnabled(dependency))
-                continue;
-            if (dependFirst)
-            {
-                finalSender.sendMessage("依存関係をダウンロード中...");
-                startTime = System.currentTimeMillis();
-                dependFirst = false;
-            }
 
-            String dependUrl = resolveDepend(dependency);
-            if (dependUrl.equals("ERROR"))
-            {
-                failedResolve.add(dependency);
-                continue;
-            }
-
-            Pair<String, String> dependResolve = Installer.install(null, dependUrl, true);
-            if (dependResolve.getKey().equals(""))
-                failedResolve.add(dependency);
-            else
-            {
-                finalSender.sendMessage(ChatColor.GREEN + "+ " + dependUrl.substring(dependUrl.lastIndexOf("/") + 1));
-                added.add(dependResolve);
-                add++;
-            }
-
-        }
         finalSender.sendMessage(new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
         if (sender.equals(dummySender()) && failedResolve.size() > 0)
             return new Pair<>("", "");
@@ -245,7 +259,32 @@ public class Installer
                             success.set(false);
                             return;
                         }
-                        com.rylinaux.plugman.util.PluginUtil.unload(Bukkit.getPluginManager().getPlugin(description.getName()));
+                        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(description.getName());
+
+                        com.rylinaux.plugman.util.PluginUtil.unload(plugin);
+
+                        new BukkitRunnable()
+                        {
+
+                            @Override
+                            public void run()
+                            {
+                                Method getFileMethod;
+                                try
+                                {
+                                    getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
+                                    getFileMethod.setAccessible(true);
+                                    File file = (File) getFileMethod.invoke(plugin);
+
+                                    file.delete();
+                                }
+                                catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+                                {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 1000L);
                     }
 
                     com.rylinaux.plugman.util.PluginUtil.load(downloadResult.getValue().substring(0, downloadResult.getValue().length() - 4));
