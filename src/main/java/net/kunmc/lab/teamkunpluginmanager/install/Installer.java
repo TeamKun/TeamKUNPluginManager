@@ -59,6 +59,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class Installer
 {
 
+    public static void unInstall(CommandSender sender, String name)
+    {
+
+    }
+
     private static String error(String json)
     {
         try

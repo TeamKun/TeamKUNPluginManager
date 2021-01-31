@@ -76,16 +76,10 @@ public class DependencyTree
             return;
         try(Connection con = dataSource.getConnection();
             PreparedStatement p = con.prepareStatement("DELETE FROM PLUGIN WHERE PLUGIN=?");
-            PreparedStatement f = con.prepareStatement("DELETE FROM DEPEND WHERE PLUGIN=?");
-            PreparedStatement b = con.prepareStatement("DELETE FROM DEPENDBY WHERE PLUGIN=?");
         )
         {
-            p.setString(1, plugin.getName().toLowerCase());
-            f.setString(1, plugin.getName().toLowerCase());
-            b.setString(1, plugin.getName().toLowerCase());
+            p.setString(1, plugin.getName());
             p.execute();
-            f.execute();
-            b.execute();
         }
         catch (Exception e)
         {
@@ -103,9 +97,9 @@ public class DependencyTree
              PreparedStatement dependBySQL = con.prepareStatement("INSERT OR REPLACE INTO DEPENDBY(PLUGIN, DEPENDBY) VALUES (?,?)")
         )
         {
-            pluginSQL.setString(1, plugin.getName().toLowerCase());
-            dependSQL.setString(1, plugin.getName().toLowerCase());
-            dependBySQL.setString(2, plugin.getName().toLowerCase());
+            pluginSQL.setString(1, plugin.getName());
+            dependSQL.setString(1, plugin.getName());
+            dependBySQL.setString(2, plugin.getName());
 
             pluginSQL.setString(2, plugin.getDescription().getVersion());
             pluginSQL.execute();
@@ -114,10 +108,10 @@ public class DependencyTree
                     .forEach(depend -> {
                         try
                         {
-                            dependSQL.setString(2, depend.toLowerCase());
+                            dependSQL.setString(2, depend);
                             dependSQL.execute();
 
-                            dependBySQL.setString(1, depend.toLowerCase());
+                            dependBySQL.setString(1, depend);
                             dependBySQL.execute();
                         }
                         catch (SQLException throwable)
