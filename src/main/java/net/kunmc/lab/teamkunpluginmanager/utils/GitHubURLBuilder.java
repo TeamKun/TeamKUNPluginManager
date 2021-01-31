@@ -15,17 +15,16 @@ public class GitHubURLBuilder
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})/?((releases/?(tag/?)?)(?<tagName>.*)?)?$");
 
     /**
      * GitHubのリリースへのAPIのURlをビルドします。
      * tagName をnullにできます。
      *
      * @param repository リポジトリ名
-     * @param tagName タグ(リリース)バージョン
-     *
-     * @throws NullPointerException repositoryがnullだった場合
-     *
+     * @param tagName    タグ(リリース)バージョン
      * @return URlのタイプ, ビルドしたURL
+     * @throws NullPointerException repositoryがnullだった場合
      */
     private static Pair<String, String> buildAPIUrl(String repository, @Nullable String tagName)
     {
@@ -38,11 +37,11 @@ public class GitHubURLBuilder
             return new Pair<>("GITHUB_REPO_RELEASE_NAME_URL", String.format(GITHUB_REPO_RELEASE_NAME_URL, repository, tagName));
     }
 
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})/?((releases/?(tag/?)?)(?<tagName>.*)?)?$");
     /**
      * GitHubのURLを適正化
      * https://github.com/examples/ExamplePlugin => https://github.com/examples/ExamplePlugin/releases/download/1.0/ExamplePlugin-1.0.jar
      * https://example.com/ => https://example.com/
+     *
      * @param urlName 適当なURL
      * @return GitHubのURl
      */
@@ -66,7 +65,7 @@ public class GitHubURLBuilder
         String repoName = null;
         String tagName = null;
 
-        while(matcher.find())
+        while (matcher.find())
         {
             String repository = matcher.group("repo");
             String tag = matcher.group("tagName");
@@ -88,8 +87,8 @@ public class GitHubURLBuilder
                     return "ERROR " + error;
                 JsonArray array = new Gson().fromJson(json, JsonArray.class);
 
-                for(JsonElement elem: array)
-                    for(JsonElement asset: ((JsonObject) elem).get("assets").getAsJsonArray())
+                for (JsonElement elem : array)
+                    for (JsonElement asset : ((JsonObject) elem).get("assets").getAsJsonArray())
                         return ((JsonObject) asset).get("browser_download_url").getAsString();
                 return "ERROR " + json;
             }
@@ -100,7 +99,7 @@ public class GitHubURLBuilder
                 if (!error.equals(""))
                     return "ERROR " + error;
                 JsonObject array = new Gson().fromJson(json, JsonObject.class);
-                for(JsonElement asset: array.get("assets").getAsJsonArray())
+                for (JsonElement asset : array.get("assets").getAsJsonArray())
                     return ((JsonObject) asset).get("browser_download_url").getAsString();
                 return "ERROR Unknown";
             }

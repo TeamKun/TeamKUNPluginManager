@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,8 +32,8 @@ public class PluginUtil
                     }
                     catch (Exception e)
                     {
-                       e.printStackTrace();
-                       return;
+                        e.printStackTrace();
+                        return;
                     }
 
                     desc.getDepend().stream().parallel()
@@ -82,7 +81,7 @@ public class PluginUtil
         return ab.get();
     }
 
-    private static ArrayList<Pair<String, String>> removeByValue(ArrayList<Pair<String,String>> original, String value)
+    private static ArrayList<Pair<String, String>> removeByValue(ArrayList<Pair<String, String>> original, String value)
     {
         ArrayList<Pair<String, String>> copyOf = (ArrayList<Pair<String, String>>) original.clone();
 
@@ -95,14 +94,14 @@ public class PluginUtil
         return copyOf;
     }
 
-    public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, FileNotFoundException, IOException
+    public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, IOException
     {
         if (!file.exists())
             throw new FileNotFoundException("Not found a file.");
 
         ZipFile zip = new ZipFile(file);
         ZipEntry entry = null;
-        for (ZipEntry ent: Collections.list(zip.entries()))
+        for (ZipEntry ent : Collections.list(zip.entries()))
             if (ent.getName().equals("plugin.yml"))
             {
                 entry = ent;
@@ -114,7 +113,7 @@ public class PluginUtil
 
         InputStream is = zip.getInputStream(entry);
 
-        PluginDescriptionFile desc =  new PluginDescriptionFile(is);
+        PluginDescriptionFile desc = new PluginDescriptionFile(is);
         is.close();
         zip.close();
 

@@ -5,12 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -50,6 +45,7 @@ public class URLUtils
 
     /**
      * ファイルをだうんろーど！
+     *
      * @param url URL
      * @return ローカルのパス
      */
@@ -64,7 +60,7 @@ public class URLUtils
 
         int tryna = 0;
         String original = fileName;
-        while(new File("plugins/" + fileName).exists())
+        while (new File("plugins/" + fileName).exists())
         {
             fileName = original + "." + ++tryna + ".jar";
             duplicateFile = true;

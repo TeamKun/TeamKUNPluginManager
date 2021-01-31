@@ -21,7 +21,7 @@ public class DependencyTree
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.sqlite.JDBC");
 
-        config.setJdbcUrl("jdbc:sqlite:" + TeamKunPluginManager.plugin.getDataFolder().getPath()  + TeamKunPluginManager.config.getString("dbPath"));
+        config.setJdbcUrl("jdbc:sqlite:" + TeamKunPluginManager.plugin.getDataFolder().getPath() + TeamKunPluginManager.config.getString("dbPath"));
 
         config.setMaximumPoolSize(20);
         config.setLeakDetectionThreshold(300000);
@@ -31,8 +31,8 @@ public class DependencyTree
 
     public static void initializeTable()
     {
-        try(Connection con = dataSource.getConnection();
-                Statement stmt =  con.createStatement())
+        try (Connection con = dataSource.getConnection();
+             Statement stmt = con.createStatement())
         {
             stmt.execute("CREATE TABLE IF NOT EXISTS PLUGIN(" +
                     "PLUGIN TEXT UNIQUE," +
@@ -59,7 +59,6 @@ public class DependencyTree
                 .forEach(DependencyTree::crawlPlugin);
     }
 
-
     public static void crawlPlugin(String name)
     {
         crawlPlugin(Bukkit.getPluginManager().getPlugin(name));
@@ -74,8 +73,8 @@ public class DependencyTree
     {
         if (plugin == null)
             return;
-        try(Connection con = dataSource.getConnection();
-            PreparedStatement p = con.prepareStatement("DELETE FROM PLUGIN WHERE PLUGIN=?");
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement p = con.prepareStatement("DELETE FROM PLUGIN WHERE PLUGIN=?")
         )
         {
             p.setString(1, plugin.getName());
@@ -92,7 +91,7 @@ public class DependencyTree
         if (plugin == null)
             return;
         try (Connection con = dataSource.getConnection();
-                PreparedStatement pluginSQL = con.prepareStatement("INSERT OR REPLACE INTO PLUGIN(PLUGIN, VERSION) VALUES (?,?)");
+             PreparedStatement pluginSQL = con.prepareStatement("INSERT OR REPLACE INTO PLUGIN(PLUGIN, VERSION) VALUES (?,?)");
              PreparedStatement dependSQL = con.prepareStatement("INSERT OR REPLACE INTO DEPEND(PLUGIN, DEPEND) VALUES (?,?)");
              PreparedStatement dependBySQL = con.prepareStatement("INSERT OR REPLACE INTO DEPENDBY(PLUGIN, DEPENDBY) VALUES (?,?)")
         )

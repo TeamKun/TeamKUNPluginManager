@@ -15,7 +15,7 @@ public class Messages
         return result.toString();
     }
 
-    private static String commandMessageBuilder(String label,  String help, String... aliases)
+    private static String commandMessageBuilder(String label, String help, String... aliases)
     {
         return ChatColor.GREEN + label +
                 (aliases.length != 0 ? ", " + String.join(", ", aliases): "") +

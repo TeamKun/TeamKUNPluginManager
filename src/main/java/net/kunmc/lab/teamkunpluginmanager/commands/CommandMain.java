@@ -8,12 +8,11 @@ import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class CommandMain implements CommandExecutor
 {
     @Override
-    public boolean onCommand( CommandSender sender,  Command command,  String label,  String[] args)
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
         if (args.length < 1)
         {

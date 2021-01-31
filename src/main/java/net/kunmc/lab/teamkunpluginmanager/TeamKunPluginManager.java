@@ -7,12 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 public final class TeamKunPluginManager extends JavaPlugin
 {
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
+
     @Override
     public void onEnable()
     {

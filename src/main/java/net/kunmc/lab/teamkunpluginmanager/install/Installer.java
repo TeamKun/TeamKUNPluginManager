@@ -24,35 +24,21 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
-import sun.net.util.URLUtil;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOError;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -81,8 +67,9 @@ public class Installer
 
     /**
      * URlからぶちこむ！
-     * @param sender 結果を表示する対象の人
-     * @param url URL!!!
+     *
+     * @param sender        結果を表示する対象の人
+     * @param url           URL!!!
      * @param ignoreInstall インストールを除外するかどうか
      * @return ファイル名, プラグイン名
      */
@@ -117,7 +104,7 @@ public class Installer
 
         if (atomicURL.get().startsWith("ERROR "))
         {
-            finalSender.sendMessage(ChatColor.RED +  "E: " + atomicURL.get().substring(6)); //ERROR <-までをきりだし
+            finalSender.sendMessage(ChatColor.RED + "E: " + atomicURL.get().substring(6)); //ERROR <-までをきりだし
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new Pair<>("", "");
         }
@@ -171,7 +158,7 @@ public class Installer
 
         boolean dependFirst = true;
         ArrayList<String> failedResolve = new ArrayList<>();
-        for (String dependency: description.getDepend())
+        for (String dependency : description.getDepend())
         {
             if (Bukkit.getPluginManager().isPluginEnabled(dependency))
                 continue;
@@ -208,9 +195,11 @@ public class Installer
             {
                 modify++;
                 add--;
-                finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.MODIFY,
+                finalSender.sendMessage(Messages.getModifyMessage(
+                        Messages.ModifyType.MODIFY,
                         plugin.getName() + ":" + plugin.getDescription().getVersion() +
-                                " => " + description.getName() + ":" + description.getVersion()));
+                                " => " + description.getName() + ":" + description.getVersion()
+                ));
             }
             else
             {
@@ -333,6 +322,7 @@ public class Installer
 
         return repository.startsWith("ERROR") ? "ERROR": gitHubRepo;
     }
+
     public static void disablePlugin(String name)
     {
         if (!Bukkit.getPluginManager().isPluginEnabled(name))
@@ -343,7 +333,7 @@ public class Installer
         if (plugin == null)
             return;
 
-        for (Command command: PluginCommandYamlParser.parse(plugin))
+        for (Command command : PluginCommandYamlParser.parse(plugin))
             unRegisterBukkitCommand((PluginCommand) command);
 
         Bukkit.getPluginManager().disablePlugin(plugin);
@@ -385,6 +375,7 @@ public class Installer
             e.printStackTrace();
         }
     }
+
     private static CommandSender dummySender()
     {
         return new CommandSender()
