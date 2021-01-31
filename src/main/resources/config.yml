@@ -4,3 +4,6 @@ gitHubName: TeamKUN
 #OAuth token
 #このキーをアップロード、公開しないでください。
 oauth: ""
+
+#DBへのパス
+dbPath: "./depend.db"

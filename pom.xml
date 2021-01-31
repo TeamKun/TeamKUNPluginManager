@@ -45,6 +45,8 @@
                                 <includes>
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
+                                    <include>org.slf4j:*</include>
+                                    <include>com.zaxxer:*</include>
                                     <include>*:version-compare</include>
                                 </includes>
                             </artifactSet>
@@ -102,6 +104,11 @@
             <groupId>com.github.r-clancy</groupId>
             <artifactId>PlugMan</artifactId>
             <version>4d41519cf3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.4.5</version>
         </dependency>
     </dependencies>
 </project>
