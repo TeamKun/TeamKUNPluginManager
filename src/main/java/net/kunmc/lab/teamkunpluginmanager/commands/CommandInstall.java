@@ -12,8 +12,8 @@ public class CommandInstall
     {
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "エラー：引数が不足しています！");
-            sender.sendMessage(ChatColor.RED + "使用法：/kpm i <Repo|url|name>");
+            sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
+            sender.sendMessage(ChatColor.RED + "使用法： /kpm i <Repo|url|name>");
         }
 
 

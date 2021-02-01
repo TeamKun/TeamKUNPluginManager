@@ -12,8 +12,8 @@ dependPath: "./depend.db"
 resolvePath: "./resolve.db"
 
 # エイリアス定義ファイル
-# 形式：JSON
-# 書き方： { "ExamplePlugin": "https://example.com/download/ExamplePlugin.jar"
+# 形式： JSON
+# 書き方：  { "ExamplePlugin": "https://example.com/download/ExamplePlugin.jar"
 config:
   - "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
 

@@ -10,7 +10,7 @@ public class Messages
     public static String getCommandNotFoundMessage()
     {
 
-        return ChatColor.RED + "使用可能なコマンド：\n" +
+        return ChatColor.RED + "使用可能なコマンド： \n" +
                 "    " + commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i") + "\n" +
                 "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
                 "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +
@@ -33,8 +33,9 @@ public class Messages
         if (rmble.size() == 0)
             return "";
 
-        return ChatColor.BLUE + "以下のプラグインを削除可能です。/kpm autoremove で削除します。" + "\n" +
-                ChatColor.AQUA + String.join(", ", rmble) + "\n\n";
+        return ChatColor.BLUE + "以下のプラグインがインストールされていますが、もう必要とされていません:\n" +
+                ChatColor.GREEN + "  " + String.join(" ", rmble) + "\n" +
+                ChatColor.BOLD + "之を削除するには、'/kpm autoremove' を利用してください。";
     }
 
     private static String commandMessageBuilder(String label, String help, String... aliases)

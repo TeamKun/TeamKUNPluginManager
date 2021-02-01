@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,6 +25,82 @@ import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+    public static String getFileSizeString(long bytes)
+    {
+        String suffix = "B";
+
+        BigDecimal dec = new BigDecimal(String.valueOf(bytes));
+        BigDecimal div = new BigDecimal(1024);
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "KiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "MiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "GiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "TiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "PiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "EiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "ZiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "YiB";
+        }
+
+        dec = dec.setScale(3, BigDecimal.ROUND_HALF_UP);
+
+
+        return new DecimalFormat("#,###.##;#,###.##").format(dec) + suffix;
+    }
+
+    public static String loadToString(PluginLoadOrder order)
+    {
+        switch (order)
+        {
+            case POSTWORLD:
+                return "ワールド読み込み後に起動";
+            case STARTUP:
+                return "起動直後に読み込み";
+            default:
+                return "不明";
+        }
+    }
 
     public static File getFile(Plugin plugin)
     {
@@ -29,9 +109,8 @@ public class PluginUtil
         {
             getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
             getFileMethod.setAccessible(true);
-            File file = (File) getFileMethod.invoke(plugin);
 
-            return file;
+            return (File) getFileMethod.invoke(plugin);
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {

@@ -32,8 +32,7 @@ public class URLUtils
             if (connection.getResponseCode() != 200)
                 return "{'message': '不明なエラーが発生しました。'}";
 
-            String a = IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
-            return a;
+            return IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
 
         }
         catch (Exception e)
@@ -73,7 +72,7 @@ public class URLUtils
             connection.setRequestMethod("GET");
             if (urlObj.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
-            connection.setRequestProperty("User-Agent", "TeamKUN Client");
+            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             if (connection.getResponseCode() != 200)
                 return new Pair<>(false, "");

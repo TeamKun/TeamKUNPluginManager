@@ -12,7 +12,7 @@ public class CommandStatus
 
         String statusError = Messages.getErrorMessage();
 
-        sender.sendMessage(ChatColor.YELLOW + "ステータス：" + (!statusError.equals("") ? ChatColor.RED + "エラー": ChatColor.GREEN + "正常"));
+        sender.sendMessage(ChatColor.YELLOW + "ステータス： " + (!statusError.equals("") ? ChatColor.RED + "エラー": ChatColor.GREEN + "正常"));
         if (!statusError.equals(""))
             sender.sendMessage(statusError);
 

@@ -103,7 +103,7 @@ public class CommandUpdate
                             }
                         });
 
-                finalSender.sendMessage(ChatColor.GREEN + "項目数：" + atomicInteger.get());
+                finalSender.sendMessage(ChatColor.GREEN + "項目数： " + atomicInteger.get());
                 finalSender.sendMessage(ChatColor.GREEN + "S: 既知プラグインデータセットのアップデートに成功しました。");
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);

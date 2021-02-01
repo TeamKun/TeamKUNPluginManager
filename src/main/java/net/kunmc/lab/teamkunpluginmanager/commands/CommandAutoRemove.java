@@ -47,7 +47,7 @@ public class CommandAutoRemove
         {
             CommandSender finalSender = sender;
             rem.forEach(s -> {
-                finalSender.sendMessage(ChatColor.RED + "- " + s);
+                finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.REMOVE, s));
                 removed.getAndIncrement();
             });
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));

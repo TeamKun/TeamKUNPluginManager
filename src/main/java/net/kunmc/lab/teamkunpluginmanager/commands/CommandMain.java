@@ -23,14 +23,14 @@ public class CommandMain implements CommandExecutor, TabCompleter
     {
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
+            sender.sendMessage(ChatColor.RED + "エラー： 不明なコマンドです！");
             sender.sendMessage(Messages.getCommandNotFoundMessage());
             return true;
         }
 
         if (!sender.hasPermission("kpm.use"))
         {
-            sender.sendMessage(ChatColor.RED + "エラー：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "エラー： 権限がありません！");
             return true;
         }
 
@@ -64,8 +64,11 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "clean":
                 CommandClean.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "info":
+                CommandInfo.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
-                sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
+                sender.sendMessage(ChatColor.RED + "エラー： 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
                 break;
         }
@@ -84,7 +87,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info"));
                 break;
             case 2:
                 String cmd = args[0];
@@ -92,9 +95,18 @@ public class CommandMain implements CommandExecutor, TabCompleter
                 {
                     case "uninstall":
                     case "rm":
-                    case "rermove":
+                    case "remove":
+                    case "info":
+                    case "clean":
                         completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+
                         break;
+                }
+            case 3:
+                if (args[0].equals("clean"))
+                {
+                    completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+                    completes.add("all");
                 }
         }
 
