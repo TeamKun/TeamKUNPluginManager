@@ -11,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
@@ -36,11 +37,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class Installer
 {
 
@@ -88,7 +94,7 @@ public class Installer
                 finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
                 finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
             }
-        }.runTaskLater(TeamKunPluginManager.plugin, 20L);
+        }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 20L);
     }
 
     private static String error(String json)
@@ -390,56 +396,69 @@ public class Installer
         return repository.startsWith("ERROR") ? "ERROR": gitHubRepo;
     }
 
-    public static void disablePlugin(String name)
-    {
-        if (!Bukkit.getPluginManager().isPluginEnabled(name))
-            return;
-
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
-
-        if (plugin == null)
-            return;
-
-        for (Command command : PluginCommandYamlParser.parse(plugin))
-            unRegisterBukkitCommand((PluginCommand) command);
-
-        Bukkit.getPluginManager().disablePlugin(plugin);
-
-
-    }
-
-    private static Object getPrivateField(Object object, String field) throws SecurityException,
-            NoSuchFieldException, IllegalArgumentException, IllegalAccessException
-    {
-        Class<?> clazz = object.getClass();
-        Field objectField = clazz.getDeclaredField(field);
-        objectField.setAccessible(true);
-        Object result = objectField.get(object);
-        objectField.setAccessible(false);
-        return result;
-    }
-
-    public static void unRegisterBukkitCommand(PluginCommand cmd)
+    public static String[] getRemovableDataDirs()
     {
         try
         {
-            Object result = getPrivateField(Bukkit.getPluginManager(), "commandMap");
-            SimpleCommandMap commandMap = (SimpleCommandMap) result;
-            Object map = getPrivateField(commandMap, "knownCommands");
-            @SuppressWarnings("unchecked")
-            HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
-            knownCommands.remove(cmd.getName());
-            for (String alias : cmd.getAliases())
-            {
-                if (knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains("CmdSender"))
-                {
-                    knownCommands.remove(alias);
-                }
-            }
+            List<String> bb = TeamKunPluginManager.config.getStringList("ignoreClean");
+
+            return Arrays.stream(Objects.requireNonNull(new File("plugins/").listFiles(File::isDirectory)))
+                    .map(File::getName)
+                    .filter(file -> Bukkit.getPluginManager().getPlugin(file) == null)
+                    .filter(file -> !bb.contains(file))
+                    .toArray(String[]::new);
+
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            return new String[]{};
+        }
+    }
+
+    /**
+     * プラグインデータフォルダを削除
+     * @param name 対象
+     * @return 合否
+     */
+    public static boolean clean(String name)
+    {
+        if(DependencyTree.isErrors())
+            return false;
+
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
+
+        if (plugin != null && plugin.isEnabled())
+            return false;  //プラグインがイネーブルの時、プロセスロックが掛かる
+
+        if (TeamKunPluginManager.config.getStringList("ignoreClean").stream()
+                .anyMatch(s -> s.equalsIgnoreCase(name))) // 保護されているかどうか
+            return false;
+
+        if (plugin != null)
+            return plugin.getDataFolder().delete(); //プラグインがあった場合、データフォルダを取得して削除
+
+        //プラグインがなかった場合 <= 厄介
+
+        try
+        {
+            Arrays.stream(Objects.requireNonNull(new File("plugins/")
+                    .listFiles(File::isDirectory)))
+                    .filter(file -> file.getName().equalsIgnoreCase(name))
+                    .forEach(file -> {
+                        try
+                        {
+                            FileUtils.forceDelete(file);
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    });
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
         }
     }
 

@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +18,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
     public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
+    public static Say2Functional functional;
 
     @Override
     public void onEnable()
@@ -24,6 +26,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         saveDefaultConfig();
         plugin = this;
         config = getConfig();
+        functional = new Say2Functional(this);
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 

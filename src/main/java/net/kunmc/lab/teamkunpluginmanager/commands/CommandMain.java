@@ -61,6 +61,9 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "update":
                 CommandUpdate.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "clean":
+                CommandClean.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());

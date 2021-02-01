@@ -58,7 +58,8 @@ public class CommandUpdate {
                                     connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
                                 connection.setRequestProperty("User-Agent", "TeamKUN Client");
                                 connection.connect();
-                                if (connection.getResponseCode() != 200) {
+                                if (connection.getResponseCode() != 200)
+                                {
                                     finalSender.sendMessage(ChatColor.RED + "ファイルのダウンロード失敗しました。");
                                     return;
                                 }
