@@ -15,9 +15,9 @@ import java.io.File;
 
 public final class TeamKunPluginManager extends JavaPlugin
 {
+    public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
-    public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
     public static Say2Functional functional;
 
     @Override

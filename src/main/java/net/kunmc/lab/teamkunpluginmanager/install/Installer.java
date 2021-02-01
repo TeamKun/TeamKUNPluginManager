@@ -17,11 +17,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.PluginCommandYamlParser;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -34,17 +30,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class Installer
@@ -417,12 +410,13 @@ public class Installer
 
     /**
      * プラグインデータフォルダを削除
+     *
      * @param name 対象
      * @return 合否
      */
     public static boolean clean(String name)
     {
-        if(DependencyTree.isErrors())
+        if (DependencyTree.isErrors())
             return false;
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);

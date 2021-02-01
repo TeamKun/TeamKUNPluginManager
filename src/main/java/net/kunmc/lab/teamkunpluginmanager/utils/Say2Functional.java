@@ -1,7 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,15 +8,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Say2Functional implements Listener

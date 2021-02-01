@@ -5,11 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.install.Installer;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,16 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectStreamClass;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CommandUpdate {
+public class CommandUpdate
+{
     public static void onCommand(CommandSender sender, String[] args)
     {
         if (sender == null)
@@ -45,9 +41,11 @@ public class CommandUpdate {
                             String fileName;
 
                             int i = 0;
-                            do {
+                            do
+                            {
                                 fileName = TeamKunPluginManager.DATABASE_PATH + (++i) + ".json";
-                            } while (new File(fileName).exists());
+                            }
+                            while (new File(fileName).exists());
 
                             try
                             {
@@ -83,7 +81,7 @@ public class CommandUpdate {
                 paths.stream().parallel()
                         .forEach(s -> {
                             JsonObject obj;
-                            try(BufferedReader reader = new BufferedReader(new FileReader(s)))
+                            try (BufferedReader reader = new BufferedReader(new FileReader(s)))
                             {
                                 obj = new Gson().fromJson(reader, JsonObject.class);
                             }
@@ -93,7 +91,7 @@ public class CommandUpdate {
                                 return;
                             }
 
-                            for (Map.Entry<String, JsonElement> a: obj.entrySet())
+                            for (Map.Entry<String, JsonElement> a : obj.entrySet())
                             {
                                 String name = a.getKey();
                                 String url = a.getValue().getAsString();

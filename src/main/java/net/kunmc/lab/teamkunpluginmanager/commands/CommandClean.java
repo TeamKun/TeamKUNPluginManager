@@ -62,14 +62,15 @@ public class CommandClean
                 }
 
 
-                sender.sendMessage(ChatColor.RED  +"本当に続行しますか? " +
-                        ChatColor.WHITE +"[" +
-                        ChatColor.GREEN +"y" +
+                sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
+                        ChatColor.WHITE + "[" +
+                        ChatColor.GREEN + "y" +
                         ChatColor.WHITE + "/" +
                         ChatColor.RED + "N" +
                         ChatColor.WHITE + "]");
 
-                TeamKunPluginManager.functional.add(((Player) sender).getUniqueId(),
+                TeamKunPluginManager.functional.add(
+                        ((Player) sender).getUniqueId(),
                         new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
                             switch (s)
                             {
@@ -82,7 +83,8 @@ public class CommandClean
                                     sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
                                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
                             }
-                        }, "y", "n"));
+                        }, "y", "n")
+                );
 
                 break;
             case 0:
@@ -93,13 +95,14 @@ public class CommandClean
                     sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください：/kpm clean all no-preserve");
                     return;
                 }
-                sender.sendMessage(ChatColor.RED  +"本当に続行しますか? " +
-                        ChatColor.WHITE +"[" +
-                        ChatColor.GREEN +"y" +
+                sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
+                        ChatColor.WHITE + "[" +
+                        ChatColor.GREEN + "y" +
                         ChatColor.WHITE + "/" +
                         ChatColor.RED + "N" +
                         ChatColor.WHITE + "]");
-                TeamKunPluginManager.functional.add(((Player) sender).getUniqueId(),
+                TeamKunPluginManager.functional.add(
+                        ((Player) sender).getUniqueId(),
                         new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
                             switch (s)
                             {
@@ -113,7 +116,8 @@ public class CommandClean
                                     sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
                                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
                             }
-                        }, "y", "n"));
+                        }, "y", "n")
+                );
 
         }
     }

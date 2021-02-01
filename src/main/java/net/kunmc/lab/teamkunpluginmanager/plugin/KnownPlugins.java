@@ -42,8 +42,8 @@ public class KnownPlugins
 
     private static void initTables()
     {
-        try(Connection connection = dataSource.getConnection();
-            Statement stmt = connection.createStatement())
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement())
         {
             stmt.execute("CREATE TABLE IF NOT EXISTS DEPEND(NAME TEXT, URL TEXT)");
         }
@@ -55,8 +55,8 @@ public class KnownPlugins
 
     public static KnownPluginEntry getKnown(String name)
     {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement  pstmt = connection.prepareStatement("SELECT * FROM DEPEND WHERE NAME=?"))
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM DEPEND WHERE NAME=?"))
         {
             pstmt.setString(1, name);
             ResultSet set = pstmt.executeQuery();
@@ -82,8 +82,8 @@ public class KnownPlugins
 
     public static void addKnownPlugin(KnownPluginEntry entry)
     {
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement  pstmt = connection.prepareStatement("INSERT INTO DEPEND VALUES (?, ?)"))
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO DEPEND VALUES (?, ?)"))
         {
             pstmt.setString(1, entry.name);
             pstmt.setString(2, entry.url);
