@@ -14,6 +14,7 @@ public class Messages
                 "    " + commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i") + "\n" +
                 "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
                 "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +
+                "    " + commandMessageBuilder("update", "既知プラグインデータセットをアップデートします。") + "\n" +
                 "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n";
     }
 

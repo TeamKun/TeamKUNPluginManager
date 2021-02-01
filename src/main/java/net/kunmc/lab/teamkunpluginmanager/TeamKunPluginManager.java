@@ -1,17 +1,22 @@
 package net.kunmc.lab.teamkunpluginmanager;
 
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandMain;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
+
 public final class TeamKunPluginManager extends JavaPlugin
 {
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
+    public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
 
     @Override
     public void onEnable()
@@ -29,8 +34,9 @@ public final class TeamKunPluginManager extends JavaPlugin
             return;
         }
 
-        DependencyTree.initialize();
+        DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
+        KnownPlugins.initialization(TeamKunPluginManager.config.getString("resolvePath"));
         new BukkitRunnable()
         {
 
@@ -45,6 +51,9 @@ public final class TeamKunPluginManager extends JavaPlugin
                 Bukkit.getPluginManager().registerEvents(new PluginEventListener(), TeamKunPluginManager.plugin);
             }
         }.runTaskLater(this, 1L);
+
+        if (!new File(DATABASE_PATH).exists())
+            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
     }
 
     @Override
@@ -53,4 +62,5 @@ public final class TeamKunPluginManager extends JavaPlugin
         if (DependencyTree.dataSource != null)
             DependencyTree.dataSource.close();
     }
+
 }

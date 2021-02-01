@@ -58,6 +58,9 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "fix":
                 CommandFix.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "update":
+                CommandUpdate.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "エラー：不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
@@ -78,7 +81,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update"));
                 break;
             case 2:
                 String cmd = args[0];

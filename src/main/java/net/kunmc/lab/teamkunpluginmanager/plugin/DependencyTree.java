@@ -20,12 +20,12 @@ public class DependencyTree
 {
     public static HikariDataSource dataSource;
 
-    public static void initialize()
+    public static void initialize(String fileName)
     {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.sqlite.JDBC");
 
-        config.setJdbcUrl("jdbc:sqlite:" + TeamKunPluginManager.plugin.getDataFolder().getPath() + TeamKunPluginManager.config.getString("dbPath"));
+        config.setJdbcUrl("jdbc:sqlite:" + TeamKunPluginManager.plugin.getDataFolder().getPath() + fileName);
 
         config.setMaximumPoolSize(20);
         config.setLeakDetectionThreshold(300000);

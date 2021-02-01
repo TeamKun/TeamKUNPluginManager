@@ -6,4 +6,10 @@ gitHubName: TeamKUN
 oauth: ""
 
 #DBへのパス
-dbPath: "./depend.db"
+dependPath: "./depend.db"
+
+#名前解決へのパス
+resolvePath: "./resolve.db"
+
+config:
+  - "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"

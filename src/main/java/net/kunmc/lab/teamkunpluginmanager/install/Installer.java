@@ -182,7 +182,7 @@ public class Installer
         }
         catch (IOException | InvalidDescriptionException e)
         {
-            finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込みませんでした。");
+            finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込めませんでした。");
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new Pair<>("", "");
         }
@@ -313,7 +313,8 @@ public class Installer
         if (!ignoreInstall)
         {
             ArrayList<String> loadOrder = PluginUtil.mathLoadOrder(added);
-            loadOrder.forEach(f -> {
+            for (String f : loadOrder)
+            {
                 try
                 {
                     if (downloadResult.getKey())
@@ -322,7 +323,7 @@ public class Installer
                         {
                             finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
                             success.set(false);
-                            return;
+                            continue;
                         }
                         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(description.getName());
 
@@ -341,7 +342,7 @@ public class Installer
                         }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 1000L);
                     }
 
-                    com.rylinaux.plugman.util.PluginUtil.load(downloadResult.getValue().substring(0, downloadResult.getValue().length() - 4));
+                    com.rylinaux.plugman.util.PluginUtil.load(f.substring(0, f.length() - 4));
                 }
                 catch (Exception e)
                 {
@@ -357,11 +358,10 @@ public class Installer
                     e.printStackTrace();
                     success.set(false);
                 }
-            });
-
-            if (!success.get())
-                finalSender.sendMessage(ChatColor.RED + "E: プラグインの読み込みに失敗しました。");
+            }
         }
+        if (!success.get())
+            finalSender.sendMessage(ChatColor.RED + "E: プラグインの読み込みに失敗しました。");
 
 
         String statusError = Messages.getErrorMessage();
