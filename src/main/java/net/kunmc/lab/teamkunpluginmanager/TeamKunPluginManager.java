@@ -64,6 +64,8 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         if (DependencyTree.dataSource != null)
             DependencyTree.dataSource.close();
+        if (KnownPlugins.dataSource != null)
+            KnownPlugins.dataSource.close();
     }
 
 }
