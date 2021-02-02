@@ -60,7 +60,7 @@ public class CommandInfo
         sender.sendMessage(pi("保護", TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
 
         if (plugin.getDescription().getWebsite() != null)
-            sender.sendMessage(pi("ウェブサイト： ", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
+            sender.sendMessage(pi("ウェブサイト", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
         if (plugin.getDescription().getPrefix() != null)
             sender.sendMessage(pi("ログ接頭辞", plugin.getDescription().getPrefix()));
         if (plugin.getDescription().getDescription() != null)
