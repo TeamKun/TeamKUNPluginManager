@@ -1,2 +1,39 @@
 # TeamKUNPluginManager
-Download and Update the plugin.
+プラグインのインストールから依存関係の調達、不要になったプラグインの削除まで全て自動化します。
+
+## 概要
+プラグインの管理を行います。
+
+## コマンド
+### /kunpluginmanager
+#### エイリアス
++ kpm
++ pm
++ kunpm
++ kunmgmt <= devicemgmt.mscへの恨み
+#### 使用法
++ /kpm <i|rm|info|autoremove|clean|fix|status|update> [Plugin download url|GitHub repository url]
+#### サブコマンド
++ install
+リポジトリまたはURLからインストールします。
++ remove
+プラグインをアンインストールします。
++ autoremove
+いらないプラグインを自動で削除します。
++ update
+既知プラグインデータセットをアップデートします。
++ status
+現在の状態を表示します。
++ info
+プラグインの情報を取得します。
++ fix
+エラーを修復します。メッセージがあった場合のみ実行してください。
++ clean
+不要になったプラグインデータを削除します。
+
+#### 権限
++ kpm.use
+
+## 管理
+当プラグインは、SQLite3による、依存関係ツリーの構築によって実現しています。
+プラグインが有効になった時に高速で構築されます。
