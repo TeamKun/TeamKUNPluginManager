@@ -21,15 +21,15 @@ public class CommandMain implements CommandExecutor, TabCompleter
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        if (!sender.hasPermission("kpm.use"))
+        if (!sender.hasPermission("kpm.main"))
         {
-            sender.sendMessage(ChatColor.RED + "エラー： 権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
             return true;
         }
 
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "エラー： 不明なコマンドです！");
+            sender.sendMessage(ChatColor.RED + "E：不明なコマンドです！");
             sender.sendMessage(Messages.getCommandNotFoundMessage());
             return true;
         }
