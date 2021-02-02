@@ -16,6 +16,14 @@ public class CommandClean
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+
+        if (!sender.hasPermission("kpm.clean"))
+        {
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            return;
+        }
+
+
         if (DependencyTree.isErrors())
         {
             sender.sendMessage(Messages.getErrorMessage());
