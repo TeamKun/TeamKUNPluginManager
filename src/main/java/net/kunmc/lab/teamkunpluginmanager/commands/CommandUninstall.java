@@ -14,6 +14,7 @@ public class CommandUninstall
         {
             sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法： /kpm rm <name>");
+            return;
         }
 
         new BukkitRunnable()

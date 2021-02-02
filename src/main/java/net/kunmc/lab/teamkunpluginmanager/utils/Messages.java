@@ -17,7 +17,8 @@ public class Messages
                 "    " + commandMessageBuilder("update", "既知プラグインデータセットをアップデートします。") + "\n" +
                 "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n" +
                 "    " + commandMessageBuilder("info", "プラグインの情報を取得します。") + "\n" +
-                "    " + commandMessageBuilder("fix", "エラーを修復します。メッセージがあった場合のみ実行してください。") + "\n" +
+                "    " + commandMessageBuilder("fix", "エラーを修復します。\n" + ChatColor.YELLOW +
+                                                            "          メッセージがあった場合のみ実行してください。") + "\n" +
                 "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n";
     }
 
