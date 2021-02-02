@@ -15,7 +15,10 @@ public class Messages
                 "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
                 "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +
                 "    " + commandMessageBuilder("update", "既知プラグインデータセットをアップデートします。") + "\n" +
-                "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n";
+                "    " + commandMessageBuilder("status", "現在の状態を表示します。") + "\n" +
+                "    " + commandMessageBuilder("info", "プラグインの情報を取得します。") + "\n" +
+                "    " + commandMessageBuilder("fix", "エラーを修復します。メッセージがあった場合のみ実行してください。") + "\n" +
+                "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n";
     }
 
     public static String getErrorMessage()
