@@ -1,12 +1,14 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import javafx.util.Pair;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;
@@ -30,6 +32,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -363,8 +366,50 @@ public class PluginUtil
         // Will not work on processes started with the -XX:+DisableExplicitGC flag, but lets try it anyway.
         // This tries to get around the issue where Windows refuses to unlock jar files that were previously loaded into the JVM.
         System.gc();
-
-
     }
+
+    private static void load(Plugin plugin) {
+        load(plugin.getName());
+    }
+
+    public static void load(String name) {
+        File pluginDir = new File("plugins");
+        if (!pluginDir.isDirectory()) {
+            return;
+        }
+        File pluginFile = new File(pluginDir, name + ".jar");
+        if (!pluginFile.isFile()) {
+            File[] listFiles = pluginDir.listFiles();
+            if (listFiles == null)
+                return;
+            int length = listFiles.length;
+            int i = 0;
+            while (true) {
+                if (i < length) {
+                    File f = listFiles[i];
+                    if (f.getName().endsWith(".jar")) {
+                        try {
+                            if (TeamKunPluginManager.plugin.getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name)) {
+                                pluginFile = f;
+                                break;
+                            }
+                        } catch (InvalidDescriptionException ignored) {
+                            return;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+        try {
+            Plugin target = Bukkit.getPluginManager().loadPlugin(pluginFile);
+            Objects.requireNonNull(target).onLoad();
+            Bukkit.getPluginManager().enablePlugin(target);
+        } catch (InvalidDescriptionException | InvalidPluginException e2) {
+            e2.printStackTrace();
+        }
+    }
+
+
 
 }

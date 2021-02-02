@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CommandInfo
 {
@@ -71,10 +73,30 @@ public class CommandInfo
             sender.sendMessage(pi("ダウンロードサイズ", PluginUtil.getFileSizeString(file.length())));
         }
 
+        sender.sendMessage();
+        sender.sendMessage(dependTree("依存関係", plugin.getDescription().getDepend()));
+        sender.sendMessage(dependTree("被依存関係", info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.toList())));
 
         sender.sendMessage();
         sender.sendMessage(commandList(plugin.getDescription().getCommands()));
 
+    }
+
+    private static BaseComponent[] dependTree(String name, List<String> l)
+    {
+        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + name + "：");
+
+        if (l.size() == 0)
+            return builder.append(ChatColor.DARK_GREEN + "なし").create();
+
+        l.forEach(s -> {
+            ComponentBuilder cbi = new ComponentBuilder(" " + ChatColor.DARK_GREEN + s);
+            cbi.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(ChatColor.AQUA + "クリックして詳細を表示").create()));
+            cbi.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm info " + s));
+            builder.append(cbi.create());
+        });
+        return builder.create();
     }
 
     @SuppressWarnings("unchecked")

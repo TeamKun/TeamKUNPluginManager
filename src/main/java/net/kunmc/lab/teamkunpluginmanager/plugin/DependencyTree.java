@@ -85,7 +85,7 @@ public class DependencyTree
                 depend.depend = rdp.getString("DEPEND");
                 dps.add(depend);
             }
-            result.depends = rdps;
+            result.rdepends = rdps;
             rdp.close();
 
             return result;

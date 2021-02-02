@@ -195,7 +195,7 @@ public class Installer
             return new Pair<>("", "");
         }
 
-        if (com.rylinaux.plugman.util.PluginUtil.isIgnored(description.getName()))
+        if (TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
@@ -350,7 +350,7 @@ public class Installer
                         }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 1000L);
                     }
 
-                    com.rylinaux.plugman.util.PluginUtil.load(f.substring(0, f.length() - 4));
+                    PluginUtil.load(f.substring(0, f.length() - 4));
                 }
                 catch (Exception e)
                 {
