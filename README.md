@@ -19,7 +19,7 @@
 権限: kpm.install
 + remove
 プラグインをアンインストールします。
-  権限: kpm.remove
+  権限: kpm.uninstall
 + autoremove
 いらないプラグインを自動で削除します。
   権限: kpm.autoremove
