@@ -19,5 +19,5 @@ config:
 
 # 保護
 ignore:
-  - bStats
-  - TeamKunPluginManager #データベースが壊れた時用
+  - bStats               #削除しないでください
+  - TeamKunPluginManager #削除しないでください
