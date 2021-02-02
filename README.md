@@ -37,3 +37,12 @@
 ## 管理
 当プラグインは、SQLite3による、依存関係ツリーの構築によって実現しています。
 プラグインが有効になった時に高速で構築されます。
+
+## 謝辞
+当プラグインは、以下のオープンソース、API、サービスを使用しています。
++ [brettwooldridge/HikariCP](https://github.com/brettwooldridge/HikariCP)
++ [G00fY2/version-compare](https://github.com/G00fY2/version-compare)
++ [r-clancy/PlugMan](https://github.com/r-clancy/PlugMan)
++ [Apache Commons/Commons IO](https://commons.apache.org/proper/commons-io/)
+---
++ [JitPack](https://jitpack.io/)
