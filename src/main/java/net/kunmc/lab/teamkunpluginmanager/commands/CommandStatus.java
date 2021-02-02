@@ -8,6 +8,13 @@ public class CommandStatus
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+        if (!sender.hasPermission("kpm.status"))
+        {
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            return;
+        }
+
+
         sender.sendMessage(ChatColor.GREEN + "===現在の状態===");
 
         String statusError = Messages.getErrorMessage();
