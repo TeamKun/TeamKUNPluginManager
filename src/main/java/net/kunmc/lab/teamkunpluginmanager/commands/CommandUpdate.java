@@ -25,6 +25,13 @@ public class CommandUpdate
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+        if (sender != null && !sender.hasPermission("kpm.update"))
+        {
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            return;
+        }
+
+
         if (sender == null)
             sender = Installer.dummySender();
 

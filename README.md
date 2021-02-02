@@ -16,23 +16,31 @@
 #### サブコマンド
 + install
 リポジトリまたはURLからインストールします。
+権限: kpm.install
 + remove
 プラグインをアンインストールします。
+  権限: kpm.remove
 + autoremove
 いらないプラグインを自動で削除します。
+  権限: kpm.autoremove
 + update
 既知プラグインデータセットをアップデートします。
+  権限: kpm.update
 + status
 現在の状態を表示します。
+  権限: kpm.status
 + info
 プラグインの情報を取得します。
+  権限: kpm.info
 + fix
 エラーを修復します。メッセージがあった場合のみ実行してください。
+  権限: kpm.fix
 + clean
 不要になったプラグインデータを削除します。
+  権限: kpm.clean
 
 #### 権限
-+ kpm.use
++ kpm.use => すべてのサブコマンドの掌握権を持ちます。
 
 ## 管理
 当プラグインは、SQLite3による、依存関係ツリーの構築によって実現しています。

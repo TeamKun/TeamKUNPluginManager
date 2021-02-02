@@ -15,6 +15,12 @@ public class CommandAutoRemove
 {
     public static ArrayList<String> onCommand(CommandSender sender, String[] args)
     {
+        if (sender != null && !sender.hasPermission("kpm.autoremove"))
+        {
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            return null;
+        }
+
         ArrayList<String> rem = new ArrayList<>();
         if (sender == null)
             sender = Installer.dummySender();

@@ -10,10 +10,18 @@ public class CommandUninstall
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+        if (!sender.hasPermission("kpm.uninstall"))
+        {
+            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            return;
+        }
+
+
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法： /kpm rm <name>");
+            return;
         }
 
         new BukkitRunnable()
