@@ -10,7 +10,7 @@ website: https://kunmc.net/
 commands:
   kunpluginmanager:
     aliases: [pm, kpm, kunpm, kunmgmt] #devicemgmt.mscへの恨み
-    usage: "/kpm <install|remove> [Plugin name | URL | Repository Name]"
+    usage: "/kpm <i|rm|info|autoremove|clean|fix|status|update> [Plugin name | URL | Repository Name]"
 
 
 permissions:

@@ -1,11 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import javafx.util.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.PluginClassLoader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +27,22 @@ import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+    public static boolean isPluginLoaded(String plugin)
+    {
+        if (Bukkit.getPluginManager().getPlugin(plugin) == null)
+            return false;
+        return isPluginLoaded(Bukkit.getPluginManager().getPlugin(plugin));
+    }
+
+    public static boolean isPluginLoaded(Plugin plugin)
+    {
+        if (plugin == null)
+            return false;
+        if (!(plugin.getClass().getClassLoader() instanceof PluginClassLoader))
+            return false;
+        return ((PluginClassLoader) plugin.getClass().getClassLoader()).getPlugin() != null;
+    }
+
     public static String getFileSizeString(long bytes)
     {
         String suffix = "B";

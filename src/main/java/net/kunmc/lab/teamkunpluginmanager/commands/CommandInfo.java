@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
@@ -26,9 +27,10 @@ public class CommandInfo
         {
             sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法： /kpm info <プラグイン名>");
+            return;
         }
 
-        if (Bukkit.getPluginManager().getPlugin(args[0]) == null)
+        if (!PluginUtil.isPluginLoaded(args[0]))
         {
             sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
             return;
@@ -51,20 +53,25 @@ public class CommandInfo
 
         sender.sendMessage(pi("名前", info.name));
         sender.sendMessage(pi("作成者", String.join(", ",plugin.getDescription().getAuthors())));
-        sender.sendMessage(pi("状態", plugin.isEnabled()));
+        sender.sendMessage(pi("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
         sender.sendMessage(pi("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
+        sender.sendMessage(pi("保護", TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
+
         if (plugin.getDescription().getWebsite() != null)
             sender.sendMessage(pi("ウェブサイト： ", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
         if (plugin.getDescription().getPrefix() != null)
             sender.sendMessage(pi("ログ接頭辞", plugin.getDescription().getPrefix()));
         if (plugin.getDescription().getDescription() != null)
             sender.sendMessage(pi("概要", plugin.getDescription().getDescription()));
+
         if (file != null)
         {
             sender.sendMessage();
             sender.sendMessage(pi("ファイル名", file.getName()));
             sender.sendMessage(pi("ダウンロードサイズ", PluginUtil.getFileSizeString(file.length())));
         }
+
+
         sender.sendMessage();
         sender.sendMessage(commandList(plugin.getDescription().getCommands()));
 
@@ -92,7 +99,7 @@ public class CommandInfo
 
         command.forEach((s, obj) -> {
 
-            ComponentBuilder b = new ComponentBuilder(ChatColor.DARK_GREEN + s);
+            ComponentBuilder b = new ComponentBuilder(ChatColor.DARK_GREEN + " /" + s);
             b.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, commandHover(s, obj)));
             builder.append(b.create());
         });

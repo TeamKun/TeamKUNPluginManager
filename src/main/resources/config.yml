@@ -17,7 +17,7 @@ resolvePath: "./resolve.db"
 config:
   - "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
 
-# データフォルダを削除しないやつ
-ignoreClean:
+# 保護
+ignore:
   - bStats
   - TeamKunPluginManager #データベースが壊れた時用

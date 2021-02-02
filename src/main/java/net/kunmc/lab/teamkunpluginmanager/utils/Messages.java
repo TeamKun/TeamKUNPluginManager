@@ -35,7 +35,7 @@ public class Messages
 
         return ChatColor.BLUE + "以下のプラグインがインストールされていますが、もう必要とされていません:\n" +
                 ChatColor.GREEN + "  " + String.join(" ", rmble) + "\n" +
-                ChatColor.BOLD + "之を削除するには、'/kpm autoremove' を利用してください。";
+                ChatColor.BLUE + "これを削除するには、'/kpm autoremove' を利用してください。";
     }
 
     private static String commandMessageBuilder(String label, String help, String... aliases)

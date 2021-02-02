@@ -57,11 +57,20 @@ public class Installer
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin(info.name);
 
-        if (plugin == null)
+        if (!PluginUtil.isPluginLoaded(info.name))
         {
             sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
             return;
         }
+
+        if (TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
+        {
+            sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは保護されています。\n" +
+                    ChatColor.YELLOW + "   保護されているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
+            sender.sendMessage(ChatColor.RED + "E: システムが保護されました。");
+            return;
+        }
+
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを削除中...");
 
         com.rylinaux.plugman.util.PluginUtil.unload(plugin);
@@ -131,7 +140,7 @@ public class Installer
             if (StringUtils.split(atomicURL.get(), "/").length == 2)
                 atomicURL.set("https://github.com/" + atomicURL.get());
             else if (KnownPlugins.isKnown(atomicURL.get()))
-                atomicURL.set(KnownPlugins.getKnown(atomicURL.get()).url);
+                atomicURL.set(Objects.requireNonNull(KnownPlugins.getKnown(atomicURL.get())).url);
             else
             {
                 finalSender.sendMessage(ChatColor.RED + "E: " + atomicURL.get() + " が見つかりません。");
@@ -318,7 +327,7 @@ public class Installer
                 {
                     if (downloadResult.getKey())
                     {
-                        if (Bukkit.getPluginManager().getPlugin(description.getName()) == null)
+                        if (!PluginUtil.isPluginLoaded(description.getName()))
                         {
                             finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
                             success.set(false);
@@ -393,11 +402,11 @@ public class Installer
     {
         try
         {
-            List<String> bb = TeamKunPluginManager.config.getStringList("ignoreClean");
+            List<String> bb = TeamKunPluginManager.config.getStringList("ignore");
 
             return Arrays.stream(Objects.requireNonNull(new File("plugins/").listFiles(File::isDirectory)))
                     .map(File::getName)
-                    .filter(file -> Bukkit.getPluginManager().getPlugin(file) == null)
+                    .filter(file -> !PluginUtil.isPluginLoaded(file))
                     .filter(file -> !bb.contains(file))
                     .toArray(String[]::new);
 
@@ -421,10 +430,10 @@ public class Installer
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
 
-        if (plugin != null && plugin.isEnabled())
+        if (PluginUtil.isPluginLoaded(name))
             return false;  //プラグインがイネーブルの時、プロセスロックが掛かる
 
-        if (TeamKunPluginManager.config.getStringList("ignoreClean").stream()
+        if (TeamKunPluginManager.config.getStringList("ignore").stream()
                 .anyMatch(s -> s.equalsIgnoreCase(name))) // 保護されているかどうか
             return false;
 
