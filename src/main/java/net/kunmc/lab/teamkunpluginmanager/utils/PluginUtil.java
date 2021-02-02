@@ -36,8 +36,6 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -256,7 +254,6 @@ public class PluginUtil
         return desc;
     }
 
-
     /**
      * Unload a plugin.
      *
@@ -264,7 +261,8 @@ public class PluginUtil
      * @author https://dev.bukkit.org/projects/plugman
      */
     @SuppressWarnings("unchecked")
-    public static void unload(Plugin plugin) {
+    public static void unload(Plugin plugin)
+    {
 
         String name = plugin.getName();
 
@@ -280,7 +278,8 @@ public class PluginUtil
 
         pluginManager.disablePlugin(plugin);
 
-        try {
+        try
+        {
 
             Field pluginsField = Bukkit.getPluginManager().getClass().getDeclaredField("plugins");
             pluginsField.setAccessible(true);
@@ -290,11 +289,14 @@ public class PluginUtil
             lookupNamesField.setAccessible(true);
             names = (Map<String, Plugin>) lookupNamesField.get(pluginManager);
 
-            try {
+            try
+            {
                 Field listenersField = Bukkit.getPluginManager().getClass().getDeclaredField("listeners");
                 listenersField.setAccessible(true);
                 listeners = (Map<Event, SortedSet<RegisteredListener>>) listenersField.get(pluginManager);
-            } catch (Exception ignored) {
+            }
+            catch (Exception ignored)
+            {
             }
 
             Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
@@ -305,7 +307,9 @@ public class PluginUtil
             knownCommandsField.setAccessible(true);
             commands = (Map<String, Command>) knownCommandsField.get(commandMap);
 
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        }
+        catch (NoSuchFieldException | IllegalAccessException e)
+        {
             e.printStackTrace();
             return;
         }
@@ -318,18 +322,24 @@ public class PluginUtil
         if (names != null)
             names.remove(name);
 
-        if (listeners != null) {
-            for (SortedSet<RegisteredListener> set : listeners.values()) {
+        if (listeners != null)
+        {
+            for (SortedSet<RegisteredListener> set : listeners.values())
+            {
                 set.removeIf(value -> value.getPlugin() == plugin);
             }
         }
 
-        if (commandMap != null) {
-            for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext(); ) {
+        if (commandMap != null)
+        {
+            for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext(); )
+            {
                 Map.Entry<String, Command> entry = it.next();
-                if (entry.getValue() instanceof PluginCommand) {
+                if (entry.getValue() instanceof PluginCommand)
+                {
                     PluginCommand c = (PluginCommand) entry.getValue();
-                    if (c.getPlugin() == plugin) {
+                    if (c.getPlugin() == plugin)
+                    {
                         c.unregister(commandMap);
                         it.remove();
                     }
@@ -340,9 +350,11 @@ public class PluginUtil
         // Attempt to close the classloader to unlock any handles on the plugin's jar file.
         ClassLoader cl = plugin.getClass().getClassLoader();
 
-        if (cl instanceof URLClassLoader) {
+        if (cl instanceof URLClassLoader)
+        {
 
-            try {
+            try
+            {
 
                 Field pluginField = cl.getClass().getDeclaredField("plugin");
                 pluginField.setAccessible(true);
@@ -352,13 +364,18 @@ public class PluginUtil
                 pluginInitField.setAccessible(true);
                 pluginInitField.set(cl, null);
 
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored) {
+            }
+            catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored)
+            {
             }
 
-            try {
+            try
+            {
 
                 ((URLClassLoader) cl).close();
-            } catch (IOException ignored) {
+            }
+            catch (IOException ignored)
+            {
             }
 
         }
@@ -368,32 +385,43 @@ public class PluginUtil
         System.gc();
     }
 
-    private static void load(Plugin plugin) {
+    private static void load(Plugin plugin)
+    {
         load(plugin.getName());
     }
 
-    public static void load(String name) {
+    public static void load(String name)
+    {
         File pluginDir = new File("plugins");
-        if (!pluginDir.isDirectory()) {
+        if (!pluginDir.isDirectory())
+        {
             return;
         }
         File pluginFile = new File(pluginDir, name + ".jar");
-        if (!pluginFile.isFile()) {
+        if (!pluginFile.isFile())
+        {
             File[] listFiles = pluginDir.listFiles();
             if (listFiles == null)
                 return;
             int length = listFiles.length;
             int i = 0;
-            while (true) {
-                if (i < length) {
+            while (true)
+            {
+                if (i < length)
+                {
                     File f = listFiles[i];
-                    if (f.getName().endsWith(".jar")) {
-                        try {
-                            if (TeamKunPluginManager.plugin.getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name)) {
+                    if (f.getName().endsWith(".jar"))
+                    {
+                        try
+                        {
+                            if (TeamKunPluginManager.plugin.getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name))
+                            {
                                 pluginFile = f;
                                 break;
                             }
-                        } catch (InvalidDescriptionException ignored) {
+                        }
+                        catch (InvalidDescriptionException ignored)
+                        {
                             return;
                         }
                     }
@@ -401,15 +429,17 @@ public class PluginUtil
                 }
             }
         }
-        try {
+        try
+        {
             Plugin target = Bukkit.getPluginManager().loadPlugin(pluginFile);
             Objects.requireNonNull(target).onLoad();
             Bukkit.getPluginManager().enablePlugin(target);
-        } catch (InvalidDescriptionException | InvalidPluginException e2) {
+        }
+        catch (InvalidDescriptionException | InvalidPluginException e2)
+        {
             e2.printStackTrace();
         }
     }
-
 
 
 }

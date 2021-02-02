@@ -13,10 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +51,7 @@ public class CommandInfo
         File file = PluginUtil.getFile(plugin);
 
         sender.sendMessage(pi("名前", info.name));
-        sender.sendMessage(pi("作成者", String.join(", ",plugin.getDescription().getAuthors())));
+        sender.sendMessage(pi("作成者", String.join(", ", plugin.getDescription().getAuthors())));
         sender.sendMessage(pi("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
         sender.sendMessage(pi("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
         sender.sendMessage(pi("保護", TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
@@ -91,8 +88,10 @@ public class CommandInfo
 
         l.forEach(s -> {
             ComponentBuilder cbi = new ComponentBuilder(" " + ChatColor.DARK_GREEN + s);
-            cbi.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder(ChatColor.AQUA + "クリックして詳細を表示").create()));
+            cbi.event(new HoverEvent(
+                    HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(ChatColor.AQUA + "クリックして詳細を表示").create()
+            ));
             cbi.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm info " + s));
             builder.append(cbi.create());
         });
@@ -100,7 +99,7 @@ public class CommandInfo
     }
 
     @SuppressWarnings("unchecked")
-    private static BaseComponent[] commandHover(String name, Map<String,Object> command)
+    private static BaseComponent[] commandHover(String name, Map<String, Object> command)
     {
         ComponentBuilder builder = new ComponentBuilder(pi("コマンド名", name + "\n\n"));
 
@@ -131,12 +130,12 @@ public class CommandInfo
 
     private static String pi(String property, String value)
     {
-        return ChatColor.GREEN + property + ChatColor.WHITE + "： " +  ChatColor.DARK_GREEN + value;
+        return ChatColor.GREEN + property + ChatColor.WHITE + "： " + ChatColor.DARK_GREEN + value;
     }
 
     private static String pi(String property, boolean a)
     {
-        return ChatColor.GREEN + property + ChatColor.WHITE + "： " +  (a ? ChatColor.DARK_GREEN + "はい": ChatColor.RED + "いいえ");
+        return ChatColor.GREEN + property + ChatColor.WHITE + "： " + (a ? ChatColor.DARK_GREEN + "はい": ChatColor.RED + "いいえ");
     }
 
     private static String pi(String property, Object obj)
