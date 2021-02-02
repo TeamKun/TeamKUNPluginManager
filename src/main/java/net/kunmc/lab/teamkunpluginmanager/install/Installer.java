@@ -73,7 +73,7 @@ public class Installer
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを削除中...");
 
-        com.rylinaux.plugman.util.PluginUtil.unload(plugin);
+        PluginUtil.unload(plugin);
         CommandSender finalSender = sender;
         new BukkitRunnable()
         {
@@ -335,7 +335,7 @@ public class Installer
                         }
                         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(description.getName());
 
-                        com.rylinaux.plugman.util.PluginUtil.unload(plugin);
+                        PluginUtil.unload(plugin);
 
                         new BukkitRunnable()
                         {
