@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.install.Installer;
+import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import org.apache.commons.io.FileUtils;

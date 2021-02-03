@@ -1,12 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.install;
+package net.kunmc.lab.teamkunpluginmanager.plugin;
 
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.util.Pair;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
