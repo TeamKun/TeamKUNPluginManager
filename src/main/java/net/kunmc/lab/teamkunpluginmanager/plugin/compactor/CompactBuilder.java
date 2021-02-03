@@ -5,6 +5,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import org.apache.commons.lang.ArrayUtils;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 public class CompactBuilder
@@ -31,7 +33,7 @@ public class CompactBuilder
         return pc;
     }
 
-    public PluginCompacter addPlugin(String name)
+    public CompactBuilder addPlugin(String name)
     {
         rs = new BuildResult[]{};
 
@@ -54,17 +56,26 @@ public class CompactBuilder
         {
             String preUrl = "https://github.com/" + repoName;
             String url = GitHubURLBuilder.urlValidate(preUrl);
-
-
-            this.pre.downloadUrl = url;
-
+            if (!url.startsWith("ERROR "))
+                this.pre.downloadUrl = url;
+            else
+                rs = (BuildResult[]) ArrayUtils.add(rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
         }
         else
             rs = (BuildResult[]) ArrayUtils.add(rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
 
-
-
-        return pc;
+        return this;
     }
 
+    public CompactBuilder applyUrl(String url)
+    {
+        this.pre.downloadUrl = url;
+        return this;
+    }
+
+    public CompactBuilder applyConfig(LinkedHashMap<String, Object> map)
+    {
+        this.pre.config = map;
+        return this;
+    }
 }

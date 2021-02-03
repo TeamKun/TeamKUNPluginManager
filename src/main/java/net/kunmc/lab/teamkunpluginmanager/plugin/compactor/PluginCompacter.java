@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
+import com.google.gson.Gson;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
@@ -24,6 +25,11 @@ public class PluginCompacter
     public CompactBuilder builder()
     {
         return new CompactBuilder(this);
+    }
+
+    public String build()
+    {
+        return new Gson().toJson(this.container);
     }
 
 }
