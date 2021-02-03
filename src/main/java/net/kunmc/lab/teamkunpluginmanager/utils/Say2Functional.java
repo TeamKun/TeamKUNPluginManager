@@ -1,11 +1,14 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
@@ -19,6 +22,7 @@ public class Say2Functional implements Listener
 {
 
     private final HashMap<UUID, FunctionalEntry> say2func;
+    private FunctionalEntry consoleFunc;
 
     public Say2Functional(Plugin plugin)
     {
@@ -45,6 +49,26 @@ public class Say2Functional implements Listener
 
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onConsole(ServerCommandEvent e)
+    {
+        if (consoleFunc == null || !(e.getSender() instanceof ConsoleCommandSender) || !StringUtils.startsWithIgnoreCase(e.getCommand(), "kpm "))
+            return;
+
+        e.setCancelled(true);
+
+        FunctionalEntry entry = consoleFunc;
+        if (Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand().substring(4), s)))
+            return;
+        e.setCancelled(true);
+
+        consoleFunc = null;
+        entry.func.accept(Arrays.stream(entry.keywords)
+                .filter(s -> entry.matchType.apply(e.getCommand().substring(4), s))
+                .collect(Collectors.toList()).get(0));
+
+    }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent e)
     {
@@ -53,7 +77,10 @@ public class Say2Functional implements Listener
 
     public void add(UUID player, FunctionalEntry func)
     {
-        this.say2func.put(player, func);
+        if (player == null)
+            consoleFunc = func;
+        else
+            this.say2func.put(player, func);
     }
 
     public static class FunctionalEntry
