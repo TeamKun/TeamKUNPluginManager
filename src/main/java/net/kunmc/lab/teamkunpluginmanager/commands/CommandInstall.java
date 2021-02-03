@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.install.Installer;
+import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
