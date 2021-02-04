@@ -38,11 +38,17 @@ public class Say2Functional implements Listener
 
         FunctionalEntry entry = this.say2func.get(e.getPlayer().getUniqueId());
 
-        if (Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getMessage(), s)))
+        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getMessage(), s)))
             return;
         e.setCancelled(true);
 
         say2func.remove(e.getPlayer().getUniqueId());
+        if (entry.keywords == null)
+        {
+            entry.func.accept(e.getMessage());
+            return;
+        }
+
         entry.func.accept(Arrays.stream(entry.keywords).
                 filter(s -> entry.matchType.apply(e.getMessage(), s))
                 .collect(Collectors.toList()).get(0));
@@ -52,19 +58,25 @@ public class Say2Functional implements Listener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onConsole(ServerCommandEvent e)
     {
-        if (consoleFunc == null || !(e.getSender() instanceof ConsoleCommandSender) || !StringUtils.startsWithIgnoreCase(e.getCommand(), "/kpm "))
+        if (consoleFunc == null || !(e.getSender() instanceof ConsoleCommandSender))
             return;
 
         e.setCancelled(true);
 
         FunctionalEntry entry = consoleFunc;
-        if (Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand().substring(5), s)))
+        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand(), s)))
             return;
         e.setCancelled(true);
 
+        if (entry.keywords == null)
+        {
+            entry.func.accept(e.getCommand());
+            return;
+        }
+
         consoleFunc = null;
         entry.func.accept(Arrays.stream(entry.keywords)
-                .filter(s -> entry.matchType.apply(e.getCommand().substring(5), s))
+                .filter(s -> entry.matchType.apply(e.getCommand(), s))
                 .collect(Collectors.toList()).get(0));
 
     }
@@ -91,7 +103,10 @@ public class Say2Functional implements Listener
 
         public FunctionalEntry(BiFunction<String, String, Boolean> matchType, Consumer<String> runas, String... keywords)
         {
-            this.keywords = keywords;
+            if (keywords.length == 0)
+                this.keywords = null;
+            else
+                this.keywords = keywords;
             this.func = runas;
             this.matchType = matchType;
         }

@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +36,7 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -150,6 +152,7 @@ public class PluginUtil
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static ArrayList<String> mathLoadOrder(ArrayList<Pair<String, String>> files)
     {
         ArrayList<String> order = new ArrayList<>(); //読み込む順番
