@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +26,7 @@ public class DependencyTree
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.sqlite.JDBC");
 
-        config.setJdbcUrl("jdbc:sqlite:" + TeamKunPluginManager.plugin.getDataFolder().getPath() + fileName);
+        config.setJdbcUrl("jdbc:sqlite:" + new File(TeamKunPluginManager.plugin.getDataFolder().getPath(), fileName).getAbsolutePath());
 
         config.setMaximumPoolSize(20);
         config.setLeakDetectionThreshold(300000);

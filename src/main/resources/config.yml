@@ -6,10 +6,10 @@ gitHubName: TeamKUN
 oauth: ""
 
 #DBへのパス
-dependPath: "./depend.db"
+dependPath: "/depend.db"
 
 #名前解決へのパス
-resolvePath: "./resolve.db"
+resolvePath: "/resolve.db"
 
 # エイリアス定義ファイル
 # 形式： JSON

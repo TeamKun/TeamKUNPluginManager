@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import javafx.util.Pair;
 
 import javax.annotation.Nullable;
 import java.net.URL;
@@ -15,7 +14,7 @@ public class GitHubURLBuilder
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})/?((releases/?(tag/?)?)(?<tagName>.*)?)?$");
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})(?:/?(?:releases/?|tag/?)(?:(?<tagNameNF>[.a-zA-Z0-9\\-+]+)|(?:download/(?<tagName>[.a-zA-Z0-9\\-+]+)/(?<file>[^/]+?\\.jar)))?)?$");
 
     /**
      * GitHubのリリースへのAPIのURlをビルドします。
@@ -69,10 +68,19 @@ public class GitHubURLBuilder
         {
             String repository = matcher.group("repo");
             String tag = matcher.group("tagName");
+            String tagNF = matcher.group("tagNameNF");
+            String file = matcher.group("file");
+
+            if (file != null && !file.equals(""))
+                return urlName;
+
+
             if (!repository.equals(""))
                 repoName = repository;
             if (tag != null && !tag.equals(""))
                 tagName = tag;
+            else if (tagNF != null && !tagNF.equals(""))
+                tagName = tagNF;
         }
 
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
