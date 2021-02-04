@@ -52,19 +52,19 @@ public class Say2Functional implements Listener
     @EventHandler(priority = EventPriority.MONITOR)
     public void onConsole(ServerCommandEvent e)
     {
-        if (consoleFunc == null || !(e.getSender() instanceof ConsoleCommandSender) || !StringUtils.startsWithIgnoreCase(e.getCommand(), "kpm "))
+        if (consoleFunc == null || !(e.getSender() instanceof ConsoleCommandSender) || !StringUtils.startsWithIgnoreCase(e.getCommand(), "/kpm "))
             return;
 
         e.setCancelled(true);
 
         FunctionalEntry entry = consoleFunc;
-        if (Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand().substring(4), s)))
+        if (Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand().substring(5), s)))
             return;
         e.setCancelled(true);
 
         consoleFunc = null;
         entry.func.accept(Arrays.stream(entry.keywords)
-                .filter(s -> entry.matchType.apply(e.getCommand().substring(4), s))
+                .filter(s -> entry.matchType.apply(e.getCommand().substring(5), s))
                 .collect(Collectors.toList()).get(0));
 
     }
