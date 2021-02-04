@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import javafx.util.Pair;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
