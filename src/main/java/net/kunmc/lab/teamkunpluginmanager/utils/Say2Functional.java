@@ -68,13 +68,13 @@ public class Say2Functional implements Listener
             return;
         e.setCancelled(true);
 
+        consoleFunc = null;
         if (entry.keywords == null)
         {
             entry.func.accept(e.getCommand());
             return;
         }
 
-        consoleFunc = null;
         entry.func.accept(Arrays.stream(entry.keywords)
                 .filter(s -> entry.matchType.apply(e.getCommand(), s))
                 .collect(Collectors.toList()).get(0));
