@@ -173,9 +173,6 @@ public class CommandExport
 
         PluginCompacter pc = ppc.getCompacter();
 
-        /*sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを適正化中...");
-        pc.apply(pc.builder().build());
-*/
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "データを書き込み中...");
 
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMddhhmmss");
