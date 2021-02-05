@@ -1,14 +1,24 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.YamlConfigurationOptions;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class PluginPreCompacter
 {
     private final PluginCompacter compacter;
     private final ArrayList<String> resolveFailed;
-    private final ArrayList<CompactBuilder> builder;
+    private ArrayList<CompactBuilder> builder;
 
     public PluginPreCompacter()
     {
@@ -37,11 +47,14 @@ public class PluginPreCompacter
             if (builder == null)
                 return;
             builder.applyUrl(url);
+            resolveFailed.remove(name);
         });
     }
 
     public String nextUrlError()
     {
+        if (resolveFailed.size() == 0)
+            return null;
         return resolveFailed.get(resolveFailed.size() - 1);
     }
 
@@ -51,6 +64,7 @@ public class PluginPreCompacter
                 .forEach(s -> {
                     CompactBuilder builder = new CompactBuilder(this.compacter);
                     builder.addPlugin(s);
+                    builder.applyConfig(PluginUtil.getConfig(Bukkit.getPluginManager().getPlugin(s)));
                     this.builder.add(builder);
                     if (builder.isResolveFailed())
                         this.resolveFailed.add(s);
@@ -58,13 +72,34 @@ public class PluginPreCompacter
         applyAll();
     }
 
+    public boolean isErrors()
+    {
+        return this.nextUrlError() != null;
+    }
+
+    public PluginCompacter getCompacter()
+    {
+        return compacter;
+    }
+
     public void applyAll()
     {
-        this.builder.forEach(b -> {
+        this.builder = this.builder.parallelStream().filter(b -> {
             if (b.isResolveFailed())
-                return;
-            b.build();
-            builder.remove(b);
-        });
+                return true;
+            compacter.apply(b.build());
+            return false;
+        }).collect(Collectors.toCollection(ArrayList::new));
+
     }
+
+    public void bundleConfig(String name, Map<String, Object> config)
+    {
+        CompactBuilder builder = getBuilderFromName(name);
+        if (builder == null)
+            return;
+        builder.applyConfig(config);
+    }
+
+
 }

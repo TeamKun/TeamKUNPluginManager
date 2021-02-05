@@ -1,12 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class PluginContainer
 {
     public String pluginName;
     public String downloadUrl;
-    public LinkedHashMap<String, Object> config;
+    public Map<String, Object> config;
 
     public void clean()
     {

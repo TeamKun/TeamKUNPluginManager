@@ -7,6 +7,7 @@ import org.apache.commons.lang.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class CompactBuilder
@@ -25,12 +26,9 @@ public class CompactBuilder
         this.rs = new BuildResult[]{};
     }
 
-    public PluginCompacter build()
+    public PluginContainer build()
     {
-        pc.apply(pre);
-        pre.clean();
-
-        return pc;
+        return pre;
     }
 
     public PluginContainer getPre()
@@ -78,7 +76,7 @@ public class CompactBuilder
         return this;
     }
 
-    public CompactBuilder applyConfig(LinkedHashMap<String, Object> map)
+    public CompactBuilder applyConfig(Map<String, Object> map)
     {
         this.pre.config = map;
         return this;

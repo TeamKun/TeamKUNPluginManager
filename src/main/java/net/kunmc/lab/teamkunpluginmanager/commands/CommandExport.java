@@ -1,9 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import junit.framework.ComparisonCompactor;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginCompacter;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginPreCompacter;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
+import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,7 +15,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -20,6 +29,8 @@ import java.util.stream.Collectors;
 public class CommandExport
 {
     public static HashMap<UUID, PluginPreCompacter> session = new HashMap<>();
+
+    public static final UUID CONSOLE_UUID = UUID.randomUUID();
 
     public static void onCommand(CommandSender sender, String[] args)
     {
@@ -40,6 +51,14 @@ public class CommandExport
         {
             sender.sendMessage(Messages.getErrorMessage());
             sender.sendMessage(ChatColor.RED + "E: エラーが検出されたため、システムが保護されました。");
+            return;
+        }
+
+        UUID sessionKey = sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID;
+
+        if (session.containsKey(sessionKey))
+        {
+            sender.sendMessage(ChatColor.RED + "E: 既にエクスポートセッションが有効です。");
             return;
         }
 
@@ -85,20 +104,101 @@ public class CommandExport
             sender.sendMessage(ChatColor.GREEN + Arrays.stream(dependencies).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).collect(Collectors.joining(" ")));
         }
 
+
         validPlugin = (String[]) ArrayUtils.addAll(validPlugin, dependencies);
+
+        validPlugin = Arrays.stream(validPlugin).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).toArray(String[]::new);
 
         sender.sendMessage("プラグインをバンドル中...");
 
         PluginPreCompacter compacter = new PluginPreCompacter();
         compacter.addAll(validPlugin);
-        session.put(sender instanceof Player ? ((Player)sender).getUniqueId(): null, compacter);
-        fixError(sender instanceof Player ? ((Player)sender).getUniqueId(): null);
+        session.put(sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID, compacter);
+        fixError(sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID, null);
         //fixErrorに引き継ぎする
     }
 
-    public static void fixError(UUID uuid)
+    private static void fixError(UUID uuid, String name)
     {
+        PluginPreCompacter ppc = session.get(uuid);
+        if (ppc == null)
+            return;
+        if (!ppc.isErrors())
+        {
+            runExec(uuid, ppc);
+            return;
+        }
 
+        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(CONSOLE_UUID);
+
+        if (sender == null)
+        {
+            session.remove(uuid);
+            return;
+        }
+
+        final String target;
+        if (name == null)
+            target = ppc.nextUrlError();
+        else
+            target = name;
+
+
+        sender.sendMessage(ChatColor.RED + "プラグイン " +
+                ChatColor.GOLD + "'" + target + "' " +
+                ChatColor.RED + "のダウンロードURLの解決に失敗しました。");
+        if (uuid == CONSOLE_UUID)
+            sender.sendMessage(ChatColor.GREEN + "これを解決するには、コンソールでURLを発言してください。");
+        else
+            sender.sendMessage(ChatColor.GREEN + "これを解決するには、チャットでURLを発言してください。");
+
+        TeamKunPluginManager.functional.add(uuid == CONSOLE_UUID ? null: uuid, new Say2Functional.FunctionalEntry(String::startsWith, s -> {
+            ppc.fixUrl(target, s);
+            sender.sendMessage(ChatColor.GREEN + "プラグイン " +
+                    ChatColor.GOLD + "'" + target + "' " +
+                    ChatColor.GREEN + "のダウンロードURLを解決しました。");
+            fixError(uuid, ppc.nextUrlError());
+        }));
+    }
+
+    private static void runExec(UUID uuid, PluginPreCompacter ppc)
+    {
+        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(CONSOLE_UUID);
+
+        if (sender == null)
+        {
+            session.remove(uuid);
+            return;
+        }
+
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "情報を読み込み中...");
+
+        PluginCompacter pc =  ppc.getCompacter();
+
+        /*sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを適正化中...");
+        pc.apply(pc.builder().build());
+*/
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "データを書き込み中...");
+
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMddhhmmss");
+
+        File exportAs = new File(TeamKunPluginManager.plugin.getDataFolder(),
+                "exports/" + f.format(new Date()) + ".pmx");
+
+        String json = pc.build();
+        try
+        {
+            FileUtils.writeStringToFile(exportAs, json, StandardCharsets.UTF_8, false);
+        }
+        catch (IOException e)
+        {
+            sender.sendMessage(ChatColor.RED + "E: データの書き込みに失敗しました。");
+            session.remove(uuid);
+            e.printStackTrace();
+            return;
+        }
+        sender.sendMessage(ChatColor.GREEN + "S: プラグインのエクスポートに成功しました。");
+        session.remove(uuid);
     }
 
     public static boolean containsIgnoreCase(String[] target, String maf)

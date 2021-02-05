@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -16,6 +17,7 @@ import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
+import javax.management.monitor.StringMonitor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -42,6 +45,45 @@ import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> ms2Map(MemorySection ms)
+    {
+        try
+        {
+            Field field = MemorySection.class.getDeclaredField("map");
+            field.setAccessible(true);
+
+            LinkedHashMap<String, Object> obj = (LinkedHashMap<String, Object>) field.get(ms);
+
+            //LinkedHashMap<String, Object> tmp = obj;
+
+            obj.forEach((k, v) -> {
+                if (v instanceof MemorySection)
+                    obj.put(k, ms2Map((MemorySection) v));
+            });
+
+            return obj;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new LinkedHashMap<>();
+        }
+    }
+
+    public static Map<String, Object> getConfig(Plugin plugin)
+    {
+        if (plugin == null)
+            return new LinkedHashMap<>();
+
+        if (!new File(plugin.getDataFolder(), "config.yml").exists())
+            return new LinkedHashMap<>();
+
+        MemorySection section = plugin.getConfig();
+
+        return ms2Map(section);
+    }
+
     public static boolean isPluginLoaded(String plugin)
     {
         if (Bukkit.getPluginManager().getPlugin(plugin) == null)
