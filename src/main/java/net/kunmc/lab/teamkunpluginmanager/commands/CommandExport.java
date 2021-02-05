@@ -107,7 +107,7 @@ public class CommandExport
 
         validPlugin = Arrays.stream(validPlugin).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).toArray(String[]::new);
 
-        sender.sendMessage("プラグインをバンドル中...");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインをバンドル中...");
 
         PluginPreCompacter compacter = new PluginPreCompacter();
         compacter.addAll(validPlugin);
@@ -161,7 +161,7 @@ public class CommandExport
 
     private static void runExec(UUID uuid, PluginPreCompacter ppc)
     {
-        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(CONSOLE_UUID);
+        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(uuid);
 
         if (sender == null)
         {
