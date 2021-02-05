@@ -10,7 +10,7 @@ public class CommandFix
     {
         if (!sender.hasPermission("kpm.fix"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 

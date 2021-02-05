@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -85,6 +84,26 @@ public class URLUtils
             e.printStackTrace();
             return new Pair<>(false, "");
 
+        }
+    }
+
+    public static int fetch(String urlString, String method)
+    {
+        try
+        {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(method);
+            if (url.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+            connection.setRequestProperty("User-Agent", "TeamKUN Client");
+            connection.connect();
+            return connection.getResponseCode();
+
+        }
+        catch (Exception e)
+        {
+            return 500;
         }
     }
 }

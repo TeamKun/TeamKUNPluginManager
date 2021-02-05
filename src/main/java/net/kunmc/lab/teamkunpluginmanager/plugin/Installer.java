@@ -1,11 +1,9 @@
-package net.kunmc.lab.teamkunpluginmanager.install;
+package net.kunmc.lab.teamkunpluginmanager.plugin;
 
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
@@ -219,7 +217,7 @@ public class Installer
                 }
                 catch (Exception e)
                 {
-                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                 }
             }
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -294,7 +292,7 @@ public class Installer
                     }
                     catch (Exception e)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                     }
                 }
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -361,7 +359,7 @@ public class Installer
                     }
                     catch (Exception ex)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                     }
                     e.printStackTrace();
                     success.set(false);

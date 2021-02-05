@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.install.Installer;
+import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import org.apache.commons.io.FileUtils;
@@ -27,7 +27,7 @@ public class CommandUpdate
     {
         if (sender != null && !sender.hasPermission("kpm.update"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 
@@ -110,7 +110,7 @@ public class CommandUpdate
                             }
                         });
 
-                finalSender.sendMessage(ChatColor.GREEN + "項目数： " + atomicInteger.get());
+                finalSender.sendMessage(ChatColor.GREEN + "項目数: " + atomicInteger.get());
                 finalSender.sendMessage(ChatColor.GREEN + "S: 既知プラグインデータセットのアップデートに成功しました。");
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);

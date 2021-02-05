@@ -12,7 +12,6 @@ public class Pair<L, R>
         this.right = right;
     }
 
-
     public L getKey()
     {
         return left;
