@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -192,18 +193,21 @@ public class PluginUtil
     }
 
     @SuppressWarnings("unchecked")
-    public static ArrayList<String> mathLoadOrder(ArrayList<Pair<String, String>> files)
+    public static ArrayList<InstallResult> mathLoadOrder(ArrayList<InstallResult> files)
     {
-        ArrayList<String> order = new ArrayList<>(); //読み込む順番
-        ArrayList<Pair<String, String>> want = (ArrayList<Pair<String, String>>) files.clone(); //処理待ち
+        ArrayList<InstallResult> order = new ArrayList<>(); //読み込む順番
+        ArrayList<InstallResult> want = (ArrayList<InstallResult>) files.clone(); //処理待ち
         files.stream().parallel()
                 .forEach(stringStringPair -> {
                     if (!want.contains(stringStringPair)) //既に処理されていた(処理待ちになかった)場合は無視
                         return;
+                    if (!stringStringPair.success)
+                        return;
+
                     PluginDescriptionFile desc; //dependとか
                     try
                     {
-                        desc = loadDescription(new File("plugins/" + stringStringPair.getKey())); //読み込み順番を取得
+                        desc = loadDescription(new File("plugins/" + stringStringPair.fileName)); //読み込み順番を取得
                     }
                     catch (Exception e)
                     {
@@ -215,7 +219,7 @@ public class PluginUtil
                             .forEach(pluginName -> {
                                 if (containValue(pluginName, want)) //dependに含まれていたものがインスコ対象ににあった
                                 {
-                                    order.add(getContainsEntry(pluginName, want).getKey()); //読み込み指示
+                                    order.add(getContainsEntry(pluginName, want)); //読み込み指示
                                     want.remove(getContainsEntry(pluginName, want)); //後始末
                                 }
                             });
@@ -224,34 +228,35 @@ public class PluginUtil
                             .forEach(pluginName -> {
                                 if (containValue(pluginName, want)) //softDependに含まれていたものがインスコ対象ににあった
                                 {
-                                    order.add(getContainsEntry(pluginName, want).getKey()); //読み込み指示
+                                    order.add(getContainsEntry(pluginName, want)); //読み込み指示
                                     want.remove(getContainsEntry(pluginName, want)); //後始末
                                 }
                             });
                 });
 
         want.forEach(stringStringPair -> {
-            if (order.contains(stringStringPair.getKey()))
+            if (order.contains(stringStringPair.fileName))
                 return;
-            order.add(stringStringPair.getKey()); //後回しプラグインの指示
+            order.add(stringStringPair); //後回しプラグインの指示
         });
         return order;
     }
 
-    private static Pair<String, String> getContainsEntry(String contain, ArrayList<Pair<String, String>> keys)
+    private static InstallResult getContainsEntry(String contain, ArrayList<InstallResult> keys)
     {
-        AtomicReference<Pair<String, String>> ab = new AtomicReference<>();
-        keys.stream()
-                .filter(stringStringPair -> stringStringPair.getValue().equals(contain))
-                .forEach(ab::set);
-        return ab.get();
+        for(InstallResult p: keys)
+        {
+            if (p.pluginName.equals(contain))
+                return p;
+        }
+        return null;
     }
 
-    private static boolean containValue(String contain, ArrayList<Pair<String, String>> keys)
+    private static boolean containValue(String contain, ArrayList<InstallResult> keys)
     {
         AtomicBoolean ab = new AtomicBoolean(false);
         keys.stream()
-                .filter(stringStringPair -> stringStringPair.getValue().equals(contain))
+                .filter(stringStringPair -> stringStringPair.pluginName.equals(contain))
                 .forEach(stringStringPair -> ab.set(true));
         return ab.get();
     }
@@ -468,6 +473,8 @@ public class PluginUtil
                     }
                     i++;
                 }
+                else
+                    break;
             }
         }
         try

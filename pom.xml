@@ -110,5 +110,6 @@
             <artifactId>smart-invs</artifactId>
             <version>1.2.7</version>
         </dependency>
+
     </dependencies>
 </project>

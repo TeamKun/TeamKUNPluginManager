@@ -12,7 +12,7 @@
 + kunpm
 + kunmgmt <= devicemgmt.mscへの恨み
 #### 使用法
-+ /kpm <i|rm|info|autoremove|clean|fix|status|update> [Plugin download url|GitHub repository url]
++ /kpm <i|rm|info|autoremove|clean|fix|status|update|import|export> [Plugin download url|GitHub repository url]
 #### サブコマンド
 + install
 リポジトリまたはURLからインストールします。
@@ -38,6 +38,12 @@
 + clean
 不要になったプラグインデータを削除します。
   権限: kpm.clean
++ export
+プラグインをエクスポートします。
+  権限: kpm.export
++ import
+プラグインをインポートします。
+  権限: kpm.import
 
 #### 権限
 + kpm.use => すべてのサブコマンドの掌握権を持ちます。

@@ -30,7 +30,7 @@ public class CommandInstall
             @Override
             public void run()
             {
-                Installer.install(sender, args[0], false);
+                Installer.install(sender, args[0], false, false, false);
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }

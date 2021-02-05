@@ -20,7 +20,8 @@ public class Messages
                 "    " + commandMessageBuilder("fix", "エラーを修復します。\n" + ChatColor.YELLOW +
                 "          メッセージがあった場合のみ実行してください。") + "\n" +
                 "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n" +
-                "    " + commandMessageBuilder("export", "プラグインをエクスポートします。") + "\n";
+                "    " + commandMessageBuilder("export", "プラグインをエクスポートします。") + "\n" +
+                "    " + commandMessageBuilder("import", "エクスポートしたファイルからインポートします。") + "\n";
     }
 
     public static String getErrorMessage()

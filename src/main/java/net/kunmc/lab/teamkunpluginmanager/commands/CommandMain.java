@@ -70,6 +70,9 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "export":
                 CommandExport.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "import":
+                CommandImport.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
@@ -92,7 +95,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "export"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "export", "import"));
                 break;
             case 2:
                 String cmd = args[0];
