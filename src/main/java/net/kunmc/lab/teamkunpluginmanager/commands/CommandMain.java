@@ -87,10 +87,12 @@ public class CommandMain implements CommandExecutor, TabCompleter
         if (!sender.hasPermission("kpm.use"))
             return new ArrayList<>();
 
+
+
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "export"));
                 break;
             case 2:
                 String cmd = args[0];
@@ -111,6 +113,12 @@ public class CommandMain implements CommandExecutor, TabCompleter
                     completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
                     completes.add("all");
                 }
+        }
+
+        if (args.length > 1 && args[0].equals("export"))
+        {
+            completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+            completes.add("all");
         }
 
         ArrayList<String> asCopy = new ArrayList<>();

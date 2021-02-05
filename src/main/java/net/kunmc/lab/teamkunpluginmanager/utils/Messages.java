@@ -19,7 +19,8 @@ public class Messages
                 "    " + commandMessageBuilder("info", "プラグインの情報を取得します。") + "\n" +
                 "    " + commandMessageBuilder("fix", "エラーを修復します。\n" + ChatColor.YELLOW +
                 "          メッセージがあった場合のみ実行してください。") + "\n" +
-                "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n";
+                "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n" +
+                "    " + commandMessageBuilder("export", "プラグインをエクスポートします。") + "\n";
     }
 
     public static String getErrorMessage()
