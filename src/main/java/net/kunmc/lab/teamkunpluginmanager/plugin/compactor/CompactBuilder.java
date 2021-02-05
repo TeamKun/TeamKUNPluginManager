@@ -33,6 +33,11 @@ public class CompactBuilder
         return pc;
     }
 
+    public PluginContainer getPre()
+    {
+        return pre;
+    }
+
     public CompactBuilder addPlugin(String name)
     {
         rs = new BuildResult[]{};
@@ -77,5 +82,10 @@ public class CompactBuilder
     {
         this.pre.config = map;
         return this;
+    }
+
+    public boolean isResolveFailed()
+    {
+        return ArrayUtils.contains(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
     }
 }

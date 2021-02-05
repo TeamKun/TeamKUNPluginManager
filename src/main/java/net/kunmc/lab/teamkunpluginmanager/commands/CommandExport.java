@@ -1,33 +1,45 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info.Depend;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
+import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginCompacter;
+import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginPreCompacter;
+import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CommandExport
 {
+    public static HashMap<UUID, PluginPreCompacter> session = new HashMap<>();
+
     public static void onCommand(CommandSender sender, String[] args)
     {
         if (!sender.hasPermission("kpm.export"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 
-
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
-            sender.sendMessage(ChatColor.RED + "使用法： /kpm export <all|プラグイン名> [プラグイン名2]...");
+            sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
+            sender.sendMessage(ChatColor.RED + "使用法: /kpm export <all|プラグイン名> [プラグイン名2]...");
+            return;
+        }
+
+        if (DependencyTree.isErrors())
+        {
+            sender.sendMessage(Messages.getErrorMessage());
+            sender.sendMessage(ChatColor.RED + "E: エラーが検出されたため、システムが保護されました。");
             return;
         }
 
@@ -35,9 +47,9 @@ public class CommandExport
 
         args = Arrays.stream(args).parallel().map(String::toLowerCase).toArray(String[]::new);
 
-        Plugin[] validPlugin;
+        String[] validPlugin;
         if (args[0].equals("all"))
-            validPlugin = Bukkit.getPluginManager().getPlugins();
+            validPlugin = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).toArray(String[]::new);
         else
         {
             String[] finalArgs = args;
@@ -45,8 +57,7 @@ public class CommandExport
                     .map(Plugin::getName)
                     .map(String::toLowerCase)
                     .filter(name -> containsIgnoreCase(finalArgs, name))
-                    .map(Bukkit.getPluginManager()::getPlugin)
-                    .toArray(Plugin[]::new);
+                    .toArray(String[]::new);
         }
 
         if (validPlugin.length == 0)
@@ -55,21 +66,38 @@ public class CommandExport
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "この操作で、以下のプラグインがエクスポートされます：");
-        sender.sendMessage(ChatColor.GREEN + Arrays.stream(validPlugin).map(Plugin::getName).collect(Collectors.joining(" ")));
+        sender.sendMessage(ChatColor.GREEN + "この操作で、以下のプラグインがエクスポートされます: ");
+        sender.sendMessage(ChatColor.GREEN + Arrays.stream(validPlugin).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).collect(Collectors.joining(" ")));
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
 
-        Plugin[] dependencies = Arrays.stream(validPlugin)
+        String[] finalValidPlugin = validPlugin;
+        String[] dependencies = Arrays.stream(validPlugin)
                 .flatMap(plugin -> DependencyTree.getInfo(plugin, false).depends.stream())
                 .map(depend -> depend.depend.toLowerCase())
-                .filter(s -> !containsIgnoreCase(Arrays.stream(validPlugin).map(plugin -> plugin.getName().toLowerCase()).toArray(String[]::new), s))
+                .filter(s -> !containsIgnoreCase(Arrays.stream(finalValidPlugin).map(String::toLowerCase).toArray(String[]::new), s))
                 .distinct()
-                .map(Bukkit.getPluginManager()::getPlugin)
-                .toArray(Plugin[]::new);
+                .toArray(String[]::new);
 
-        sender.sendMessage(ChatColor.GREEN + "また、追加で以下のプラグインがエクスポートされます。");
-        sender.sendMessage(ChatColor.GREEN + Arrays.stream(dependencies).map(Plugin::getName).collect(Collectors.joining(" ")));
+        if (dependencies.length != 0)
+        {
+            sender.sendMessage(ChatColor.GREEN + "また、追加で以下のプラグインがエクスポートされます。");
+            sender.sendMessage(ChatColor.GREEN + Arrays.stream(dependencies).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).collect(Collectors.joining(" ")));
+        }
+
+        validPlugin = (String[]) ArrayUtils.addAll(validPlugin, dependencies);
+
+        sender.sendMessage("プラグインをバンドル中...");
+
+        PluginPreCompacter compacter = new PluginPreCompacter();
+        compacter.addAll(validPlugin);
+        session.put(sender instanceof Player ? ((Player)sender).getUniqueId(): null, compacter);
+        fixError(sender instanceof Player ? ((Player)sender).getUniqueId(): null);
+        //fixErrorに引き継ぎする
+    }
+
+    public static void fixError(UUID uuid)
+    {
 
     }
 

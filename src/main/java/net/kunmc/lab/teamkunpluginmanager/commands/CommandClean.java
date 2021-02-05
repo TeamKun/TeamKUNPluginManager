@@ -19,7 +19,7 @@ public class CommandClean
 
         if (!sender.hasPermission("kpm.clean"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 
@@ -53,7 +53,7 @@ public class CommandClean
 
                 if (args.length == 2 && !args[1].equals("no-preserve") && !(sender instanceof Player))
                 {
-                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください： /kpm clean " + args[0] + " no-preserve");
+                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean " + args[0] + " no-preserve");
                     return;
                 }
 
@@ -96,11 +96,11 @@ public class CommandClean
 
                 break;
             case 0:
-                sender.sendMessage(ChatColor.GREEN + "この操作で、以下の" + removable.length + "つのプラグインデータが削除されます： ");
+                sender.sendMessage(ChatColor.GREEN + "この操作で、以下の" + removable.length + "つのプラグインデータが削除されます: ");
                 sender.sendMessage(ChatColor.AQUA + String.join(", ", removable));
                 if (!(sender instanceof Player))
                 {
-                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください： /kpm clean all no-preserve");
+                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean all no-preserve");
                     return;
                 }
                 sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +

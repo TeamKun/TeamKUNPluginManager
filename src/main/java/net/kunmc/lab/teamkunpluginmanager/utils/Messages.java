@@ -10,7 +10,7 @@ public class Messages
     public static String getCommandNotFoundMessage()
     {
 
-        return ChatColor.RED + "使用可能なコマンド： \n" +
+        return ChatColor.RED + "使用可能なコマンド: \n" +
                 "    " + commandMessageBuilder("install", "リポジトリまたはURLからインストールします。", "i") + "\n" +
                 "    " + commandMessageBuilder("remove", "プラグインをアンインストールします。", "rm", "uninstall") + "\n" +
                 "    " + commandMessageBuilder("autoremove", "いらないプラグインを自動で削除します。") + "\n" +

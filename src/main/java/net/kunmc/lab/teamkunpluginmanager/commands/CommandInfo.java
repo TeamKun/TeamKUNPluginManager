@@ -24,15 +24,15 @@ public class CommandInfo
     {
         if (!sender.hasPermission("kpm.info"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 
 
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "エラー： 引数が不足しています！");
-            sender.sendMessage(ChatColor.RED + "使用法： /kpm info <プラグイン名>");
+            sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
+            sender.sendMessage(ChatColor.RED + "使用法: /kpm info <プラグイン名>");
             return;
         }
 
@@ -88,7 +88,7 @@ public class CommandInfo
 
     private static BaseComponent[] dependTree(String name, List<String> l)
     {
-        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + name + "：");
+        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + name + ": ");
 
         if (l.size() == 0)
             return builder.append(ChatColor.DARK_GREEN + "なし").create();
@@ -123,7 +123,7 @@ public class CommandInfo
 
     private static BaseComponent[] commandList(Map<String, Map<String, Object>> command)
     {
-        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + "コマンド： ");
+        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + "コマンド: ");
 
         command.forEach((s, obj) -> {
 
@@ -137,16 +137,16 @@ public class CommandInfo
 
     private static String pi(String property, String value)
     {
-        return ChatColor.GREEN + property + ChatColor.WHITE + "： " + ChatColor.DARK_GREEN + value;
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + ChatColor.DARK_GREEN + value;
     }
 
     private static String pi(String property, boolean a)
     {
-        return ChatColor.GREEN + property + ChatColor.WHITE + "： " + (a ? ChatColor.DARK_GREEN + "はい": ChatColor.RED + "いいえ");
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + (a ? ChatColor.DARK_GREEN + "はい": ChatColor.RED + "いいえ");
     }
 
     private static String pi(String property, Object obj)
     {
-        return ChatColor.GREEN + property + ChatColor.WHITE + "： " + obj.toString();
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + obj.toString();
     }
 }

@@ -217,7 +217,7 @@ public class Installer
                 }
                 catch (Exception e)
                 {
-                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                 }
             }
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -292,7 +292,7 @@ public class Installer
                     }
                     catch (Exception e)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                     }
                 }
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -359,7 +359,7 @@ public class Installer
                     }
                     catch (Exception ex)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました： " + downloadResult.getValue());
+                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                     }
                     e.printStackTrace();
                     success.set(false);

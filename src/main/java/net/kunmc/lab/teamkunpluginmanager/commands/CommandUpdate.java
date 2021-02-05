@@ -27,7 +27,7 @@ public class CommandUpdate
     {
         if (sender != null && !sender.hasPermission("kpm.update"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
 
@@ -110,7 +110,7 @@ public class CommandUpdate
                             }
                         });
 
-                finalSender.sendMessage(ChatColor.GREEN + "項目数： " + atomicInteger.get());
+                finalSender.sendMessage(ChatColor.GREEN + "項目数: " + atomicInteger.get());
                 finalSender.sendMessage(ChatColor.GREEN + "S: 既知プラグインデータセットのアップデートに成功しました。");
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);

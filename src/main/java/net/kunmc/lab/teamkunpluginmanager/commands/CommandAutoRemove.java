@@ -17,7 +17,7 @@ public class CommandAutoRemove
     {
         if (sender != null && !sender.hasPermission("kpm.autoremove"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return null;
         }
 

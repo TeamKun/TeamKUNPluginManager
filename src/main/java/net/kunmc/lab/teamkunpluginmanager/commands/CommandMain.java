@@ -23,13 +23,13 @@ public class CommandMain implements CommandExecutor, TabCompleter
     {
         if (!sender.hasPermission("kpm.main"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return true;
         }
 
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "E：不明なコマンドです！");
+            sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
             sender.sendMessage(Messages.getCommandNotFoundMessage());
             return true;
         }
@@ -71,7 +71,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
                 CommandExport.onCommand(sender, argsList.toArray(new String[0]));
                 break;
             default:
-                sender.sendMessage(ChatColor.RED + "エラー： 不明なコマンドです！");
+                sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
                 break;
         }
