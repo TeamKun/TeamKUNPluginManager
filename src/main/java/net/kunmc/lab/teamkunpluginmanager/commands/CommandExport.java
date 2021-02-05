@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
-import junit.framework.ComparisonCompactor;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginCompacter;
@@ -28,9 +27,8 @@ import java.util.stream.Collectors;
 
 public class CommandExport
 {
-    public static HashMap<UUID, PluginPreCompacter> session = new HashMap<>();
-
     public static final UUID CONSOLE_UUID = UUID.randomUUID();
+    public static HashMap<UUID, PluginPreCompacter> session = new HashMap<>();
 
     public static void onCommand(CommandSender sender, String[] args)
     {
@@ -54,7 +52,7 @@ public class CommandExport
             return;
         }
 
-        UUID sessionKey = sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID;
+        UUID sessionKey = sender instanceof Player ? ((Player) sender).getUniqueId(): CONSOLE_UUID;
 
         if (session.containsKey(sessionKey))
         {
@@ -113,8 +111,8 @@ public class CommandExport
 
         PluginPreCompacter compacter = new PluginPreCompacter();
         compacter.addAll(validPlugin);
-        session.put(sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID, compacter);
-        fixError(sender instanceof Player ? ((Player)sender).getUniqueId(): CONSOLE_UUID, null);
+        session.put(sender instanceof Player ? ((Player) sender).getUniqueId(): CONSOLE_UUID, compacter);
+        fixError(sender instanceof Player ? ((Player) sender).getUniqueId(): CONSOLE_UUID, null);
         //fixErrorに引き継ぎする
     }
 
@@ -173,7 +171,7 @@ public class CommandExport
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "情報を読み込み中...");
 
-        PluginCompacter pc =  ppc.getCompacter();
+        PluginCompacter pc = ppc.getCompacter();
 
         /*sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインを適正化中...");
         pc.apply(pc.builder().build());
@@ -182,8 +180,10 @@ public class CommandExport
 
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMddhhmmss");
 
-        File exportAs = new File(TeamKunPluginManager.plugin.getDataFolder(),
-                "exports/" + f.format(new Date()) + ".pmx");
+        File exportAs = new File(
+                TeamKunPluginManager.plugin.getDataFolder(),
+                "exports/" + f.format(new Date()) + ".pmx"
+        );
 
         String json = pc.build();
         try

@@ -1,14 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class PluginCompacter
 {

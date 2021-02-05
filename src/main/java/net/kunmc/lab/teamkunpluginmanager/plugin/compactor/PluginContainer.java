@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class PluginContainer

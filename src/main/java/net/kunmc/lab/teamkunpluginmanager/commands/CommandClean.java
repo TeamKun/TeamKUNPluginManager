@@ -1,8 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import org.apache.commons.lang.StringUtils;

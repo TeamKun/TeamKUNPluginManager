@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
