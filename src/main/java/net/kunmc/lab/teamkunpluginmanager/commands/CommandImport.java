@@ -32,6 +32,11 @@ public class CommandImport
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+        if (!sender.hasPermission("kpm.import"))
+        {
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
+            return;
+        }
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");

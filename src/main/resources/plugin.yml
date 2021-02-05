@@ -25,6 +25,8 @@ permissions:
       kpm.fix: true
       kpm.status: true
       kpm.update: true
+      kpm.export: true
+      kpm.import: true
   kpm.install:
     description: "プラグインをインストールできます。"
   kpm.uninstall:
@@ -43,3 +45,5 @@ permissions:
     description: "エイリアス定義データベースを更新します。"
   kpm.export:
     description: "プラグインとデータをエクスポートします。"
+  kpm.import:
+    description: "プラグインとデータをインポートします。"
