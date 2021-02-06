@@ -127,7 +127,7 @@ public class CommandExport
             return;
         }
 
-        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(CONSOLE_UUID);
+        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(uuid);
 
         if (sender == null)
         {
