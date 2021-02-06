@@ -8,13 +8,11 @@ import org.apache.commons.lang.ArrayUtils;
 import java.util.Map;
 import java.util.Objects;
 
-public class CompactBuilder
+public class CompactBuilder implements Cloneable
 {
 
-    private final PluginContainer pre;
-
     private final PluginCompacter pc;
-
+    private PluginContainer pre;
     private BuildResult[] rs;
 
     public CompactBuilder(PluginCompacter comp)
@@ -22,6 +20,22 @@ public class CompactBuilder
         this.pre = new PluginContainer();
         this.pc = comp;
         this.rs = new BuildResult[]{};
+    }
+
+    @Override
+    protected Object clone()
+    {
+        CompactBuilder builder = null;
+        try
+        {
+            builder = (CompactBuilder) super.clone();
+            builder.pre = (PluginContainer) this.pre.clone();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return builder;
     }
 
     public PluginContainer build()
@@ -71,6 +85,7 @@ public class CompactBuilder
     public CompactBuilder applyUrl(String url)
     {
         this.pre.downloadUrl = url;
+        this.rs = (BuildResult[]) ArrayUtils.removeElement(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
         return this;
     }
 

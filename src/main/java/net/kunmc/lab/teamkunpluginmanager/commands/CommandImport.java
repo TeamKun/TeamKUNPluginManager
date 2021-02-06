@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -63,7 +62,9 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GOLD + "ファイルの読み込み中...");
 
-        LinkedList<PluginContainer> container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>(){}.getType());
+        LinkedList<PluginContainer> container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+        {
+        }.getType());
 
         ArrayList<InstallResult> results = new ArrayList<>();
 
@@ -81,6 +82,28 @@ public class CommandImport
         ArrayList<InstallResult> loadOrder = PluginUtil.mathLoadOrder(results);
 
         TeamKunPluginManager.enableBuildTree = false;
+
+        sender.sendMessage(ChatColor.GOLD + "設定を書き込み中...");
+
+        container.stream().parallel().forEach(pluginContainer -> {
+            if (pluginContainer.config == null || pluginContainer.config.size() == 0)
+                return;
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginContainer.pluginName);
+            if (!PluginUtil.isPluginLoaded(plugin))
+                return;
+
+
+            try
+            {
+                FileUtils.writeStringToFile(new File(plugin.getDataFolder(), "config.yml"), new Yaml().dump(pluginContainer.config), StandardCharsets.UTF_8, false);
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                sender.sendMessage(ChatColor.RED + "プラグイン '" + pluginContainer.pluginName + "' の設定の保存に失敗しました。");
+            }
+        });
 
         loadOrder.forEach(installResult -> {
             if (!installResult.success)
@@ -112,29 +135,6 @@ public class CommandImport
             DependencyTree.crawlPlugin(pluginContainer.pluginName);
         });
 
-        sender.sendMessage(ChatColor.GOLD + "設定を書き込み中...");
-
-        container.stream().parallel().forEach(pluginContainer -> {
-            if (pluginContainer.config == null || pluginContainer.config.size() == 0)
-                return;
-            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginContainer.pluginName);
-            if (!PluginUtil.isPluginLoaded(plugin))
-                return;
-            Bukkit.getPluginManager().disablePlugin(plugin);
-
-
-            try
-            {
-                FileUtils.writeStringToFile(new File(plugin.getDataFolder(), "config.yml"), new Yaml().dump(pluginContainer.config), StandardCharsets.UTF_8, false);
-
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                sender.sendMessage(ChatColor.RED + "プラグイン '" + pluginContainer.pluginName + "' の設定の保存に失敗しました。");
-            }
-            Bukkit.getPluginManager().enablePlugin(plugin);
-        });
 
         sender.sendMessage(ChatColor.GREEN + "S: 正常にインポートしました。");
         sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));

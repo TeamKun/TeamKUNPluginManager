@@ -78,13 +78,13 @@ public class DependencyTree
             result.depends = dps;
             dp.close();
 
-            ResultSet rdp = dependSQL.executeQuery();
+            ResultSet rdp = dependBySQL.executeQuery();
             ArrayList<Info.Depend> rdps = new ArrayList<>();
             while (rdp.next())
             {
                 Info.Depend depend = new Info.Depend();
-                depend.depend = rdp.getString("DEPEND");
-                dps.add(depend);
+                depend.depend = rdp.getString("DEPENDBY");
+                rdps.add(depend);
             }
             result.rdepends = rdps;
             rdp.close();

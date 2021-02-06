@@ -105,7 +105,10 @@ public class CommandExport
 
         validPlugin = (String[]) ArrayUtils.addAll(validPlugin, dependencies);
 
-        validPlugin = Arrays.stream(validPlugin).map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName()).toArray(String[]::new);
+        validPlugin = Arrays.stream(validPlugin)
+                .map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName())
+                .filter(s -> !s.equals("TeamKunPluginManager"))
+                .toArray(String[]::new);
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "プラグインをバンドル中...");
 
@@ -127,7 +130,7 @@ public class CommandExport
             return;
         }
 
-        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(CONSOLE_UUID);
+        CommandSender sender = uuid == CONSOLE_UUID ? Bukkit.getConsoleSender(): Bukkit.getPlayer(uuid);
 
         if (sender == null)
         {

@@ -41,7 +41,7 @@ public class CommandAutoRemove
             Plugin plugin = Bukkit.getPluginManager().getPlugin(removable);
             if (plugin != null)
             {
-                Installer.unInstall(null, removable);
+                Installer.unInstall(null, removable, true);
                 rem.add(removable);
             }
             DependencyTree.purge(removable);
