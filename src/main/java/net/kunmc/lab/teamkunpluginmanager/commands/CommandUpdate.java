@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -109,6 +110,20 @@ public class CommandUpdate
                                 atomicInteger.incrementAndGet();
                             }
                         });
+
+                paths.stream().parallel().forEach(s -> {
+                    if (new File(s).exists())
+                    {
+                        try
+                        {
+                            FileUtils.forceDelete(new File(s));
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
 
                 finalSender.sendMessage(ChatColor.GREEN + "項目数: " + atomicInteger.get());
                 finalSender.sendMessage(ChatColor.GREEN + "S: 既知プラグインデータセットのアップデートに成功しました。");

@@ -20,7 +20,7 @@ public class URLUtils
             connection.setRequestMethod("GET");
             if (url.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
-            connection.setRequestProperty("User-Agent", "TeamKUN Client");
+            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
             if (connection.getResponseCode() == 404)
@@ -96,7 +96,7 @@ public class URLUtils
             connection.setRequestMethod(method);
             if (url.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
-            connection.setRequestProperty("User-Agent", "TeamKUN Client");
+            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             return connection.getResponseCode();
 
