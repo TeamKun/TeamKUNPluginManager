@@ -83,6 +83,28 @@ public class CommandImport
 
         TeamKunPluginManager.enableBuildTree = false;
 
+        sender.sendMessage(ChatColor.GOLD + "設定を書き込み中...");
+
+        container.stream().parallel().forEach(pluginContainer -> {
+            if (pluginContainer.config == null || pluginContainer.config.size() == 0)
+                return;
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginContainer.pluginName);
+            if (!PluginUtil.isPluginLoaded(plugin))
+                return;
+
+
+            try
+            {
+                FileUtils.writeStringToFile(new File(plugin.getDataFolder(), "config.yml"), new Yaml().dump(pluginContainer.config), StandardCharsets.UTF_8, false);
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                sender.sendMessage(ChatColor.RED + "プラグイン '" + pluginContainer.pluginName + "' の設定の保存に失敗しました。");
+            }
+        });
+
         loadOrder.forEach(installResult -> {
             if (!installResult.success)
                 return;
@@ -113,29 +135,6 @@ public class CommandImport
             DependencyTree.crawlPlugin(pluginContainer.pluginName);
         });
 
-        sender.sendMessage(ChatColor.GOLD + "設定を書き込み中...");
-
-        container.stream().parallel().forEach(pluginContainer -> {
-            if (pluginContainer.config == null || pluginContainer.config.size() == 0)
-                return;
-            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginContainer.pluginName);
-            if (!PluginUtil.isPluginLoaded(plugin))
-                return;
-            Bukkit.getPluginManager().disablePlugin(plugin);
-
-
-            try
-            {
-                FileUtils.writeStringToFile(new File(plugin.getDataFolder(), "config.yml"), new Yaml().dump(pluginContainer.config), StandardCharsets.UTF_8, false);
-
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                sender.sendMessage(ChatColor.RED + "プラグイン '" + pluginContainer.pluginName + "' の設定の保存に失敗しました。");
-            }
-            Bukkit.getPluginManager().enablePlugin(plugin);
-        });
 
         sender.sendMessage(ChatColor.GREEN + "S: 正常にインポートしました。");
         sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
