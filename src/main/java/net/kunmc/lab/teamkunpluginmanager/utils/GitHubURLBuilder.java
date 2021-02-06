@@ -131,4 +131,9 @@ public class GitHubURLBuilder
             return "";
         }
     }
+
+    public static boolean isRepoExists(String name)
+    {
+        return String.valueOf(URLUtils.fetch("https://api.github.com/repos/" + name + "", "HEAD")).startsWith("2");
+    }
 }

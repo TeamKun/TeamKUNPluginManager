@@ -23,13 +23,13 @@ public class CommandMain implements CommandExecutor, TabCompleter
     {
         if (!sender.hasPermission("kpm.main"))
         {
-            sender.sendMessage(ChatColor.RED + "E：権限がありません！");
+            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return true;
         }
 
         if (args.length < 1)
         {
-            sender.sendMessage(ChatColor.RED + "E：不明なコマンドです！");
+            sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
             sender.sendMessage(Messages.getCommandNotFoundMessage());
             return true;
         }
@@ -67,8 +67,14 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "info":
                 CommandInfo.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "export":
+                CommandExport.onCommand(sender, argsList.toArray(new String[0]));
+                break;
+            case "import":
+                CommandImport.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
-                sender.sendMessage(ChatColor.RED + "エラー： 不明なコマンドです！");
+                sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
                 break;
         }
@@ -84,10 +90,12 @@ public class CommandMain implements CommandExecutor, TabCompleter
         if (!sender.hasPermission("kpm.use"))
             return new ArrayList<>();
 
+
+
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "export", "import"));
                 break;
             case 2:
                 String cmd = args[0];
@@ -108,6 +116,12 @@ public class CommandMain implements CommandExecutor, TabCompleter
                     completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
                     completes.add("all");
                 }
+        }
+
+        if (args.length > 1 && args[0].equals("export"))
+        {
+            completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
+            completes.add("all");
         }
 
         ArrayList<String> asCopy = new ArrayList<>();

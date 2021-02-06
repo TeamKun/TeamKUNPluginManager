@@ -11,6 +11,8 @@ public class PluginEventListener implements Listener
     @EventHandler
     public void onEnable(PluginEnableEvent e)
     {
+        if (!TeamKunPluginManager.enableBuildTree)
+            return;
         TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
         DependencyTree.crawlPlugin(e.getPlugin());
         TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
@@ -19,6 +21,8 @@ public class PluginEventListener implements Listener
     @EventHandler
     public void onDisable(PluginDisableEvent e)
     {
+        if (!TeamKunPluginManager.enableBuildTree)
+            return;
         TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
         DependencyTree.wipePlugin(e.getPlugin());
         TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");

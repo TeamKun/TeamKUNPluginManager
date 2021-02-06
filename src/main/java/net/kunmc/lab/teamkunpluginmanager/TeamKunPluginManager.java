@@ -19,6 +19,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
     public static Say2Functional functional;
+    public static boolean enableBuildTree = true;
 
     @Override
     public void onEnable()
