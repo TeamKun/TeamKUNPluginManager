@@ -29,7 +29,7 @@ public class CommandUninstall
             @Override
             public void run()
             {
-                Installer.unInstall(sender, args[0]);
+                Installer.unInstall(sender, args[0], false);
 
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);

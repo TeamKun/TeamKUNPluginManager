@@ -36,12 +36,19 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class Installer
 {
 
-    public static void unInstall(CommandSender sender, String name)
+    /**
+     * アンインストールをする
+     * @param sender 発行者(Nullable)
+     * @param name 対象プラグ
+     * @param force 強制削除かどうか
+     */
+    public static void unInstall(CommandSender sender, String name, boolean force)
     {
         if (sender == null)
             sender = dummySender();
@@ -65,6 +72,15 @@ public class Installer
         {
             sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは保護されています。\n" +
                     ChatColor.YELLOW + "   保護されているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
+            sender.sendMessage(ChatColor.RED + "E: システムが保護されました。");
+            return;
+        }
+
+        if (info.rdepends.size() != 0 && !force)
+        {
+            sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは以下のプラグインの依存関係です。");
+            sender.sendMessage(ChatColor.BLUE + info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.joining(" ")));
+            sender.sendMessage(ChatColor.YELLOW + "    依存関係になっているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
             sender.sendMessage(ChatColor.RED + "E: システムが保護されました。");
             return;
         }
