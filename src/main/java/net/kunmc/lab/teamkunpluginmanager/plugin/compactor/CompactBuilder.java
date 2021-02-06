@@ -3,15 +3,16 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Map;
 import java.util.Objects;
 
-public class CompactBuilder
+public class CompactBuilder implements Cloneable
 {
 
-    private final PluginContainer pre;
+    private PluginContainer pre;
 
     private final PluginCompacter pc;
 
@@ -22,6 +23,22 @@ public class CompactBuilder
         this.pre = new PluginContainer();
         this.pc = comp;
         this.rs = new BuildResult[]{};
+    }
+
+    @Override
+    protected Object clone()
+    {
+        CompactBuilder builder = null;
+        try
+        {
+            builder = (CompactBuilder) super.clone();
+            builder.pre = (PluginContainer) this.pre.clone();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return builder;
     }
 
     public PluginContainer build()
@@ -71,6 +88,7 @@ public class CompactBuilder
     public CompactBuilder applyUrl(String url)
     {
         this.pre.downloadUrl = url;
+        this.rs = (BuildResult[]) ArrayUtils.removeElement(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
         return this;
     }
 

@@ -1,6 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
+import com.avaje.ebeaninternal.api.ClassUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import org.apache.commons.io.CopyUtils;
+import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -37,13 +42,23 @@ public class PluginPreCompacter
     {
         if (!resolveFailed.contains(name))
             return;
+
+        AtomicReference<CompactBuilder> rm = new AtomicReference<>();
+        AtomicReference<CompactBuilder> ad = new AtomicReference<>();
         this.builder.forEach(compactBuilder -> {
             CompactBuilder builder = getBuilderFromName(name);
             if (builder == null)
                 return;
-            builder.applyUrl(url);
+            rm.set(builder);
+            ad.set(((CompactBuilder) builder.clone()).applyUrl(url));
             resolveFailed.remove(name);
         });
+        if (rm.get() != null)
+            this.builder.remove(rm.get());
+        if (ad.get() != null)
+            this.builder.add(ad.get());
+
+        applyAll();
     }
 
     public String nextUrlError()
