@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -244,7 +243,7 @@ public class PluginUtil
 
     private static InstallResult getContainsEntry(String contain, ArrayList<InstallResult> keys)
     {
-        for(InstallResult p: keys)
+        for (InstallResult p : keys)
         {
             if (p.pluginName.equals(contain))
                 return p;

@@ -91,7 +91,6 @@ public class CommandMain implements CommandExecutor, TabCompleter
             return new ArrayList<>();
 
 
-
         switch (args.length)
         {
             case 1:

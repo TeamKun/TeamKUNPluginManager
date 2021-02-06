@@ -1,11 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
-import com.avaje.ebeaninternal.api.ClassUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import org.apache.commons.io.CopyUtils;
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.SerializationUtils;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;

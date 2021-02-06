@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -63,7 +62,9 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GOLD + "ファイルの読み込み中...");
 
-        LinkedList<PluginContainer> container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>(){}.getType());
+        LinkedList<PluginContainer> container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+        {
+        }.getType());
 
         ArrayList<InstallResult> results = new ArrayList<>();
 
