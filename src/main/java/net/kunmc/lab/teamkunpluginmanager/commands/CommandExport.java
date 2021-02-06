@@ -1,9 +1,12 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginCompacter;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginPreCompacter;
+import net.kunmc.lab.teamkunpluginmanager.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import org.apache.commons.io.FileUtils;
@@ -22,6 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -197,6 +201,26 @@ public class CommandExport
             e.printStackTrace();
             return;
         }
+
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "ファイルをアップロードしています...");
+        Optional<String> up = FileUploadUtil.uploadFile(exportAs);
+        if (!up.isPresent())
+            sender.sendMessage(ChatColor.YELLOW + "W: ファイルアップロードに失敗しました。\n" +
+                    ChatColor.YELLOW + "エクスポートを使用するには、直接ファイルを参照する必要がございます。");
+        else
+        {
+            JsonObject object = new Gson().fromJson(up.get(), JsonObject.class);
+            if (!object.get("success").getAsBoolean())
+                sender.sendMessage(ChatColor.YELLOW + "W: ファイルアップロードに失敗しました。\n" +
+                        ChatColor.YELLOW + "エクスポートを使用するには、直接ファイルを参照する必要がございます。");
+            else
+            {
+                sender.sendMessage(ChatColor.GREEN + "ファイルを正常にアップロードしました: " +
+                        ChatColor.GOLD + ChatColor.UNDERLINE + object.get("link").getAsString());
+                sender.sendMessage(ChatColor.GRAY + ChatColor.ITALIC.toString() + "このファイルはアクセスまたは時間経過で自動的に削除されます。");
+            }
+        }
+
         sender.sendMessage(ChatColor.GREEN + "S: プラグインのエクスポートに成功しました。");
         session.remove(uuid);
     }

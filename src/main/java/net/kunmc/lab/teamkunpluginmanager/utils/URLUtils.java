@@ -20,6 +20,8 @@ public class URLUtils
             connection.setRequestMethod("GET");
             if (url.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+            if (url.getHost().equals("file.io"))
+                connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
