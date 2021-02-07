@@ -78,7 +78,7 @@ public class URLUtils
             if (connection.getResponseCode() != 200)
                 return new Pair<>(false, "");
 
-            FileUtils.copyURLToFile(urlObj, new File("plugins/" + fileName));
+            FileUtils.copyInputStreamToFile(connection.getInputStream(), new File("plugins/" + fileName));
             return new Pair<>(duplicateFile, fileName);
         }
         catch (Exception e)
