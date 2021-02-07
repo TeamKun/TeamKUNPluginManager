@@ -26,7 +26,7 @@ public class FileUploadUtil
         {
             HttpURLConnection connection = (HttpURLConnection) new URL(PROVIDER_).openConnection();
             connection.setRequestMethod(METHOD_);
-            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             final UUID boundary = UUID.randomUUID();
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             connection.setDoOutput(true);

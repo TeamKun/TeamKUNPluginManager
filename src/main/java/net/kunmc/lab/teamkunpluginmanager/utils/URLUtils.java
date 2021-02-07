@@ -22,7 +22,7 @@ public class URLUtils
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
-            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
             if (connection.getResponseCode() == 404)
@@ -73,7 +73,7 @@ public class URLUtils
             connection.setRequestMethod("GET");
             if (urlObj.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
-            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             if (connection.getResponseCode() != 200)
                 return new Pair<>(false, "");
@@ -98,7 +98,7 @@ public class URLUtils
             connection.setRequestMethod(method);
             if (url.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
-            connection.setRequestProperty("User-Agent", "Mozilla/1.14.5.14; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             return connection.getResponseCode();
 
