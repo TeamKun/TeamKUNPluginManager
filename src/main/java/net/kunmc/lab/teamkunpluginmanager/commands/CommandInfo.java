@@ -111,7 +111,14 @@ public class CommandInfo
         ComponentBuilder builder = new ComponentBuilder(pi("コマンド名", name + "\n\n"));
 
         if (command.containsKey("aliases"))
+        {
+            if (command.get("aliases") instanceof String)
+                builder.append(pi("エイリアス", "/" + command.get("aliases")));
+            else if (command.get("aliases") instanceof List)
             builder.append(pi("エイリアス", "/" + String.join(", /", (List<String>) command.get("aliases"))) + "\n");
+
+        }
+
         if (command.containsKey("usage"))
             builder.append(pi("使用法", command.get("usage")) + "\n");
         if (command.containsKey("description"))
