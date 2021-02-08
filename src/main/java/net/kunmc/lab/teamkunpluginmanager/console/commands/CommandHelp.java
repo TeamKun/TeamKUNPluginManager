@@ -1,9 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Property;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class CommandHelp implements CommandBase
 {
@@ -23,6 +27,22 @@ public class CommandHelp implements CommandBase
     @Override
     public int run(String... args)
     {
+        if (args.length == 1)
+        {
+            List<CommandBase> c =  Arrays.stream(PluginManagerConsole.commands).parallel().
+                    filter(commandBase -> commandBase.getName().equalsIgnoreCase(args[0]) ||
+                            PluginManagerConsole.containsIgnoreCase(commandBase.getAliases(), args[0]))
+                    .collect(Collectors.toList());
+
+            if (c.size() < 1)
+            {
+                System.out.println(Color.RED + "E: コマンドが見つかりませんでした。");
+                return 1;
+            }
+
+            c.get(0).printHelp();
+            return 0;
+        }
         printHelp();
         return 0;
     }

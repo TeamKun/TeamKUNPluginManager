@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class PluginManagerConsole
 {
-    private static final CommandBase[] commands = {new CommandInstall()};
+    public static final CommandBase[] commands = {new CommandInstall()};
 
     public static void main(String[] args)
     {
