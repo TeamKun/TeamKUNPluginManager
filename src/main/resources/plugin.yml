@@ -1,6 +1,6 @@
 name: TeamKunPluginManager
 version: ${project.version}
-main: net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager
+main: net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager
 authors: [Peyang]
 api-version: 1.15
 description: Manage your plugin!
