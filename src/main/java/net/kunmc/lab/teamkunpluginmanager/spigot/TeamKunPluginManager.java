@@ -1,9 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot;
 
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandMain;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Say2Functional;
 import org.bukkit.Bukkit;
@@ -21,6 +22,11 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
 
+    public static void initVariables()
+    {
+        Variables.OAuthToken = config.getString("oauth");
+    }
+
     @Override
     public void onEnable()
     {
@@ -37,6 +43,8 @@ public final class TeamKunPluginManager extends JavaPlugin
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        initVariables();
 
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();

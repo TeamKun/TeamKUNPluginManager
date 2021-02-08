@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
+package net.kunmc.lab.teamkunpluginmanager.common.known;
 
 public class KnownPluginEntry
 {

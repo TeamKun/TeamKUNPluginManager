@@ -30,6 +30,30 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
@@ -46,7 +70,9 @@
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
                                     <include>org.slf4j:*</include>
+                                    <include>org.apache.commons:*</include>
                                     <include>com.zaxxer:*</include>
+                                    <include>org.snakeyaml:*</include>
                                     <include>*:version-compare</include>
                                 </includes>
                             </artifactSet>
@@ -110,6 +136,15 @@
             <artifactId>smart-invs</artifactId>
             <version>1.2.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.27</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
     </dependencies>
 </project>

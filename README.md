@@ -16,7 +16,12 @@
 #### サブコマンド
 + install
 リポジトリまたはURLからインストールします。
-権限: kpm.install
+  権限: kpm.install
+  ```bash
+  /kpm install TeamKun/HogePlugin
+  /kpm install https://github.com/TeamKun/HogePlugin/
+  /kpm install https://github.com/TeamKun/HogePlugin/release/v1.0/download/hogeplugin-1.0.jar
+  ```
 + remove
 プラグインをアンインストールします。
   権限: kpm.uninstall

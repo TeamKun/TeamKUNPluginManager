@@ -3,10 +3,11 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
-import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.KnownPluginEntry;
-import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPluginEntry;
+import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -61,7 +62,7 @@ public class CommandUpdate
                                 HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
                                 connection.setRequestMethod("GET");
                                 if (urlObj.getHost().equals("api.github.com"))
-                                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+                                    connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
                                 connection.setRequestProperty("User-Agent", "TeamKUN Client");
                                 connection.connect();
                                 if (connection.getResponseCode() != 200)

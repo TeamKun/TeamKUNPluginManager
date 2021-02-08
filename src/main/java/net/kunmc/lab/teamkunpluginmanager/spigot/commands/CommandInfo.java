@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree.Info;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -13,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.sound.sampled.DataLine.Info;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class CommandInfo
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
 
-        Info info = DependencyTree.getInfo(args[0], false);
+        DependencyTree.Info info = DependencyTree.getInfo(args[0], false);
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "情報を読み込み中...");
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(args[0]);

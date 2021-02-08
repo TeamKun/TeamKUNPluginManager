@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
+package net.kunmc.lab.teamkunpluginmanager.common.known;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
