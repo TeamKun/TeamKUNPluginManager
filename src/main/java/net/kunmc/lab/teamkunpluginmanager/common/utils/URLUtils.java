@@ -1,5 +1,6 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
+package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
+import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

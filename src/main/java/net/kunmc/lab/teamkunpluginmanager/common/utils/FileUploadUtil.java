@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
+package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
 import org.apache.commons.io.IOUtils;
 

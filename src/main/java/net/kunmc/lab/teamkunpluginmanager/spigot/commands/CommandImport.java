@@ -9,7 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor.PluginContainer;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;

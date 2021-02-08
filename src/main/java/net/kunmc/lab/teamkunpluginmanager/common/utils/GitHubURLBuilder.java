@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
+package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

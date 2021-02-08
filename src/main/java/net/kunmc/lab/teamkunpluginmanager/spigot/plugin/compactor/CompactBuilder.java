@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor;
 
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.GitHubURLBuilder;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Map;

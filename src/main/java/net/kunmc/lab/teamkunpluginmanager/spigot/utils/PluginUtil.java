@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
 
+import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
 import org.bukkit.Bukkit;
