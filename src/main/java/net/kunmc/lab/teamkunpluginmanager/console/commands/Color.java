@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
-public enum Color {
+public enum Color
+{
 
     RED("\u001b[00;31m"),
     GREEN("\u001b[00;32m"),
@@ -11,12 +12,14 @@ public enum Color {
 
     String code;
 
-    Color(String code) {
+    Color(String code)
+    {
         this.code = code;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return code;
     }
 

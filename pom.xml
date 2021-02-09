@@ -146,5 +146,10 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.P2P-Develop</groupId>
+            <artifactId>PeyangSuperLibrary</artifactId>
+            <version>v11.45148.10</version>
+        </dependency>
     </dependencies>
 </project>

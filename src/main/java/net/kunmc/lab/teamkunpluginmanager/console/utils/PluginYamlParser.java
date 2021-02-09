@@ -4,9 +4,9 @@ import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.NoSuchFileException;
 
 public class PluginYamlParser
 {
@@ -26,29 +26,14 @@ public class PluginYamlParser
     public Command[] commands;
     public Permission[] permissions;
 
-    public static class Command
+    public PluginYamlParser()
     {
-        public String description;
-        public String[] aliases;
     }
-
-    public static class Permission
-    {
-        public String description;
-    }
-
-    enum Load
-    {
-        STARTUP,
-        POSTWORLD
-    }
-
-    public PluginYamlParser() { }
 
     public PluginYamlParser(File file) throws IOException
     {
         if (!file.exists())
-            throw new NoSuchFileException("plugin.yml not found.");
+            throw new FileNotFoundException("plugin.yml not found.");
 
         String d = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         PluginYamlParser pluginYamlParser = new Yaml().loadAs(d, PluginYamlParser.class);
@@ -69,6 +54,23 @@ public class PluginYamlParser
         commands = pluginYamlParser.commands;
         permissions = pluginYamlParser.permissions;
 
+    }
+
+    enum Load
+    {
+        STARTUP,
+        POSTWORLD
+    }
+
+    public static class Command
+    {
+        public String description;
+        public String[] aliases;
+    }
+
+    public static class Permission
+    {
+        public String description;
     }
 
 

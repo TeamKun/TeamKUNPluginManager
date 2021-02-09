@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class Property
 {
-    private static Properties properties;
+    private static final Properties properties;
 
     static
     {

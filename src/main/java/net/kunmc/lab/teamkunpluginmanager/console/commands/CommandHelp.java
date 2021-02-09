@@ -6,7 +6,6 @@ import net.kunmc.lab.teamkunpluginmanager.console.utils.Property;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class CommandHelp implements CommandBase
@@ -21,7 +20,7 @@ public class CommandHelp implements CommandBase
     @Override
     public String[] getAliases()
     {
-        return new String[] {"?"};
+        return new String[]{"?"};
     }
 
     @Override
@@ -29,7 +28,7 @@ public class CommandHelp implements CommandBase
     {
         if (args.length == 1)
         {
-            List<CommandBase> c =  Arrays.stream(PluginManagerConsole.commands).parallel().
+            List<CommandBase> c = Arrays.stream(PluginManagerConsole.commands).parallel().
                     filter(commandBase -> commandBase.getName().equalsIgnoreCase(args[0]) ||
                             PluginManagerConsole.containsIgnoreCase(commandBase.getAliases(), args[0]))
                     .collect(Collectors.toList());

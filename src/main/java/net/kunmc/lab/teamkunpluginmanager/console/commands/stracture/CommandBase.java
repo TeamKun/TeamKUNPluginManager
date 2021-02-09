@@ -4,18 +4,21 @@ public interface CommandBase
 {
     /**
      * 名前を返す
+     *
      * @return 名前
      */
     String getName();
 
     /**
      * エイリアスを一覧取得
+     *
      * @return エイリアス
      */
     String[] getAliases();
 
     /**
      * 実行する
+     *
      * @param args 引数
      * @return 終了コード
      */
