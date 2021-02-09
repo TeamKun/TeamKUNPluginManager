@@ -27,8 +27,16 @@ public class CommandInstall implements CommandBase {
             return -1;
         }
 
-        for (String url : args) {
-            install(url);
+        switch (args[0]) {
+            case "-h":
+            case "--help":
+                printHelp();
+                break;
+            default:
+                for (String url : args) {
+                    install(url);
+                }
+                break;
         }
 
         return 0;
