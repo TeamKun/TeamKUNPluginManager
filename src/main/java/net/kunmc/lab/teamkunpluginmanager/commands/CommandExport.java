@@ -49,6 +49,13 @@ public class CommandExport
             return;
         }
 
+        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        {
+            sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            return;
+        }
+
         if (DependencyTree.isErrors())
         {
             sender.sendMessage(Messages.getErrorMessage());

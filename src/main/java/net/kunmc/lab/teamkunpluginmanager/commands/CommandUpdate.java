@@ -32,9 +32,15 @@ public class CommandUpdate
             return;
         }
 
-
         if (sender == null)
             sender = Installer.dummySender();
+
+        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        {
+            sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            return;
+        }
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "アップデートファイルのダウンロードを開始します...");
         CommandSender finalSender = sender;
