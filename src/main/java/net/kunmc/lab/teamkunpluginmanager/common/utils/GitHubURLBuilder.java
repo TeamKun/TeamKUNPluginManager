@@ -136,4 +136,9 @@ public class GitHubURLBuilder
     {
         return String.valueOf(URLUtils.fetch("https://api.github.com/repos/" + name + "", "HEAD")).startsWith("2");
     }
+
+    public static boolean isPermissionGranted(String path)
+    {
+        return URLUtils.fetch("https://api.github.com" + path, "HEAD") != 401;
+    }
 }

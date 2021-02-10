@@ -37,15 +37,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
-        if (config.getString("oauth", "").equals(""))
-        {
-            System.out.println("Please set OAuth token in config.yml");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-
         initVariables();
-
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
         KnownPlugins.initialization(TeamKunPluginManager.config.getString("resolvePath"));
@@ -77,4 +69,8 @@ public final class TeamKunPluginManager extends JavaPlugin
             KnownPlugins.dataSource.close();
     }
 
+    public boolean isTokenAvailable()
+    {
+        return config.getString("oauth").isEmpty();
+    }
 }
