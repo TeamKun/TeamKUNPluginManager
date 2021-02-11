@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.sound.sampled.DataLine.Info;
 import java.io.File;
 import java.util.List;
 import java.util.Map;

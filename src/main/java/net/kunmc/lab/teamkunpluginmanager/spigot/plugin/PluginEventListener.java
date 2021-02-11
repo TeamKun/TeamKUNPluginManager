@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
 
+import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

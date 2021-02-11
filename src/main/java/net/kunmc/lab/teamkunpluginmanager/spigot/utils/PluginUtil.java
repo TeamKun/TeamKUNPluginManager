@@ -43,6 +43,10 @@ import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+    public static String nameValidator(String name)
+    {
+        return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(name)).getName();
+    }
     @SuppressWarnings("unchecked")
     public static Map<String, Object> ms2Map(MemorySection ms)
     {

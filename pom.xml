@@ -70,12 +70,14 @@
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
                                     <include>org.slf4j:*</include>
-                                    <include>org.apache.commons:*</include>
+                                    <include>org.apache.commons:commons-lang3</include>
                                     <include>com.zaxxer:*</include>
                                     <include>org.snakeyaml:*</include>
-                                    <include>*:version-compare</include>
+                                    <include>com.github.G00fY2:*</include>
+                                    <include>org.xerial:*</include>
                                 </includes>
                             </artifactSet>
+                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
@@ -132,11 +134,6 @@
             <version>3.4.5</version>
         </dependency>
         <dependency>
-            <groupId>fr.minuskube.inv</groupId>
-            <artifactId>smart-invs</artifactId>
-            <version>1.2.7</version>
-        </dependency>
-        <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.27</version>
@@ -149,7 +146,12 @@
         <dependency>
             <groupId>com.github.P2P-Develop</groupId>
             <artifactId>PeyangSuperLibrary</artifactId>
-            <version>v11.45148.10</version>
+            <version>114.19.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.34.0</version>
         </dependency>
     </dependencies>
 </project>

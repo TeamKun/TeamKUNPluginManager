@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
@@ -11,7 +12,7 @@ import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -236,10 +237,12 @@ public class Installer
                 catch (Exception e)
                 {
                     finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
+                    finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+                    return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, false);
                 }
             }
-            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
         }
 
