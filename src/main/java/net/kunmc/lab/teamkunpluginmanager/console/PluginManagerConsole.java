@@ -1,10 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.console;
 
-import com.zaxxer.hikari.HikariDataSource;
 import develop.p2p.lib.FileConfiguration;
 import develop.p2p.lib.Intellij;
-import develop.p2p.lib.FieldModifier;
-import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
@@ -31,28 +28,26 @@ public class PluginManagerConsole
     {
         int exitcode = 0;
 
+        Progress progress = new Progress("情報を読み込み中").start();
         init();
+        progress.stop();
 
-        switch (args.length)
+        if (args.length == 0)
         {
-            case 0:
-                new CommandHelp().run();
-                exitcode = 1;
-                break;
-            case 1:
-                List<CommandBase> c = Arrays.stream(commands).parallel().filter(commandBase -> commandBase.getName().equalsIgnoreCase(args[0]) ||
-                        containsIgnoreCase(commandBase.getAliases(), args[0])).collect(Collectors.toList());
-
-                String[] realArgs = ArrayUtils.remove(args, 0);
-
-                if (c.size() < 1)
-                    new CommandHelp().run(realArgs);
-                else
-                    c.get(0).run(ArrayUtils.remove(args, 0));
-                break;
+            new CommandHelp().run();
+            System.exit(exitcode);
+            return;
         }
 
-        System.exit(exitcode);
+        List<CommandBase> c = Arrays.stream(commands).parallel().filter(commandBase -> commandBase.getName().equalsIgnoreCase(args[0]) ||
+                containsIgnoreCase(commandBase.getAliases(), args[0])).collect(Collectors.toList());
+
+        String[] realArgs = ArrayUtils.remove(args, 0);
+
+        if (c.size() < 1)
+            new CommandHelp().run(realArgs);
+        else
+            System.exit(c.get(0).run(ArrayUtils.remove(args, 0)));
     }
 
 

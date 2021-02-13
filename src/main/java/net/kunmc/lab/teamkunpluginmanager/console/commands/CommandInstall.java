@@ -142,7 +142,7 @@ public class CommandInstall implements CommandBase
         if (info != null && new Version(info.version).isHigherThan(description.version))
         {
             install--;
-            System.out.println(Color.YELLOW + "W: 既に同じプラグインが存在しマスティフ。");
+            System.out.println(Color.YELLOW + "W: 既に同じプラグインが存在します。");
             if (!withoutRemove && new File("plugins/" + result.getValue()).exists())
             {
                 try
