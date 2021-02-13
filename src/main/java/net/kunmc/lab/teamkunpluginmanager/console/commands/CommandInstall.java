@@ -175,18 +175,18 @@ public class CommandInstall implements CommandBase
 
     }
 
-    private String getChangeMessage(ChangeType type, String name)
+    private Ansi getChangeMessage(ChangeType type, String name)
     {
         switch (type)
         {
             case INSTALL:
-                return Color.GREEN + "+ " + name;
+                return Color.GREEN.format("+ " + name);
             case CHANGE:
-                return Color.YELLOW + "~ " + name;
+                return Color.YELLOW.format("~ " + name);
             case uninstall:
-                return Color.RED + "- " + name;
+                return Color.RED.format("- " + name);
             default:
-                return Color.PINK + "? " + name;
+                return Color.PINK.format("? " + name);
         }
     }
 
