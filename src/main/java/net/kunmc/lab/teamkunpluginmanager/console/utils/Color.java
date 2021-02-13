@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.console.commands;
+package net.kunmc.lab.teamkunpluginmanager.console.utils;
 
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;

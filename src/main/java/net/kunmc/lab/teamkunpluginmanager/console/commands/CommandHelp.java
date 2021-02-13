@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
-import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.Color;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Property;
 
 import java.util.Arrays;
@@ -57,10 +57,10 @@ public class CommandHelp implements CommandBase
         jarFileName = jarFileName.substring(jarFileName.lastIndexOf(sep) + 1);
 
         hlp.append("TeamKunPluginManager ").append(Property.getProperty().getProperty("console.version")).append("\n");
-        hlp.append("使用法: java -jar ").append(jarFileName).append(" <コマンド> [オプション]");
+        hlp.append("使用法: java -jar ").append(jarFileName).append(" <コマンド> [オプション]\n");
         hlp.append("\n");
-        hlp.append("TeamKunPluginManager は、管理、インストール、プラグインに関する情報を問い合わせるコマンドを\n")
-                .append("提供するプラグインマネージャです。Bukkitのプラグインとしても動作します。");
+        hlp.append("TeamKunPluginManager は、管理、インストール、プラグインに関する情報を問い合わせるコマンドを")
+                .append("提供するプラグインマネージャです。Bukkitのプラグインとしても動作します。\n");
         hlp.append("\n");
         hlp.append("最も使用されているコマンド: \n");
         hlp.append("  install   - プラグインをインストール\n");
@@ -69,7 +69,7 @@ public class CommandHelp implements CommandBase
         hlp.append("  update    - 利用可能プラグインの一覧を更新\n");
         hlp.append("\n");
         hlp.append("コマンドに関する使用法等の詳細は、使用法: java -jar ").append(jarFileName).append(" <コマンド> --help\n");
-        hlp.append("を参照してください。");
+        hlp.append("を参照してください。\n");
         System.out.println(hlp.toString());
     }
 }

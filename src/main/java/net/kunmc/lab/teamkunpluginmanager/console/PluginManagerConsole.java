@@ -5,7 +5,7 @@ import develop.p2p.lib.Intellij;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
-import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
+import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;

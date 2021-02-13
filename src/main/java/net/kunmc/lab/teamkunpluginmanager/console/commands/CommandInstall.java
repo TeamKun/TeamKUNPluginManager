@@ -7,7 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
-import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.Color;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.PluginYamlParser;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import org.apache.commons.lang3.StringUtils;
@@ -51,10 +51,7 @@ public class CommandInstall implements CommandBase
                 printHelp();
                 break;
             default:
-                for (String url : args)
-                {
-                    install(url);
-                }
+                install(args[0]);
                 break;
         }
 

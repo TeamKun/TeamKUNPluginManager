@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.console.commands.stracture;
+package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 public interface CommandBase
 {
