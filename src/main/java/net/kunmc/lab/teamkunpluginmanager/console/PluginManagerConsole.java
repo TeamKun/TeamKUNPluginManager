@@ -8,6 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -65,6 +66,12 @@ public class PluginManagerConsole
         config.saveDefaultConfig();
 
         Logger.getLogger("com.zaxxer.hikari.HikariDataSource").setLevel(Level.OFF);
+
+        if (!AnsiConsole.isInstalled())
+        {
+            AnsiConsole.systemInstall();
+            Runtime.getRuntime().addShutdownHook(new Thread(AnsiConsole::systemUninstall));
+        }
     }
 
     public static boolean containsIgnoreCase(String[] target, String maf)

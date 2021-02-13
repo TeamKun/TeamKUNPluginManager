@@ -153,5 +153,10 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.34.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.fusesource</groupId>
+            <artifactId>jansi</artifactId>
+            <version>jansi-2.3.1</version>
+        </dependency>
     </dependencies>
 </project>

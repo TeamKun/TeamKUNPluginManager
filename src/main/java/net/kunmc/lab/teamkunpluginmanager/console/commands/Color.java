@@ -1,14 +1,17 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
+
 public enum Color
 {
 
-    RED("\u001b[00;31m"),
-    GREEN("\u001b[00;32m"),
-    YELLOW("\u001b[00;33m"),
-    PURPLE("\u001b[00;34m"),
-    PINK("\u001b[00;35m"),
-    CYAN("\u001b[00;36m");
+    RED("@|red "),
+    GREEN("@|green "),
+    YELLOW("@|yellow "),
+    PURPLE("@|purple "),
+    PINK("@|pink "),
+    CYAN("@|cyan ");
 
     String code;
 
@@ -23,4 +26,8 @@ public enum Color
         return code;
     }
 
+    public Ansi format(String txt)
+    {
+        return Ansi.ansi().eraseLine().render(code + (txt.endsWith("|@") ? txt: txt + "|@"));
+    }
 }

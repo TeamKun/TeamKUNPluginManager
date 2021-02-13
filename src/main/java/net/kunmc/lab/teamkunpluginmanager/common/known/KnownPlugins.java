@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.common.known;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 
 import java.io.File;
@@ -14,12 +15,31 @@ public class KnownPlugins
 {
     public static HikariDataSource dataSource;
 
-    public static void drop()
+    public static void initialize(File dataFolder, String fileName)
     {
-        try (Connection con = dataSource.getConnection();
-             Statement stmt = con.createStatement())
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.sqlite.JDBC");
+
+        config.setJdbcUrl("jdbc:sqlite:" + new File(dataFolder, fileName).getAbsolutePath());
+
+        config.setMaximumPoolSize(20);
+        config.setLeakDetectionThreshold(300000);
+
+        dataSource = new HikariDataSource(config);
+        initializeTable();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            dataSource.close();
+        }));
+    }
+
+
+    private static void initializeTable()
+    {
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement())
         {
-            stmt.execute("DELETE FROM DEPEND");
+            stmt.execute("CREATE TABLE IF NOT EXISTS DEPEND(NAME TEXT, URL TEXT)");
         }
         catch (Exception e)
         {
@@ -27,26 +47,12 @@ public class KnownPlugins
         }
     }
 
-    public static void initialization(String fileName)
+    public static void drop()
     {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName("org.sqlite.JDBC");
-
-        config.setJdbcUrl("jdbc:sqlite:" + new File(TeamKunPluginManager.plugin.getDataFolder().getPath(), fileName).getAbsolutePath());
-
-        config.setMaximumPoolSize(20);
-        config.setLeakDetectionThreshold(300000);
-
-        dataSource = new HikariDataSource(config);
-        initTables();
-    }
-
-    private static void initTables()
-    {
-        try (Connection connection = dataSource.getConnection();
-             Statement stmt = connection.createStatement())
+        try (Connection con = dataSource.getConnection();
+             Statement stmt = con.createStatement())
         {
-            stmt.execute("CREATE TABLE IF NOT EXISTS DEPEND(NAME TEXT, URL TEXT)");
+            stmt.execute("DELETE FROM DEPEND");
         }
         catch (Exception e)
         {

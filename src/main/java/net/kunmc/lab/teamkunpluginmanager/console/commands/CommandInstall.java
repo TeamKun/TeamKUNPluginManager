@@ -5,11 +5,14 @@ import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
+import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.stracture.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.PluginYamlParser;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.fusesource.jansi.Ansi;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +73,11 @@ public class CommandInstall implements CommandBase
         int uninstall = 0;
         int change = 0;
 
+        Progress progress = new Progress("既知プラグインデータベースの読み取り中").start();
+        KnownPlugins.initialize(PluginManagerConsole.dataFolder.toFile(),
+                PluginManagerConsole.config.getString("resolvePath"));
+        progress.stop();
+
         if (!UrlValidator.getInstance().isValid(url))
         {
             // User/Repository 形式であれば先頭に GitHub のドメインを追加する。
@@ -81,7 +89,7 @@ public class CommandInstall implements CommandBase
                 // URL の指定が間違っていると終了。
                 if (url.startsWith("ERROR "))
                 {
-                    System.out.println(Color.RED + "E: " + url.substring(6));
+                    System.out.println(Color.RED.format( "E: " + url.substring(6)));
                     System.out.println(getResultMessage(install, change, uninstall));
                     return;
                 }
@@ -92,7 +100,7 @@ public class CommandInstall implements CommandBase
             }
             else
             {
-                System.out.println(Color.RED + "E: " + url + "が見つかりません。");
+                System.out.println(Color.RED.format("E: " + url + "が見つかりません。"));
                 System.out.println(getResultMessage(install, change, uninstall));
                 return;
             }
@@ -100,12 +108,12 @@ public class CommandInstall implements CommandBase
 
         // ダウンロード開始時間（ミリ秒）
         long downloadStartTime = System.currentTimeMillis();
-        System.out.println(Color.PURPLE + "ファイルのダウンロード中...");
+        System.out.println(Color.PURPLE.format("ファイルのダウンロード中..."));
 
         Pair<Boolean, String> result = URLUtils.downloadFile(url);
         if (result.getValue().equals(""))
         {
-            System.out.println(Color.RED + "E: ファイルのダウンロードに失敗しました。");
+            System.out.println(Color.RED.format("E: ファイルのダウンロードに失敗しました。"));
             System.out.println(getResultMessage(install, change, uninstall));
             return;
         }
@@ -113,8 +121,8 @@ public class CommandInstall implements CommandBase
         System.out.println(getChangeMessage(ChangeType.INSTALL, result.getValue()));
         install++;
 
-        System.out.println(Color.GREEN.toString() + (System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。");
-        System.out.println(Color.PURPLE + "情報を読み込み中...");
+        System.out.println(Color.GREEN.format((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。"));
+        System.out.println(Color.PURPLE.format("情報を読み込み中..."));
 
         PluginYamlParser description;
 
@@ -124,13 +132,13 @@ public class CommandInstall implements CommandBase
         }
         catch (NoSuchFileException e)
         {
-            System.out.println(Color.RED + "E: plugin.yml が見つかりませんでした。");
+            System.out.println(Color.RED.format("E: plugin.yml が見つかりませんでした。"));
             System.out.println(getResultMessage(install, change, uninstall));
             return;
         }
         catch (IOException e)
         {
-            System.out.println(Color.RED + "E: 情報を読み込めませんでした。");
+            System.out.println(Color.RED.format("E: 情報を読み込めませんでした。"));
             System.out.println(getResultMessage(install, change, uninstall));
             return;
         }
@@ -142,7 +150,7 @@ public class CommandInstall implements CommandBase
         if (info != null && new Version(info.version).isHigherThan(description.version))
         {
             install--;
-            System.out.println(Color.YELLOW + "W: 既に同じプラグインが存在します。");
+            System.out.println(Color.YELLOW.format("W: 既に同じプラグインが存在します。"));
             if (!withoutRemove && new File("plugins/" + result.getValue()).exists())
             {
                 try
@@ -153,12 +161,12 @@ public class CommandInstall implements CommandBase
                 }
                 catch (Exception e)
                 { //getName => PeyaPeyaPlugin getFullName => PeyaPeyaPlugin:1.0
-                    System.out.println(Color.RED + "E: ファイルの削除に失敗しました: " + result.getValue());
+                    System.out.println(Color.RED.format("E: ファイルの削除に失敗しました: " + result.getValue()));
                     System.out.println(getResultMessage(install, change, uninstall));
                     return;
                 }
             }
-            System.out.println(Color.GREEN + "S: " + description.name + ":" + description.version + "を正常にインストールされました");
+            System.out.println(Color.GREEN.format("S: " + description.name + ":" + description.version + "を正常にインストールされました"));
             System.out.println(getResultMessage(install, change, uninstall));
             return;
         }
@@ -182,9 +190,9 @@ public class CommandInstall implements CommandBase
         }
     }
 
-    private String getResultMessage(int install, int change, int uninstall)
+    private Ansi getResultMessage(int install, int change, int uninstall)
     {
-        return Color.GREEN.toString() + install + "追加" + Color.YELLOW + change + "変更" + Color.RED + uninstall + "削除";
+        return Color.GREEN.format("|@" + Color.GREEN.toString() + install + "追加|@ " + Color.YELLOW + change + "変更|@ " + Color.RED + uninstall + "削除");
     }
 
     private enum ChangeType

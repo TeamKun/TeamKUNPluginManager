@@ -40,7 +40,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         initVariables();
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
-        KnownPlugins.initialization(TeamKunPluginManager.config.getString("resolvePath"));
+        KnownPlugins.initialize(this.getDataFolder() , TeamKunPluginManager.config.getString("resolvePath"));
         new BukkitRunnable()
         {
 
@@ -65,8 +65,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         if (DependencyTree.dataSource != null)
             DependencyTree.dataSource.close();
-        if (KnownPlugins.dataSource != null)
-            KnownPlugins.dataSource.close();
     }
 
     public boolean isTokenAvailable()
