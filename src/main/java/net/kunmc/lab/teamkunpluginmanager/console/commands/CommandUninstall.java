@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
-import net.kunmc.lab.teamkunpluginmanager.console.utils.Color;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 
 public class CommandUninstall implements CommandBase
@@ -24,23 +23,19 @@ public class CommandUninstall implements CommandBase
     public int run(String... args)
     {
         
-        if (CommandUtil.containsIgnoreCase(args, "-h") || CommandUtil.containsIgnoreCase(args, "--help") || CommandUtil.containsIgnoreCase(args, "-?"))
+        if (CommandUtil.containsIgnoreCase(args, "-f") || CommandUtil.containsIgnoreCase(args, "--force"))
         {
-            printHelp();
+            if (args.length > 1)
+                uninstall(args[0], true);
             return 0;
         }
-        switch (args.length)
+
+        if (args.length == 1)
+            uninstall(args[0]);
+        else
         {
-            case 1:
-                uninstall(args[0]);
-                break;
-            case 2:
-                
-                uninstall(args[0], Boolean.parseBoolean(args[1]));
-                break;
-            default:
-                printHelp();
-                return -1;
+            printHelp();
+            return -1;
         }
 
         return 0;
@@ -82,13 +77,19 @@ public class CommandUninstall implements CommandBase
 
     private void uninstall(String pluginName, boolean force)
     {
-        System.out.println(Color.MAGENTA.format("依存関係ツリーを読み込み中..."));
 
+        Progress progress = new Progress("依存関係ツリーを読み込み中");
+        progress.start();
         DependencyTree.Info info = DependencyTree.getInfo(pluginName, false);
+        progress.stop();
+
         if (info == null)
         {
-            System.out.println(Color.RED.format("E: プラグインが見つかりませんでした。"));
+            System.out.println("E: プラグインが見つかりませんでした。");
+            return;
         }
+
+
     }
 
 }

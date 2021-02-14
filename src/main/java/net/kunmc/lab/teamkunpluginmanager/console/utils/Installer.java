@@ -13,7 +13,6 @@ import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.fusesource.jansi.Ansi;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,18 +31,18 @@ public class Installer
     public static void uninstall(String pluginName, boolean force)
     {
 
-        System.out.println(Color.MAGENTA.format("依存関係ツリーを読み込み中..."));
+        System.out.println("依存関係ツリーを読み込み中...");
 
         DependencyTree.Info info = DependencyTree.getInfo(pluginName, false);
         if (info == null)
         {
-            System.out.println(Color.RED.format("E: プラグインが見つかりませんでした。"));
+            System.out.println("E: プラグインが見つかりませんでした。");
             return;
         }
 
         if (new File(pluginName).exists())
         {
-            System.out.println(Color.RED.format("E: プラグインが見つかりませんでした。"));
+            System.out.println("E: プラグインが見つかりませんでした。");
             return;
         }
 
@@ -85,9 +84,9 @@ public class Installer
                 if (url.startsWith("ERROR "))
                 {
                     if (Variables.OAuthToken.equals(""))
-                        print(Color.YELLOW.format("W: GitHub 用のOAuth Tokenを正しく設定していない可能性がございます。"), print);
+                        print("W: GitHub 用のOAuth Tokenを正しく設定していない可能性がございます。", print);
 
-                    print(Color.RED.format("E: " + url.substring(6)), print);
+                    print("E: " + url.substring(6), print);
                     print(getResultMessage(install, change, uninstall), print);
                     return new InstallResult(false);
                 }
@@ -98,7 +97,7 @@ public class Installer
             }
             else
             {
-                print(Color.RED.format("E: " + url + "が見つかりません。"), print);
+                print("E: " + url + "が見つかりません。", print);
                 print(getResultMessage(install, change, uninstall), print);
                 return new InstallResult(false);
             }
@@ -106,12 +105,12 @@ public class Installer
 
         // ダウンロード開始時間（ミリ秒）
         long downloadStartTime = System.currentTimeMillis();
-        print(Color.MAGENTA.format("ファイルのダウンロード中..."), print);
+        print("ファイルのダウンロード中...", print);
 
         Pair<Boolean, String> result = URLUtils.downloadFile(url);
         if (result.getValue().equals(""))
         {
-            print(Color.RED.format("E: ファイルのダウンロードに失敗しました。"), print);
+            print("E: ファイルのダウンロードに失敗しました。", print);
             print(getResultMessage(install, change, uninstall), print);
             return new InstallResult(false);
         }
@@ -119,7 +118,7 @@ public class Installer
         print(getChangeMessage(ChangeType.INSTALL, result.getValue()), print);
         install++;
 
-        print(Color.GREEN.format((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。"), print);
+        print((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。", print);
         Progress infoProg = new Progress("情報を読み込み中");
         infoProg.start();
         PluginYamlParser description;
@@ -131,14 +130,14 @@ public class Installer
         catch (NoSuchFileException e)
         {
             infoProg.stop();
-            print(Color.RED.format("E: plugin.yml が見つかりませんでした。"), print);
+            print("E: plugin.yml が見つかりませんでした。", print);
             print(getResultMessage(install, change, uninstall), print);
             return new InstallResult(false);
         }
         catch (IOException e)
         {
             infoProg.stop();
-            print(Color.RED.format("E: 情報を読み込めませんでした。"), print);
+            print("E: 情報を読み込めませんでした。", print);
             print(getResultMessage(install, change, uninstall), print);
             return new InstallResult(false);
         }
@@ -152,7 +151,7 @@ public class Installer
         if (info != null && new Version(info.version).isHigherThan(description.version))
         {
             install--;
-            print(Color.YELLOW.format("W: 既に同じプラグインが存在します。"), print);
+            print("W: 既に同じプラグインが存在します。", print);
             if (new File(result.getValue()).exists())
             {
                 try
@@ -162,12 +161,12 @@ public class Installer
                 }
                 catch (Exception e)
                 { //getName => PeyaPeyaPlugin getFullName => PeyaPeyaPlugin:1.0
-                    print(Color.RED.format("E: ファイルの削除に失敗しました: " + result.getValue()), print);
+                    print("E: ファイルの削除に失敗しました: " + result.getValue(), print);
                     print(getResultMessage(install, change, uninstall), print);
                     return new InstallResult(false);
                 }
             }
-            print(Color.GREEN.format("S: " + description.name + ":" + description.version + "を正常にインストールされました"), print);
+            print("S: " + description.name + ":" + description.version + "を正常にインストールされました", print);
             print(getResultMessage(install, change, uninstall), print);
             return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
         }
@@ -179,7 +178,7 @@ public class Installer
         {
             if (!depend)
             {
-                print(Color.MAGENTA.format("依存関係をダウンロード中..."), print);
+                print("依存関係をダウンロード中...", print);
                 downloadStartTime = System.currentTimeMillis();
                 depend = true;
             }
@@ -206,7 +205,7 @@ public class Installer
         }
 
         if (depend)
-            print(Color.GREEN.format((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。"), print);
+            print((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。", print);
 
         if (result.getKey())
         {
@@ -222,7 +221,7 @@ public class Installer
             else
             {
                 install--;
-                print(Color.YELLOW.format("W: 既に同じプラグインが存在します。"), print);
+                print("W: 既に同じプラグインが存在します。", print);
                 if (new File(result.getValue()).exists())
                 {
                     try
@@ -232,11 +231,11 @@ public class Installer
                     }
                     catch (Exception e)
                     {
-                        print(Color.RED.format("E: ファイルの削除に失敗しました: " + result.getValue()), print);
+                        print("E: ファイルの削除に失敗しました: " + result.getValue(), print);
                     }
                 }
                 print(getResultMessage(install, uninstall, change), print);
-                print(Color.GREEN.format("S: " + description.name + ":" + description.version + " を正常にインストールしました。"), print);
+                print("S: " + description.name + ":" + description.version + " を正常にインストールしました。", print);
                 return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
             }
         }
@@ -244,17 +243,17 @@ public class Installer
         if (failedResolved.size() > 0)
         {
             print(getResultMessage(install, uninstall, change), print);
-            print(Color.YELLOW.format("W: " + description.name + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。"), print);
-            print(Color.RED.format(String.join(", ", failedResolved)), print);
+            print("W: " + description.name + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。", print);
+            print(String.join(", ", failedResolved), print);
             return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
         }
 
 
         if (DependencyTree.unusedPlugins().size() != 0)
         {
-            print(Color.CYAN.format("以下のプラグインがインストールされていますが、もう必要とされていません:"), print);
-            print(Color.GREEN.format("  " + String.join(" ", DependencyTree.unusedPlugins())), print);
-            print(Color.CYAN.format("これを削除するには、'/kpm autoremove' を利用してください。"), print);
+            print("以下のプラグインがインストールされていますが、もう必要とされていません:", print);
+            print("  " + String.join(" ", DependencyTree.unusedPlugins()), print);
+            print("これを削除するには、'/kpm autoremove' を利用してください。", print);
         }
 
         if (print)
@@ -276,7 +275,7 @@ public class Installer
         }
 
         print(getResultMessage(install, uninstall, change), print);
-        print(Color.GREEN.format("S: " + description.name + ":" + description.version + " を正常にインストールしました。"), print);
+        print("S: " + description.name + ":" + description.version + " を正常にインストールしました。", print);
         return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
     }
 
@@ -307,24 +306,24 @@ public class Installer
         return "ERROR";
     }
 
-    private static Ansi getChangeMessage(ChangeType type, String name)
+    private static String getChangeMessage(ChangeType type, String name)
     {
         switch (type)
         {
             case INSTALL:
-                return Color.GREEN.format("+ " + name);
+                return "+ " + name;
             case CHANGE:
-                return Color.YELLOW.format("~ " + name);
+                return "~ " + name;
             case uninstall:
-                return Color.RED.format("- " + name);
+                return "- " + name;
             default:
-                return Color.MAGENTA.format("? " + name);
+                return "? " + name;
         }
     }
 
-    private static Ansi getResultMessage(int install, int change, int uninstall)
+    private static String getResultMessage(int install, int change, int uninstall)
     {
-        return Color.GREEN.format("|@" + Color.GREEN.toString() + install + "追加|@ " + Color.YELLOW + change + "変更|@ " + Color.RED + uninstall + "削除");
+        return install + "追加 " + change + "変更 " + uninstall + "削除";
     }
 
     private enum ChangeType

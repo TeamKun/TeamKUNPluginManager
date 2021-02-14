@@ -168,6 +168,11 @@ public class DependencyTree
         return result;
     }
 
+    public static void reCrawlAllPlugin()
+    {
+
+    }
+
     public static void crawlPlugin(Info plugin)
     {
         if (plugin == null)

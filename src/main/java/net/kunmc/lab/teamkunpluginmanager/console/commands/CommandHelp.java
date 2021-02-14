@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
-import net.kunmc.lab.teamkunpluginmanager.console.utils.Color;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Property;
 
 import java.util.Arrays;
@@ -35,7 +34,7 @@ public class CommandHelp implements CommandBase
 
             if (c.size() < 1)
             {
-                System.out.println(Color.RED + "E: コマンドが見つかりませんでした。");
+                System.out.println("E: コマンドが見つかりませんでした。");
                 return 1;
             }
 
