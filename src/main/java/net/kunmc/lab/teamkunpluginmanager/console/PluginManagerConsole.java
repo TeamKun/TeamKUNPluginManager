@@ -24,6 +24,7 @@ public class PluginManagerConsole
 
     public static FileConfiguration config;
     public static Path dataFolder;
+    public static String classPath;
 
     public static void main(String[] args)
     {
@@ -53,7 +54,7 @@ public class PluginManagerConsole
 
     public static void init()
     {
-        String classPath = System.getProperty("java.class.path");
+        classPath = System.getProperty("java.class.path");
         if (Intellij.isDebugging())
             classPath = StringUtils.split(classPath, ";")[0];
         dataFolder = new File(new File(classPath).getParentFile(), "TeamKunPluginManager").toPath();
