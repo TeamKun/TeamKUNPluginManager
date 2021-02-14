@@ -30,30 +30,6 @@ public class PluginYamlParser
     public Command[] commands;
     public Permission[] permissions;
 
-    public static PluginYamlParser fromJar(File file) throws IOException
-    {
-        if (!file.exists())
-            throw new FileNotFoundException("plugin not found.");
-
-
-
-        try(ZipFile zip = new ZipFile(file))
-        {
-
-            ZipEntry ent = zip.getEntry("plugin.yml");
-
-            if (ent == null)
-                throw new FileNotFoundException("plugin.yml not found.");
-
-            try(InputStream stream = zip.getInputStream(ent))
-            {
-                HashMap<String, Object> pluginYamlParser = new Yaml().load(stream);
-                return new PluginYamlParser(pluginYamlParser);
-            }
-        }
-    }
-
-
     @SuppressWarnings("unchecked")
     public PluginYamlParser(HashMap<String, Object> kv) throws IOException
     {
@@ -77,7 +53,7 @@ public class PluginYamlParser
 
         if (kv.get("commands") != null)
         {
-            ArrayList<Command> commands = new ArrayList<>();;
+            ArrayList<Command> commands = new ArrayList<>();
             ((HashMap<String, Object>) kv.get("commands")).forEach((s, o) -> {
                 commands.add(Command.decode((HashMap<String, Object>) o));
             });
@@ -86,7 +62,7 @@ public class PluginYamlParser
 
         if (kv.get("permissions") != null)
         {
-            ArrayList<Permission> permissions = new ArrayList<>();;
+            ArrayList<Permission> permissions = new ArrayList<>();
             ((HashMap<String, Object>) kv.get("commands")).forEach((s, o) -> {
                 permissions.add(Permission.decode((HashMap<String, Object>) o));
             });
@@ -94,6 +70,27 @@ public class PluginYamlParser
         }
     }
 
+    public static PluginYamlParser fromJar(File file) throws IOException
+    {
+        if (!file.exists())
+            throw new FileNotFoundException("plugin not found.");
+
+
+        try (ZipFile zip = new ZipFile(file))
+        {
+
+            ZipEntry ent = zip.getEntry("plugin.yml");
+
+            if (ent == null)
+                throw new FileNotFoundException("plugin.yml not found.");
+
+            try (InputStream stream = zip.getInputStream(ent))
+            {
+                HashMap<String, Object> pluginYamlParser = new Yaml().load(stream);
+                return new PluginYamlParser(pluginYamlParser);
+            }
+        }
+    }
 
     enum Load
     {
@@ -103,6 +100,9 @@ public class PluginYamlParser
 
     public static class Command
     {
+        public String description;
+        public String[] aliases;
+
         @SuppressWarnings("unchecked")
         public static Command decode(HashMap<String, Object> so)
         {
@@ -112,19 +112,18 @@ public class PluginYamlParser
             command.aliases = (lst = (ArrayList<String>) so.get("authors")) != null ? lst.toArray(new String[0]): new String[0];
             return command;
         }
-        public String description;
-        public String[] aliases;
     }
 
     public static class Permission
     {
+        public String description;
+
         public static Permission decode(HashMap<String, Object> so)
         {
             Permission permission = new Permission();
             permission.description = (String) so.get("description");
             return permission;
         }
-        public String description;
     }
 
 

@@ -3,9 +3,9 @@ package net.kunmc.lab.teamkunpluginmanager.console;
 import develop.p2p.lib.FileConfiguration;
 import develop.p2p.lib.Intellij;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
+import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
-import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -51,10 +51,9 @@ public class PluginManagerConsole
             System.exit(c.get(0).run(ArrayUtils.remove(args, 0)));
     }
 
-
     public static void init()
     {
-        String classPath =  System.getProperty("java.class.path");
+        String classPath = System.getProperty("java.class.path");
         if (Intellij.isDebugging())
             classPath = StringUtils.split(classPath, ";")[0];
         dataFolder = new File(new File(classPath).getParentFile(), "TeamKunPluginManager").toPath();

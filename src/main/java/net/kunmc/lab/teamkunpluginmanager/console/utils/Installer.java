@@ -10,36 +10,39 @@ import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.fusesource.jansi.Ansi;
 
-import javax.sound.sampled.DataLine.Info;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Installer {
+public class Installer
+{
 
-    public static void uninstall(String pluginName) {
+    public static void uninstall(String pluginName)
+    {
         uninstall(pluginName, false);
     }
 
-    public static void uninstall(String pluginName, boolean force) {
+    public static void uninstall(String pluginName, boolean force)
+    {
 
         System.out.println(Color.MAGENTA.format("依存関係ツリーを読み込み中..."));
 
         DependencyTree.Info info = DependencyTree.getInfo(pluginName, false);
-        if (info == null) {
+        if (info == null)
+        {
             System.out.println(Color.RED.format("E: プラグインが見つかりませんでした。"));
             return;
         }
 
-        if (new File(pluginName).exists()) {
+        if (new File(pluginName).exists())
+        {
             System.out.println(Color.RED.format("E: プラグインが見つかりませんでした。"));
             return;
         }
@@ -48,7 +51,8 @@ public class Installer {
 
     /**
      * インストール
-     * @param url 名前またはurl
+     *
+     * @param url   名前またはurl
      * @param print 出力
      */
 
@@ -63,7 +67,8 @@ public class Installer {
             progress.start();
         KnownPlugins.initialize(
                 PluginManagerConsole.dataFolder.toFile(),
-                PluginManagerConsole.config.getString("resolvePath"));
+                PluginManagerConsole.config.getString("resolvePath")
+        );
 
         if (print)
             progress.stop();
@@ -82,7 +87,7 @@ public class Installer {
                     if (Variables.OAuthToken.equals(""))
                         print(Color.YELLOW.format("W: GitHub 用のOAuth Tokenを正しく設定していない可能性がございます。"), print);
 
-                    print(Color.RED.format( "E: " + url.substring(6)), print);
+                    print(Color.RED.format("E: " + url.substring(6)), print);
                     print(getResultMessage(install, change, uninstall), print);
                     return new InstallResult(false);
                 }
@@ -170,7 +175,7 @@ public class Installer {
         boolean depend = false;   //依存関係の解決の必要性
         ArrayList<String> failedResolved = new ArrayList<>();   //依存関係の解決失敗
 
-        for(String pl: description.depend)
+        for (String pl : description.depend)
         {
             if (!depend)
             {
@@ -205,11 +210,12 @@ public class Installer {
 
         if (result.getKey())
         {
-            if(info != null && new Version(info.version).isHigherThan(description.version))
+            if (info != null && new Version(info.version).isHigherThan(description.version))
             {
                 install--;
                 change++;
-                print(getChangeMessage(ChangeType.CHANGE,
+                print(getChangeMessage(
+                        ChangeType.CHANGE,
                         info.name + ":" + info.version + " => " + description.name + ":" + description.version
                 ), print);
             }
@@ -230,7 +236,7 @@ public class Installer {
                     }
                 }
                 print(getResultMessage(install, uninstall, change), print);
-                print(Color.GREEN.format("S: " + description.name  + ":" + description.version + " を正常にインストールしました。"), print);
+                print(Color.GREEN.format("S: " + description.name + ":" + description.version + " を正常にインストールしました。"), print);
                 return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
             }
         }
@@ -242,7 +248,6 @@ public class Installer {
             print(Color.RED.format(String.join(", ", failedResolved)), print);
             return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
         }
-
 
 
         if (DependencyTree.unusedPlugins().size() != 0)
@@ -271,7 +276,7 @@ public class Installer {
         }
 
         print(getResultMessage(install, uninstall, change), print);
-        print(Color.GREEN.format("S: " + description.name  + ":" + description.version + " を正常にインストールしました。"), print);
+        print(Color.GREEN.format("S: " + description.name + ":" + description.version + " を正常にインストールしました。"), print);
         return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
     }
 
@@ -289,7 +294,7 @@ public class Installer {
 
         String[] orgName = Variables.gitHubName;
 
-        for(String on: orgName)
+        for (String on : orgName)
         {
             String gitHubRepo = on + "/" + name;
 
@@ -301,7 +306,6 @@ public class Installer {
 
         return "ERROR";
     }
-
 
     private static Ansi getChangeMessage(ChangeType type, String name)
     {
