@@ -1,18 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.console.utils;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.bukkit.permissions.Permission;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
@@ -42,23 +35,24 @@ public class PluginYamlParser
         if (!file.exists())
             throw new FileNotFoundException("plugin not found.");
 
-        ZipFile zip = new ZipFile(file);
 
-        ZipEntry ent = zip.getEntry("plugin.yml");
 
-        if (ent == null)
-            throw new FileNotFoundException("plugin.yml not found.");
+        try(ZipFile zip = new ZipFile(file))
+        {
 
-        return PluginYamlParser.fromStream(zip.getInputStream(ent));
+            ZipEntry ent = zip.getEntry("plugin.yml");
+
+            if (ent == null)
+                throw new FileNotFoundException("plugin.yml not found.");
+
+            try(InputStream stream = zip.getInputStream(ent))
+            {
+                HashMap<String, Object> pluginYamlParser = new Yaml().load(stream);
+                return new PluginYamlParser(pluginYamlParser);
+            }
+        }
     }
 
-    public static PluginYamlParser fromStream(InputStream stream) throws IOException
-    {
-        String d = IOUtils.toString(stream, StandardCharsets.UTF_8);
-
-        HashMap<String, Object> pluginYamlParser = new Yaml().load(d);
-        return new PluginYamlParser(pluginYamlParser);
-    }
 
     @SuppressWarnings("unchecked")
     public PluginYamlParser(HashMap<String, Object> kv) throws IOException

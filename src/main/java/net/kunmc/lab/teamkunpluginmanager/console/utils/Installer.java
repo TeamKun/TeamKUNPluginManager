@@ -11,14 +11,17 @@ import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.fusesource.jansi.Ansi;
 
+import javax.sound.sampled.DataLine.Info;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Installer {
 
@@ -55,11 +58,15 @@ public class Installer {
         int uninstall = 0;
         int change = 0;
 
-        Progress progress = new Progress("既知プラグインデータベースの読み取り中").start();
+        Progress progress = new Progress("データベースを構築中");
+        if (print)
+            progress.start();
         KnownPlugins.initialize(
                 PluginManagerConsole.dataFolder.toFile(),
                 PluginManagerConsole.config.getString("resolvePath"));
-        progress.stop();
+
+        if (print)
+            progress.stop();
 
         if (!UrlValidator.getInstance().isValid(url))
         {
@@ -108,7 +115,8 @@ public class Installer {
         install++;
 
         print(Color.GREEN.format((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。"), print);
-        Progress infoProg = new Progress("情報を読み込み中...");
+        Progress infoProg = new Progress("情報を読み込み中");
+        infoProg.start();
         PluginYamlParser description;
 
         try
@@ -145,8 +153,7 @@ public class Installer {
                 try
                 {
                     File f = new File(result.getValue());
-                    f.setWritable(true);
-                    f.delete();
+                    FileUtils.forceDelete(f);
                 }
                 catch (Exception e)
                 { //getName => PeyaPeyaPlugin getFullName => PeyaPeyaPlugin:1.0
@@ -180,7 +187,7 @@ public class Installer {
                 continue;
             }
 
-            InstallResult dependResult = install(temp1, false);
+            InstallResult dependResult = install(temp1, true);
             if (!dependResult.success)
             {
                 failedResolved.add(temp1);
@@ -215,15 +222,14 @@ public class Installer {
                     try
                     {
                         File f = new File(result.getValue());
-                        f.setWritable(true);
-                        f.delete();
+                        FileUtils.forceDelete(f);
                     }
                     catch (Exception e)
                     {
                         print(Color.RED.format("E: ファイルの削除に失敗しました: " + result.getValue()), print);
                     }
                 }
-                print(Messages.getStatusMessage(install, uninstall, change), print);
+                print(getResultMessage(install, uninstall, change), print);
                 print(Color.GREEN.format("S: " + description.name  + ":" + description.version + " を正常にインストールしました。"), print);
                 return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
             }
@@ -231,17 +237,37 @@ public class Installer {
 
         if (failedResolved.size() > 0)
         {
-            print(Messages.getStatusMessage(install, uninstall, change), print);
+            print(getResultMessage(install, uninstall, change), print);
             print(Color.YELLOW.format("W: " + description.name + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。"), print);
             print(Color.RED.format(String.join(", ", failedResolved)), print);
             return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
         }
+
+
 
         if (DependencyTree.unusedPlugins().size() != 0)
         {
             print(Color.CYAN.format("以下のプラグインがインストールされていますが、もう必要とされていません:"), print);
             print(Color.GREEN.format("  " + String.join(" ", DependencyTree.unusedPlugins())), print);
             print(Color.CYAN.format("これを削除するには、'/kpm autoremove' を利用してください。"), print);
+        }
+
+        if (print)
+        {
+            Progress progressDepend = new Progress("依存関係ツリーを構築中");
+            progressDepend.start();
+            DependencyTree.Info dInfo = new DependencyTree.Info();
+            dInfo.name = description.name;
+            dInfo.version = description.version;
+            dInfo.depends = new ArrayList<>();
+            Arrays.stream(description.depend).parallel()
+                    .forEach(s -> {
+                        DependencyTree.Info.Depend dep = new DependencyTree.Info.Depend();
+                        dep.name = s;
+                        dInfo.depends.add(dep);
+                    });
+            DependencyTree.crawlPlugin(dInfo);
+            progressDepend.stop();
         }
 
         print(getResultMessage(install, uninstall, change), print);
