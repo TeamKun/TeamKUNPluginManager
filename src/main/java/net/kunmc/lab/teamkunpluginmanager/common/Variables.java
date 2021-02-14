@@ -8,5 +8,8 @@ public class Variables
      */
     public static String OAuthToken;
 
-
+    /**
+     * GitHubの名前
+     */
+    public static String[] gitHubName;
 }

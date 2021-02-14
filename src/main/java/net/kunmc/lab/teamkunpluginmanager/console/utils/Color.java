@@ -9,8 +9,7 @@ public enum Color
     RED("@|red "),
     GREEN("@|green "),
     YELLOW("@|yellow "),
-    PURPLE("@|purple "),
-    PINK("@|pink "),
+    MAGENTA("@|magenta "),
     CYAN("@|cyan ");
 
     String code;

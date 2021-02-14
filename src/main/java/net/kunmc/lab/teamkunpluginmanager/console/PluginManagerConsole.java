@@ -65,6 +65,12 @@ public class PluginManagerConsole
 
         config.saveDefaultConfig();
 
+        Variables.OAuthToken = config.getString("oauth");
+        if (config.get("gitHubName") instanceof String)
+            Variables.gitHubName = new String[]{config.get("gitHubName")};
+        else
+            Variables.gitHubName = config.get("gitHubName");
+
         Logger.getLogger("com.zaxxer.hikari.HikariDataSource").setLevel(Level.OFF);
 
         if (!AnsiConsole.isInstalled())

@@ -60,7 +60,7 @@ public class URLUtils
 
         int tryna = 0;
         String original = fileName;
-        while (new File("plugins/" + fileName).exists())
+        while (new File((ClassUtils.isExists("org.bukkit.ChatColor") ? "pluguns/": "") + fileName).exists())
         {
             fileName = original + "." + ++tryna + ".jar";
             duplicateFile = true;
@@ -78,7 +78,7 @@ public class URLUtils
             if (connection.getResponseCode() != 200)
                 return new Pair<>(false, "");
 
-            FileUtils.copyInputStreamToFile(connection.getInputStream(), new File("plugins/" + fileName));
+            FileUtils.copyInputStreamToFile(connection.getInputStream(), new File((ClassUtils.isExists("org.bukkit.ChatColor") ? "pluguns/": "") + fileName));
             return new Pair<>(duplicateFile, fileName);
         }
         catch (Exception e)
