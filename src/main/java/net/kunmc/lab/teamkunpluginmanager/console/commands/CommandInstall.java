@@ -1,13 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
-import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
+import net.kunmc.lab.teamkunpluginmanager.console.Progress;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Installer;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
-import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.plugin.java.PluginClassLoader;
-import org.bukkit.scoreboard.Team;
-
-import java.util.Arrays;
 
 public class CommandInstall implements CommandBase
 {
@@ -33,7 +28,7 @@ public class CommandInstall implements CommandBase
             return -1;
         }
 
-        if (containsIgnoreCase(args, "-h") || containsIgnoreCase(args, "--help") || containsIgnoreCase(args, "-?"))
+        if (CommandUtil.containsIgnoreCase(args, "-h") || CommandUtil.containsIgnoreCase(args, "--help") || CommandUtil.containsIgnoreCase(args, "-?"))
         {
             printHelp();
             return 0;
@@ -47,23 +42,34 @@ public class CommandInstall implements CommandBase
     @Override
     public void printHelp()
     {
-        System.out.println("使用法： java -jar " + PluginManagerConsole.classPath + " install <プラグイン>");
-        System.out.println();
-        System.out.println("パラメータ：");
-        System.out.println("    install：インストールするプラグインを指定します。");
-        System.out.println("        指定方法：GitHub組織名/リポジトリ名, プラグイン名*, JARへの直接リンク");
-        System.out.println();
-        System.out.println("エイリアス： i");
-        System.out.println("例：");
-        System.out.println("    ... install TeamKun/TeamKunPluginManager");
-        System.out.println("    ... i https://example.com/plugins/exampleplugin.jar");
-        System.out.println("    ... install ExamplePlugin");
-        System.out.println();
-        System.out.println("*[1]： プラグイン名は事前にリポジトリで定義されている必要があります。");
+        Progress progress = new Progress("ヘルプを読み込み中");
+        progress.start();
+
+        String help = CommandUtil.genHelp("install",
+                "プラグインを新規にインストールします。",
+                getAliases(),
+                new CommandUtil.Parameter[]{new CommandUtil.Parameter(
+                        "プラグイン",
+                        "インストールプラグインです。",
+                        "GitHub組織名/リポジトリ名, プラグイン名*, JARへの直接リンク",
+                        true
+                        )},
+                new String[]{
+                        "TeamKun/ExamplePlugin",
+                        "https://example.com/plugins/exampleplugin.jar",
+                        "https://github.com/TeamKun/ExamplePlugin/releases/1.0/download/Exampleplugin-1.0.jar",
+                        "https://github.com/TeamKun/ExamplePlugin/"
+                }
+        );
+        progress.stop();
+        try
+        {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException ignored) { }
+        System.out.println(help);
+
     }
 
-    public static boolean containsIgnoreCase(String[] target, String maf)
-    {
-        return Arrays.stream(target).parallel().anyMatch(maf::equalsIgnoreCase);
-    }
+
 }

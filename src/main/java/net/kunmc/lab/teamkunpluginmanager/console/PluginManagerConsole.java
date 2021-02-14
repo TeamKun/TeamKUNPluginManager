@@ -6,6 +6,8 @@ import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
+import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandUninstall;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class PluginManagerConsole
 {
-    public static final CommandBase[] commands = {new CommandInstall()};
+    public static final CommandBase[] commands = {new CommandInstall(), new CommandUninstall()};
 
     public static FileConfiguration config;
     public static Path dataFolder;
@@ -41,15 +43,22 @@ public class PluginManagerConsole
             return;
         }
 
-        List<CommandBase> c = Arrays.stream(commands).parallel().filter(commandBase -> commandBase.getName().equalsIgnoreCase(args[0]) ||
-                containsIgnoreCase(commandBase.getAliases(), args[0])).collect(Collectors.toList());
+        String[] finalArgs = args;
+        List<CommandBase> c = Arrays.stream(commands).parallel().filter(commandBase -> commandBase.getName().equalsIgnoreCase(finalArgs[0]) ||
+                containsIgnoreCase(commandBase.getAliases(), finalArgs[0])).collect(Collectors.toList());
 
         String[] realArgs = ArrayUtils.remove(args, 0);
 
         if (c.size() < 1)
             new CommandHelp().run(realArgs);
         else
-            System.exit(c.get(0).run(ArrayUtils.remove(args, 0)));
+        {
+            args = ArrayUtils.remove(args, 0);
+            if (CommandUtil.containsIgnoreCase(args, "-h") || CommandUtil.containsIgnoreCase(args, "--help") || CommandUtil.containsIgnoreCase(args, "-?"))
+                c.get(0).printHelp();
+            else
+                System.exit(c.get(0).run(args));
+        }
     }
 
     public static void init()

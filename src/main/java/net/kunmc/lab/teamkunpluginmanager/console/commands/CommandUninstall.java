@@ -1,7 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Color;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 
 public class CommandUninstall implements CommandBase
 {
@@ -15,25 +17,25 @@ public class CommandUninstall implements CommandBase
     @Override
     public String[] getAliases()
     {
-        return new String[]{""};
+        return new String[]{"rm", "del", "remove"};
     }
 
     @Override
     public int run(String... args)
     {
-
-        if (args[0].equalsIgnoreCase("-h") || args[0].equalsIgnoreCase("--help"))
+        
+        if (CommandUtil.containsIgnoreCase(args, "-h") || CommandUtil.containsIgnoreCase(args, "--help") || CommandUtil.containsIgnoreCase(args, "-?"))
         {
             printHelp();
             return 0;
         }
-
         switch (args.length)
         {
             case 1:
                 uninstall(args[0]);
                 break;
             case 2:
+                
                 uninstall(args[0], Boolean.parseBoolean(args[1]));
                 break;
             default:
@@ -47,6 +49,29 @@ public class CommandUninstall implements CommandBase
     @Override
     public void printHelp()
     {
+        Progress progress = new Progress("ヘルプを読み込み中");
+        progress.start();
+
+        String help = CommandUtil.genHelp("uninstall",
+                "プラグインを削除します。",
+                getAliases(),
+                new CommandUtil.Parameter[]{new CommandUtil.Parameter(
+                        "プラグイン",
+                        "削除するプラグインです。",
+                        "プラグイン名",
+                        true
+                )},
+                new String[]{
+                        "ExamplePlugin"
+                }
+        );
+        progress.stop();
+        try
+        {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException ignored) { }
+        System.out.println(help);
 
     }
 
