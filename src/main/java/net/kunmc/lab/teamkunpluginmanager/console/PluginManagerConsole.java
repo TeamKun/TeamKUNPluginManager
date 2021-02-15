@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.console;
 
 import develop.p2p.lib.FileConfiguration;
 import develop.p2p.lib.Intellij;
+import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
@@ -34,6 +35,9 @@ public class PluginManagerConsole
         Progress progress = new Progress("情報を読み込み中").start();
         init();
         progress.stop();
+        Progress buildDepend = new Progress("依存関係ツリーの構築中").start();
+        DependencyTree.reCrawlAllPlugin();
+        buildDepend.stop();
 
         if (args.length == 0)
         {
@@ -80,7 +84,6 @@ public class PluginManagerConsole
             Variables.gitHubName = config.get("gitHubName");
 
         Logger.getLogger("com.zaxxer.hikari.HikariDataSource").setLevel(Level.OFF);
-
     }
 
     public static boolean containsIgnoreCase(String[] target, String maf)

@@ -3,14 +3,18 @@ package net.kunmc.lab.teamkunpluginmanager.common;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.PluginYamlParser;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DependencyTree
@@ -65,6 +69,20 @@ public class DependencyTree
         }
     }
 
+    public static void dropAll()
+    {
+        try (Connection con = dataSource.getConnection();
+             Statement st = con.createStatement();)
+        {
+            st.execute("DELETE FROM DEPEND");
+            st.execute("DELETE FROM DEPENDBY");
+            st.execute("DELETE FROM PLUGIN");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static void purge(String name)
     {
@@ -170,7 +188,41 @@ public class DependencyTree
 
     public static void reCrawlAllPlugin()
     {
+        dropAll();
 
+
+        Path path;
+        File file = (path = PluginManagerConsole.dataFolder.normalize().getParent()) == null ?
+                PluginManagerConsole.dataFolder.normalize().toFile() : path.toFile();
+
+        File[] files = file.listFiles((dir, name) -> name.endsWith(".jar"));
+
+        if (files == null)
+            return;
+
+        Arrays.stream(files).forEach(file1 -> {
+            try
+            {
+                PluginYamlParser pl = PluginYamlParser.fromJar(file1);
+                DependencyTree.Info dInfo = new DependencyTree.Info();
+                dInfo.name = pl.name;
+                dInfo.version = pl.version;
+                dInfo.depends = new ArrayList<>();
+                Arrays.stream(pl.depend).parallel()
+                        .forEach(s -> {
+                            DependencyTree.Info.Depend dep = new DependencyTree.Info.Depend();
+                            dep.name = s;
+                            dInfo.depends.add(dep);
+                        });
+
+                crawlPlugin(dInfo);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+        });
     }
 
     public static void crawlPlugin(Info plugin)

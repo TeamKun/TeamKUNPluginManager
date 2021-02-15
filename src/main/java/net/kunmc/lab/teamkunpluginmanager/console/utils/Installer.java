@@ -191,7 +191,7 @@ public class Installer
                 continue;
             }
 
-            InstallResult dependResult = install(temp1, true);
+            InstallResult dependResult = install(temp1, false);
             if (!dependResult.success)
             {
                 failedResolved.add(temp1);

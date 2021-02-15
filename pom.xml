@@ -69,7 +69,6 @@
                                 <includes>
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
-                                    <include>org.slf4j:*</include>
                                     <include>org.apache.commons:commons-lang3</include>
                                     <include>com.zaxxer:*</include>
                                     <include>org.snakeyaml:*</include>
