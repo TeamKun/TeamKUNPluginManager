@@ -1,0 +1,23 @@
+# 依存関係の名前解決に使用する組織名またはユーザ名
+gitHubName: TeamKUN
+
+#OAuth token
+#このキーをアップロード、公開しないでください。
+oauth: "036b63e295db9860bbd9c33d54bde69267ce3ba3"
+
+#DBへのパス
+dependPath: "/depend.db"
+
+#名前解決へのパス
+resolvePath: "/resolve.db"
+
+# エイリアス定義ファイル
+# 形式: JSON
+# 書き方:  { "ExamplePlugin": "https://example.com/download/ExamplePlugin.jar"}
+config:
+  - "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
+
+# 保護
+ignore:
+  - bStats               #削除しないでください
+  - TeamKunPluginManager #削除しないでください
