@@ -131,8 +131,8 @@ public class Installer
 
         if (removable.size() > 0)
         {
-            print("以下のプラグインがインストールされていますが、もう必要とされていません：\n", print);
-            print("  " + String.join(" ", removable) + "\n", print);
+            print("以下のプラグインがインストールされていますが、もう必要とされていません：", print);
+            print("  " + String.join(" ", removable), print);
             print("これを削除するには、 autoremove コマンドを使用してください。", print);
         }
 
