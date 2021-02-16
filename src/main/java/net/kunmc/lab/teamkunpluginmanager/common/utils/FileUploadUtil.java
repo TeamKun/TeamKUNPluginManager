@@ -5,9 +5,11 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,5 +58,69 @@ public class FileUploadUtil
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public static String getFileSizeString(long bytes)
+    {
+        String suffix = "B";
+
+        BigDecimal dec = new BigDecimal(String.valueOf(bytes));
+        BigDecimal div = new BigDecimal(1024);
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "KiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "MiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "GiB";
+        }
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "TiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "PiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "EiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "ZiB";
+        }
+
+
+        if (dec.compareTo(div) >= 0)
+        {
+            dec = dec.divide(div);
+            suffix = "YiB";
+        }
+
+        dec = dec.setScale(3, BigDecimal.ROUND_HALF_UP);
+
+
+        return new DecimalFormat("#,###.##;#,###.##").format(dec) + suffix;
     }
 }

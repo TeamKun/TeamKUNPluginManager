@@ -1,9 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.console.utils;
 
 import com.g00fy2.versioncompare.Version;
+import com.google.gson.Gson;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
@@ -17,35 +19,152 @@ import org.apache.commons.validator.routines.UrlValidator;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Installer
 {
 
-    public static void uninstall(String pluginName)
+    /**
+     * アンインストール
+     * @param pluginName 対象
+     * @param print 出力
+     * @param force 強制
+     * @param confirm 続行するかどうか
+     */
+    @SuppressWarnings("unchecked")
+    public static void uninstall(String pluginName, boolean print, boolean force, boolean confirm)
     {
-        uninstall(pluginName, false);
-    }
-
-    public static void uninstall(String pluginName, boolean force)
-    {
-
-        System.out.println("依存関係ツリーを読み込み中...");
+        Progress prog = null;
+        if (print && !confirm)
+            prog = new Progress("依存関係ツリーを読み込み中").start();
 
         DependencyTree.Info info = DependencyTree.getInfo(pluginName, false);
+        if (print && !confirm)
+            prog.stop();
+
         if (info == null)
         {
-            System.out.println("E: プラグインが見つかりませんでした。");
+            print("E: プラグインが見つかりませんでした。", print && !confirm);
             return;
         }
 
-        if (new File(pluginName).exists())
+        String filePath = getFile(info.name);
+
+        if (filePath == null)
         {
-            System.out.println("E: プラグインが見つかりませんでした。");
+            print("E: プラグインが見つかりませんでした。", print && !confirm);
+            DependencyTree.purge(info.name);
             return;
         }
 
+        File file = new File(filePath);
+
+        if (((ArrayList<String>) PluginManagerConsole.config.get("ignore")).stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
+        {
+            print("W: このプラグインは保護されています。", print && !confirm);
+            print("   保護されているプラグインを削除した場合、サーバの動作に支障を来す可能性がございます。", false);
+            print("本当に削除する場合は、--force オプションを使用してください。", print && !confirm && !force);
+            print("E: システムが保護されました。", print && !confirm);
+            return;
+        }
+
+        if (info.rdepends.size() != 0 && !force)
+        {
+            print("W: このプラグインは以下のプラグインの依存関係です。", print && !confirm);
+            print(info.rdepends.stream().map(depend -> depend.depend).collect(Collectors.joining(" ")), print && !confirm);
+            print("    依存関係に指定されているプラグインを削除した場合、サーバの動作に使用を来す可能性がございます。", print && !confirm);
+            print("E: システムが保護されました。", print && !confirm);
+            return;
+        }
+
+
+        print("この操作後に " +
+                FileUploadUtil.getFileSizeString(file.length()) +
+                " のディスク容量が開放されます。", print && !confirm);
+
+        if (!confirm)
+        {
+            print("続行しますか? [Y/n]", print);
+            Scanner scanner = new Scanner(System.in);
+            String conf = scanner.next();
+
+            if (!StringUtils.startsWithIgnoreCase(conf, "y"))
+            {
+                print("キャンセルしました。", print);
+                return;
+            }
+            uninstall(pluginName, print, force, true);
+            return;
+        }
+
+        print("プラグインをアンインストールしています...", print);
+
+        boolean result = file.delete();
+
+        if (!result && force)
+        {
+            try
+            {
+                FileUtils.forceDelete(file);
+            }
+            catch (IOException ignored)
+            {
+                print("E: プラグインの削除に失敗しました。", print);
+                return;
+            }
+        }
+        else if (!result)
+        {
+            print("E: プラグインの削除に失敗しました。 強制的に削除するには、-f オプションを使用してください。", print);
+            return;
+        }
+
+        DependencyTree.wipePlugin(info.name);
+
+        print(getChangeMessage(ChangeType.UNINSTALL, info.name + ":" + info.version), true);
+
+        ArrayList<String> removable = DependencyTree.unusedPlugins();
+
+        if (removable.size() > 0)
+        {
+            print("以下のプラグインがインストールされていますが、もう必要とされていません：\n", print);
+            print("  " + String.join(" ", removable) + "\n", print);
+            print("これを削除するには、 autoremove コマンドを使用してください。", print);
+        }
+
+        print(getResultMessage(0, 1, 0), print);
+        print("S: " + info.name + ":" + info.version + "を正常にアンインストールしました。", print);
+    }
+
+    /**
+     * プラグインの名前からファイル名を取得
+     * @param pluginName 名前
+     * @return ファイル名
+     */
+    public static String getFile(String pluginName)
+    {
+        File file = PluginManagerConsole.dataFolder.toFile().getAbsoluteFile().getParentFile();
+
+        File[] files = file.listFiles((dir, name) -> name.endsWith(".jar"));
+
+        if (files == null)
+            return null;
+
+        for (File f: files)
+        {
+            try
+            {
+                PluginYamlParser yaml = PluginYamlParser.fromJar(f);
+                if (pluginName.equals(yaml.name))
+                    return f.toPath().normalize().toAbsolutePath().toString();
+            }
+            catch (Exception ignored) { }
+        }
+        return null;
     }
 
     /**
@@ -279,6 +398,8 @@ public class Installer
         return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
     }
 
+
+
     public static <T> void print(T obj, boolean nPrint)
     {
         if (!nPrint)
@@ -314,7 +435,7 @@ public class Installer
                 return "+ " + name;
             case CHANGE:
                 return "~ " + name;
-            case uninstall:
+            case UNINSTALL:
                 return "- " + name;
             default:
                 return "? " + name;
@@ -330,7 +451,8 @@ public class Installer
     {
         INSTALL,
         CHANGE,
-        uninstall
+        UNINSTALL
+
     }
 
 }

@@ -1,8 +1,12 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
+import com.google.gson.Gson;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.Installer;
+
+import java.util.Arrays;
 
 public class CommandUninstall implements CommandBase
 {
@@ -22,16 +26,17 @@ public class CommandUninstall implements CommandBase
     @Override
     public int run(String... args)
     {
-        
+        boolean confirm = CommandUtil.containsIgnoreCase(args, "-y");
+
         if (CommandUtil.containsIgnoreCase(args, "-f") || CommandUtil.containsIgnoreCase(args, "--force"))
         {
             if (args.length > 1)
-                uninstall(args[0], true);
+                Installer.uninstall(args[0], true, true, confirm);
             return 0;
         }
 
-        if (args.length == 1)
-            uninstall(args[0]);
+        if (args.length >= 1)
+            Installer.uninstall(args[0], true, false, confirm);
         else
         {
             printHelp();
@@ -69,27 +74,4 @@ public class CommandUninstall implements CommandBase
         System.out.println(help);
 
     }
-
-    private void uninstall(String pluginName)
-    {
-        uninstall(pluginName, false);
-    }
-
-    private void uninstall(String pluginName, boolean force)
-    {
-
-        Progress progress = new Progress("依存関係ツリーを読み込み中");
-        progress.start();
-        DependencyTree.Info info = DependencyTree.getInfo(pluginName, false);
-        progress.stop();
-
-        if (info == null)
-        {
-            System.out.println("E: プラグインが見つかりませんでした。");
-            return;
-        }
-
-
-    }
-
 }

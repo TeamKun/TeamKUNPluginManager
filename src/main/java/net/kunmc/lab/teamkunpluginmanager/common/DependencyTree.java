@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.common;
 
+import com.google.gson.Gson;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
@@ -83,6 +84,26 @@ public class DependencyTree
             e.printStackTrace();
         }
     }
+
+
+    public static void wipePlugin(String plugin)
+    {
+        if (plugin == null)
+            return;
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement p = con.prepareStatement("DELETE FROM PLUGIN WHERE PLUGIN=?")
+        )
+        {
+            p.setString(1, plugin);
+            p.execute();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public static void purge(String name)
     {
@@ -190,11 +211,7 @@ public class DependencyTree
     {
         dropAll();
 
-
-        Path path;
-        File file = (path = PluginManagerConsole.dataFolder.normalize().getParent()) == null ?
-                PluginManagerConsole.dataFolder.normalize().toFile() : path.toFile();
-
+        File file = PluginManagerConsole.dataFolder.toAbsolutePath().getParent().toFile();
         File[] files = file.listFiles((dir, name) -> name.endsWith(".jar"));
 
         if (files == null)

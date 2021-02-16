@@ -97,12 +97,11 @@
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.2.0</version>
-                <executions>
+                <!--executions>
                     <execution>
-                        <phase>package</phase>
                         <goals><goal>proguard</goal></goals>
                     </execution>
-                </executions>
+                </executions-->
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
                     <outjar>${project.build.finalName}.jar</outjar>

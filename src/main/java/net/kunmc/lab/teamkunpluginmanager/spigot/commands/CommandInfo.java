@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
@@ -73,7 +74,7 @@ public class CommandInfo
         {
             sender.sendMessage();
             sender.sendMessage(pi("ファイル名", file.getName()));
-            sender.sendMessage(pi("ダウンロードサイズ", PluginUtil.getFileSizeString(file.length())));
+            sender.sendMessage(pi("ダウンロードサイズ", FileUploadUtil.getFileSizeString(file.length())));
         }
 
         sender.sendMessage();
