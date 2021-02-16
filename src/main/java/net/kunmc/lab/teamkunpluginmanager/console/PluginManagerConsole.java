@@ -90,9 +90,4 @@ public class PluginManagerConsole
     {
         return Arrays.stream(target).parallel().anyMatch(maf::equalsIgnoreCase);
     }
-
-    public static boolean isTokenAvailable()
-    {
-        return !Variables.OAuthToken.isEmpty();
-    }
 }

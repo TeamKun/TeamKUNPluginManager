@@ -93,7 +93,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--plugin>
+            <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.2.0</version>
@@ -110,15 +110,16 @@
                     <options>
                         <option>-dontobfuscate</option>
                         <option>-dontwarn</option>
-                        <option>-keep public class net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole {public static void main(java.lang.String[]);}</option>
-                        <option>-keep public class net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager {public void onEnable();}</option>
-                        <option>-keep public class org.sqlite.JDBC {*;}</option>
+                        <option>-keep public class net.kunmc.lab.teamkunpluginmanager.** {*;}</option>
+                        <option>-keep public class develop.p2p.lib.Intellij {*;}</option>
+                        <option>-keep public class develop.p2p.lib.FileConfiguration {*;}</option>
+                        <option>-keep public class org.sqlite.** {*;}</option>
                     </options>
                     <libs>
                         <lib>${java.home}/lib/rt.jar</lib>
                     </libs>
                 </configuration>
-            </plugin-->
+            </plugin>
         </plugins>
         <resources>
             <resource>
