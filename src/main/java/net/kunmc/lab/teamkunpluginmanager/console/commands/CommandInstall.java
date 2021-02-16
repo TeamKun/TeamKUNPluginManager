@@ -62,11 +62,7 @@ public class CommandInstall implements CommandBase
                 }
         );
         progress.stop();
-        try
-        {
-            Thread.sleep(10);
-        }
-        catch (InterruptedException ignored) { }
+
         System.out.println(help);
 
     }

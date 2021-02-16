@@ -118,7 +118,7 @@ public class Installer
         print(getChangeMessage(ChangeType.INSTALL, result.getValue()), print);
         install++;
 
-        print((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。", print);
+        print((double)(System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
         Progress infoProg = new Progress("情報を読み込み中");
         infoProg.start();
         PluginYamlParser description;
@@ -160,7 +160,7 @@ public class Installer
                     FileUtils.forceDelete(f);
                 }
                 catch (Exception e)
-                { //getName => PeyaPeyaPlugin getFullName => PeyaPeyaPlugin:1.0
+                { //getName => PeyaPeyaPlugin getFullName => PeyaPeyaPlugin:1.0   ...> getName + : + getVersion
                     print("E: ファイルの削除に失敗しました: " + result.getValue(), print);
                     print(getResultMessage(install, change, uninstall), print);
                     return new InstallResult(false);
@@ -205,7 +205,7 @@ public class Installer
         }
 
         if (depend)
-            print((System.currentTimeMillis() - downloadStartTime) / 1000L + "秒で取得しました。", print);
+            print((double)(System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
 
         if (result.getKey())
         {

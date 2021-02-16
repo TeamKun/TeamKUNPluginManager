@@ -49,5 +49,10 @@ public class Progress
             return;
         thread.interrupt();
         thread = null;
+        try
+        {
+            Thread.sleep(10);
+        }
+        catch (InterruptedException ignored) { }
     }
 }
