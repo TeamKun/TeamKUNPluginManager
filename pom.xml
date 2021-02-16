@@ -105,7 +105,7 @@
                 </executions>
                 <configuration>
                     <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <outjar>${project.build.finalName}.jar</outjar>
                     <outputDirectory>${project.build.directory}</outputDirectory>
                     <options>
                         <option>-dontobfuscate</option>

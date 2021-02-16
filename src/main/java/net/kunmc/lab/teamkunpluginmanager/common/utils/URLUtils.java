@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -18,22 +19,33 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (url.getHost().equals("api.github.com"))
+            if (!Variables.OAuthToken.isEmpty() && url.getHost().equals("api.github.com"))
                 connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
-            if (connection.getResponseCode() == 404)
-                return "{'message': 'プラグインが見つかりませんでした。'}";
-            if (connection.getResponseCode() == 403)
-                return "{'message': 'プラグインを取得できません。しばらくしてからもう一度インストールしてください。'}";
+            switch (connection.getResponseCode())
+            {
+                case 404:
+                    return "{'message':'プラグインが見つかりませんでした。'}";
+                case 403:
+                    return "{'message':'プラグインを取得できませんでした。15分たって解決しない場合はトークンないしリポジトリを変更してください。'}";
+                case 401:
+                    return "{'message':'プラグインを取得できませんでした。トークンが間違っている可能性があります。'}";
+            }
 
-            if (connection.getResponseCode() != 200)
-                return "{'message': '不明なエラーが発生しました。'}";
 
-            return IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8);
+            try(InputStream stream = connection.getInputStream())
+            {
+                String response = IOUtils.toString(stream, StandardCharsets.UTF_8);
+                if (connection.getResponseCode() == 200)
+                    return response;
+                System.out.println("Code: " + connection.getResponseCode());
+                System.out.println(response);
+                return "{'message':'不明なエラーが発生しました。コンソールに結果をダンプします。'}";
+            }
 
         }
         catch (Exception e)
