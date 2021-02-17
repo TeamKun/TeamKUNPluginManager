@@ -64,6 +64,9 @@ public final class TeamKunPluginManager extends JavaPlugin
                 vault.vault(tokenEnv);
             return;
         }
+
+        if (vault.getToken().equals(""))
+            vault.vault("");
     }
 
     @Override
