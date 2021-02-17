@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
+import net.kunmc.lab.teamkunpluginmanager.console.utils.Installer;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.PluginYamlParser;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +19,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DependencyTree
 {
@@ -108,7 +112,7 @@ public class DependencyTree
     public static void purge(String name)
     {
         try (Connection con = dataSource.getConnection();
-             PreparedStatement dp = con.prepareStatement("DELETE FROM DEPEND WHERE PLUGIN=?");
+             PreparedStatement dp = con.prepareStatement("DELETE FROM DEPEND WHERE DEPEND=?");
              PreparedStatement rdp = con.prepareStatement("DELETE FROM DEPENDBY WHERE PLUGIN=?"))
         {
             dp.setString(1, name);
@@ -130,9 +134,9 @@ public class DependencyTree
         Info result = new Info();
 
         try (Connection con = dataSource.getConnection();
-             PreparedStatement pluginSQL = con.prepareStatement("SELECT * FROM PLUGIN WHERE PLUGIN=?");
-             PreparedStatement dependSQL = con.prepareStatement("SELECT * FROM DEPEND WHERE PLUGIN=?");
-             PreparedStatement dependBySQL = con.prepareStatement("SELECT * FROM DEPENDBY WHERE PLUGIN=?")
+             PreparedStatement pluginSQL = con.prepareStatement("SELECT * FROM PLUGIN WHERE UPPER(PLUGIN) = UPPER(?)");
+             PreparedStatement dependSQL = con.prepareStatement("SELECT * FROM DEPEND WHERE UPPER(PLUGIN) = UPPER(?)");
+             PreparedStatement dependBySQL = con.prepareStatement("SELECT * FROM DEPENDBY WHERE UPPER(PLUGIN) = UPPER(?)")
         )
         {
             pluginSQL.setString(1, plugin);

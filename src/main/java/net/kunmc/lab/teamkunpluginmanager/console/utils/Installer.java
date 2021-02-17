@@ -361,9 +361,16 @@ public class Installer
 
         if (failedResolved.size() > 0)
         {
+            failedResolved.forEach(DependencyTree::purge);
             print(getResultMessage(install, uninstall, change), print);
             print("W: " + description.name + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。", print);
+            print("依存関係ツリーの構築中", print);
+            DependencyTree.Info dInfo = new DependencyTree.Info();
+            dInfo.name = description.name;
+            dInfo.version = description.version;
+            DependencyTree.crawlPlugin(dInfo);
             print(String.join(", ", failedResolved), print);
+
             return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
         }
 
