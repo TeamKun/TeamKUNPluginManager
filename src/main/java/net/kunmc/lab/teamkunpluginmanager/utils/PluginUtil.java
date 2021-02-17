@@ -4,8 +4,10 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -385,6 +387,7 @@ public class PluginUtil
                     PluginCommand c = (PluginCommand) entry.getValue();
                     if (c.getPlugin() == plugin)
                     {
+                        c.setTabCompleter((a, b, c1, d) -> null);
                         c.unregister(commandMap);
                         it.remove();
                     }

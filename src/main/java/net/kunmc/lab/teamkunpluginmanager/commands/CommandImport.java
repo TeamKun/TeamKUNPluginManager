@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
@@ -36,6 +37,7 @@ public class CommandImport
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
+
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
@@ -62,9 +64,18 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GOLD + "ファイルの読み込み中...");
 
-        LinkedList<PluginContainer> container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+        LinkedList<PluginContainer> container;
+        try
         {
-        }.getType());
+            container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+            {
+            }.getType());
+        }
+        catch (JsonParseException e)
+        {
+            sender.sendMessage(ChatColor.RED + "E: JSONファイルが正しくないようです。");
+            return;
+        }
 
         ArrayList<InstallResult> results = new ArrayList<>();
 

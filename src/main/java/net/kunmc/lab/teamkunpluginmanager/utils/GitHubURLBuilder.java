@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nullable;
 import java.net.URL;
@@ -97,8 +98,11 @@ public class GitHubURLBuilder
 
                 for (JsonElement elem : array)
                     for (JsonElement asset : ((JsonObject) elem).get("assets").getAsJsonArray())
-                        return ((JsonObject) asset).get("browser_download_url").getAsString();
-                return "ERROR " + json;
+                    {
+                        if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
+                            return ((JsonObject) asset).get("browser_download_url").getAsString();
+                    }
+                return "ERROR {'messagee':'アーティファクトが見つかりませんでした。'}";
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
@@ -108,7 +112,10 @@ public class GitHubURLBuilder
                     return "ERROR " + error;
                 JsonObject array = new Gson().fromJson(json, JsonObject.class);
                 for (JsonElement asset : array.get("assets").getAsJsonArray())
-                    return ((JsonObject) asset).get("browser_download_url").getAsString();
+                {
+                    if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
+                        return ((JsonObject) asset).get("browser_download_url").getAsString();
+                }
                 return "ERROR Unknown";
             }
             case "ERROR":
@@ -135,5 +142,10 @@ public class GitHubURLBuilder
     public static boolean isRepoExists(String name)
     {
         return String.valueOf(URLUtils.fetch("https://api.github.com/repos/" + name + "", "HEAD")).startsWith("2");
+    }
+
+    public static boolean isPermissionGranted(String path)
+    {
+        return URLUtils.fetch("https://api.github.com" + path, "HEAD") != 401;
     }
 }

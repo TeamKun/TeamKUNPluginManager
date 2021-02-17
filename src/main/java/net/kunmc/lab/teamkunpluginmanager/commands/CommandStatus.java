@@ -38,6 +38,9 @@ public class CommandStatus
 
         if (!autoRemovable.equals(""))
             sender.sendMessage(autoRemovable);
+
+        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+            sender.sendMessage(ChatColor.RED + "トークンがセットされていません！/kpm register でトークンをセットしてください。");
     }
 
     private static String pi(String property, String value)

@@ -24,6 +24,12 @@ public class CommandInstall
             return;
         }
 
+        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        {
+            sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            return;
+        }
 
         new BukkitRunnable()
         {
