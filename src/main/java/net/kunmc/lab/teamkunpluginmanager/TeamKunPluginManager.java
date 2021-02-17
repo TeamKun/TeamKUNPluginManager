@@ -64,6 +64,6 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     public boolean isTokenAvailable()
     {
-        return config.getString("oauth").isEmpty();
+        return !config.getString("oauth").isEmpty();
     }
 }
