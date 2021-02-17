@@ -21,7 +21,8 @@ public class Messages
                 "          メッセージがあった場合のみ実行してください。") + "\n" +
                 "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n" +
                 "    " + commandMessageBuilder("export", "プラグインをエクスポートします。") + "\n" +
-                "    " + commandMessageBuilder("import", "エクスポートしたファイルからインポートします。") + "\n";
+                "    " + commandMessageBuilder("import", "エクスポートしたファイルからインポートします。") + "\n" +
+                "    " + commandMessageBuilder("register", "トークンをセットします。") + "\n";
     }
 
     public static String getErrorMessage()
