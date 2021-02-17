@@ -18,6 +18,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
+    public static TokenVault vault;
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
 
@@ -28,6 +29,9 @@ public final class TeamKunPluginManager extends JavaPlugin
         plugin = this;
         config = getConfig();
         functional = new Say2Functional(this);
+
+        vault = new TokenVault();
+
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
@@ -51,6 +55,15 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         if (!new File(DATABASE_PATH).exists())
             CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
+
+        String tokenEnv = System.getenv("TOKEN");
+
+        if (tokenEnv != null && !tokenEnv.isEmpty())
+        {
+            if (!vault.getToken().equals(tokenEnv))
+                vault.vault(tokenEnv);
+            return;
+        }
     }
 
     @Override
@@ -64,6 +77,6 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     public boolean isTokenAvailable()
     {
-        return !config.getString("oauth").isEmpty();
+        return !vault.getToken().isEmpty();
     }
 }
