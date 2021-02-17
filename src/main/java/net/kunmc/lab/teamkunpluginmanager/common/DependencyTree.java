@@ -244,6 +244,27 @@ public class DependencyTree
             }
 
         });
+
+        ArrayList<String> purge = new ArrayList<>();
+
+        try(Connection con = dataSource.getConnection();
+            Statement stmt = con.createStatement();
+            PreparedStatement statement = con.prepareStatement("SELECT PLUGIN FROM PLUGIN WHERE UPPER(PLUGIN) = UPPER(?)");)
+        {
+            ResultSet set = stmt.executeQuery("SELECT * FROM DEPEND");
+            while(set.next())
+            {
+                statement.setString(1, set.getString("DEPEND"));
+                if (!statement.executeQuery().next())
+                    purge.add(set.getString("DEPEND"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        purge.forEach(DependencyTree::purge);
     }
 
     public static void crawlPlugin(Info plugin)
@@ -262,6 +283,9 @@ public class DependencyTree
 
             pluginSQL.setString(2, plugin.version);
             pluginSQL.execute();
+
+            if (plugin.depends == null)
+                return;
 
             plugin.depends
                     .forEach(depend -> {
