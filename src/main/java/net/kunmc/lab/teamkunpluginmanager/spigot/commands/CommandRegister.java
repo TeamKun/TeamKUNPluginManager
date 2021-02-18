@@ -23,16 +23,7 @@ public class CommandRegister
             return;
         }
 
-        TeamKunPluginManager.config.set("oauth", args[0]);
 
-        try
-        {
-            TeamKunPluginManager.config.save("config.yml");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            sender.sendMessage(ChatColor.RED + "E: 設定の保存に失敗しました！");
-        }
+        TeamKunPluginManager.vault.vault(args[0]);
     }
 }

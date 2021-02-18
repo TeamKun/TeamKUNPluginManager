@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPluginEntry;
