@@ -6,7 +6,7 @@
 
     <groupId>net.kunmc.lab</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>1.6</version>
+    <version>1.7</version>
     <packaging>jar</packaging>
 
     <name>TeamKunPluginManager</name>
@@ -43,6 +43,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
+                                    <include>com.github.P2P-Develop:*</include>
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
                                     <include>org.slf4j:*</include>
@@ -110,6 +111,10 @@
             <artifactId>smart-invs</artifactId>
             <version>1.2.7</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.P2P-Develop</groupId>
+            <artifactId>PeyangSuperLibrary</artifactId>
+            <version>114.19.19</version>
+        </dependency>
     </dependencies>
 </project>
