@@ -67,7 +67,7 @@ public class CommandUpdate
                                 HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
                                 connection.setRequestMethod("GET");
                                 if (urlObj.getHost().equals("api.github.com"))
-                                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.config.getString("oauth"));
+                                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
                                 connection.setRequestProperty("User-Agent", "TeamKUN Client");
                                 connection.connect();
                                 if (connection.getResponseCode() != 200)
