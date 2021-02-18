@@ -19,7 +19,7 @@
 
 #### 使用法
 
-+ /kpm <i|rm|info|autoremove|clean|fix|status|update|import|export> [Plugin download url|GitHub repository url]
++ /kpm \<i|rm|info|autoremove|clean|fix|status|update|import|export\> \[Plugin download url|GitHub repository url\]
 
 #### サブコマンド
 
