@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager;
+package net.kunmc.lab.teamkunpluginmanager.common;
 
 import org.apache.commons.io.FileUtils;
 

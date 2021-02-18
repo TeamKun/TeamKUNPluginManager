@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot;
 
-import net.kunmc.lab.teamkunpluginmanager.common.Variables;
+import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandMain;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
@@ -14,19 +14,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
+import static net.kunmc.lab.teamkunpluginmanager.common.Variables.vault;
+
+
 public final class TeamKunPluginManager extends JavaPlugin
 {
     public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
     public static TeamKunPluginManager plugin;
     public static FileConfiguration config;
-    public static TokenVault vault;
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
-
-    public static void initVariables()
-    {
-        Variables.OAuthToken = config.getString("oauth");
-    }
 
     @Override
     public void onEnable()
@@ -41,7 +38,6 @@ public final class TeamKunPluginManager extends JavaPlugin
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
-        initVariables();
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
         KnownPlugins.initialize(this.getDataFolder() , TeamKunPluginManager.config.getString("resolvePath"));

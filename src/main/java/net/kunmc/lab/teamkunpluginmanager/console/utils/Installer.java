@@ -202,7 +202,7 @@ public class Installer
                 // URL の指定が間違っていると終了。
                 if (url.startsWith("ERROR "))
                 {
-                    if (Variables.OAuthToken.equals(""))
+                    if (Variables.vault.getToken().equals(""))
                         print("W: GitHub 用のOAuth Tokenを正しく設定していない可能性がございます。", print);
 
                     print("E: " + url.substring(6), print);

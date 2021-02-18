@@ -19,8 +19,8 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (!Variables.OAuthToken.isEmpty() && url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
+            if (!Variables.vault.getToken().isEmpty() && url.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -84,7 +84,7 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
             connection.setRequestMethod("GET");
             if (urlObj.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             if (connection.getResponseCode() != 200)
@@ -109,7 +109,7 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             return connection.getResponseCode();

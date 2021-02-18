@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.console;
 import develop.p2p.lib.FileConfiguration;
 import develop.p2p.lib.Intellij;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
@@ -77,7 +78,21 @@ public class PluginManagerConsole
 
         config.saveDefaultConfig();
 
-        Variables.OAuthToken = config.getString("oauth");
+        Variables.vault = new TokenVault();
+
+
+        String tokenEnv = System.getenv("TOKEN");
+
+        if (tokenEnv != null && !tokenEnv.isEmpty())
+        {
+            if (!Variables.vault.getToken().equals(tokenEnv))
+                Variables.vault.vault(tokenEnv);
+            return;
+        }
+
+        if (Variables.vault.getToken().equals(""))
+            Variables.vault.vault("");
+
         if (config.get("gitHubName") instanceof String)
             Variables.gitHubName = new String[]{config.get("gitHubName")};
         else

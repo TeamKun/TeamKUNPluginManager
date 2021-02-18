@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPluginEntry;
@@ -67,7 +68,7 @@ public class CommandUpdate
                                 HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
                                 connection.setRequestMethod("GET");
                                 if (urlObj.getHost().equals("api.github.com"))
-                                    connection.setRequestProperty("Authorization", "token " + Variables.OAuthToken);
+                                    connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
                                 connection.setRequestProperty("User-Agent", "TeamKUN Client");
                                 connection.connect();
                                 if (connection.getResponseCode() != 200)
