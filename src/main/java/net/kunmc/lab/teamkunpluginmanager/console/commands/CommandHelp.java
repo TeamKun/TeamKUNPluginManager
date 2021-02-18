@@ -19,7 +19,7 @@ public class CommandHelp implements CommandBase
     @Override
     public String[] getAliases()
     {
-        return new String[]{"?"};
+        return new String[]{"?", "h"};
     }
 
     @Override
