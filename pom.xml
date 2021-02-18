@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.4.5</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>fr.minuskube.inv</groupId>
