@@ -25,5 +25,7 @@ public class CommandRegister
 
 
         TeamKunPluginManager.vault.vault(args[0]);
+        sender.sendMessage(ChatColor.GREEN + "S: トークンを正常に保管しました！");
+
     }
 }
