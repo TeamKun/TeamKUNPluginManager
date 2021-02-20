@@ -1,13 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.utils;
+package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
+import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.w3c.dom.stylesheets.LinkStyle;
-
-import javax.imageio.event.IIOReadProgressListener;
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class PluginResolver
@@ -17,7 +14,7 @@ public class PluginResolver
      * @param query 指定
      * @return URLまたはError
      */
-    public static String asUrl(String query)
+    public static String asUrl( String query)
     {
         if (UrlValidator.getInstance().isValid(query))
             return GitHubURLBuilder.urlValidate(query);
