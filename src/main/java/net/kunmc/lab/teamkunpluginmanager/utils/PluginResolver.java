@@ -24,7 +24,7 @@ public class PluginResolver
 
         if (KnownPlugins.isKnown(query))
             return GitHubURLBuilder.urlValidate(KnownPlugins.getKnown(query).url);
-        else if (StringUtils.split("/").length == 2)
+        else if (StringUtils.split("/", query).length == 2)
             return GitHubURLBuilder.urlValidate("https://github.com/" + query);
 
         //configのorgを順番にfetch
