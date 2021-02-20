@@ -2,13 +2,20 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
+import net.minecraft.server.v1_15_R1.CommandDispatcher;
+import net.minecraft.server.v1_15_R1.CommandListenerWrapper;
+import net.minecraft.server.v1_15_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_15_R1.command.BukkitCommandWrapper;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -19,6 +26,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +40,7 @@ import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -310,6 +319,17 @@ public class PluginUtil
     @SuppressWarnings("unchecked")
     public static void unload(Plugin plugin)
     {
+        getKnownCommands().entrySet().stream().parallel()
+                .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
+                .filter(stringCommandEntry -> {
+                    PluginIdentifiableCommand command = (PluginIdentifiableCommand) stringCommandEntry.getValue();
+                    return command.getPlugin().getName().equalsIgnoreCase(plugin.getName());
+                })
+                .forEach(stringCommandEntry -> {
+                    unWrapCommand(stringCommandEntry.getKey());
+                });
+
+        Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
 
         String name = plugin.getName();
 
@@ -479,11 +499,26 @@ public class PluginUtil
                     break;
             }
         }
+
         try
         {
             Plugin target = Bukkit.getPluginManager().loadPlugin(pluginFile);
             Objects.requireNonNull(target).onLoad();
             Bukkit.getPluginManager().enablePlugin(target);
+
+            new BukkitRunnable()
+            {
+                @Override
+                public void run()
+                {
+                    getKnownCommands().forEach((s, command) -> {
+                        wrapCommand(command, s);
+                    });
+
+                    Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
+                }
+            }.runTaskLater(TeamKunPluginManager.plugin, 10L);
+
         }
         catch (InvalidDescriptionException | InvalidPluginException e2)
         {
@@ -491,5 +526,51 @@ public class PluginUtil
         }
     }
 
+    public static Map<String, Command> getKnownCommands()
+    {
+        CraftServer craftServer = (CraftServer) Bukkit.getServer();
+        SimpleCommandMap commandMap = craftServer.getCommandMap();
+        return commandMap.getKnownCommands();
+    }
+
+    public static void wrapCommand(Command command, String alias)
+    {
+        MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
+        CommandDispatcher commandDispatcher = minecraftServer.getCommandDispatcher();
+        BukkitCommandWrapper bukkitCommandWrapper = new BukkitCommandWrapper((CraftServer) Bukkit.getServer(), command);
+        bukkitCommandWrapper.register(commandDispatcher.a(), alias);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public static void unWrapCommand(String command)
+    {
+        MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
+        CommandDispatcher commandDispatcher = minecraftServer.getCommandDispatcher();
+
+        Field b;
+
+        try
+        {
+            b = CommandDispatcher.class.getDeclaredField("b");
+            b.setAccessible(true);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
+        try
+        {
+            ((com.mojang.brigadier.CommandDispatcher<CommandListenerWrapper>) b.get(commandDispatcher))
+                    .getRoot().removeCommand(command);
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 
 }
