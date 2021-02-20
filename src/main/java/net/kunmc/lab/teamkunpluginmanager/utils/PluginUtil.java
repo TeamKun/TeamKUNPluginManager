@@ -500,30 +500,38 @@ public class PluginUtil
             }
         }
 
-        try
-        {
-            Plugin target = Bukkit.getPluginManager().loadPlugin(pluginFile);
-            Objects.requireNonNull(target).onLoad();
-            Bukkit.getPluginManager().enablePlugin(target);
 
-            new BukkitRunnable()
+        File finalPluginFile = pluginFile;
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                try
                 {
-                    getKnownCommands().forEach((s, command) -> {
-                        wrapCommand(command, s);
-                    });
+                    Plugin target = Bukkit.getPluginManager().loadPlugin(finalPluginFile);
+                    Objects.requireNonNull(target).onLoad();
+                    Bukkit.getPluginManager().enablePlugin(target);
+                    new BukkitRunnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            getKnownCommands().forEach((s, command) -> {
+                                wrapCommand(command, s);
+                            });
 
-                    Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
+                            Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
+                        }
+                    }.runTaskLater(TeamKunPluginManager.plugin, 10L);
                 }
-            }.runTaskLater(TeamKunPluginManager.plugin, 10L);
+                catch (InvalidDescriptionException | InvalidPluginException e2)
+                {
+                    e2.printStackTrace();
+                }
+            }
+        }.runTask(TeamKunPluginManager.plugin);
 
-        }
-        catch (InvalidDescriptionException | InvalidPluginException e2)
-        {
-            e2.printStackTrace();
-        }
     }
 
     public static Map<String, Command> getKnownCommands()
