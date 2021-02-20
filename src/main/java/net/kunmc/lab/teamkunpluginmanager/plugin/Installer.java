@@ -7,6 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
@@ -151,21 +152,7 @@ public class Installer
         int remove = 0;
         int modify = 0;
 
-        if (!UrlValidator.getInstance().isValid(atomicURL.get()))
-        {
-            if (StringUtils.split(atomicURL.get(), "/").length == 2)
-                atomicURL.set("https://github.com/" + atomicURL.get());
-            else if (KnownPlugins.isKnown(atomicURL.get()))
-                atomicURL.set(Objects.requireNonNull(KnownPlugins.getKnown(atomicURL.get())).url);
-            else
-            {
-                finalSender.sendMessage(ChatColor.RED + "E: " + atomicURL.get() + " が見つかりません。");
-                finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
-                return new InstallResult(add, remove, modify, false);
-            }
-        }
-
-        atomicURL.set(GitHubURLBuilder.urlValidate(atomicURL.get())); //GitHubのURLを正規化
+        atomicURL.set(PluginResolver.asUrl(url));
 
         if (atomicURL.get().startsWith("ERROR "))
         {
@@ -292,9 +279,10 @@ public class Installer
                 dependFirst = false;
             }
 
-            String dependUrl = resolveDepend(dependency);
-            if (dependUrl.equals("ERROR"))
+            String dependUrl = PluginResolver.asUrl(dependency);
+            if (dependUrl.startsWith("ERROR "))
             {
+                finalSender.sendMessage(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));
                 failedResolve.add(dependency);
                 continue;
             }
@@ -401,19 +389,6 @@ public class Installer
         return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
     }
 
-    public static String resolveDepend(String name)
-    {
-        if (KnownPlugins.isKnown(name))
-            return KnownPlugins.getKnown(name).url;
-
-        String orgName = TeamKunPluginManager.config.getString("gitHubName");
-
-        String gitHubRepo = orgName + "/" + name;
-
-        String repository = GitHubURLBuilder.urlValidate("https://github.com/" + gitHubRepo);
-
-        return repository.startsWith("ERROR") ? "ERROR": gitHubRepo;
-    }
 
     public static String[] getRemovableDataDirs()
     {
