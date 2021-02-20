@@ -24,6 +24,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -220,7 +221,38 @@ public class Installer
 
         DependencyTree.Info info = DependencyTree.getInfo(description.getName(), false);
 
-        if (info != null && new Version(info.version).isHigherThan(description.getVersion()))
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(description.getName());
+        if (PluginUtil.isPluginLoaded(description.getName()) && new Version(plugin.getDescription().getVersion()).isLowerThan(description.getVersion()))
+        {
+            modify++;
+            add--;
+            finalSender.sendMessage(Messages.getModifyMessage(
+                    Messages.ModifyType.MODIFY,
+                    plugin.getName() + ":" + plugin.getDescription().getVersion() +
+                            " => " + description.getName() + ":" + description.getVersion()
+            ));
+
+            PluginUtil.unload(plugin);
+
+            new BukkitRunnable()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        PluginUtil.getFile(plugin).delete();
+                    }
+                    catch (Exception e)
+                    {
+                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
+                    }
+
+                }
+            }.runTaskLater(TeamKunPluginManager.plugin, 10L);
+
+        }
+        else if (PluginUtil.isPluginLoaded(description.getName()))
         {
             add--;
             finalSender.sendMessage(ChatColor.YELLOW + "W: 既に同じプラグインが存在します。");
@@ -240,6 +272,7 @@ public class Installer
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
             return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+
         }
 
         added.add(new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true));
@@ -266,7 +299,7 @@ public class Installer
                 continue;
             }
 
-            InstallResult dependResolve = Installer.install(null, dependUrl, true, false, false);
+            InstallResult dependResolve = Installer.install(null, dependUrl, true, false, true);
             if (dependResolve.fileName.equals(""))
                 failedResolve.add(dependency);
             else
@@ -282,43 +315,6 @@ public class Installer
                 add++;
             }
 
-        }
-
-        if (downloadResult.getKey())
-        {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin(description.getName());
-            if (Bukkit.getPluginManager().isPluginEnabled(description.getName()) && new Version(plugin.getDescription().getVersion()).isLowerThan(description.getVersion()))
-            {
-                modify++;
-                add--;
-                finalSender.sendMessage(Messages.getModifyMessage(
-                        Messages.ModifyType.MODIFY,
-                        plugin.getName() + ":" + plugin.getDescription().getVersion() +
-                                " => " + description.getName() + ":" + description.getVersion()
-                ));
-            }
-            else
-            {
-                add--;
-                finalSender.sendMessage(ChatColor.YELLOW + "W: 既に同じプラグインが存在します。");
-                if (!withoutRemove && new File("plugins/" + downloadResult.getValue()).exists())
-                {
-                    try
-                    {
-                        File f = new File("plugins/" + downloadResult.getValue());
-                        f.setWritable(true);
-                        f.delete();
-                    }
-                    catch (Exception e)
-                    {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                    }
-                }
-                finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
-                finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
-                return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
-
-            }
         }
 
         if (!dependFirst)
@@ -350,7 +346,6 @@ public class Installer
                             success.set(false);
                             continue;
                         }
-                        JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(description.getName());
 
                         PluginUtil.unload(plugin);
 
