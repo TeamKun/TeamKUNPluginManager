@@ -15,7 +15,7 @@ public class GitHubURLBuilder
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})(?:/?(?:releases/?|tag/?)(?:(?<tagNameNF>[.a-zA-Z0-9\\-+]+)|(?:download/(?<tagName>[.a-zA-Z0-9\\-+]+)/(?<file>[^/]+?\\.jar)))?)?$");
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})(/?|(?:/(?:releases/?|tag/?)(?:(?<tagNameNF>[.a-zA-Z0-9\\-+]+)|(?:download/(?<tagName>[.a-zA-Z0-9\\-+]+)/(?<file>[^/]+?\\.jar)))?)?)$");
 
     /**
      * GitHubのリリースへのAPIのURlをビルドします。
@@ -102,7 +102,7 @@ public class GitHubURLBuilder
                         if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
                             return ((JsonObject) asset).get("browser_download_url").getAsString();
                     }
-                return "ERROR {'messagee':'アーティファクトが見つかりませんでした。'}";
+                return "ERROR アーティファクトが見つかりませんでした。";
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
@@ -116,11 +116,11 @@ public class GitHubURLBuilder
                     if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
                         return ((JsonObject) asset).get("browser_download_url").getAsString();
                 }
-                return "ERROR Unknown";
+                return "ERROR アーティファクトが見つかりませんでした。";
             }
             case "ERROR":
             default:
-                return "ERROR Unknown";
+                return url.toString();
         }
     }
 

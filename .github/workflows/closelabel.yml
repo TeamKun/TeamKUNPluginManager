@@ -1,0 +1,47 @@
+name: Labels
+
+on:
+  issues:
+    types: [opened, labeled, closed]
+
+jobs:
+  change-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "It has a Pending label and changes the label when the issue is squeezed."
+        if: "contains(github.event.issue.labels.*.name, 'Status: Pending') && github.event.action == 'closed'"
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "Status: Denied"
+          remove-labels: "Status: Pending"
+      - name: "Change labels when closed and Accepted"
+        if: "contains(github.event.issue.labels.*.name, 'Status: Accepted') && github.event.action == 'closed'"
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "Status: Resolved"
+          remove-labels: "Status: Accepted"
+      - name: "Add defaylt labels when opened"
+        if: "github.event.action == 'opened'"
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "Status: Pending"
+      - name: "Change labels when add Accepted label"
+        if: "contains(github.event.issue.labels.*.name, 'Status: Pending') && github.event.action == 'labeled' && github.event.label.name == 'Status: Accepted'"
+        uses: andymckay/labeler@master
+        with:
+          remove-labels: "Status: Pending, Status: Denied"
+      - name: "Change labels when Duplicated"
+        if: "github.event.action == 'labeled' && github.event.label.name == 'Status: Duplicated'"
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "Status: Denied"
+      - name: "Close issue"
+        if: "github.event.action == 'labeled' && (github.event.label.name == 'Status: Duplicated' || github.event.label.name == 'Status: Resolved') "
+        uses: peter-evans/close-issue@v1
+        with:
+          comment: ""
+      - name: "Change labels when add Resolved label"
+        if: "github.event.action == 'labeled' && github.event.label.name == 'Status: Resolved'"
+        uses: andymckay/labeler@master
+        with:
+          remove-labels: "Status: Accepted"

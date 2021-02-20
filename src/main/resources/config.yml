@@ -1,5 +1,5 @@
 # 依存関係の名前解決に使用する組織名またはユーザ名
-gitHubName: TeamKUN
+gitHubName: [TeamKUN]
 
 #DBへのパス
 dependPath: "/depend.db"
