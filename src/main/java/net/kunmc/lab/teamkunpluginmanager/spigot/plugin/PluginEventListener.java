@@ -1,11 +1,14 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
 
-import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
 
 public class PluginEventListener implements Listener
 {
@@ -24,8 +27,20 @@ public class PluginEventListener implements Listener
     {
         if (!TeamKunPluginManager.enableBuildTree)
             return;
-        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
-        DependencyTree.wipePlugin(e.getPlugin());
-        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
+        new BukkitRunnable()
+        {
+
+            @Override
+            public void run()
+            {
+                File f = PluginUtil.getFile(e.getPlugin());
+                if (f == null || !f.exists())
+                {
+                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
+                    DependencyTree.wipePlugin(e.getPlugin());
+                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
+                }
+            }
+        }.runTaskLater(TeamKunPluginManager.plugin, 15L);
     }
 }

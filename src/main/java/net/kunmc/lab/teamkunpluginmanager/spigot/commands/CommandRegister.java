@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -24,7 +23,8 @@ public class CommandRegister
             return;
         }
 
-
         Variables.vault.vault(args[0]);
+        sender.sendMessage(ChatColor.GREEN + "S: トークンを正常に保管しました！");
+
     }
 }
