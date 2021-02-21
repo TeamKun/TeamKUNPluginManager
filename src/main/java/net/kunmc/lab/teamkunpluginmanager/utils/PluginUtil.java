@@ -517,9 +517,12 @@ public class PluginUtil
                         @Override
                         public void run()
                         {
-                            getKnownCommands().forEach((s, command) -> {
-                                wrapCommand(command, s);
-                            });
+                            getKnownCommands().entrySet().stream().parallel()
+                                    .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
+                                    .forEach(stringCommandEntry -> {
+                                        wrapCommand(stringCommandEntry.getValue(), stringCommandEntry.getKey());
+                                    });
+
 
                             Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
                         }
