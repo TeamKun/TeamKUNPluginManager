@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
+import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginResolver;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
@@ -54,30 +55,14 @@ public class CompactBuilder implements Cloneable
 
         this.pre.pluginName = name;
 
-        String orgName = TeamKunPluginManager.config.getString("gitHubName");
-        String repoName = orgName + "/" + name;
-        if (KnownPlugins.isKnown(name))
-        {
-            try
-            {
-                this.pre.downloadUrl = Objects.requireNonNull(KnownPlugins.getKnown(name)).url;
-            }
-            catch (Exception ignored)
-            {
-                rs = (BuildResult[]) ArrayUtils.add(rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
-            }
-        }
-        else if (GitHubURLBuilder.isRepoExists(repoName))
-        {
-            String preUrl = "https://github.com/" + repoName;
-            String url = GitHubURLBuilder.urlValidate(preUrl);
-            if (!url.startsWith("ERROR "))
-                this.pre.downloadUrl = url;
-            else
-                rs = (BuildResult[]) ArrayUtils.add(rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
-        }
+        String url = PluginResolver.asUrl(name);
+
+        if (url.startsWith("ERROR"))
+            this.pre.downloadUrl = url;
         else
-            rs = (BuildResult[]) ArrayUtils.add(rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
+            this.rs = (BuildResult[]) ArrayUtils.add(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
+
+        this.pre.downloadUrl = url;
 
         return this;
     }
