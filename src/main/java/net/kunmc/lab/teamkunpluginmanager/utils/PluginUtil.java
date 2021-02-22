@@ -2,19 +2,12 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
-import net.minecraft.server.v1_15_R1.CommandDispatcher;
-import net.minecraft.server.v1_15_R1.CommandListenerWrapper;
-import net.minecraft.server.v1_15_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_15_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_15_R1.command.BukkitCommandWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -537,47 +530,81 @@ public class PluginUtil
 
     }
 
-    public static Map<String, Command> getKnownCommands()
+    private static Method getCommandMap;
+    ;
+    private static Object craftServer;
+    private static Object minecraftServer;
+    private static Object commandDispatcher;
+
+    static
     {
-        CraftServer craftServer = (CraftServer) Bukkit.getServer();
-        SimpleCommandMap commandMap = craftServer.getCommandMap();
-        return commandMap.getKnownCommands();
-    }
-
-    public static void wrapCommand(Command command, String alias)
-    {
-        MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
-        CommandDispatcher commandDispatcher = minecraftServer.getCommandDispatcher();
-        BukkitCommandWrapper bukkitCommandWrapper = new BukkitCommandWrapper((CraftServer) Bukkit.getServer(), command);
-        bukkitCommandWrapper.register(commandDispatcher.a(), alias);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public static void unWrapCommand(String command)
-    {
-        MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
-        CommandDispatcher commandDispatcher = minecraftServer.getCommandDispatcher();
-
-        Field b;
-
         try
         {
-            b = CommandDispatcher.class.getDeclaredField("b");
-            b.setAccessible(true);
+            craftServer = ReflectionUtils.PackageType.CRAFTBUKKIT.getClass("CraftServer").cast(Bukkit.getServer());
+            minecraftServer = ReflectionUtils.getMethod(craftServer.getClass(), "getServer").invoke(craftServer);
+
+            getCommandMap = ReflectionUtils.getMethod(craftServer.getClass(), "getCommandMap");
+            commandDispatcher = ReflectionUtils.getMethod(minecraftServer.getClass(), "getCommandDispatcher")
+                    .invoke(minecraftServer);
+        }
+        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static Map<String, Command> getKnownCommands()
+    {
+        try
+        {
+            SimpleCommandMap commandMap =
+                    (SimpleCommandMap) getCommandMap.invoke(craftServer);
+            return commandMap.getKnownCommands();
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return;
         }
+        return new HashMap<>();
+    }
+
+    public static void wrapCommand(Command command, String alias)
+    {
+        try
+        {
+            Class<?> bukkitCommandWrapper = ReflectionUtils.PackageType.CRAFTBUKKIT_COMMAND.getClass("BukkitCommandWrapper");
+            Object commandWrapper = bukkitCommandWrapper
+                    .getConstructor(craftServer.getClass(), Command.class)
+                    .newInstance(craftServer, command);
+
+            Method bukkitCommandWrapperRegister = ReflectionUtils.getMethod(bukkitCommandWrapper,
+                    "register",
+                    com.mojang.brigadier.CommandDispatcher.class,
+                    String.class
+            );
+
+            Method a = ReflectionUtils.getMethod(ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("CommandDispatcher"), "a");
+
+            bukkitCommandWrapperRegister.invoke(commandWrapper, a.invoke(commandDispatcher), alias);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+    @SuppressWarnings("rawtypes")
+    public static void unWrapCommand(String command)
+    {
 
         try
         {
-            ((com.mojang.brigadier.CommandDispatcher<CommandListenerWrapper>) b.get(commandDispatcher))
+            Field b = ReflectionUtils.getField(commandDispatcher.getClass(), true, "b");
+            ((com.mojang.brigadier.CommandDispatcher) b.get(commandDispatcher))
                     .getRoot().removeCommand(command);
         }
-        catch (IllegalAccessException e)
+        catch (IllegalAccessException | NoSuchFieldException e)
         {
             e.printStackTrace();
         }
