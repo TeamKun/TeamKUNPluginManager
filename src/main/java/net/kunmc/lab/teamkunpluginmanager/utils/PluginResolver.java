@@ -4,16 +4,14 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.w3c.dom.stylesheets.LinkStyle;
 
-import javax.imageio.event.IIOReadProgressListener;
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class PluginResolver
 {
     /**
      * プラグインのURLを名前解決します。
+     *
      * @param query 指定
      * @return URLまたはError
      */
@@ -41,7 +39,7 @@ public class PluginResolver
             return "ERROR " + query + "が見つかりませんでした。";
 
 
-        for(String str: TeamKunPluginManager.config.getStringList("gitHubName"))
+        for (String str : TeamKunPluginManager.config.getStringList("gitHubName"))
         {
             if (GitHubURLBuilder.isRepoExists(str + "/" + query))
                 return GitHubURLBuilder.urlValidate("https://github.com/" + str + "/" + query);

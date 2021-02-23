@@ -1,14 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class CompactBuilder implements Cloneable
 {

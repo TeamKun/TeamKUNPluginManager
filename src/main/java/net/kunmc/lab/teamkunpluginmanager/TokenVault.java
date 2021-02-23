@@ -29,7 +29,6 @@ public class TokenVault
         }
     }
 
-
     public synchronized void vault(String token)
     {
         this.token = token;

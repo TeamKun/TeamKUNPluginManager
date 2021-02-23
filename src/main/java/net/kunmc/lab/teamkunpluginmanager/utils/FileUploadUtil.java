@@ -22,7 +22,7 @@ public class FileUploadUtil
         if (!f.exists())
             return Optional.empty();
 
-        try(FileInputStream stream = new FileInputStream(f))
+        try (FileInputStream stream = new FileInputStream(f))
         {
             HttpURLConnection connection = (HttpURLConnection) new URL(PROVIDER_).openConnection();
             connection.setRequestMethod(METHOD_);
@@ -31,7 +31,7 @@ public class FileUploadUtil
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             connection.setDoOutput(true);
             connection.connect();
-            try(OutputStream out = connection.getOutputStream())
+            try (OutputStream out = connection.getOutputStream())
             {
                 out.write(("--" + boundary + "\r\n" +
                         "Content-Disposition: form-data; name=\"" + PARAM_ + "\"; " +
@@ -42,7 +42,7 @@ public class FileUploadUtil
 
                 byte[] buffer = new byte[1024];
                 int size = -1;
-                while((size = stream.read(buffer)) != -1)
+                while ((size = stream.read(buffer)) != -1)
                     out.write(buffer, 0, size);
                 out.write(("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
                 out.flush();

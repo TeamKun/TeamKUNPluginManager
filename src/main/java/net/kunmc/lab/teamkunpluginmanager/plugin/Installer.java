@@ -4,15 +4,12 @@ import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.routines.UrlValidator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -23,9 +20,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,9 +41,10 @@ public class Installer
 
     /**
      * アンインストールをする
+     *
      * @param sender 発行者(Nullable)
-     * @param name 対象プラグ
-     * @param force 強制削除かどうか
+     * @param name   対象プラグ
+     * @param force  強制削除かどうか
      */
     public static void unInstall(CommandSender sender, String name, boolean force)
     {
@@ -395,7 +391,6 @@ public class Installer
         finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
         return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
     }
-
 
     public static String[] getRemovableDataDirs()
     {
