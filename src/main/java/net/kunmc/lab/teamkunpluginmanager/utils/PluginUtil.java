@@ -1,15 +1,21 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import com.google.common.collect.Iterators;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
+import org.apache.commons.collections.IteratorUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.craftbukkit.v1_15_R1.inventory.CraftRecipe;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -37,10 +43,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -322,6 +330,8 @@ public class PluginUtil
                     unWrapCommand(stringCommandEntry.getKey());
                 });
 
+        getPluginRecipes(plugin.getName()).forEach(Bukkit::removeRecipe);
+
         Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
 
         String name = plugin.getName();
@@ -566,6 +576,25 @@ public class PluginUtil
             e.printStackTrace();
         }
         return new HashMap<>();
+    }
+
+    public static List<NamespacedKey> getPluginRecipes(String pluginName)
+    {
+        List<NamespacedKey> result = new ArrayList<>();
+        Recipe recipe;
+        Iterator<Recipe> iterator = Bukkit.recipeIterator();
+        while(iterator.hasNext())
+        {
+            recipe = iterator.next();
+            if (recipe instanceof ShapedRecipe)
+            {
+                ShapedRecipe sr = (ShapedRecipe) recipe;
+                if (sr.getKey().getNamespace().equals(pluginName.toLowerCase(Locale.ROOT)))
+                    result.add(sr.getKey());
+            }
+        }
+
+        return result;
     }
 
     public static void wrapCommand(Command command, String alias)
