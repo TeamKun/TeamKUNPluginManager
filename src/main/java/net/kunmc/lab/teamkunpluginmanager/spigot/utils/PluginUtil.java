@@ -497,29 +497,6 @@ public class PluginUtil
 
     }
 
-    private static Method getGetCommandMap;
-
-    private static Object craftServer;
-    private static Object minecraftServer;
-    private static Object commandDispatcher;
-
-    static
-    {
-        try
-        {
-            craftServer = ReflectionUtils.PackageType.CRAFTBUKKIT.getClass("CraftServer").cast(Bukkit.getServer());
-            minecraftServer = ReflectionUtils.getMethod(craftServer.getClass(), "getServer").invoke(craftServer);
-
-            getCommandMap = ReflectionUtils.getMethod(craftServer.getClass(), "getCommandMap");
-            commandDispatcher = ReflectionUtils.getMethod(minecraftServer.getClass(), "getCommandDispatcher")
-                    .invoke(minecraftServer);
-        }
-        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public static Map<String, Command> getKnownCommands()
     {
         try
