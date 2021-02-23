@@ -326,13 +326,20 @@ public class Installer
             {
                 try
                 {
-                    if (downloadResult.getKey())
+                    if (PluginUtil.isPluginLoaded(description.getName()))
                     {
-                        if (!PluginUtil.isPluginLoaded(description.getName()))
+                        finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
+                        try
                         {
-                            finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
-                            success.set(false);
-                            continue;
+                            if (!withoutRemove)
+                            {
+                                new File("plugins/" + f.fileName).setWritable(true);
+                                new File("plugins/" + f.fileName).delete();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
                         }
 
                         PluginUtil.unload(plugin);
@@ -358,8 +365,8 @@ public class Installer
                     {
                         if (!withoutRemove)
                         {
-                            new File("plugins/" + f).setWritable(true);
-                            new File("plugins/" + f).delete();
+                            new File("plugins/" + f.fileName).setWritable(true);
+                            new File("plugins/" + f.fileName).delete();
                         }
 
 
