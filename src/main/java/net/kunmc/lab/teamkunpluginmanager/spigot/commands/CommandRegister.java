@@ -4,8 +4,6 @@ import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.io.IOException;
-
 public class CommandRegister
 {
     public static void onCommand(CommandSender sender, String[] args)

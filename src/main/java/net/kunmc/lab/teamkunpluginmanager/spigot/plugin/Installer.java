@@ -249,13 +249,12 @@ public class Installer
                 catch (Exception e)
                 {
                     finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                    finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
-                    return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, false);
                 }
             }
-            finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+            finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
             return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+
         }
 
         added.add(new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true));
@@ -391,7 +390,6 @@ public class Installer
         finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
         return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
     }
-
 
     public static String[] getRemovableDataDirs()
     {

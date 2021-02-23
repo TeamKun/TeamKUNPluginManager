@@ -115,7 +115,7 @@ public class CommandInfo
             if (command.get("aliases") instanceof String)
                 builder.append(pi("エイリアス", "/" + command.get("aliases")));
             else if (command.get("aliases") instanceof List)
-            builder.append(pi("エイリアス", "/" + String.join(", /", (List<String>) command.get("aliases"))) + "\n");
+                builder.append(pi("エイリアス", "/" + String.join(", /", (List<String>) command.get("aliases"))) + "\n");
 
         }
 

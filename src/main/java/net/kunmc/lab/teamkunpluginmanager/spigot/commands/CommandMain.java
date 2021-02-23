@@ -74,7 +74,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
                 CommandImport.onCommand(sender, argsList.toArray(new String[0]));
                 break;
             case "register":
-                CommandRegister.onCommand(sender ,argsList.toArray(new String[0]));
+                CommandRegister.onCommand(sender, argsList.toArray(new String[0]));
                 break;
             default:
                 sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");

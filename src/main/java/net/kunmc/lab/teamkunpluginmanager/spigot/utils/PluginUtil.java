@@ -44,12 +44,33 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PluginUtil
 {
+    private static Method getCommandMap;
+    private static Object craftServer;
+    private static Object minecraftServer;
+    private static Object commandDispatcher;
+
+    static
+    {
+        try
+        {
+            craftServer = ReflectionUtils.PackageType.CRAFTBUKKIT.getClass("CraftServer").cast(Bukkit.getServer());
+            minecraftServer = ReflectionUtils.getMethod(craftServer.getClass(), "getServer").invoke(craftServer);
+
+            getCommandMap = ReflectionUtils.getMethod(craftServer.getClass(), "getCommandMap");
+            commandDispatcher = ReflectionUtils.getMethod(minecraftServer.getClass(), "getCommandDispatcher")
+                    .invoke(minecraftServer);
+        }
+        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public static String nameValidator(String name)
     {
         return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(name)).getName();
@@ -476,7 +497,7 @@ public class PluginUtil
 
     }
 
-    private static Method getCommandMap;
+    private static Method getGetCommandMap;
 
     private static Object craftServer;
     private static Object minecraftServer;
@@ -519,7 +540,7 @@ public class PluginUtil
         List<NamespacedKey> result = new ArrayList<>();
         Recipe recipe;
         Iterator<Recipe> iterator = Bukkit.recipeIterator();
-        while(iterator.hasNext())
+        while (iterator.hasNext())
         {
             recipe = iterator.next();
             if (recipe instanceof ShapedRecipe)
@@ -542,7 +563,8 @@ public class PluginUtil
                     .getConstructor(craftServer.getClass(), Command.class)
                     .newInstance(craftServer, command);
 
-            Method bukkitCommandWrapperRegister = ReflectionUtils.getMethod(bukkitCommandWrapper,
+            Method bukkitCommandWrapperRegister = ReflectionUtils.getMethod(
+                    bukkitCommandWrapper,
                     "register",
                     com.mojang.brigadier.CommandDispatcher.class,
                     String.class
@@ -557,7 +579,6 @@ public class PluginUtil
             e.printStackTrace();
         }
     }
-
 
     @SuppressWarnings("rawtypes")
     public static void unWrapCommand(String command)
