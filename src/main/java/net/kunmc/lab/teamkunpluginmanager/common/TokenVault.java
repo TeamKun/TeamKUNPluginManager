@@ -9,8 +9,30 @@ import java.nio.charset.StandardCharsets;
 
 public class TokenVault
 {
+
+    private String token;
+
+    public TokenVault()
+    {
+        token = "";
+
+        if (!new File(new File("").getAbsolutePath(), "kpm.vault").exists())
+            return;
+        try
+        {
+            token = FileUtils.readFileToString(new File(new File("").getAbsolutePath(), "kpm.vault"), StandardCharsets.UTF_8);
+        }
+        catch (IOException e)
+        {
+            System.out.println("TOKENの読み込みに失敗しました。");
+            e.printStackTrace();
+        }
+    }
+
+
     public synchronized void vault(String token)
     {
+        this.token = token;
         try
         {
             FileUtils.writeStringToFile(new File(new File("").getAbsolutePath(), "kpm.vault"), token, Charset.defaultCharset());
@@ -24,17 +46,6 @@ public class TokenVault
 
     public String getToken()
     {
-        if (!new File(new File("").getAbsolutePath(), "kpm.vault").exists())
-            return "";
-        try
-        {
-            return FileUtils.readFileToString(new File(new File("").getAbsolutePath(), "kpm.vault"), StandardCharsets.UTF_8);
-        }
-        catch (IOException e)
-        {
-            System.out.println("TOKENの読み込みに失敗しました。");
-            e.printStackTrace();
-        }
-        return "";
+        return token;
     }
 }
