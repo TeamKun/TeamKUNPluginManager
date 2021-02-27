@@ -2,6 +2,8 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.utils.rdmarker.DevBukkit;
+import net.kunmc.lab.teamkunpluginmanager.utils.rdmarker.Spigotmc;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 public class PluginResolver
 {
+    
     /**
      * プラグインのURLを名前解決します。
      *
@@ -18,7 +21,13 @@ public class PluginResolver
     public static String asUrl(String query)
     {
         if (UrlValidator.getInstance().isValid(query))
+        {
+            if (DevBukkit.isMatch(query))
+                return DevBukkit.toDownloadUrl(query);
+            else if (Spigotmc.isMatch(query))
+                return Spigotmc.toDownloadUrl(query);
             return GitHubURLBuilder.urlValidate(query);
+        }
 
         if (KnownPlugins.isKnown(query))
             return GitHubURLBuilder.urlValidate(KnownPlugins.getKnown(query).url);
