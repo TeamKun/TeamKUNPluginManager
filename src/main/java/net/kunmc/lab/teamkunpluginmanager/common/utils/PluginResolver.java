@@ -1,7 +1,9 @@
-package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
+package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.DevBukkit;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.Spigotmc;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -15,7 +17,7 @@ public class PluginResolver
      * @param query 指定
      * @return URLまたはError
      */
-    public static String asUrl(String query)
+    public static String asUrl(Object ghName, String query)
     {
         if (UrlValidator.getInstance().isValid(query))
         {
@@ -33,23 +35,29 @@ public class PluginResolver
 
         //configのorgを順番にfetch
 
-        //TODO: Sh
-        Object obj = TeamKunPluginManager.plugin.getConfig().get("gitHubName");
 
-        if (obj instanceof String)
-            if (GitHubURLBuilder.isRepoExists(obj + "/" + query))
-                return GitHubURLBuilder.urlValidate("https://github.com/" + obj + "/" + query);
+        if (ghName instanceof String)
+            if (GitHubURLBuilder.isRepoExists(ghName + "/" + query))
+                return GitHubURLBuilder.urlValidate("https://github.com/" + ghName + "/" + query);
             else
                 return "ERROR " + query + "が見つかりませんでした。";
 
-        if (!(obj instanceof List) && !(obj instanceof String[]))
-            return "ERROR " + query + "が見つかりませんでした。";
-
-
-        for (String str : TeamKunPluginManager.config.getStringList("gitHubName"))
+        if (ghName instanceof List)
         {
-            if (GitHubURLBuilder.isRepoExists(str + "/" + query))
-                return GitHubURLBuilder.urlValidate("https://github.com/" + str + "/" + query);
+            for (String str : (List<String>) ghName)
+            {
+                if (GitHubURLBuilder.isRepoExists(str + "/" + query))
+                    return GitHubURLBuilder.urlValidate("https://github.com/" + str + "/" + query);
+            }
+
+        }
+        else if (ghName instanceof  String[])
+        {
+            for (String str : (String[]) ghName)
+            {
+                if (GitHubURLBuilder.isRepoExists(str + "/" + query))
+                    return GitHubURLBuilder.urlValidate("https://github.com/" + str + "/" + query);
+            }
         }
 
         return "ERROR " + query + "が見つかりませんでした。";

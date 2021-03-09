@@ -8,13 +8,16 @@ import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
+import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -170,11 +173,11 @@ public class Installer
     /**
      * インストール
      *
-     * @param url   名前またはurl
+     * @param name   名前またはurl
      * @param print 出力
      */
 
-    public static InstallResult install(String url, boolean print)
+    public static InstallResult install(String name, boolean print)
     {
         int install = 0;
         int uninstall = 0;
@@ -191,35 +194,13 @@ public class Installer
         if (print)
             progress.stop();
 
-        if (!UrlValidator.getInstance().isValid(url))
+        String url = PluginResolver.asUrl(PluginManagerConsole.config.getString("gitHubName"), name);
+
+        if (url.startsWith("ERROR "))
         {
-            // User/Repository 形式であれば先頭に GitHub のドメインを追加する。
-            if (StringUtils.split(url, "/").length == 2)
-            {
-                url = "https://github.com/" + url;
-                url = GitHubURLBuilder.urlValidate(url);
-
-                // URL の指定が間違っていると終了。
-                if (url.startsWith("ERROR "))
-                {
-                    if (Variables.vault.getToken().equals(""))
-                        print("W: GitHub 用のOAuth Tokenを正しく設定していない可能性がございます。", print);
-
-                    print("E: " + url.substring(6), print);
-                    print(getResultMessage(install, change, uninstall), print);
-                    return new InstallResult(false);
-                }
-            }
-            else if (KnownPlugins.isKnown(url))
-            {
-                url = KnownPlugins.getKnown(url).url;
-            }
-            else
-            {
-                print("E: " + url + "が見つかりません。", print);
-                print(getResultMessage(install, change, uninstall), print);
-                return new InstallResult(false);
-            }
+            print("E: " + url.substring(6), print); //ERROR <-までをきりだし
+            print(getResultMessage(0, 0, 0), print);
+            return new InstallResult(0, 0, 0, false);
         }
 
         // ダウンロード開始時間（ミリ秒）

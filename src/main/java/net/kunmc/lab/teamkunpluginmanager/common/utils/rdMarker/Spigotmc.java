@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.utils.rdmarker;
+package net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker;
 
 import java.net.URL;
 import java.util.regex.Matcher;

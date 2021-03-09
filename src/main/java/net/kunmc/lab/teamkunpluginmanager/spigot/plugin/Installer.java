@@ -8,7 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -147,7 +147,7 @@ public class Installer
         int remove = 0;
         int modify = 0;
 
-        atomicURL.set(PluginResolver.asUrl(url));
+        atomicURL.set(PluginResolver.asUrl(TeamKunPluginManager.plugin.getConfig().get(("githubName")), url));
 
         if (atomicURL.get().startsWith("ERROR "))
         {
@@ -290,7 +290,7 @@ public class Installer
                 dependFirst = false;
             }
 
-            String dependUrl = PluginResolver.asUrl(dependency);
+            String dependUrl = PluginResolver.asUrl(TeamKunPluginManager.plugin.getConfig().get(("githubName")), dependency);
             if (dependUrl.startsWith("ERROR "))
             {
                 finalSender.sendMessage(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));

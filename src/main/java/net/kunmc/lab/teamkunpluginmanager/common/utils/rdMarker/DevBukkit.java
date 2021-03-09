@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.utils.rdmarker;
+package net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

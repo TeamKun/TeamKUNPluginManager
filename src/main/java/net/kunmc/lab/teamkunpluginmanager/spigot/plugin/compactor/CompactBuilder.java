@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor;
 
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Map;
@@ -51,7 +52,7 @@ public class CompactBuilder implements Cloneable
 
         this.pre.pluginName = name;
 
-        String url = PluginResolver.asUrl(name);
+        String url = PluginResolver.asUrl(TeamKunPluginManager.plugin.getConfig().get(("githubName")), name);
 
         if (url.startsWith("ERROR"))
             this.pre.downloadUrl = url;
