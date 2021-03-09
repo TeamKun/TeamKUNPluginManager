@@ -183,12 +183,19 @@ public class Installer
         catch (FileNotFoundException e)
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
+            if(!withoutRemove)
+                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+
             return new InstallResult(add, remove, modify, false);
         }
         catch (IOException | InvalidDescriptionException e)
         {
             finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込めませんでした。");
+            if(!withoutRemove)
+                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
         }
@@ -197,8 +204,30 @@ public class Installer
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
+            if(!withoutRemove)
+                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
+        }
+
+
+        if (atomicURL.get().startsWith("https://apple.api.spiget.org"))
+        {
+            try
+            {
+                String fileName = description.getName().replace(" ", "") +
+                        "-" +
+                        description.getVersion() +
+                        ".jar";
+                FileUtils.moveFile(
+                        new File("plugins/" + downloadResult.getValue()),
+                        new File("plugins/" + fileName));
+                downloadResult = new Pair<>(false, fileName);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
 
         DependencyTree.Info info = DependencyTree.getInfo(description.getName(), false);
@@ -221,14 +250,10 @@ public class Installer
                 @Override
                 public void run()
                 {
-                    try
-                    {
-                        PluginUtil.getFile(plugin).delete();
-                    }
-                    catch (Exception e)
-                    {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                    }
+
+                    if(!withoutRemove)
+                        delete(finalSender, PluginUtil.getFile(plugin));
+
 
                 }
             }.runTaskLater(TeamKunPluginManager.plugin, 10L);
@@ -240,16 +265,7 @@ public class Installer
             finalSender.sendMessage(ChatColor.YELLOW + "W: 既に同じプラグインが存在します。");
             if (!withoutRemove && new File("plugins/" + downloadResult.getValue()).exists())
             {
-                try
-                {
-                    File f = new File("plugins/" + downloadResult.getValue());
-                    f.setWritable(true);
-                    f.delete();
-                }
-                catch (Exception e)
-                {
-                    finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                }
+                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
             }
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
@@ -324,18 +340,9 @@ public class Installer
                     if (PluginUtil.isPluginLoaded(description.getName()))
                     {
                         finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
-                        try
-                        {
-                            if (!withoutRemove)
-                            {
-                                new File("plugins/" + f.fileName).setWritable(true);
-                                new File("plugins/" + f.fileName).delete();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                        }
+
+                        if(!withoutRemove)
+                            delete(finalSender, new File("plugins/" + f.fileName));
 
                         PluginUtil.unload(plugin);
 
@@ -356,20 +363,8 @@ public class Installer
                 }
                 catch (Exception e)
                 {
-                    try
-                    {
-                        if (!withoutRemove)
-                        {
-                            new File("plugins/" + f.fileName).setWritable(true);
-                            new File("plugins/" + f.fileName).delete();
-                        }
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        finalSender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + downloadResult.getValue());
-                    }
+                    if (!withoutRemove)
+                        delete(finalSender, new File("plugins/" + f.fileName));
                     e.printStackTrace();
                     success.set(false);
                 }
@@ -408,6 +403,19 @@ public class Installer
         {
             return new String[]{};
         }
+    }
+
+    public static void delete(CommandSender sender, File f)
+    {
+        try
+        {
+            f.delete();
+        }
+        catch (Exception e)
+        {
+            sender.sendMessage(ChatColor.RED + "E: ファイルの削除に失敗しました: " + f.getName());
+        }
+
     }
 
     /**

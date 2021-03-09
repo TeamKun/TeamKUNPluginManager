@@ -63,8 +63,18 @@ public class URLUtils
      */
     public static Pair<Boolean, String> downloadFile(String url)
     {
-        String fileName = url.substring(url.lastIndexOf("/") + 1);
+        return downloadFile(url, url.substring(url.lastIndexOf("/") + 1));
+    }
 
+    /**
+     * ファイルをだうんろーど！
+     *
+     * @param url URL
+     * @param fileName ファイル名
+     * @return ローカルのパス
+     */
+    public static Pair<Boolean, String> downloadFile(String url, String fileName)
+    {
         boolean duplicateFile = false;
 
         if (fileName.equals(""))
@@ -82,13 +92,33 @@ public class URLUtils
         {
             URL urlObj = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-            connection.setRequestMethod("GET");
-            if (urlObj.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
-            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-            connection.connect();
-            if (connection.getResponseCode() != 200)
-                return new Pair<>(false, "");
+            boolean redir = false;
+            do
+            {
+                connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
+                connection.setRequestProperty("User-AgeollowRedirects(false);\n" +
+                        "                if (urlObj.getHost().equals(\"api.github.com\"))nt", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+                connection.connect();
+
+                redir = false;
+                if (String.valueOf(connection.getResponseCode()).startsWith("3"))
+                {
+                    URL base = connection.getURL();
+                    String locationStr = connection.getHeaderField("Location");
+                    if (locationStr != null)
+                    base = new URL(base, locationStr);
+
+                    connection.disconnect();
+                    if (base != null)
+                    {
+                        redir = true;
+                        connection = (HttpURLConnection) base.openConnection();
+                    }
+                }
+
+            }
+            while(redir);
 
             FileUtils.copyInputStreamToFile(connection.getInputStream(), new File((ClassUtils.isExists("org.bukkit.ChatColor") ? "pluguns/": "") + fileName));
             return new Pair<>(duplicateFile, fileName);

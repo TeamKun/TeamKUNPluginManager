@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -19,7 +18,13 @@ public class PluginResolver
     public static String asUrl(String query)
     {
         if (UrlValidator.getInstance().isValid(query))
+        {
+            if (DevBukkit.isMatch(query))
+                return DevBukkit.toDownloadUrl(query);
+            else if (Spigotmc.isMatch(query))
+                return Spigotmc.toDownloadUrl(query);
             return GitHubURLBuilder.urlValidate(query);
+        }
 
         if (KnownPlugins.isKnown(query))
             return GitHubURLBuilder.urlValidate(KnownPlugins.getKnown(query).url);
@@ -28,6 +33,7 @@ public class PluginResolver
 
         //configのorgを順番にfetch
 
+        //TODO: Sh
         Object obj = TeamKunPluginManager.plugin.getConfig().get("gitHubName");
 
         if (obj instanceof String)
