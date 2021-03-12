@@ -558,6 +558,12 @@ public class PluginUtil
 
     }
 
+    public static void reload(Plugin plugin)
+    {
+        unload(plugin);
+        load(plugin);
+    }
+
     public static Map<String, Command> getKnownCommands()
     {
         try

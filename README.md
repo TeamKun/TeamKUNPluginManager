@@ -24,6 +24,7 @@
 #### サブコマンド
 
 + install リポジトリまたはURLからインストールします。 権限: kpm.install
++ reload プラグインをスーパーリロードします。 権限: kpm.reload
 + remove プラグインをアンインストールします。 権限: kpm.uninstall
 + autoremove いらないプラグインを自動で削除します。 権限: kpm.autoremove
 + update 既知プラグインデータセットをアップデートします。 権限: kpm.update
