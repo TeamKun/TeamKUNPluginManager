@@ -18,6 +18,7 @@ permissions:
     default: op
     children:
       kpm.install: true
+      kpm.reload: true
       kpm.uninstall: true
       kpm.info: true
       kpm.autoremove: true
@@ -31,6 +32,8 @@ permissions:
     description: "プラグインをインストールできます。"
   kpm.uninstall:
     description: "プラグインをアンインストールします。"
+  kpm.reload:
+    description: "プラグインを再起動します。"
   kpm.info:
     description: "プラグインの情報を閲覧します。"
   kpm.autoremove:
