@@ -78,6 +78,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
                 break;
             case "reload":
                 CommandReload.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
