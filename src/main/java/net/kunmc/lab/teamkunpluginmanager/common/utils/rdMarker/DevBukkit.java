@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 
