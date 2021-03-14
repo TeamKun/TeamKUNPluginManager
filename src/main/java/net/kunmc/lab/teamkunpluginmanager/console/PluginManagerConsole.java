@@ -8,6 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
+import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandRegister;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 import org.apache.commons.lang3.ArrayUtils;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class PluginManagerConsole
 {
-    public static final CommandBase[] commands = {new CommandInstall(), new CommandUninstall()};
+    public static final CommandBase[] commands = {new CommandInstall(), new CommandUninstall(), new CommandRegister()};
 
     public static FileConfiguration config;
     public static Path dataFolder;
@@ -78,7 +79,7 @@ public class PluginManagerConsole
 
         config.saveDefaultConfig();
 
-        Variables.vault = new TokenVault();
+        Variables.vault = new TokenVault(new File(PluginManagerConsole.dataFolder.toAbsolutePath().getParent().getParent().toFile(), "kpm.vault"));
 
 
         String tokenEnv = System.getenv("TOKEN");

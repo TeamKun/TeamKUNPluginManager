@@ -11,16 +11,18 @@ public class TokenVault
 {
 
     private String token;
+    private File file;
 
-    public TokenVault()
+    public TokenVault(File file)
     {
         token = "";
 
-        if (!new File(new File("").getAbsolutePath(), "kpm.vault").exists())
+        this.file = file;
+        if (!file.exists())
             return;
         try
         {
-            token = FileUtils.readFileToString(new File(new File("").getAbsolutePath(), "kpm.vault"), StandardCharsets.UTF_8);
+            token = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         }
         catch (IOException e)
         {
@@ -34,7 +36,7 @@ public class TokenVault
         this.token = token;
         try
         {
-            FileUtils.writeStringToFile(new File(new File("").getAbsolutePath(), "kpm.vault"), token, Charset.defaultCharset());
+            FileUtils.writeStringToFile(file, token, Charset.defaultCharset());
         }
         catch (IOException e)
         {

@@ -33,7 +33,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         config = getConfig();
         functional = new Say2Functional(this);
 
-        vault = new TokenVault();
+        vault = new TokenVault(new File(new File("").getAbsolutePath(), "kpm.vault"));
 
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
