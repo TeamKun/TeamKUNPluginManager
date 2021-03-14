@@ -2,11 +2,11 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor.PluginCompacter;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.compactor.PluginPreCompacter;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Say2Functional;
 import org.apache.commons.io.FileUtils;
@@ -114,7 +114,7 @@ public class CommandExport
         }
 
 
-        validPlugin = (String[]) ArrayUtils.addAll(validPlugin, dependencies);
+        validPlugin = ArrayUtils.addAll(validPlugin, dependencies);
 
         validPlugin = Arrays.stream(validPlugin)
                 .map(s -> Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(s)).getName())

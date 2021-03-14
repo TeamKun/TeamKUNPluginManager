@@ -40,7 +40,8 @@ public class CommandInstall implements CommandBase
         Progress progress = new Progress("ヘルプを読み込み中");
         progress.start();
 
-        String help = CommandUtil.genHelp("install",
+        String help = CommandUtil.genHelp(
+                "install",
                 "プラグインを新規にインストールします。",
                 getAliases(),
                 new CommandUtil.Parameter[]{new CommandUtil.Parameter(
@@ -48,7 +49,7 @@ public class CommandInstall implements CommandBase
                         "インストールプラグインです。",
                         "GitHub組織名/リポジトリ名, プラグイン名*, JARへの直接リンク",
                         true
-                        )},
+                )},
                 new String[]{
                         "TeamKun/ExamplePlugin",
                         "https://example.com/plugins/exampleplugin.jar",

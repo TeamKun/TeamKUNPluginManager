@@ -2,8 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.common.known;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 
 import java.io.File;
 import java.sql.Connection;
@@ -32,7 +30,6 @@ public class KnownPlugins
             dataSource.close();
         }));
     }
-
 
     private static void initializeTable()
     {

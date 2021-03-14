@@ -75,6 +75,7 @@ public class PluginUtil
     {
         return Objects.requireNonNull(Bukkit.getPluginManager().getPlugin(name)).getName();
     }
+
     @SuppressWarnings("unchecked")
     public static Map<String, Object> ms2Map(MemorySection ms)
     {

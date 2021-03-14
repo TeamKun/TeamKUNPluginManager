@@ -1,16 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
-import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 public class CommandRegister implements CommandBase
 {
@@ -24,9 +16,8 @@ public class CommandRegister implements CommandBase
     @Override
     public String[] getAliases()
     {
-        return new String[] {"rg"};
+        return new String[]{"rg"};
     }
-
 
     @Override
     public int run(String... args)
@@ -50,7 +41,8 @@ public class CommandRegister implements CommandBase
         Progress progress = new Progress("ヘルプを読み込み中");
         progress.start();
 
-        String help = CommandUtil.genHelp("register",
+        String help = CommandUtil.genHelp(
+                "register",
                 "GitHubの認証に使用するトークンを登録します。",
                 getAliases(),
                 new CommandUtil.Parameter[]{new CommandUtil.Parameter(

@@ -1,16 +1,12 @@
 package net.kunmc.lab.teamkunpluginmanager.common;
 
-import com.google.gson.Gson;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
-import net.kunmc.lab.teamkunpluginmanager.console.utils.Installer;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.PluginYamlParser;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,8 +15,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DependencyTree
 {
@@ -49,7 +43,6 @@ public class DependencyTree
         }));
     }
 
-
     private static void initializeTable()
     {
         try (Connection con = dataSource.getConnection();
@@ -77,7 +70,7 @@ public class DependencyTree
     public static void dropAll()
     {
         try (Connection con = dataSource.getConnection();
-             Statement st = con.createStatement();)
+             Statement st = con.createStatement())
         {
             st.execute("DELETE FROM DEPEND");
             st.execute("DELETE FROM DEPENDBY");
@@ -88,7 +81,6 @@ public class DependencyTree
             e.printStackTrace();
         }
     }
-
 
     public static void wipePlugin(String plugin)
     {
@@ -106,8 +98,6 @@ public class DependencyTree
             e.printStackTrace();
         }
     }
-
-
 
     public static void purge(String name)
     {
@@ -247,12 +237,12 @@ public class DependencyTree
 
         ArrayList<String> purge = new ArrayList<>();
 
-        try(Connection con = dataSource.getConnection();
-            Statement stmt = con.createStatement();
-            PreparedStatement statement = con.prepareStatement("SELECT PLUGIN FROM PLUGIN WHERE UPPER(PLUGIN) = UPPER(?)");)
+        try (Connection con = dataSource.getConnection();
+             Statement stmt = con.createStatement();
+             PreparedStatement statement = con.prepareStatement("SELECT PLUGIN FROM PLUGIN WHERE UPPER(PLUGIN) = UPPER(?)"))
         {
             ResultSet set = stmt.executeQuery("SELECT * FROM DEPEND");
-            while(set.next())
+            while (set.next())
             {
                 statement.setString(1, set.getString("DEPEND"));
                 if (!statement.executeQuery().next())
@@ -309,7 +299,6 @@ public class DependencyTree
             e.printStackTrace();
         }
     }
-
 
     public static class Info
     {

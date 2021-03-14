@@ -37,7 +37,7 @@ public class URLUtils
             }
 
 
-            try(InputStream stream = connection.getInputStream())
+            try (InputStream stream = connection.getInputStream())
             {
                 String response = IOUtils.toString(stream, StandardCharsets.UTF_8);
                 if (connection.getResponseCode() == 200)
@@ -69,7 +69,7 @@ public class URLUtils
     /**
      * ファイルをだうんろーど！
      *
-     * @param url URL
+     * @param url      URL
      * @param fileName ファイル名
      * @return ローカルのパス
      */
@@ -96,7 +96,7 @@ public class URLUtils
             do
             {
                 connection.setRequestMethod("GET");
-                    connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
                 connection.setRequestProperty("User-AgeollowRedirects(false);\n" +
                         "                if (urlObj.getHost().equals(\"api.github.com\"))nt", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
                 connection.connect();
@@ -107,7 +107,7 @@ public class URLUtils
                     URL base = connection.getURL();
                     String locationStr = connection.getHeaderField("Location");
                     if (locationStr != null)
-                    base = new URL(base, locationStr);
+                        base = new URL(base, locationStr);
 
                     connection.disconnect();
                     if (base != null)
@@ -118,7 +118,7 @@ public class URLUtils
                 }
 
             }
-            while(redir);
+            while (redir);
 
             FileUtils.copyInputStreamToFile(connection.getInputStream(), new File((ClassUtils.isExists("org.bukkit.ChatColor") ? "pluguns/": "") + fileName));
             return new Pair<>(duplicateFile, fileName);

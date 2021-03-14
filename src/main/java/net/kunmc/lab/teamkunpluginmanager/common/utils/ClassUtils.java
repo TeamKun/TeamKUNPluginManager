@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -32,9 +31,11 @@ public class ClassUtils
             return new ArrayList<>();
         else if (type == Boolean.class)
             return false;
-        else if (type == new TypeToken<HashMap<?,?>>(){}.getRawType())
+        else if (type == new TypeToken<HashMap<?, ?>>()
+        {
+        }.getRawType())
             return new HashMap<>();
-        else if (type ==  String[].class)
+        else if (type == String[].class)
             return new String[]{};
         return null;
     }

@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.console.utils;
 
 import com.g00fy2.versioncompare.Version;
-import com.google.gson.Gson;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
@@ -13,16 +12,12 @@ import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.routines.UrlValidator;
-import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -33,10 +28,11 @@ public class Installer
 
     /**
      * アンインストール
+     *
      * @param pluginName 対象
-     * @param print 出力
-     * @param force 強制
-     * @param confirm 続行するかどうか
+     * @param print      出力
+     * @param force      強制
+     * @param confirm    続行するかどうか
      */
     @SuppressWarnings("unchecked")
     public static void uninstall(String pluginName, boolean print, boolean force, boolean confirm)
@@ -145,6 +141,7 @@ public class Installer
 
     /**
      * プラグインの名前からファイル名を取得
+     *
      * @param pluginName 名前
      * @return ファイル名
      */
@@ -157,7 +154,7 @@ public class Installer
         if (files == null)
             return null;
 
-        for (File f: files)
+        for (File f : files)
         {
             try
             {
@@ -165,7 +162,9 @@ public class Installer
                 if (pluginName.equals(yaml.name))
                     return f.toPath().normalize().toAbsolutePath().toString();
             }
-            catch (Exception ignored) { }
+            catch (Exception ignored)
+            {
+            }
         }
         return null;
     }
@@ -173,7 +172,7 @@ public class Installer
     /**
      * インストール
      *
-     * @param name   名前またはurl
+     * @param name  名前またはurl
      * @param print 出力
      */
 
@@ -218,7 +217,7 @@ public class Installer
         print(getChangeMessage(ChangeType.INSTALL, result.getValue()), print);
         install++;
 
-        print((double)(System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
+        print((double) (System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
         Progress infoProg = new Progress("情報を読み込み中");
         infoProg.start();
         PluginYamlParser description;
@@ -305,7 +304,7 @@ public class Installer
         }
 
         if (depend)
-            print((double)(System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
+            print((double) (System.currentTimeMillis() - downloadStartTime) / 1000d + "秒で取得しました。", print);
 
         if (result.getKey())
         {
@@ -385,8 +384,6 @@ public class Installer
         print("S: " + description.name + ":" + description.version + " を正常にインストールしました。", print);
         return new InstallResult(result.getValue(), description.name, install, uninstall, change, true);
     }
-
-
 
     public static <T> void print(T obj, boolean nPrint)
     {

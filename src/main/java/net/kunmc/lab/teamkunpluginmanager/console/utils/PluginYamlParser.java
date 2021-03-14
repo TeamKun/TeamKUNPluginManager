@@ -29,28 +29,8 @@ public class PluginYamlParser
     public String[] depend;
     public String[] softdepend;
     public String[] loadbefore;
-    public HashMap<String,Command> commands;
-    public HashMap<String,Permission> permissions;
-
-    public PluginYamlParser parse(HashMap<String, Object> kv) throws IOException
-    {
-
-        PluginYamlParser pluginYamlParser = new Gson().fromJson(new Gson().toJson(kv), PluginYamlParser.class);
-        for (Field field : pluginYamlParser.getClass().getDeclaredFields())
-        {
-            field.setAccessible(true);
-            try
-            {
-                if (field.get(pluginYamlParser) == null)
-                    field.set(pluginYamlParser, ClassUtils.init(field.getType()));
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        return pluginYamlParser;
-    }
+    public HashMap<String, Command> commands;
+    public HashMap<String, Permission> permissions;
 
     public static PluginYamlParser fromJar(File file) throws IOException
     {
@@ -74,6 +54,33 @@ public class PluginYamlParser
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T castAs(Object main)
+    {
+        return (T) main;
+    }
+
+    public PluginYamlParser parse(HashMap<String, Object> kv) throws IOException
+    {
+
+        PluginYamlParser pluginYamlParser = new Gson().fromJson(new Gson().toJson(kv), PluginYamlParser.class);
+        for (Field field : pluginYamlParser.getClass().getDeclaredFields())
+        {
+            field.setAccessible(true);
+            try
+            {
+                if (field.get(pluginYamlParser) == null)
+                    field.set(pluginYamlParser, ClassUtils.init(field.getType()));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return pluginYamlParser;
+    }
+
     enum Load
     {
         STARTUP,
@@ -84,12 +91,6 @@ public class PluginYamlParser
     {
         public String description;
         public String[] aliases;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T castAs(Object main)
-    {
-        return (T) main;
     }
 
     public static class Permission

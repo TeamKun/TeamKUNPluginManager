@@ -26,7 +26,7 @@ public class Spigotmc
 
         Matcher matcher = PATTERN.matcher(url.getPath());
 
-        while(matcher.find())
+        while (matcher.find())
             if (matcher.group("id") != null && !matcher.group("id").equals(""))
                 return true;
         return false;
@@ -53,7 +53,7 @@ public class Spigotmc
         String name = null;
         String version = null;
 
-        while(matcher.find())
+        while (matcher.find())
         {
             if (matcher.group("id") != null && !matcher.group("id").equals(""))
                 id = matcher.group("id");

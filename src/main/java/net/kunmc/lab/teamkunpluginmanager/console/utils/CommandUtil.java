@@ -13,18 +13,20 @@ public class CommandUtil
     {
         return Arrays.stream(target).parallel().anyMatch(maf::equalsIgnoreCase);
     }
-    
+
     public static String genHelp(String name, String description, String[] aliases, Parameter[] param, String[] examples)
     {
         StringBuilder builder = new StringBuilder();
-        
+
         builder.append("使用法： java -jar ").append(PluginManagerConsole.classPath).append(" ").append(name).append(" ");
 
         Arrays.stream(param).forEach(parameter -> {
-            builder.append(String.format("%s%s%s",
+            builder.append(String.format(
+                    "%s%s%s",
                     parameter.require ? "<": "[",
                     parameter.name,
-                    parameter.require ? ">": "]"));
+                    parameter.require ? ">": "]"
+            ));
         });
 
         builder.append("\n\n");
@@ -71,9 +73,9 @@ public class CommandUtil
 
         aliasCount.set(aliases.length - aliasCount.get());
 
-        if(aliasCount.get() > 0)
+        if (aliasCount.get() > 0)
         {
-            IntStream.range(0, aliasCount.incrementAndGet() )
+            IntStream.range(0, aliasCount.incrementAndGet())
                     .forEach(value -> {
                         builder.append("    ... ");
                         builder.append(aliases[value]);
@@ -85,13 +87,14 @@ public class CommandUtil
 
         return builder.toString();
     }
-    
+
     public static class Parameter
     {
         public String name;
         public String description;
         public String usage;
         public boolean require;
+
         public Parameter(String name, String description, String usage, boolean require)
         {
             this.name = name;
@@ -100,5 +103,5 @@ public class CommandUtil
             this.require = require;
         }
     }
-    
+
 }

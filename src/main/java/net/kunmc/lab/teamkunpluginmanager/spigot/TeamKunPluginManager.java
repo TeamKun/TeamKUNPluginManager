@@ -1,9 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot;
 
 import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
+import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandMain;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandUpdate;
-import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Say2Functional;
@@ -15,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 
 import static net.kunmc.lab.teamkunpluginmanager.common.Variables.vault;
-
 
 public final class TeamKunPluginManager extends JavaPlugin
 {
@@ -40,7 +39,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
-        KnownPlugins.initialize(this.getDataFolder() , TeamKunPluginManager.config.getString("resolvePath"));
+        KnownPlugins.initialize(this.getDataFolder(), TeamKunPluginManager.config.getString("resolvePath"));
         new BukkitRunnable()
         {
 

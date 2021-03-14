@@ -3,12 +3,12 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,9 +41,10 @@ public class Installer
 
     /**
      * アンインストールをする
+     *
      * @param sender 発行者(Nullable)
-     * @param name 対象プラグ
-     * @param force 強制削除かどうか
+     * @param name   対象プラグ
+     * @param force  強制削除かどうか
      */
     public static void unInstall(CommandSender sender, String name, boolean force)
     {
@@ -183,7 +184,7 @@ public class Installer
         catch (FileNotFoundException e)
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -193,7 +194,7 @@ public class Installer
         catch (IOException | InvalidDescriptionException e)
         {
             finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込めませんでした。");
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -204,7 +205,7 @@ public class Installer
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
@@ -221,7 +222,8 @@ public class Installer
                         ".jar";
                 FileUtils.moveFile(
                         new File("plugins/" + downloadResult.getValue()),
-                        new File("plugins/" + fileName));
+                        new File("plugins/" + fileName)
+                );
                 downloadResult = new Pair<>(false, fileName);
             }
             catch (IOException e)
@@ -251,7 +253,7 @@ public class Installer
                 public void run()
                 {
 
-                    if(!withoutRemove)
+                    if (!withoutRemove)
                         delete(finalSender, PluginUtil.getFile(plugin));
 
 
@@ -341,7 +343,7 @@ public class Installer
                     {
                         finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
 
-                        if(!withoutRemove)
+                        if (!withoutRemove)
                             delete(finalSender, new File("plugins/" + f.fileName));
 
                         PluginUtil.unload(plugin);

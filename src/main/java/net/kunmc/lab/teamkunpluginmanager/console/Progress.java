@@ -53,6 +53,8 @@ public class Progress
         {
             Thread.sleep(10);
         }
-        catch (InterruptedException ignored) { }
+        catch (InterruptedException ignored)
+        {
+        }
     }
 }

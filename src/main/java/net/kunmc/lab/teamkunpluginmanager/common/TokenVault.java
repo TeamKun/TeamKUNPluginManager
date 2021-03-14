@@ -11,7 +11,7 @@ public class TokenVault
 {
 
     private String token;
-    private File file;
+    private final File file;
 
     public TokenVault(File file)
     {

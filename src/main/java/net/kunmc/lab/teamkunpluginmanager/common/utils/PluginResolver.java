@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.DevBukkit;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.Spigotmc;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +50,7 @@ public class PluginResolver
             }
 
         }
-        else if (ghName instanceof  String[])
+        else if (ghName instanceof String[])
         {
             for (String str : (String[]) ghName)
             {

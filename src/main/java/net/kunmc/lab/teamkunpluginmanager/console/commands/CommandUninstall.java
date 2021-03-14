@@ -1,12 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.console.commands;
 
-import com.google.gson.Gson;
-import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.Installer;
-
-import java.util.Arrays;
 
 public class CommandUninstall implements CommandBase
 {
@@ -52,7 +48,8 @@ public class CommandUninstall implements CommandBase
         Progress progress = new Progress("ヘルプを読み込み中");
         progress.start();
 
-        String help = CommandUtil.genHelp("uninstall",
+        String help = CommandUtil.genHelp(
+                "uninstall",
                 "プラグインを削除します。",
                 getAliases(),
                 new CommandUtil.Parameter[]{new CommandUtil.Parameter(
@@ -70,7 +67,9 @@ public class CommandUninstall implements CommandBase
         {
             Thread.sleep(10);
         }
-        catch (InterruptedException ignored) { }
+        catch (InterruptedException ignored)
+        {
+        }
         System.out.println(help);
 
     }
