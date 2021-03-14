@@ -1,7 +1,7 @@
-package net.kunmc.lab.teamkunpluginmanager.commands;
+package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
