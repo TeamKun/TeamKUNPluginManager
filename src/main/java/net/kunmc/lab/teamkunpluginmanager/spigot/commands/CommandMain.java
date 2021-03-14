@@ -76,6 +76,9 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "register":
                 CommandRegister.onCommand(sender, argsList.toArray(new String[0]));
                 break;
+            case "reload":
+                CommandReload.onCommand(sender, argsList.toArray(new String[0]));
+                break;
             default:
                 sender.sendMessage(ChatColor.RED + "E: 不明なコマンドです！");
                 sender.sendMessage(Messages.getCommandNotFoundMessage());
@@ -108,8 +111,8 @@ public class CommandMain implements CommandExecutor, TabCompleter
                     case "remove":
                     case "info":
                     case "clean":
+                    case "reload":
                         completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
-
                         break;
                 }
             case 3:
