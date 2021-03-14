@@ -28,11 +28,6 @@ public class CommandInstall implements CommandBase
             return -1;
         }
 
-        if (CommandUtil.containsIgnoreCase(args, "-h") || CommandUtil.containsIgnoreCase(args, "--help") || CommandUtil.containsIgnoreCase(args, "-?"))
-        {
-            printHelp();
-            return 0;
-        }
 
         Installer.install(args[0], true);
 
