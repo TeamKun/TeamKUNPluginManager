@@ -194,7 +194,7 @@ public class Installer
         if (print)
             progress.stop();
 
-        String url = PluginResolver.asUrl(PluginManagerConsole.config.getString("gitHubName"), name);
+        String url = PluginResolver.asUrl(PluginManagerConsole.config.get("gitHubName"), name);
 
         if (url.startsWith("ERROR "))
         {
