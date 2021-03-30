@@ -118,7 +118,7 @@
         <dependency>
             <groupId>com.github.P2P-Develop</groupId>
             <artifactId>PeyangSuperLibrary</artifactId>
-            <version>114.19.19</version>
+            <version>114.191.9</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
