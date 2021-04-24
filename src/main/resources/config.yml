@@ -10,9 +10,15 @@ resolvePath: "/resolve.db"
 # エイリアス定義ファイル
 # 形式: JSON
 # 書き方:  { "ExamplePlugin": "https://example.com/download/ExamplePlugin.jar"
+#
+# このconfigの書き方
+# - name: Example                         #設定の名前
+#   url: https://example.com/example.json #設定のURL
+#   auth: true|false                    # 認証が必要かどうか(プライベートリポジトリの場合)
 config:
-  - "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
-
+  - name: TeamKun HUB
+    url: "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
+    auth: true
 # 保護
 ignore:
   - bStats               #削除しないでください
