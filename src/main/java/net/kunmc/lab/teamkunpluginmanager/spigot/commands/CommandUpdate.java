@@ -3,8 +3,10 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
@@ -79,7 +81,7 @@ public class CommandUpdate
                                 connection.setRequestMethod("GET");
                                 if (Boolean.parseBoolean(s.get("auth").toString()) && (urlObj.getHost().equals("api.github.com") ||
                                         urlObj.getHost().equals("raw.githubusercontent.com")))
-                                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                                    connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
                                 connection.setRequestProperty("User-Agent",
                                         "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
                                 connection.connect();
@@ -105,7 +107,7 @@ public class CommandUpdate
 
 
                                 finalSender.sendMessage(ChatColor.GREEN + "取得：" + num.incrementAndGet() +
-                                        " " + url + " [" + PluginUtil.getFileSizeString(file.length()) + "]");
+                                        " " + url + " [" + FileUploadUtil.getFileSizeString(file.length()) + "]");
                             }
                             catch (MalformedURLException e)
                             {
