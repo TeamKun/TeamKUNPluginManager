@@ -78,7 +78,7 @@ public class CommandUpdate
                                 URL urlObj = new URL(url);
                                 HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
                                 connection.setRequestMethod("GET");
-                                if ((boolean) s.get("auth") && (urlObj.getHost().equals("api.github.com") ||
+                                if (Boolean.parseBoolean(s.get("auth").toString()) && (urlObj.getHost().equals("api.github.com") ||
                                         urlObj.getHost().equals("raw.githubusercontent.com")))
                                     connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
                                 connection.setRequestProperty("User-Agent",
