@@ -43,7 +43,6 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>com.github.P2P-Develop:*</include>
                                     <include>commons-validator:*</include>
                                     <include>commons-io:*</include>
                                     <include>org.slf4j:*</include>
@@ -114,11 +113,6 @@
             <groupId>fr.minuskube.inv</groupId>
             <artifactId>smart-invs</artifactId>
             <version>1.2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.P2P-Develop</groupId>
-            <artifactId>PeyangSuperLibrary</artifactId>
-            <version>114.19.19</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
