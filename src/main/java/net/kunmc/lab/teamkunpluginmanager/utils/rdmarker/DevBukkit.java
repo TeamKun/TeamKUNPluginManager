@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 public class DevBukkit
 {
 
-    private static final Pattern PATTERN = Pattern.compile("^/projects/(?<slug>\\w+)(/?$|/files(/(?<id>\\d+)((/files/(?<version>\\d+))?/download)?)?)/?$");
+    private static final String basePatterns = "^/projects/(?<slug>\\w+)(/(files|/screenshots|relations/(dependencies|dependents)|)/?$)?(/?$|/files(/(?<id>\\d+)((/files/(?<version>\\d+))?/download)?)?)/?$";
+    private static final Pattern BUKKIT_PATTERN = Pattern.compile("^/projects/" + basePatterns);
+    private static final Pattern CURSE_PATTERN = Pattern.compile("^/minecraft/bukkit-plugins/" + basePatterns);
 
     public static boolean isMatch(String urlName)
     {
@@ -29,10 +31,12 @@ public class DevBukkit
             return false;
         }
 
-        if (!url.getHost().equals("dev.bukkit.org"))
+        boolean isBukkit;
+
+        if (!(isBukkit = url.getHost().equals("dev.bukkit.org")) && !url.getHost().equals("curseforge.com"))
             return false;
 
-        Matcher matcher = PATTERN.matcher(url.getPath());
+        Matcher matcher = (isBukkit ? BUKKIT_PATTERN: CURSE_PATTERN).matcher(url.getPath());
 
         while(matcher.find())
             if (matcher.group("slug") != null && !matcher.group("slug").equals(""))
@@ -55,7 +59,7 @@ public class DevBukkit
         if (!url.getHost().equals("dev.bukkit.org"))
             return urlName;
 
-        Matcher matcher = PATTERN.matcher(url.getPath());
+        Matcher matcher = BUKKIT_PATTERN.matcher(url.getPath());
 
         String slug = null;
         String version = null;
