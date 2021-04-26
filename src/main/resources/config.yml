@@ -3,9 +3,10 @@ gitHubName: [TeamKUN]
 
 #DBへのパス
 dependPath: "/depend.db"
-
 #名前解決へのパス
 resolvePath: "/resolve.db"
+
+redirectLimit: 15
 
 # エイリアス定義ファイル
 # 形式: JSON

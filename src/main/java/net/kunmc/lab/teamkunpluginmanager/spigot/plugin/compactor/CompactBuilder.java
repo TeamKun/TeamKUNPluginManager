@@ -54,7 +54,7 @@ public class CompactBuilder implements Cloneable
 
         String url = PluginResolver.asUrl(TeamKunPluginManager.plugin.getConfig().get(("githubName")), name);
 
-        if (url.startsWith("ERROR"))
+        if (!url.startsWith("ERROR"))
             this.pre.downloadUrl = url;
         else
             this.rs = (BuildResult[]) ArrayUtils.add(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
