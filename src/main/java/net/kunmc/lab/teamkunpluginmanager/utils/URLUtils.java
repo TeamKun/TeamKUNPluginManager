@@ -1,13 +1,17 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.NoSuchFileException;
 
 public class URLUtils
 {
@@ -76,13 +80,20 @@ public class URLUtils
             duplicateFile = true;
         }
 
+        tryna = 0;
+
+        final int redirectLimit = TeamKunPluginManager.config.getInt("redirectLimit", 15);
+
         try
         {
             URL urlObj = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-            boolean redir = false;
+            boolean redir;
             do
             {
+                if (tryna++ > redirectLimit)
+                    throw new IOException("Too many redirects.");
+
                 connection.setRequestMethod("GET");
                 connection.setInstanceFollowRedirects(false);
                 if (urlObj.getHost().equals("api.github.com"))
@@ -109,7 +120,25 @@ public class URLUtils
             }
             while(redir);
 
-            FileUtils.copyInputStreamToFile(connection.getInputStream(), new File("plugins/" + fileName));
+            connection.setRequestMethod("GET");
+            connection.setInstanceFollowRedirects(false);
+            if (urlObj.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+
+            File file = new File("plugins/" + fileName);
+
+            if (!file.createNewFile())
+                throw new NoSuchFileException("ファイルの作成に失敗しました。");
+
+            try(InputStream is = connection.getInputStream();
+                OutputStream os = new FileOutputStream(file))
+            {
+                IOUtils.copy(is, os);
+            }
+
+
+            //FileUtils.copyInputStreamToFile(connection.getInputStream(), file);
             return new Pair<>(duplicateFile, fileName);
         }
         catch (Exception e)
