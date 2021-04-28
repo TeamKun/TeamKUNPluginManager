@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class DevBukkit
 {
 
-    private static final String basePatterns = "^/projects/(?<slug>\\w+)(/(files|/screenshots|relations/(dependencies|dependents)|)/?$)?(/?$|/files(/(?<id>\\d+)((/files/(?<version>\\d+))?/download)?)?)/?$";
+    private static final String basePatterns = "(?<slug>\\w+)(/(files|/screenshots|relations/(dependencies|dependents)|)/?$)?(/?$|/files(/(?<id>\\d+)((/files/(?<version>\\d+))?/download)?)?)/?$";
     private static final Pattern BUKKIT_PATTERN = Pattern.compile("^/projects/" + basePatterns);
     private static final Pattern CURSE_PATTERN = Pattern.compile("^/minecraft/bukkit-plugins/" + basePatterns);
 
