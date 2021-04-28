@@ -54,7 +54,10 @@ public class CommandInstall implements CommandBase
                         "TeamKun/ExamplePlugin",
                         "https://example.com/plugins/exampleplugin.jar",
                         "https://github.com/TeamKun/ExamplePlugin/releases/1.0/download/Exampleplugin-1.0.jar",
-                        "https://github.com/TeamKun/ExamplePlugin/"
+                        "https://github.com/TeamKun/ExamplePlugin/",
+                        "https://dev.bukkit.org/projects/example",
+                        "https://dev.bukkit.org/projects/example/files/123456",
+                        "https://www.spigotmc.org/resources/example.12345"
                 }
         );
         progress.stop();
