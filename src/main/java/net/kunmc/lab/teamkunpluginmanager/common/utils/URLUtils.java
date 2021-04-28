@@ -1,8 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.common.utils;
 
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -17,6 +15,11 @@ import java.nio.file.NoSuchFileException;
 
 public class URLUtils
 {
+    /**
+     * リダイレクトのリミット
+     */
+    public static int redirectLimit = 15;
+
     public static String getAsString(String urlString)
     {
         try
@@ -94,8 +97,6 @@ public class URLUtils
         }
 
         tryna = 0;
-
-        final int redirectLimit = TeamKunPluginManager.config.getInt("redirectLimit", 15);
 
         try
         {
