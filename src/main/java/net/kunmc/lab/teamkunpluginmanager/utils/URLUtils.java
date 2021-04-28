@@ -109,7 +109,7 @@ public class URLUtils
                     if (locationStr != null)
                     base = new URL(base, locationStr);
 
-                    connection.disconnect();
+                    //connection.disconnect();
                     if (base != null)
                     {
                         redir = true;
@@ -119,12 +119,6 @@ public class URLUtils
 
             }
             while(redir);
-
-            connection.setRequestMethod("GET");
-            connection.setInstanceFollowRedirects(false);
-            if (urlObj.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
-            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
 
             File file = new File("plugins/" + fileName);
 

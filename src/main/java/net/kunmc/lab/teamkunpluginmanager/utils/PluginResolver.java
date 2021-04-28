@@ -30,7 +30,7 @@ public class PluginResolver
         }
 
         if (KnownPlugins.isKnown(query))
-            return GitHubURLBuilder.urlValidate(KnownPlugins.getKnown(query).url);
+            return PluginResolver.asUrl(KnownPlugins.getKnown(query).url);
         else if (StringUtils.split("/", query).length == 2)
             return GitHubURLBuilder.urlValidate("https://github.com/" + query);
 
