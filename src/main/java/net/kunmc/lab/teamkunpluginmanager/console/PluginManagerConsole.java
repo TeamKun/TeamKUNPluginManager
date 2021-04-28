@@ -1,10 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.console;
 
-import develop.p2p.lib.FileConfiguration;
-import develop.p2p.lib.Intellij;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
 import net.kunmc.lab.teamkunpluginmanager.common.Variables;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandBase;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandHelp;
 import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandInstall;
@@ -13,6 +12,8 @@ import net.kunmc.lab.teamkunpluginmanager.console.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.console.utils.CommandUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import tokyo.peya.lib.FileConfiguration;
+import tokyo.peya.lib.Intellij;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -71,13 +72,14 @@ public class PluginManagerConsole
         classPath = System.getProperty("java.class.path");
         if (Intellij.isDebugging())
             classPath = StringUtils.split(classPath, ";")[0];
-        dataFolder = new File(new File(classPath).getParentFile(), "TeamKunPluginManager").toPath();
 
+        dataFolder = new File(new File(classPath).getParentFile(), "TeamKunPluginManager").toPath();
         dataFolder.toFile().mkdirs();
 
         config = new FileConfiguration(dataFolder.toFile(), "config.yml");
-
         config.saveDefaultConfig();
+
+        URLUtils.redirectLimit = config.get("redirectLimit");
 
         Variables.vault = new TokenVault(new File(PluginManagerConsole.dataFolder.toAbsolutePath().getParent().getParent().toFile(), "kpm.vault"));
 
