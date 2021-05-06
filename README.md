@@ -6,6 +6,18 @@
 
 プラグインの管理を行います。
 
+## 対応書式
+
++ GitHub `Organization/Repository`
++ GitHub `https://github.com/Organization/Repository`
++ Bukkit `https://dev.bukkit.org/projects/example/`
++ Bukkit `https://dev.bukkit.org/projects/example/files/000000`
++ Spigot `https://www.spigotmc.org/resources/exampleplugin.0000/`
++ CurseForge `https://www.curseforge.com/minecraft/bukkit-plugins/example`
++ CurseForge `https://www.curseforge.com/minecraft/bukkit-plugins/example/download/000000`
++ Other `Organization/Repository@v0.3a`
++ Other `https://example.com/plugin/ExamplePlugin-0.3a.jar`
+
 ## コマンド
 
 ### /kunpluginmanager
