@@ -15,7 +15,7 @@ public class GitHubURLBuilder
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}/[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,100})(/?|(?:/(?:releases/?|tag/?)(?:(?<tagNameNF>[.a-zA-Z0-9\\-+]+)|(?:download/(?<tagName>[.a-zA-Z0-9\\-+]+)/(?<file>[^/]+?\\.jar)))?)?)$");
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}/[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100})(?:/?$|/(?:tag|release)s(?:/?$|/(?:tag/(?<tag>[^/]+)/?$|download/(?<dlTag>[^/]+)/(?<fileName>[^/]+))))/?$");
 
     /**
      * GitHubのリリースへのAPIのURlをビルドします。
@@ -45,7 +45,7 @@ public class GitHubURLBuilder
      * @param urlName 適当なURL
      * @return GitHubのURl
      */
-    public static String urlValidate(String urlName)
+    public static String urlValidate(String urlName, String version)
     {
         URL url;
         try
@@ -68,9 +68,9 @@ public class GitHubURLBuilder
         while (matcher.find())
         {
             String repository = matcher.group("repo");
-            String tag = matcher.group("tagName");
-            String tagNF = matcher.group("tagNameNF");
-            String file = matcher.group("file");
+            String tag = matcher.group("dlTag");
+            String tagNF = matcher.group("tag");
+            String file = matcher.group("fileName");
 
             if (file != null && !file.equals(""))
                 return urlName;
@@ -83,6 +83,9 @@ public class GitHubURLBuilder
             else if (tagNF != null && !tagNF.equals(""))
                 tagName = tagNF;
         }
+
+        if (tagName == null && version != null)
+            tagName = version;
 
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
 
