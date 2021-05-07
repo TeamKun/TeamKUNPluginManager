@@ -8,8 +8,8 @@
 
 ## 対応書式
 
-+ GitHub `Organization/Repository`
-+ GitHub `https://github.com/Organization/Repository`
++ GitHub `TeamKun/TeamKunPluginManager`
++ GitHub `https://github.com/TeamKun/TeamKunPluginManager`
 + Bukkit `https://dev.bukkit.org/projects/example/`
 + Bukkit `https://dev.bukkit.org/projects/example/files/000000`
 + Spigot `https://www.spigotmc.org/resources/exampleplugin.0000/`
