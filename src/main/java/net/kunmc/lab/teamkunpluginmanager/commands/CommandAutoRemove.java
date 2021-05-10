@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -15,6 +16,7 @@ public class CommandAutoRemove
 {
     public static ArrayList<String> onCommand(CommandSender sender, String[] args)
     {
+
         if (sender != null && !sender.hasPermission("kpm.autoremove"))
         {
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
@@ -25,6 +27,12 @@ public class CommandAutoRemove
         if (sender == null)
             sender = Installer.dummySender();
 
+        if (!TeamKunPluginManager.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return null;
+        }
+
         AtomicInteger removed = new AtomicInteger();
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
         ArrayList<String> removables = DependencyTree.unusedPlugins();
@@ -33,6 +41,7 @@ public class CommandAutoRemove
             sender.sendMessage(ChatColor.RED + "E: 削除可能なプラグインはありません。");
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
             sender.sendMessage(ChatColor.GREEN + "S: 操作が正常に完了しました。");
+            TeamKunPluginManager.session.unlock();
             return rem;
         }
 
@@ -58,6 +67,7 @@ public class CommandAutoRemove
             });
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
         }
+        TeamKunPluginManager.session.unlock();
         return rem;
     }
 }
