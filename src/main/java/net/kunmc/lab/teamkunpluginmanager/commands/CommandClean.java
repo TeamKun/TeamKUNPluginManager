@@ -16,13 +16,11 @@ public class CommandClean
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
-
         if (!sender.hasPermission("kpm.clean"))
         {
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
-
 
         if (DependencyTree.isErrors())
         {
@@ -31,12 +29,20 @@ public class CommandClean
             return;
         }
 
+        if (!TeamKunPluginManager.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
+
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
 
         String[] removable = Installer.getRemovableDataDirs();
         if (removable.length == 0)
         {
             sender.sendMessage(ChatColor.RED + "E: 削除可能が項目が見つかりませんでした。");
+            TeamKunPluginManager.session.unlock();
             return;
         }
 
@@ -48,12 +54,14 @@ public class CommandClean
                 if (!args[0].equals("all") && Arrays.stream(removable).noneMatch(s -> args[0].equalsIgnoreCase(s)))
                 {
                     sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
+                    TeamKunPluginManager.session.unlock();
                     return;
                 }
 
                 if (args.length == 2 && !args[1].equals("no-preserve") && !(sender instanceof Player))
                 {
                     sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean " + args[0] + " no-preserve");
+                    TeamKunPluginManager.session.unlock();
                     return;
                 }
 
@@ -66,6 +74,7 @@ public class CommandClean
                     Installer.clean(args[0]);
                     sender.sendMessage(Messages.getStatusMessage(0, args[0].equals("all") ? removable.length: 1, 0));
                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
+                    TeamKunPluginManager.session.unlock();
                     return;
                 }
 
@@ -101,6 +110,7 @@ public class CommandClean
                 if (!(sender instanceof Player))
                 {
                     sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean all no-preserve");
+                    TeamKunPluginManager.session.unlock();
                     return;
                 }
                 sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
@@ -116,6 +126,7 @@ public class CommandClean
                             {
                                 case "n":
                                     sender.sendMessage(ChatColor.RED + "キャンセルしました。");
+                                    TeamKunPluginManager.session.unlock();
                                     break;
                                 case "y":
                                     sender.sendMessage(ChatColor.GREEN + "削除を実行しています...");
@@ -123,6 +134,7 @@ public class CommandClean
                                             .forEach(Installer::clean);
                                     sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
                                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
+                                    TeamKunPluginManager.session.unlock();
                             }
                         }, "y", "n")
                 );

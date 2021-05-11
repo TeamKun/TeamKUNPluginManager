@@ -52,7 +52,7 @@ public class CommandExport
         if (!TeamKunPluginManager.plugin.isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
-            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
             return;
         }
 

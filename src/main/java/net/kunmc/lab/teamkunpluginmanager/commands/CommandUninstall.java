@@ -24,13 +24,19 @@ public class CommandUninstall
             return;
         }
 
+        if (!TeamKunPluginManager.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         new BukkitRunnable()
         {
             @Override
             public void run()
             {
                 Installer.unInstall(sender, args[0], false);
-
+                TeamKunPluginManager.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }

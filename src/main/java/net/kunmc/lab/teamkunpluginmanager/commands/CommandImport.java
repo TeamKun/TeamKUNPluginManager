@@ -10,6 +10,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginContainer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -38,10 +39,17 @@ public class CommandImport
             return;
         }
 
+        if (!TeamKunPluginManager.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法: /kpm import URL");
+            TeamKunPluginManager.session.unlock();
             return;
         }
 
@@ -54,7 +62,7 @@ public class CommandImport
         {
             sender.sendMessage(ChatColor.RED + "E: 第一引数に適切なURLを入力してください。");
             sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-
+            TeamKunPluginManager.session.unlock();
             return;
         }
 
@@ -74,6 +82,7 @@ public class CommandImport
         catch (JsonParseException e)
         {
             sender.sendMessage(ChatColor.RED + "E: JSONファイルが正しくないようです。");
+            TeamKunPluginManager.session.unlock();
             return;
         }
 
@@ -149,6 +158,6 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GREEN + "S: 正常にインポートしました。");
         sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-
+        TeamKunPluginManager.session.unlock();
     }
 }

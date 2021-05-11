@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
+import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,10 +22,12 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static TokenVault vault;
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
+    public static Session session;
 
     @Override
     public void onEnable()
     {
+        session = new Session();
         saveDefaultConfig();
         plugin = this;
         config = getConfig();

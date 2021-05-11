@@ -18,7 +18,6 @@ public class CommandReload
             return;
         }
 
-
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
@@ -34,6 +33,12 @@ public class CommandReload
             return;
         }
 
+        if (!TeamKunPluginManager.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         new BukkitRunnable()
         {
             @Override
@@ -41,7 +46,7 @@ public class CommandReload
             {
                 PluginUtil.reload(plugin);
                 sender.sendMessage(ChatColor.GREEN + "S: " + args[0] + " を正常に再読み込みしました。");
-
+                TeamKunPluginManager.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }
