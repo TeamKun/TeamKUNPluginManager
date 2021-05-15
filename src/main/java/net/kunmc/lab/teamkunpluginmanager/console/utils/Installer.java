@@ -11,9 +11,11 @@ import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
+import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -282,18 +284,17 @@ public class Installer
                 depend = true;
             }
 
-            String temp1 = resolveDepend(pl);
-
-            if (temp1.equals("ERROR")) //依存関係の解決に失敗
+            String dependUrl = PluginResolver.asUrl(PluginManagerConsole.config.get(("githubName")), pl);
+            if (dependUrl.startsWith("ERROR "))
             {
-                failedResolved.add(temp1);
+                failedResolved.add(pl);
                 continue;
             }
 
-            InstallResult dependResult = install(temp1, false);
+            InstallResult dependResult = install(pl, false);
             if (!dependResult.success)
             {
-                failedResolved.add(temp1);
+                failedResolved.add(pl);
                 continue;
             }
 
@@ -392,25 +393,6 @@ public class Installer
         System.out.println(obj);
     }
 
-    public static String resolveDepend(String name)
-    {
-        if (KnownPlugins.isKnown(name))
-            return KnownPlugins.getKnown(name).url;
-
-        String[] orgName = Variables.gitHubName;
-
-        for (String on : orgName)
-        {
-            String gitHubRepo = on + "/" + name;
-
-            String repository = GitHubURLBuilder.urlValidate("https://github.com/" + gitHubRepo);
-
-            if (!repository.equals("ERROR"))
-                return gitHubRepo;
-        }
-
-        return "ERROR";
-    }
 
     private static String getChangeMessage(ChangeType type, String name)
     {

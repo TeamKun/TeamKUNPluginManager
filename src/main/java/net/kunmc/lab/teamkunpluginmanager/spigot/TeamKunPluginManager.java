@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.spigot;
 import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandMain;
+import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Say2Functional;

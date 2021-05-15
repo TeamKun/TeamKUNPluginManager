@@ -42,7 +42,6 @@ public class CommandUpdate
 
         if (sender == null)
             sender = Installer.dummySender();
-
         if (!TeamKunPluginManager.plugin.isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
