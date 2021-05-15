@@ -9,6 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginContainer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
+import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
@@ -68,14 +69,30 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GOLD + "ファイルのダウンロード中...");
 
-        String json = URLUtils.getAsString(url);
+        Pair<Integer, String> json = URLUtils.getAsString(url);
+
+        switch (json.getKey())
+        {
+            case 404:
+                sender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
+                break;
+            case 403:
+                sender.sendMessage(ChatColor.RED + "E: ファイルを取得できません。しばらくしてからもう一度インポートしてください。");
+                break;
+        }
+
+        if (json.getKey() != 200)
+        {
+            sender.sendMessage(ChatColor.RED + "E: 不明なエラーが発生しました。");
+            return;
+        }
 
         sender.sendMessage(ChatColor.GOLD + "ファイルの読み込み中...");
 
         LinkedList<PluginContainer> container;
         try
         {
-            container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+            container = new Gson().fromJson(json.getValue(), new TypeToken<LinkedList<PluginContainer>>()
             {
             }.getType());
         }

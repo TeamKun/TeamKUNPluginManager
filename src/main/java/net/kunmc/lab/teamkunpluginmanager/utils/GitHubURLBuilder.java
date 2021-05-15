@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 
 import javax.annotation.Nullable;
 import java.net.URL;
@@ -93,11 +94,22 @@ public class GitHubURLBuilder
         {
             case "GITHUB_REPO_RELEASES_URL":
             {
-                String json = URLUtils.getAsString(urlPair.getValue());
-                String error = error(json);
+                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
+                switch (json.getKey())
+                {
+                    case 404:
+                        return "ERROR ファイルが見つかりませんでした。";
+                    case 403:
+                        return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
+                }
+
+                if (json.getKey() != 200)
+                    return "ERROR 不明なエラーが発生しました。";
+
+                String error = error(json.getValue());
                 if (!error.equals(""))
                     return "ERROR " + error;
-                JsonArray array = new Gson().fromJson(json, JsonArray.class);
+                JsonArray array = new Gson().fromJson(json.getValue(), JsonArray.class);
 
                 for (JsonElement elem : array)
                     for (JsonElement asset : ((JsonObject) elem).get("assets").getAsJsonArray())
@@ -109,11 +121,22 @@ public class GitHubURLBuilder
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
-                String json = URLUtils.getAsString(urlPair.getValue());
-                String error = error(json);
+                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
+
+                switch (json.getKey())
+                {
+                    case 404:
+                        return "ERROR ファイルが見つかりませんでした。";
+                    case 403:
+                        return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
+                }
+
+                if (json.getKey() != 200)
+                    return "ERROR 不明なエラーが発生しました。";
+                String error = error(json.getValue());
                 if (!error.equals(""))
                     return "ERROR " + error;
-                JsonObject array = new Gson().fromJson(json, JsonObject.class);
+                JsonObject array = new Gson().fromJson(json.getValue(), JsonObject.class);
                 for (JsonElement asset : array.get("assets").getAsJsonArray())
                 {
                     if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
