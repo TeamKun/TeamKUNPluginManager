@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.spigot;
 import net.kunmc.lab.teamkunpluginmanager.common.TokenVault;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandMain;
-import net.kunmc.lab.teamkunpluginmanager.spigot.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Say2Functional;
@@ -33,7 +32,6 @@ public final class TeamKunPluginManager extends JavaPlugin
         functional = new Say2Functional(this);
 
         vault = new TokenVault(new File(new File("").getAbsolutePath(), "kpm.vault"));
-
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
@@ -76,6 +74,8 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         if (DependencyTree.dataSource != null)
             DependencyTree.dataSource.close();
+        if (KnownPlugins.dataSource != null)
+            KnownPlugins.dataSource.close();
     }
 
     public boolean isTokenAvailable()

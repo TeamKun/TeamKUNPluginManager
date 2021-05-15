@@ -22,7 +22,7 @@ public class Messages
                 "    " + commandMessageBuilder("clean", "不要になったプラグインデータを削除します。") + "\n" +
                 "    " + commandMessageBuilder("export", "プラグインをエクスポートします。") + "\n" +
                 "    " + commandMessageBuilder("import", "エクスポートしたファイルからインポートします。") + "\n" +
-                "    " + commandMessageBuilder("register", "トークンをセットします。") + "\n";
+                "    " + commandMessageBuilder("register", "トークンを発行します。") + "\n";
     }
 
     public static String getErrorMessage()

@@ -75,9 +75,8 @@ public class DevBukkit
         if (slug == null)
             return urlName;
         JsonArray projectSearchResult = new Gson().fromJson(
-                URLUtils.getAsString("https://servermods.forgesvc.net/servermods/projects?search=" + slug),
-                JsonArray.class
-        );
+                URLUtils.getAsString("https://servermods.forgesvc.net/servermods/projects?search=" + slug).getValue(),
+                JsonArray.class);
 
         String id = null;
 
@@ -97,9 +96,8 @@ public class DevBukkit
             return urlName;
 
         JsonArray files = new Gson().fromJson(
-                URLUtils.getAsString("https://servermods.forgesvc.net/servermods/files?projectIds=" + id),
-                JsonArray.class
-        );
+                URLUtils.getAsString("https://servermods.forgesvc.net/servermods/files?projectIds=" + id).getValue(),
+                JsonArray.class);
 
         String apiVersion = StringUtils.split(Bukkit.getVersion(), "-")[0];
 

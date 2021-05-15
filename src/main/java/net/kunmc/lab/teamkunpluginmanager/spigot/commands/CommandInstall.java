@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import org.bukkit.ChatColor;
@@ -10,12 +11,12 @@ public class CommandInstall
 {
     public static void onCommand(CommandSender sender, String[] args)
     {
+
         if (!sender.hasPermission("kpm.install"))
         {
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return;
         }
-
 
         if (args.length < 1)
         {
@@ -27,9 +28,17 @@ public class CommandInstall
         if (!TeamKunPluginManager.plugin.isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
-            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
+            Variables.session.unlock();
             return;
         }
+
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
 
         new BukkitRunnable()
         {
@@ -37,6 +46,7 @@ public class CommandInstall
             public void run()
             {
                 Installer.install(sender, args[0], false, false, false);
+                Variables.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }

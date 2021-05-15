@@ -1,5 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.common;
 
+import net.kunmc.lab.teamkunpluginmanager.common.utils.Session;
+
 public class Variables
 {
     /**
@@ -10,4 +12,9 @@ public class Variables
      * Token
      */
     public static TokenVault vault;
+
+    /**
+     * Session
+     */
+    public static Session session;
 }

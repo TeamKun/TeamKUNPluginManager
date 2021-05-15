@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import org.bukkit.Bukkit;
@@ -18,7 +19,6 @@ public class CommandReload
             return;
         }
 
-
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
@@ -34,6 +34,12 @@ public class CommandReload
             return;
         }
 
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         new BukkitRunnable()
         {
             @Override
@@ -41,7 +47,7 @@ public class CommandReload
             {
                 PluginUtil.reload(plugin);
                 sender.sendMessage(ChatColor.GREEN + "S: " + args[0] + " を正常に再読み込みしました。");
-
+                Variables.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }

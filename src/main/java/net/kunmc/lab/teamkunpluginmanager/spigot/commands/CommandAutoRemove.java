@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.spigot.utils.Messages;
@@ -25,6 +26,12 @@ public class CommandAutoRemove
         if (sender == null)
             sender = Installer.dummySender();
 
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return null;
+        }
+
         AtomicInteger removed = new AtomicInteger();
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
         ArrayList<String> removables = DependencyTree.unusedPlugins();
@@ -33,6 +40,7 @@ public class CommandAutoRemove
             sender.sendMessage(ChatColor.RED + "E: 削除可能なプラグインはありません。");
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
             sender.sendMessage(ChatColor.GREEN + "S: 操作が正常に完了しました。");
+            Variables.session.unlock();
             return rem;
         }
 
@@ -58,6 +66,7 @@ public class CommandAutoRemove
             });
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
         }
+        Variables.session.unlock();
         return rem;
     }
 }

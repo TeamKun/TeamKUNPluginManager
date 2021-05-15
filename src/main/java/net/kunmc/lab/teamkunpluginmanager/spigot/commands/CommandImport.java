@@ -3,6 +3,8 @@ package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
+import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.DependencyTree;
@@ -38,10 +40,17 @@ public class CommandImport
             return;
         }
 
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         if (args.length < 1)
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法: /kpm import URL");
+            Variables.session.unlock();
             return;
         }
 
@@ -54,26 +63,43 @@ public class CommandImport
         {
             sender.sendMessage(ChatColor.RED + "E: 第一引数に適切なURLを入力してください。");
             sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-
+            Variables.session.unlock();
             return;
         }
 
         sender.sendMessage(ChatColor.GOLD + "ファイルのダウンロード中...");
 
-        String json = URLUtils.getAsString(url);
+        Pair<Integer, String> json = URLUtils.getAsString(url);
+
+        switch (json.getKey())
+        {
+            case 404:
+                sender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
+                break;
+            case 403:
+                sender.sendMessage(ChatColor.RED + "E: ファイルを取得できません。しばらくしてからもう一度インポートしてください。");
+                break;
+        }
+
+        if (json.getKey() != 200)
+        {
+            sender.sendMessage(ChatColor.RED + "E: 不明なエラーが発生しました。");
+            return;
+        }
 
         sender.sendMessage(ChatColor.GOLD + "ファイルの読み込み中...");
 
         LinkedList<PluginContainer> container;
         try
         {
-            container = new Gson().fromJson(json, new TypeToken<LinkedList<PluginContainer>>()
+            container = new Gson().fromJson(json.getValue(), new TypeToken<LinkedList<PluginContainer>>()
             {
             }.getType());
         }
         catch (JsonParseException e)
         {
             sender.sendMessage(ChatColor.RED + "E: JSONファイルが正しくないようです。");
+            Variables.session.unlock();
             return;
         }
 
@@ -149,6 +175,6 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GREEN + "S: 正常にインポートしました。");
         sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-
+        Variables.session.unlock();
     }
 }

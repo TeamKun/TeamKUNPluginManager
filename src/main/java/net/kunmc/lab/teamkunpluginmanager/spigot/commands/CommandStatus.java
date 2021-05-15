@@ -40,7 +40,7 @@ public class CommandStatus
             sender.sendMessage(autoRemovable);
 
         if (!TeamKunPluginManager.plugin.isTokenAvailable())
-            sender.sendMessage(ChatColor.RED + "トークンがセットされていません！/kpm register でトークンをセットしてください。");
+            sender.sendMessage(ChatColor.RED + "トークンがセットされていません！/kpm register でトークンを発行してください。");
     }
 
     private static String pi(String property, String value)

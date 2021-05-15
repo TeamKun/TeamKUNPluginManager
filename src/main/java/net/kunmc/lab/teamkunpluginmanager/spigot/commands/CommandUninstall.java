@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.spigot.commands;
 
+import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import org.bukkit.ChatColor;
@@ -24,13 +25,19 @@ public class CommandUninstall
             return;
         }
 
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
         new BukkitRunnable()
         {
             @Override
             public void run()
             {
                 Installer.unInstall(sender, args[0], false);
-
+                Variables.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }

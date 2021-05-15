@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,60 @@ public class URLUtils
      */
     public static int redirectLimit = 15;
 
-    public static String getAsString(String urlString)
+    /**
+     * URLにPOSTした結果を返す。
+     * @param urlString URL
+     * @param data データ
+     * @param accept 受け入れるタイプ。 application/
+     * @return レスポンスコード, 結果
+     */
+    public static Pair<Integer, String> postAsString(String urlString, String data, String accept, String content_type)
+    {
+        try
+        {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            if (url.getHost().equals("api.github.com"))
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
+            if (url.getHost().equals("file.io"))
+                connection.setRequestProperty("Referer", "https://www.file.io/");
+            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+            connection.setRequestProperty("Accept", accept);
+            connection.setRequestProperty("Content-Type", content_type);
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.connect();
+
+            try(OutputStream os = connection.getOutputStream();)
+            {
+                PrintStream prtstr = new PrintStream(os);
+                prtstr.println(data);
+                prtstr.close();
+                int resp = connection.getResponseCode();
+                if (resp < 200 || resp > 299)
+                    return new Pair<>(resp, "");
+
+                try(InputStream is = connection.getInputStream();)
+                {
+                    return new Pair<>(resp, IOUtils.toString(is, StandardCharsets.UTF_8));
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new Pair<>(-1, "");
+        }
+    }
+
+    /**
+     * URLから取得した結果を返す。
+     * @param urlString URL
+     * @return レスポンスコード, 結果
+     */
+    public static Pair<Integer, String> getAsString(String urlString)
     {
         try
         {
@@ -34,32 +88,13 @@ public class URLUtils
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
-            switch (connection.getResponseCode())
-            {
-                case 404:
-                    return "{'message':'プラグインが見つかりませんでした。'}";
-                case 403:
-                    return "{'message':'プラグインを取得できませんでした。15分たって解決しない場合はトークンないしリポジトリを変更してください。'}";
-                case 401:
-                    return "{'message':'プラグインを取得できませんでした。トークンが間違っている可能性があります。'}";
-            }
-
-
-            try (InputStream stream = connection.getInputStream())
-            {
-                String response = IOUtils.toString(stream, StandardCharsets.UTF_8);
-                if (connection.getResponseCode() == 200)
-                    return response;
-                System.out.println("Code: " + connection.getResponseCode());
-                System.out.println(response);
-                return "{'message':'不明なエラーが発生しました。コンソールに結果をダンプします。'}";
-            }
+            return new Pair<>(connection.getResponseCode(), IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8));
 
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            return "[]";
+            return new Pair<>(-1, "");
         }
     }
 

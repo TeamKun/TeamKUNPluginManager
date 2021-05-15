@@ -9,7 +9,6 @@ import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
-import net.kunmc.lab.teamkunpluginmanager.spigot.utils.PluginUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
@@ -27,7 +26,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +46,13 @@ public class CommandUpdate
         if (!TeamKunPluginManager.plugin.isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
-            sender.sendMessage(ChatColor.RED + "/kpm register でトークンをセットしてください。");
+            sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
+            return;
+        }
+
+        if (!Variables.session.lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
@@ -174,6 +178,7 @@ public class CommandUpdate
 
                 finalSender.sendMessage(ChatColor.GREEN + "項目数: " + atomicInteger.get());
                 finalSender.sendMessage(ChatColor.GREEN + "S: プラグイン定義ファイルのアップデートに成功しました。");
+                Variables.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
     }
