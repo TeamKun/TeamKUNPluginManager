@@ -35,7 +35,7 @@ public class PluginResolver
 
         if (KnownPlugins.isKnown(query))
             return PluginResolver.asUrl(ghName, KnownPlugins.getKnown(query).url);
-        else if (StringUtils.split("/", query).length == 2)
+        else if (StringUtils.split(query, "/").length == 2)
             return GitHubURLBuilder.urlValidate("https://github.com/" + s, ver);
 
         //configのorgを順番にfetch
