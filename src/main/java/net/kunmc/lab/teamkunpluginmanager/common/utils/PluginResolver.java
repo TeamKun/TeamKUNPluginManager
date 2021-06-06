@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.common.utils;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.DevBukkit;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.rdMarker.Spigotmc;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.util.List;
