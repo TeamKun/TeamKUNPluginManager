@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 public class URLUtils
 {
@@ -103,10 +104,11 @@ public class URLUtils
      *
      * @param url URL
      * @return ローカルのパス
+     * @param absolutePath 置き場所(絶対パス)
      */
-    public static Pair<Boolean, String> downloadFile(String url)
+    public static Pair<Boolean, String> downloadFile(String url, Path absolutePath)
     {
-        return downloadFile(url, url.substring(url.lastIndexOf("/") + 1));
+        return downloadFile(url, url.substring(url.lastIndexOf("/") + 1), absolutePath);
     }
 
     /**
@@ -114,9 +116,10 @@ public class URLUtils
      *
      * @param url      URL
      * @param fileName ファイル名
+     * @param absolutePath 置き場所(絶対パス)
      * @return ローカルのパス
      */
-    public static Pair<Boolean, String> downloadFile(String url, String fileName)
+    public static Pair<Boolean, String> downloadFile(String url, String fileName, Path absolutePath)
     {
         boolean duplicateFile = false;
 
@@ -169,10 +172,8 @@ public class URLUtils
             }
             while (redir);
 
-            File file = new File("plugins/" + fileName);
+            File file = new File(absolutePath.toFile(), fileName);
 
-            if (!new File("plugins/").exists())
-                new File("plugins/").mkdirs();
 
             if (file.exists()) //重複
                 return new Pair<>(duplicateFile, fileName);

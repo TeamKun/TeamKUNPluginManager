@@ -17,6 +17,7 @@ import tokyo.peya.lib.Intellij;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,6 +30,7 @@ public class PluginManagerConsole
 
     public static FileConfiguration config;
     public static Path dataFolder;
+    public static Path pluginsFolder;
     public static String classPath;
 
     public static void main(String[] args)
@@ -75,6 +77,7 @@ public class PluginManagerConsole
 
         dataFolder = new File(new File(classPath).getParentFile(), "TeamKunPluginManager").toPath();
         dataFolder.toFile().mkdirs();
+        pluginsFolder =  dataFolder.getParent().toAbsolutePath();
 
         config = new FileConfiguration(dataFolder.toFile(), "config.yml");
         config.saveDefaultConfig();
@@ -99,7 +102,7 @@ public class PluginManagerConsole
         if (config.get("gitHubName") instanceof String)
             Variables.gitHubName = new String[]{config.get("gitHubName")};
         else
-            Variables.gitHubName = config.get("gitHubName");
+            Variables.gitHubName = ((ArrayList<String>) config.get("gitHubName")).toArray(new String[0]);
 
         Logger.getLogger("com.zaxxer.hikari.HikariDataSource").setLevel(Level.OFF);
     }

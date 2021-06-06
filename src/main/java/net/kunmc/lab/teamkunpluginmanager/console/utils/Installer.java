@@ -2,20 +2,16 @@ package net.kunmc.lab.teamkunpluginmanager.console.utils;
 
 import com.g00fy2.versioncompare.Version;
 import net.kunmc.lab.teamkunpluginmanager.common.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.common.Variables;
 import net.kunmc.lab.teamkunpluginmanager.common.known.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.FileUploadUtil;
-import net.kunmc.lab.teamkunpluginmanager.common.utils.GitHubURLBuilder;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.common.utils.URLUtils;
 import net.kunmc.lab.teamkunpluginmanager.console.PluginManagerConsole;
 import net.kunmc.lab.teamkunpluginmanager.console.Progress;
-import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.InstallResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -208,7 +204,7 @@ public class Installer
         long downloadStartTime = System.currentTimeMillis();
         print("ファイルのダウンロード中...", print);
 
-        Pair<Boolean, String> result = URLUtils.downloadFile(url);
+        Pair<Boolean, String> result = URLUtils.downloadFile(url, PluginManagerConsole.pluginsFolder);
         if (result.getValue().equals(""))
         {
             print("E: ファイルのダウンロードに失敗しました。", print);

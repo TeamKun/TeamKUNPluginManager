@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,7 +161,7 @@ public class Installer
 
         long startTime = System.currentTimeMillis();
 
-        Pair<Boolean, String> downloadResult = URLUtils.downloadFile(atomicURL.get());
+        Pair<Boolean, String> downloadResult = URLUtils.downloadFile(atomicURL.get(), Paths.get("plugins"));
         if (downloadResult.getValue().equals(""))
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
