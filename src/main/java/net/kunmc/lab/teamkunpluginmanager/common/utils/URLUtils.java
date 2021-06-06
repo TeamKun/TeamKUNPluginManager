@@ -82,7 +82,7 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             if (!Variables.vault.getToken().isEmpty() && url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken());
+                connection.setRequestProperty("Authorization", "token " + Variables.vault.getToken().replace("\r", "").replace("\n", ""));
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -170,6 +170,12 @@ public class URLUtils
             while (redir);
 
             File file = new File("plugins/" + fileName);
+
+            if (!new File("plugins/").exists())
+                new File("plugins/").mkdirs();
+
+            if (file.exists()) //重複
+                return new Pair<>(duplicateFile, fileName);
 
             if (!file.createNewFile())
                 throw new NoSuchFileException("ファイルの作成に失敗しました。");
