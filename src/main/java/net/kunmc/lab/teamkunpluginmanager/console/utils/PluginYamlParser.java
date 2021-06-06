@@ -60,7 +60,7 @@ public class PluginYamlParser
         return (T) main;
     }
 
-    public PluginYamlParser parse(HashMap<String, Object> kv) throws IOException
+    public PluginYamlParser parse(HashMap<String, Object> kv)
     {
 
         PluginYamlParser pluginYamlParser = new Gson().fromJson(new Gson().toJson(kv), PluginYamlParser.class);
