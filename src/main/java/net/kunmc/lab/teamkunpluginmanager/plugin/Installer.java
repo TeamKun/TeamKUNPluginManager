@@ -140,7 +140,7 @@ public class Installer
         if (sender == null)
             sender = dummySender();
 
-        AtomicReference<String> atomicURL = new AtomicReference<>(url);
+        String jarURL;
         CommandSender finalSender = sender;
         ArrayList<InstallResult> added = new ArrayList<>();
 
@@ -148,11 +148,11 @@ public class Installer
         int remove = 0;
         int modify = 0;
 
-        atomicURL.set(PluginResolver.asUrl(url));
+        jarURL = PluginResolver.asUrl(url);
 
-        if (atomicURL.get().startsWith("ERROR "))
+        if (jarURL.startsWith("ERROR "))
         {
-            finalSender.sendMessage(ChatColor.RED + "E: " + atomicURL.get().substring(6)); //ERROR <-までをきりだし
+            finalSender.sendMessage(ChatColor.RED + "E: " + jarURL.substring(6)); //ERROR <-までをきりだし
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
         }
@@ -160,7 +160,7 @@ public class Installer
 
         long startTime = System.currentTimeMillis();
 
-        Pair<Boolean, String> downloadResult = URLUtils.downloadFile(atomicURL.get());
+        Pair<Boolean, String> downloadResult = URLUtils.downloadFile(jarURL);
         if (downloadResult.getValue().equals(""))
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
@@ -212,7 +212,7 @@ public class Installer
         }
 
 
-        if (atomicURL.get().startsWith("https://apple.api.spiget.org"))
+        if (jarURL.startsWith("https://apple.api.spiget.org"))
         {
             try
             {
