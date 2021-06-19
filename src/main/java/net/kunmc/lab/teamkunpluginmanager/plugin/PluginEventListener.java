@@ -17,7 +17,7 @@ public class PluginEventListener implements Listener
     {
         if (!TeamKunPluginManager.enableBuildTree)
             return;
-        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
+        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中(ADD:" + e.getPlugin().getName() + ")...");
         DependencyTree.crawlPlugin(e.getPlugin());
         TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
     }
@@ -36,11 +36,11 @@ public class PluginEventListener implements Listener
                 File f = PluginUtil.getFile(e.getPlugin());
                 if (f == null || !f.exists())
                 {
-                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中...");
+                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中(RMV:" + e.getPlugin().getName() + ")...");
                     DependencyTree.wipePlugin(e.getPlugin());
                     TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
                 }
             }
-        }.runTaskLater(TeamKunPluginManager.plugin, 15L);
+        }.runTaskLater(TeamKunPluginManager.plugin, 2L);
     }
 }
