@@ -252,6 +252,13 @@ public class DependencyTree
 
     public static boolean isErrors()
     {
+        if (checkError())
+            DependencyTree.fix();
+        return checkError();
+    }
+
+    private static boolean checkError()
+    {
         ArrayList<String> plugin = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel().map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
 
         try (Connection con = dataSource.getConnection();
