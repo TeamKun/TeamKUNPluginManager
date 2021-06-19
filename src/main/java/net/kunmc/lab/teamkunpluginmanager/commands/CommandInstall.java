@@ -44,7 +44,7 @@ public class CommandInstall
             @Override
             public void run()
             {
-                Installer.install(sender, args[0], false, false, false);
+                Installer.install(sender, args[0], false, false, false, false);
                 TeamKunPluginManager.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);
