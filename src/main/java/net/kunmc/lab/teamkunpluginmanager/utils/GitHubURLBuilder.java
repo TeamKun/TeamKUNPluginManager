@@ -14,8 +14,19 @@ import java.util.regex.Pattern;
 
 public class GitHubURLBuilder
 {
+    /**
+     * APIのURL。APIが変更されたら変更。
+     */
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
+
+    /**
+     * APIのURL。APIが変更されたら変更。
+     */
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
+
+    /**
+     * GitHubのURLかどうかを判定/パースをする。
+     */
     private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repo>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}/[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100})(?:/?$|/(?:tag|release)s(?:/?$|/(?:tag/(?<tag>[^/]+)/?$|download/(?<dlTag>[^/]+)/(?<fileName>[^/]+))))/?$");
 
     /**
@@ -29,12 +40,14 @@ public class GitHubURLBuilder
      */
     private static Pair<String, String> buildAPIUrl(String repository, @Nullable String tagName)
     {
+        //リポジトリがNullだった場合ERRORのみを返す。
         if (repository == null)
             return new Pair<>("ERROR", "");
 
+        //タグがなかった場合はリリースすべてを返す。
         if (tagName == null)
             return new Pair<>("GITHUB_REPO_RELEASES_URL", String.format(GITHUB_REPO_RELEASES_URL, repository));
-        else
+        else //タグがあったら/tags/までのリソースを返す。
             return new Pair<>("GITHUB_REPO_RELEASE_NAME_URL", String.format(GITHUB_REPO_RELEASE_NAME_URL, repository, tagName));
     }
 
@@ -43,29 +56,33 @@ public class GitHubURLBuilder
      * https://github.com/examples/ExamplePlugin => https://github.com/examples/ExamplePlugin/releases/download/1.0/ExamplePlugin-1.0.jar
      * https://example.com/ => https://example.com/
      *
-     * @param urlName 適当なURL
+     * @param urlName GitHubの様々なURL
      * @return GitHubのURl
      */
     public static String urlValidate(String urlName, String version)
     {
+        //URLかどうか検証。
         URL url;
         try
         {
             url = new URL(urlName);
         }
-        catch (Exception e)
+        catch (Exception e) //URLではない場合はオウム返し。
         {
             return urlName;
         }
 
+        //URLのホストが github.com もしくは www.github.com かどうか。
         if (!url.getHost().equals("github.com") && !url.getHost().equals("www.github.com"))
             return urlName;
 
+        //パターンとマッチするか。
         Matcher matcher = GITHUB_REPO_PATTERN.matcher(url.getPath());
 
         String repoName = null;
         String tagName = null;
 
+        //グループごと。
         while (matcher.find())
         {
             String repository = matcher.group("repo");
@@ -73,10 +90,11 @@ public class GitHubURLBuilder
             String tagNF = matcher.group("tag");
             String file = matcher.group("fileName");
 
+            //ファイルがない、もしくは""だった場合はオウム返し。
             if (file != null && !file.equals(""))
                 return urlName;
 
-
+            //この辺は代入なので無視。
             if (!repository.equals(""))
                 repoName = repository;
             if (tag != null && !tag.equals(""))
@@ -85,15 +103,18 @@ public class GitHubURLBuilder
                 tagName = tagNF;
         }
 
+        //tagがなく、version(@で区切られるやつ)がある場合はこちらを優先。
         if (tagName == null && version != null)
             tagName = version;
 
+        //URLをペアから作る。
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
 
         switch (urlPair.getKey())
         {
             case "GITHUB_REPO_RELEASES_URL":
             {
+                //APIを叩く。
                 Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
                 switch (json.getKey())
                 {
@@ -103,14 +124,19 @@ public class GitHubURLBuilder
                         return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
                 }
 
+                //200ではない場合はエラー。
                 if (json.getKey() != 200)
                     return "ERROR 不明なエラーが発生しました。";
 
+                //APIレスポンスがエラーかどうか。
                 String error = error(json.getValue());
                 if (!error.equals(""))
                     return "ERROR " + error;
+
                 JsonArray array = new Gson().fromJson(json.getValue(), JsonArray.class);
 
+
+                //れぽぽのリリースを上からなめる。
                 for (JsonElement elem : array)
                     for (JsonElement asset : ((JsonObject) elem).get("assets").getAsJsonArray())
                     {
@@ -121,8 +147,8 @@ public class GitHubURLBuilder
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
+                //APIを叩く。
                 Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
-
                 switch (json.getKey())
                 {
                     case 404:
@@ -131,11 +157,16 @@ public class GitHubURLBuilder
                         return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
                 }
 
+                //200ではない場合はエラー。
                 if (json.getKey() != 200)
                     return "ERROR 不明なエラーが発生しました。";
+
+                //APIレスポンスがエラーかどうか。
                 String error = error(json.getValue());
                 if (!error.equals(""))
                     return "ERROR " + error;
+
+                //アセットを上からなめる
                 JsonObject array = new Gson().fromJson(json.getValue(), JsonObject.class);
                 for (JsonElement asset : array.get("assets").getAsJsonArray())
                 {
@@ -144,7 +175,7 @@ public class GitHubURLBuilder
                 }
                 return "ERROR アーティファクトが見つかりませんでした。";
             }
-            case "ERROR":
+            case "ERROR": //ERRORだった場合はオウム返し。
             default:
                 return url.toString();
         }
