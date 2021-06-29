@@ -121,7 +121,7 @@ public class GitHubURLBuilder
                     case 404:
                         return "ERROR ファイルが見つかりませんでした。";
                     case 403:
-                        return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
+                        return "ERROR ファイルを取得できません。しばらくしてからもう一度実行してください。";
                 }
 
                 //200ではない場合はエラー。
@@ -154,7 +154,7 @@ public class GitHubURLBuilder
                     case 404:
                         return "ERROR ファイルが見つかりませんでした。";
                     case 403:
-                        return "E: ファイルを取得できません。しばらくしてからもう一度実行してください。";
+                        return "ERROR ファイルを取得できません。しばらくしてからもう一度実行してください。";
                 }
 
                 //200ではない場合はエラー。
