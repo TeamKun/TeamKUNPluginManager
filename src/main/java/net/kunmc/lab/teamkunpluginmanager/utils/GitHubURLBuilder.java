@@ -2,15 +2,14 @@ package net.kunmc.lab.teamkunpluginmanager.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 
 import javax.annotation.Nullable;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class GitHubURLBuilder
 {
@@ -135,15 +134,30 @@ public class GitHubURLBuilder
 
                 JsonArray array = new Gson().fromJson(json.getValue(), JsonArray.class);
 
+                if (array.size() == 0)
+                    return "ERROR リリースが見つかりませんでした。";
 
-                //れぽぽのリリースを上からなめる。
-                for (JsonElement elem : array)
-                    for (JsonElement asset : ((JsonObject) elem).get("assets").getAsJsonArray())
-                    {
-                        if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
-                            return ((JsonObject) asset).get("browser_download_url").getAsString();
-                    }
-                return "ERROR アーティファクトが見つかりませんでした。";
+                //最新(i:0)をとり、assetsまでもってくる。
+                JsonArray asset = ((JsonObject) array.get(0)).get("assets").getAsJsonArray();
+
+               if (array.size() == 0)
+                   return "ERROR アーティファクトが見つかりませんでした。";
+
+               //assetが一つしかなかったら返す。
+               if (asset.size() == 1)
+                   return ((JsonObject) asset.get(0)).get("browser_download_url").getAsString();
+
+               //assetが２つ以上あるのでMULTIフラグを立てて返す。
+                return "MULTI " + StreamSupport.stream(asset.spliterator(), true)
+                        .map(element -> {
+                            JsonObject obj = (JsonObject) element;
+                            String assetName = obj.get("name").getAsString();
+                            String assetDownloadUrl = obj.get("browser_download_url").getAsString();
+                            return assetName.replace("|", "\\|") + "|" + assetDownloadUrl.replace("|", "\\|");
+                        })
+                        .collect(Collectors.joining("|"));
+
+
             }
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
@@ -168,12 +182,21 @@ public class GitHubURLBuilder
 
                 //アセットを上からなめる
                 JsonObject array = new Gson().fromJson(json.getValue(), JsonObject.class);
-                for (JsonElement asset : array.get("assets").getAsJsonArray())
-                {
-                    if (StringUtils.endsWithIgnoreCase(((JsonObject) asset).get("name").getAsString(), ".jar"))
-                        return ((JsonObject) asset).get("browser_download_url").getAsString();
-                }
-                return "ERROR アーティファクトが見つかりませんでした。";
+                JsonArray asset = array.get("assets").getAsJsonArray();
+
+                //assetが一つしかなかったら返す。
+                if (asset.size() == 1)
+                    return ((JsonObject) asset.get(0)).get("browser_download_url").getAsString();
+
+                //assetが２つ以上あるのでMULTIフラグを立てて返す。
+                return "MULTI " + StreamSupport.stream(asset.spliterator(), true)
+                        .map(element -> {
+                            JsonObject obj = (JsonObject) element;
+                            String assetName = obj.get("name").getAsString();
+                            String assetDownloadUrl = obj.get("browser_download_url").getAsString();
+                            return assetName.replace("|", "\\|") + "|" + assetDownloadUrl.replace("|", "\\|");
+                        })
+                        .collect(Collectors.joining("|"));
             }
             case "ERROR": //ERRORだった場合はオウム返し。
             default:
@@ -204,5 +227,11 @@ public class GitHubURLBuilder
     public static boolean isPermissionGranted(String path)
     {
         return URLUtils.fetch("https://api.github.com" + path, "HEAD") != 401;
+    }
+
+    public static class BuildResult
+    {
+        public String name;
+        public String url;
     }
 }
