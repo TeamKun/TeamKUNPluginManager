@@ -629,8 +629,7 @@ public class Installer
 
         sender.sendMessage(ChatColor.YELLOW + "W: リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
         AtomicInteger integer = new AtomicInteger(0);
-        jar.stream().parallel()
-                .forEach(pair -> {
+        jar.forEach(pair -> {
                     int index = integer.incrementAndGet();
                     sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
                             .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue() +"-CF"))
