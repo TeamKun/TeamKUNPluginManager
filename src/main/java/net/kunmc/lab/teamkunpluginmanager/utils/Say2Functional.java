@@ -94,6 +94,21 @@ public class Say2Functional implements Listener
             this.say2func.put(player, func);
     }
 
+    public void remove(UUID player)
+    {
+        if (player == null)
+            consoleFunc = null;
+        else
+            this.say2func.remove(player);
+    }
+
+    public FunctionalEntry get(UUID player)
+    {
+        if (player == null)
+            return consoleFunc;
+        return this.say2func.get(player);
+    }
+
     public static class FunctionalEntry
     {
         public final String[] keywords;
@@ -101,6 +116,11 @@ public class Say2Functional implements Listener
         public final BiFunction<String, String, Boolean> matchType;
 
         public FunctionalEntry(BiFunction<String, String, Boolean> matchType, Consumer<String> runas, String... keywords)
+        {
+            this(null, matchType, runas, keywords);
+        }
+
+        public FunctionalEntry(String comment, BiFunction<String, String, Boolean> matchType, Consumer<String> runas, String... keywords)
         {
             if (keywords.length == 0)
                 this.keywords = null;
