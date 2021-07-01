@@ -208,7 +208,10 @@ public class Installer
                 if (sender.getName().equals("DUMMY1145141919810931"))
                     jarURL = pickPluginJar(multi);
                 else
+                {
                     depend_askToCommandSender(sender, multi, ignoreInstall, withoutResolveDepends, withoutRemove);
+                    return new InstallResult(0, 0, 0, true);
+                }
             }
 
             if (jarURL.startsWith("ERROR "))
