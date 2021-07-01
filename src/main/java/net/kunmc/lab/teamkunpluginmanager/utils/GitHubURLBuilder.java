@@ -155,7 +155,7 @@ public class GitHubURLBuilder
                             String assetDownloadUrl = obj.get("browser_download_url").getAsString();
                             return assetName.replace("|", "\\|") + "|" + assetDownloadUrl.replace("|", "\\|");
                         })
-                        .collect(Collectors.joining("|"));
+                        .collect(Collectors.joining("|")) + "|";
 
 
             }
@@ -196,7 +196,7 @@ public class GitHubURLBuilder
                             String assetDownloadUrl = obj.get("browser_download_url").getAsString();
                             return assetName.replace("|", "\\|") + "|" + assetDownloadUrl.replace("|", "\\|");
                         })
-                        .collect(Collectors.joining("|"));
+                        .collect(Collectors.joining("|")) + "|";
             }
             case "ERROR": //ERRORだった場合はオウム返し。
             default:

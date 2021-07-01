@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.sun.org.apache.bcel.internal.generic.GOTO;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -11,7 +12,11 @@ import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,6 +32,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.naming.Name;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,8 +43,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 public class Installer
@@ -188,14 +198,25 @@ public class Installer
 
         //ダウンロードする場合はURL・クエリを直リンに変換
         if (!withoutDownload)
+        {
             jarURL = PluginResolver.asUrl(url);
 
-        //エラーから始まった場合はエラーとして表示し、return
-        if (!withoutDownload && jarURL.startsWith("ERROR "))
-        {
-            finalSender.sendMessage(ChatColor.RED + "E: " + jarURL.substring(6)); //ERROR <-までをきりだし
-            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
-            return new InstallResult(add, remove, modify, false);
+            if (jarURL.startsWith("MULTI"))
+            {
+                //MULTIリザルトをパース。
+                List<Pair<String, String>> multi = parseMultiResult(jarURL.substring(6));
+                if (sender.getName().equals("DUMMY1145141919810931"))
+                    jarURL = pickPluginJar(multi);
+                else
+                    depend_askToCommandSender(sender, multi, ignoreInstall, withoutResolveDepends, withoutRemove);
+            }
+
+            if (jarURL.startsWith("ERROR "))
+            {
+                finalSender.sendMessage(ChatColor.RED + "E: " + jarURL.substring(6)); //ERROR <-までをきりだし
+                finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+                return new InstallResult(add, remove, modify, false);
+            }
         }
 
         Pair<Boolean, String> downloadResult;
@@ -596,6 +617,124 @@ public class Installer
         }
 
     }
+
+    private static void depend_askToCommandSender(CommandSender sender, List<Pair<String, String>> jar, boolean ignoreInstall, boolean withoutResolveDepends, boolean withoutRemove)
+    {
+        UUID uuid = null;
+        if (sender instanceof Player)
+            uuid = ((Player) sender).getUniqueId();
+
+        sender.sendMessage(ChatColor.YELLOW + "W: リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
+        AtomicInteger integer = new AtomicInteger(0);
+        jar.stream().parallel()
+                .forEach(pair -> {
+                    int index = integer.incrementAndGet();
+                    sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
+                            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue() +"-CF"))
+                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    new ComponentBuilder(ChatColor.GREEN + "クリックしてこのリリースをインストール").create()))
+                            .create()
+                    );
+                });
+
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "- [c] " + ChatColor.RED + "キャンセル");
+
+        TeamKunPluginManager.functional.add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
+            if (s.equalsIgnoreCase("c"))
+            {
+                sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
+                return;
+            }
+
+            int i = Integer.parseInt(s);
+            if (i < 1 || i > jar.size() + 1)
+            {
+                sender.sendMessage(ChatColor.RED + "リソースは 1 以上、" + (jar.size() + 1) + " 以下である必要があります。");
+                sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
+                return;
+            }
+
+            Pair<String, String> resource = jar.get(--i);
+            install(sender, resource.getValue(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
+
+        }, (String[]) ArrayUtils.add(IntStream.range(1, jar.size() + 1).parallel()
+                .mapToObj(String::valueOf)
+                .toArray(String[]::new), "c"))
+        );
+    }
+
+    private static String pickPluginJar(List<Pair<String, String>> jar)
+    {
+        if (jar.size() == 0)
+            return null;
+
+        String result = "";
+        String tmp = "";
+        for (Pair<String, String> pair: jar)
+        {
+            String name = pair.getKey();
+            if (!name.endsWith(".jar") && name.endsWith(".zip"))
+                continue;
+
+            if (StringUtils.containsIgnoreCase(name, "plugin-") ||
+                    StringUtils.containsIgnoreCase(name, "plugin."))
+                result = pair.getValue();
+            if (StringUtils.containsIgnoreCase(name, "plugin"))
+                tmp = pair.getValue();
+        }
+
+        if (result.equals("") && !tmp.equals(""))
+            result = tmp;
+        if (result.equals(""))
+            result = jar.get(0).getValue();
+
+        return result;
+    }
+
+    private static List<Pair<String, String>> parseMultiResult(String mlt)
+    {
+        List<Pair<String, String>> result = new ArrayList<>();
+
+        StringBuilder name = new StringBuilder();
+        StringBuilder url = new StringBuilder();
+        boolean escape = false;
+        boolean flag = true;
+
+        for (int i = 0; i < mlt.length(); i++)
+        {
+            char c = mlt.charAt(i);
+
+
+            if (!escape && c == '|')
+            {
+                if (!name.toString().equals("") && !url.toString().equals(""))
+                {
+                    result.add(new Pair<>(name.toString(), url.toString()));
+                    name = new StringBuilder();
+                    url = new StringBuilder();
+
+                }
+                flag = !flag;
+                continue;
+            }
+
+            if (c == '\\')
+            {
+                escape = true;
+                continue;
+            }
+            else
+                escape = false;
+
+            if (flag)
+                name.append(c);
+            else
+                url.append(c);
+        }
+
+        return result;
+    }
+
 
     /**
      * プラグインデータフォルダを削除

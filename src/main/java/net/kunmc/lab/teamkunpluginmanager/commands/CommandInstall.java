@@ -4,7 +4,11 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.Console;
 
 public class CommandInstall
 {
@@ -30,6 +34,11 @@ public class CommandInstall
             sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
             TeamKunPluginManager.session.unlock();
             return;
+        }
+
+        if (args.length == 2 && args[1].equals("-CF"))
+        {
+            TeamKunPluginManager.functional.remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
         }
 
         if (!TeamKunPluginManager.session.lock())
