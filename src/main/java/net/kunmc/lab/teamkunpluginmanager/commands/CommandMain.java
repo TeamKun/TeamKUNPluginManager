@@ -21,7 +21,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        if (!sender.hasPermission("kpm.main"))
+        if (!sender.hasPermission("kpm.use"))
         {
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
             return true;
