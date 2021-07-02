@@ -5,7 +5,11 @@ import net.kunmc.lab.teamkunpluginmanager.spigot.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.spigot.plugin.Installer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.Console;
 
 public class CommandInstall
 {
@@ -33,6 +37,11 @@ public class CommandInstall
             return;
         }
 
+        if (args.length == 2 && args[1].equals("-CF"))
+        {
+            TeamKunPluginManager.functional.remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
+        }
+
         if (!Variables.session.lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
@@ -45,7 +54,7 @@ public class CommandInstall
             @Override
             public void run()
             {
-                Installer.install(sender, args[0], false, false, false);
+                Installer.install(sender, args[0], false, false, false, false);
                 Variables.session.unlock();
             }
         }.runTaskAsynchronously(TeamKunPluginManager.plugin);

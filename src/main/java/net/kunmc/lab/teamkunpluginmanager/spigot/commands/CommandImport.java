@@ -108,7 +108,7 @@ public class CommandImport
 
         container.stream().parallel()
                 .forEach(pluginContainer -> {
-                    InstallResult result = Installer.install(null, pluginContainer.downloadUrl, true, true, true);
+                    InstallResult result = Installer.install(null, pluginContainer.downloadUrl, true, true, true, false);
                     add.addAndGet(result.add);
                     remove.addAndGet(result.remove);
                     modify.addAndGet(result.modify);
