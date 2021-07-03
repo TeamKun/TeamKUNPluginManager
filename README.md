@@ -1,70 +1,26 @@
-# TeamKUNPluginManager
+<h1 align="center">TeamKUNPluginManager</h1>
 
-プラグインのインストールから依存関係の調達、不要になったプラグインの削除まで全て自動化します。
+<p align="center">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/TeamKun/TeamKUNPluginManager/Java%20CI%20with%20Maven?style=flat-square">
+    <a href="https://www.codacy.com/gh/TeamKun/TeamKUNPluginManager/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TeamKun/TeamKUNPluginManager&amp;utm_campaign=Badge_Grade">
+        <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/de19f8162c394e46b56db749a35df467?logo=codacy&style=flat-square">
+    </a>
+    <img alt="GitHub" src="https://img.shields.io/github/license/TeamKun/TeamKunPluginManager?style=flat-square">
+    <img alt="Java version" src="https://img.shields.io/static/v1?label=Java%20version&message=1.8&color=success&style=flat-square">
+    <a href="https://github.com.TeamKun/TeamKunPluginManager/wiki">
+        <img alt="Docs" src="https://img.shields.io/static/v1?label=Docs&message=wiki&color=green&style=flat-square">
+    </a>
+    プラグインをリモートからインストールします。
+</p>
 
 ## 概要
 
-プラグインの管理を行います。
++ TeamKUNPluginManagerは、[PlugMan](https://dev.bukkit.org/projects/plugman), [Installer](https://dev.bukkit.org/projects/plugin-installer)に並ぶ新しいプラグインマネージャです。
++ GitHubと連携し、リモートリポジトリのリリースからインストールを行うことが可能です。
++ 依存関係の解決機能を有しており`plugin.yml`に記述された依存関係がプラグインインストール時に自動でインストールされます。
++ プラグイン名の別名を自分で作成することができ、リモートで同期することが可能です。
++ [apt](https://salsa.debian.org/apt-team/apt)と[npm](https://github.com/npm/cli)を足して2で割ったようなコマンド操作感で、初心者でも簡単に扱うことが可能です。
++ SQLiteを用いて依存関係ツリーを構築します。
 
-## 対応書式
-
-+ GitHub `TeamKun/TeamKunPluginManager`
-+ GitHub `https://github.com/TeamKun/TeamKunPluginManager`
-+ Bukkit `https://dev.bukkit.org/projects/example/`
-+ Bukkit `https://dev.bukkit.org/projects/example/files/000000`
-+ Spigot `https://www.spigotmc.org/resources/exampleplugin.0000/`
-+ CurseForge `https://www.curseforge.com/minecraft/bukkit-plugins/example`
-+ CurseForge `https://www.curseforge.com/minecraft/bukkit-plugins/example/download/000000`
-+ Other `Organization/Repository@v0.3a`
-+ Other `https://example.com/plugin/ExamplePlugin-0.3a.jar`
-
-## コマンド
-
-### /kunpluginmanager
-
-#### エイリアス
-
-+ kpm
-+ pm
-+ kunpm
-+ kunmgmt <= devicemgmt.mscへの恨み
-
-#### 使用法
-
-+ /kpm \<i|rm|info|autoremove|clean|fix|status|update|import|export\> \[Plugin download url|GitHub repository url\]
-
-#### サブコマンド
-
-+ install リポジトリまたはURLからインストールします。 権限: kpm.install
-+ reload プラグインをスーパーリロードします。 権限: kpm.reload
-+ remove プラグインをアンインストールします。 権限: kpm.uninstall
-+ autoremove いらないプラグインを自動で削除します。 権限: kpm.autoremove
-+ update 既知プラグインデータセットをアップデートします。 権限: kpm.update
-+ status 現在の状態を表示します。 権限: kpm.status
-+ info プラグインの情報を取得します。 権限: kpm.info
-+ fix エラーを修復します。メッセージがあった場合のみ実行してください。 権限: kpm.fix
-+ clean 不要になったプラグインデータを削除します。 権限: kpm.clean
-+ export プラグインをエクスポートします。 権限: kpm.export
-+ import プラグインをインポートします。 権限: kpm.import
-
-#### 権限
-
-+ kpm.use => すべてのサブコマンドの掌握権を持ちます。
-
-## 管理
-
-当プラグインは、SQLite3による、依存関係ツリーの構築によって実現しています。 プラグインが有効になった時に高速で構築されます。
-
-## 謝辞
-
-当プラグインは、以下のオープンソース、API、サービスを使用しています。
-
-+ [brettwooldridge/HikariCP](https://github.com/brettwooldridge/HikariCP)
-+ [G00fY2/version-compare](https://github.com/G00fY2/version-compare)
-+ [r-clancy/PlugMan](https://github.com/r-clancy/PlugMan)
-+ [Apache Commons/Commons IO](https://commons.apache.org/proper/commons-io/)
-
----
-
-+ [JitPack](https://jitpack.io/)
-+ [file.io](https://file.io/)
+## 導入方法&ドキュメント
++ [こちら](https://github.com/TeamKun/TeamKunPluginManager/wiki)からご覧ください。
