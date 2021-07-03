@@ -10,6 +10,7 @@
     <a href="https://github.com.TeamKun/TeamKunPluginManager/wiki">
         <img alt="Docs" src="https://img.shields.io/static/v1?label=Docs&message=wiki&color=green&style=flat-square">
     </a>
+    <br>
     プラグインをリモートからインストールします。
 </p>
 
