@@ -140,14 +140,14 @@ public class GitHubURLBuilder
                 //最新(i:0)をとり、assetsまでもってくる。
                 JsonArray asset = ((JsonObject) array.get(0)).get("assets").getAsJsonArray();
 
-               if (array.size() == 0)
-                   return "ERROR アーティファクトが見つかりませんでした。";
+                if (array.size() == 0)
+                    return "ERROR アーティファクトが見つかりませんでした。";
 
-               //assetが一つしかなかったら返す。
-               if (asset.size() == 1)
-                   return ((JsonObject) asset.get(0)).get("browser_download_url").getAsString();
+                //assetが一つしかなかったら返す。
+                if (asset.size() == 1)
+                    return ((JsonObject) asset.get(0)).get("browser_download_url").getAsString();
 
-               //assetが２つ以上あるのでMULTIフラグを立てて返す。
+                //assetが２つ以上あるのでMULTIフラグを立てて返す。
                 return "MULTI " + StreamSupport.stream(asset.spliterator(), true)
                         .map(element -> {
                             JsonObject obj = (JsonObject) element;

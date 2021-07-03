@@ -8,8 +8,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.Console;
-
 public class CommandInstall
 {
     public static void onCommand(CommandSender sender, String[] args)

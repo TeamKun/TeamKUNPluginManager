@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.compactor.PluginContainer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.validator.routines.UrlValidator;

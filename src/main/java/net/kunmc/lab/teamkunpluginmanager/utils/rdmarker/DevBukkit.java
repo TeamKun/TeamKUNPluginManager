@@ -38,7 +38,7 @@ public class DevBukkit
 
         Matcher matcher = (isBukkit ? BUKKIT_PATTERN: CURSE_PATTERN).matcher(url.getPath());
 
-        while(matcher.find())
+        while (matcher.find())
             if (matcher.group("slug") != null && !matcher.group("slug").equals(""))
                 return true;
         return false;
@@ -64,7 +64,7 @@ public class DevBukkit
         String slug = null;
         String version = null;
 
-        while(matcher.find())
+        while (matcher.find())
         {
             if (matcher.group("slug") != null && !matcher.group("slug").equals(""))
                 slug = matcher.group("slug");
@@ -76,11 +76,12 @@ public class DevBukkit
             return urlName;
         JsonArray projectSearchResult = new Gson().fromJson(
                 URLUtils.getAsString("https://servermods.forgesvc.net/servermods/projects?search=" + slug).getValue(),
-                JsonArray.class);
+                JsonArray.class
+        );
 
         String id = null;
 
-        for(JsonElement elm: projectSearchResult)
+        for (JsonElement elm : projectSearchResult)
         {
             JsonObject obj = (JsonObject) elm;
 
@@ -97,13 +98,14 @@ public class DevBukkit
 
         JsonArray files = new Gson().fromJson(
                 URLUtils.getAsString("https://servermods.forgesvc.net/servermods/files?projectIds=" + id).getValue(),
-                JsonArray.class);
+                JsonArray.class
+        );
 
         String apiVersion = StringUtils.split(Bukkit.getVersion(), "-")[0];
 
         String downloadUrl = null;
 
-        for(JsonElement elm: files)
+        for (JsonElement elm : files)
         {
             JsonObject obj = (JsonObject) elm;
 

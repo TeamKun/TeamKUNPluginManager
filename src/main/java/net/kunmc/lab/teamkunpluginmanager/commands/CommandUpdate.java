@@ -86,8 +86,10 @@ public class CommandUpdate
                                 if (Boolean.parseBoolean(s.get("auth").toString()) && (urlObj.getHost().equals("api.github.com") ||
                                         urlObj.getHost().equals("raw.githubusercontent.com")))
                                     connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
-                                connection.setRequestProperty("User-Agent",
-                                        "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+                                connection.setRequestProperty(
+                                        "User-Agent",
+                                        "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop"
+                                );
                                 connection.connect();
                                 if (connection.getResponseCode() != 200)
                                 {
@@ -103,8 +105,8 @@ public class CommandUpdate
                                     finalSender.sendMessage(ChatColor.GREEN + "ヒット：" + num.incrementAndGet() + " " + url);
                                     return;
                                 }
-                                try(InputStream is = connection.getInputStream();
-                                    OutputStream os = new FileOutputStream(file))
+                                try (InputStream is = connection.getInputStream();
+                                     OutputStream os = new FileOutputStream(file))
                                 {
                                     IOUtils.copy(is, os);
                                 }
