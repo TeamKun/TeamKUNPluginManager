@@ -7,7 +7,7 @@
     </a>
     <img alt="GitHub" src="https://img.shields.io/github/license/TeamKun/TeamKunPluginManager?style=flat-square">
     <img alt="Java version" src="https://img.shields.io/static/v1?label=Java%20version&message=1.8&color=success&style=flat-square">
-    <a href="https://github.com.TeamKun/TeamKunPluginManager/wiki">
+    <a href="https://github.com/TeamKun/TeamKunPluginManager/wiki">
         <img alt="Docs" src="https://img.shields.io/static/v1?label=Docs&message=wiki&color=green&style=flat-square">
     </a>
     <br>
