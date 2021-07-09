@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 
@@ -139,32 +140,46 @@ public class URLUtils
             boolean redir;
             do
             {
-                if (tryna++ > redirectLimit)
-                    throw new IOException("Too many redirects.");
-
-                connection.setRequestMethod("GET");
-                connection.setInstanceFollowRedirects(false);
-                if (urlObj.getHost().equals("api.github.com"))
-                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
-                connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-                connection.connect();
-
-                redir = false;
-                if (String.valueOf(connection.getResponseCode()).startsWith("3"))
+                try
                 {
-                    URL base = connection.getURL();
-                    String locationStr = connection.getHeaderField("Location");
-                    if (locationStr != null)
-                        base = new URL(base, locationStr);
+                    if (tryna++ > redirectLimit)
+                        return new Pair<>(null, "ERROR リダイレクトリミットに到達しました。");
 
-                    //connection.disconnect();
-                    if (base != null)
+                    connection.setRequestMethod("GET");
+                    connection.setInstanceFollowRedirects(false);
+                    if (urlObj.getHost().equals("api.github.com"))
+                        connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                    connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+                    connection.connect();
+
+                    redir = false;
+                    if (String.valueOf(connection.getResponseCode()).startsWith("3"))
                     {
-                        redir = true;
-                        connection = (HttpURLConnection) base.openConnection();
+                        URL base = connection.getURL();
+                        String locationStr = connection.getHeaderField("Location");
+                        if (locationStr != null)
+                            base = new URL(base, locationStr);
+
+                        //connection.disconnect();
+                        if (base != null)
+                        {
+                            redir = true;
+                            connection = (HttpURLConnection) base.openConnection();
+                        }
                     }
                 }
-
+                catch (UnknownHostException e)
+                {
+                    return new Pair<>(null, "ERROR '" + urlObj.getHost() + "' を解決できませんでした。");
+                }
+                catch (ClassCastException e)
+                {
+                    return new Pair<>(null, "ERROR プロトコルが壊れています。");
+                }
+                catch (Exception e)
+                {
+                    return new Pair<>(null, "ERROR エラー '" + e.getClass().getName() + "' が発生しました。");
+                }
             }
             while (redir);
 

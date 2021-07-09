@@ -231,8 +231,9 @@ public class Installer
 
             //ファイルをダウンロード
             downloadResult = URLUtils.downloadFile(jarURL);
-            if (downloadResult.getValue().equals(""))
+            if (downloadResult.getKey() == null && downloadResult.getValue().startsWith("ERROR "))
             {
+                finalSender.sendMessage(ChatColor.YELLOW + "W: " + downloadResult.getValue().substring(6));
                 finalSender.sendMessage(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
