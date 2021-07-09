@@ -4,4 +4,5 @@ public class KnownPluginEntry
 {
     public String name;
     public String url;
+    public String source;
 }
