@@ -18,9 +18,10 @@ public class URLUtils
 {
     /**
      * URLにPOSTした結果を返す。
+     *
      * @param urlString URL
-     * @param data データ
-     * @param accept 受け入れるタイプ。 application/
+     * @param data      データ
+     * @param accept    受け入れるタイプ。 application/
      * @return レスポンスコード, 結果
      */
     public static Pair<Integer, String> postAsString(String urlString, String data, String accept, String content_type)
@@ -41,7 +42,7 @@ public class URLUtils
             connection.setDoInput(true);
             connection.connect();
 
-            try(OutputStream os = connection.getOutputStream();)
+            try (OutputStream os = connection.getOutputStream())
             {
                 PrintStream prtstr = new PrintStream(os);
                 prtstr.println(data);
@@ -50,7 +51,7 @@ public class URLUtils
                 if (resp < 200 || resp > 299)
                     return new Pair<>(resp, "");
 
-                try(InputStream is = connection.getInputStream();)
+                try (InputStream is = connection.getInputStream())
                 {
                     return new Pair<>(resp, IOUtils.toString(is, StandardCharsets.UTF_8));
                 }
@@ -66,6 +67,7 @@ public class URLUtils
 
     /**
      * URLから取得した結果を返す。
+     *
      * @param urlString URL
      * @return レスポンスコード, 結果
      */
@@ -107,7 +109,7 @@ public class URLUtils
     /**
      * ファイルをだうんろーど！
      *
-     * @param url URL
+     * @param url      URL
      * @param fileName ファイル名
      * @return ローカルのパス
      */
@@ -153,7 +155,7 @@ public class URLUtils
                     URL base = connection.getURL();
                     String locationStr = connection.getHeaderField("Location");
                     if (locationStr != null)
-                    base = new URL(base, locationStr);
+                        base = new URL(base, locationStr);
 
                     //connection.disconnect();
                     if (base != null)
@@ -164,15 +166,15 @@ public class URLUtils
                 }
 
             }
-            while(redir);
+            while (redir);
 
             File file = new File("plugins/" + fileName);
 
             if (!file.createNewFile())
                 throw new NoSuchFileException("ファイルの作成に失敗しました。");
 
-            try(InputStream is = connection.getInputStream();
-                OutputStream os = new FileOutputStream(file))
+            try (InputStream is = connection.getInputStream();
+                 OutputStream os = new FileOutputStream(file))
             {
                 IOUtils.copy(is, os);
             }

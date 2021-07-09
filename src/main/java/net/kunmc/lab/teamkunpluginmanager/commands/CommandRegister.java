@@ -64,7 +64,8 @@ public class CommandRegister
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "サーバと通信しています...");
 
         Pair<Integer, String> data = URLUtils.postAsString("https://github.com/login/device/code?client_id=" + CLIENT_ID + "&scope=repo%2Cpublic_repo",
-                "", "application/json", "text/plain");
+                "", "application/json", "text/plain"
+        );
 
         if (data.getKey() != 200)
         {
@@ -93,11 +94,13 @@ public class CommandRegister
             @Override
             public void run()
             {
-                Pair<Integer, String> data = URLUtils.postAsString("https://github.com/login/oauth/access_token?client_id=" + CLIENT_ID +
-                        "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=" + device_code,
+                Pair<Integer, String> data = URLUtils.postAsString(
+                        "https://github.com/login/oauth/access_token?client_id=" + CLIENT_ID +
+                                "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=" + device_code,
                         "",
                         "application/json",
-                        "text/plain");
+                        "text/plain"
+                );
                 if (data.getKey() != 200)
                 {
                     sender.sendMessage(ChatColor.RED + "E: エラーが発生しました。: Server response with" + data.getKey());
