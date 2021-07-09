@@ -763,7 +763,19 @@ public class Installer
             return false;
 
         if (plugin != null)
-            return plugin.getDataFolder().delete(); //プラグインがあった場合、データフォルダを取得して削除
+        {
+            try
+            {
+                FileUtils.forceDelete(plugin.getDataFolder());
+                return true;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return false;
+            }
+
+        }
 
         try
         {
