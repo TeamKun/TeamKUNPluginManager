@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 
@@ -18,9 +19,10 @@ public class URLUtils
 {
     /**
      * URLにPOSTした結果を返す。
+     *
      * @param urlString URL
-     * @param data データ
-     * @param accept 受け入れるタイプ。 application/
+     * @param data      データ
+     * @param accept    受け入れるタイプ。 application/
      * @return レスポンスコード, 結果
      */
     public static Pair<Integer, String> postAsString(String urlString, String data, String accept, String content_type)
@@ -41,7 +43,7 @@ public class URLUtils
             connection.setDoInput(true);
             connection.connect();
 
-            try(OutputStream os = connection.getOutputStream();)
+            try (OutputStream os = connection.getOutputStream())
             {
                 PrintStream prtstr = new PrintStream(os);
                 prtstr.println(data);
@@ -50,7 +52,7 @@ public class URLUtils
                 if (resp < 200 || resp > 299)
                     return new Pair<>(resp, "");
 
-                try(InputStream is = connection.getInputStream();)
+                try (InputStream is = connection.getInputStream())
                 {
                     return new Pair<>(resp, IOUtils.toString(is, StandardCharsets.UTF_8));
                 }
@@ -66,6 +68,7 @@ public class URLUtils
 
     /**
      * URLから取得した結果を返す。
+     *
      * @param urlString URL
      * @return レスポンスコード, 結果
      */
@@ -107,7 +110,7 @@ public class URLUtils
     /**
      * ファイルをだうんろーど！
      *
-     * @param url URL
+     * @param url      URL
      * @param fileName ファイル名
      * @return ローカルのパス
      */
@@ -137,42 +140,56 @@ public class URLUtils
             boolean redir;
             do
             {
-                if (tryna++ > redirectLimit)
-                    throw new IOException("Too many redirects.");
-
-                connection.setRequestMethod("GET");
-                connection.setInstanceFollowRedirects(false);
-                if (urlObj.getHost().equals("api.github.com"))
-                    connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
-                connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-                connection.connect();
-
-                redir = false;
-                if (String.valueOf(connection.getResponseCode()).startsWith("3"))
+                try
                 {
-                    URL base = connection.getURL();
-                    String locationStr = connection.getHeaderField("Location");
-                    if (locationStr != null)
-                    base = new URL(base, locationStr);
+                    if (tryna++ > redirectLimit)
+                        return new Pair<>(null, "ERROR リダイレクトリミットに到達しました。");
 
-                    //connection.disconnect();
-                    if (base != null)
+                    connection.setRequestMethod("GET");
+                    connection.setInstanceFollowRedirects(false);
+                    if (urlObj.getHost().equals("api.github.com"))
+                        connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                    connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
+                    connection.connect();
+
+                    redir = false;
+                    if (String.valueOf(connection.getResponseCode()).startsWith("3"))
                     {
-                        redir = true;
-                        connection = (HttpURLConnection) base.openConnection();
+                        URL base = connection.getURL();
+                        String locationStr = connection.getHeaderField("Location");
+                        if (locationStr != null)
+                            base = new URL(base, locationStr);
+
+                        //connection.disconnect();
+                        if (base != null)
+                        {
+                            redir = true;
+                            connection = (HttpURLConnection) base.openConnection();
+                        }
                     }
                 }
-
+                catch (UnknownHostException e)
+                {
+                    return new Pair<>(null, "ERROR '" + urlObj.getHost() + "' を解決できませんでした。");
+                }
+                catch (ClassCastException e)
+                {
+                    return new Pair<>(null, "ERROR プロトコルが壊れています。");
+                }
+                catch (Exception e)
+                {
+                    return new Pair<>(null, "ERROR エラー '" + e.getClass().getName() + "' が発生しました。");
+                }
             }
-            while(redir);
+            while (redir);
 
             File file = new File("plugins/" + fileName);
 
             if (!file.createNewFile())
                 throw new NoSuchFileException("ファイルの作成に失敗しました。");
 
-            try(InputStream is = connection.getInputStream();
-                OutputStream os = new FileOutputStream(file))
+            try (InputStream is = connection.getInputStream();
+                 OutputStream os = new FileOutputStream(file))
             {
                 IOUtils.copy(is, os);
             }

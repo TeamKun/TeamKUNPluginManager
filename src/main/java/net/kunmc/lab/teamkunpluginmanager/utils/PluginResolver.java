@@ -11,7 +11,7 @@ import java.util.List;
 
 public class PluginResolver
 {
-    
+
     /**
      * プラグインのURLを名前解決します。
      *

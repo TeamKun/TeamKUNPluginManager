@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.sun.org.apache.bcel.internal.generic.GOTO;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -22,7 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
@@ -32,8 +30,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.naming.Name;
-import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -146,6 +142,7 @@ public class Installer
 
     /**
      * APIからのエラーjsonを取得
+     *
      * @param json {@code message}項を含んだjson
      * @return メッセージ
      */
@@ -172,8 +169,8 @@ public class Installer
      * @param url                   URL!!!
      * @param ignoreInstall         インストールを除外するかどうか
      * @param withoutResolveDepends 依存関係解決をしない
-     * @param withoutRemove 削除しない
-     * @param withoutDownload ダウンロードしない
+     * @param withoutRemove         削除しない
+     * @param withoutDownload       ダウンロードしない
      * @return ファイル名, プラグイン名
      */
     public static InstallResult install(CommandSender sender, String url, boolean ignoreInstall, boolean withoutResolveDepends, boolean withoutRemove, boolean withoutDownload)
@@ -234,8 +231,9 @@ public class Installer
 
             //ファイルをダウンロード
             downloadResult = URLUtils.downloadFile(jarURL);
-            if (downloadResult.getValue().equals(""))
+            if (downloadResult.getKey() == null && downloadResult.getValue().startsWith("ERROR "))
             {
+                finalSender.sendMessage(ChatColor.YELLOW + "W: " + downloadResult.getValue().substring(6));
                 finalSender.sendMessage(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
@@ -261,7 +259,7 @@ public class Installer
         catch (FileNotFoundException e) //ファイルが見つからない場合はreturn
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -271,7 +269,7 @@ public class Installer
         catch (IOException | InvalidDescriptionException e) //plugin.ymlがおかしい場合はreturn
         {
             finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込めませんでした。");
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
@@ -283,7 +281,7 @@ public class Installer
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
-            if(!withoutRemove)
+            if (!withoutRemove)
                 delete(finalSender, new File("plugins/" + downloadResult.getValue()));
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
@@ -303,7 +301,8 @@ public class Installer
                 //114514.jar => YJSNPIPlugin-1.0.jar
                 FileUtils.moveFile(
                         new File("plugins/" + downloadResult.getValue()),
-                        new File("plugins/" + fileName));
+                        new File("plugins/" + fileName)
+                );
                 downloadResult = new Pair<>(false, fileName);
             }
             catch (IOException e)
@@ -337,7 +336,7 @@ public class Installer
                 public void run()
                 {
                     //削除する場合は削除
-                    if(!withoutRemove)
+                    if (!withoutRemove)
                         delete(finalSender, PluginUtil.getFile(plugin));
 
 
@@ -370,7 +369,8 @@ public class Installer
 
                 String fileName = downloadResult.getValue();
 
-                TeamKunPluginManager.functional.add(sender instanceof Player ? ((Player) sender).getUniqueId(): null,
+                TeamKunPluginManager.functional.add(
+                        sender instanceof Player ? ((Player) sender).getUniqueId(): null,
                         new Say2Functional.FunctionalEntry(
                                 StringUtils::startsWithIgnoreCase,
                                 s -> {
@@ -391,7 +391,8 @@ public class Installer
                                     finalSender.sendMessage(Messages.getStatusMessage(ir.add, ir.remove, ++ir.modify));
                                 },
                                 "y", "n"
-                        ));
+                        )
+                );
 
                 return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
             }
@@ -503,7 +504,7 @@ public class Installer
                         finalSender.sendMessage(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
 
                         //削除する場合は削除
-                        if(!withoutRemove)
+                        if (!withoutRemove)
                             delete(finalSender, new File("plugins/" + f.fileName));
 
                         //プラグインをアンロード
@@ -549,18 +550,18 @@ public class Installer
             @Override
             public void run()
             {*/
-                //エラーが発生した場合
-                String statusError = Messages.getErrorMessage();
-                if (!statusError.equals(""))
-                    finalSender.sendMessage(statusError);
+        //エラーが発生した場合
+        String statusError = Messages.getErrorMessage();
+        if (!statusError.equals(""))
+            finalSender.sendMessage(statusError);
 
-                // 削除できるプラグイン(使われない依存関係等)があれば通知
-                String autoRemovable = Messages.getUnInstallableMessage();
-                if (!autoRemovable.equals(""))
-                    finalSender.sendMessage(autoRemovable);
+        // 削除できるプラグイン(使われない依存関係等)があれば通知
+        String autoRemovable = Messages.getUnInstallableMessage();
+        if (!autoRemovable.equals(""))
+            finalSender.sendMessage(autoRemovable);
 
-                finalSender.sendMessage(Messages.getStatusMessage(finalAdd1, remove, finalModify1));
-                finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+        finalSender.sendMessage(Messages.getStatusMessage(finalAdd1, remove, finalModify1));
+        finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
             /*}
         }.runTaskLater(TeamKunPluginManager.plugin, 10L);*/
         return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
@@ -571,7 +572,7 @@ public class Installer
         String header = ChatColor.BLUE + (isNew ? "---新規インストール---": "---既存プラグイン---") + "\n";
         if (f == null)
             return header +
-                    "    " + ChatColor.RED+ "ファイルなし";
+                    "    " + ChatColor.RED + "ファイルなし";
 
         return header +
                 "    " + pi("ファイル名", f.getName()) +
@@ -586,6 +587,7 @@ public class Installer
 
     /**
      * 削除可能なデータフォルダを取得
+     *
      * @return データフォルダ
      */
     public static String[] getRemovableDataDirs()
@@ -630,38 +632,40 @@ public class Installer
         sender.sendMessage(ChatColor.YELLOW + "W: リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
         AtomicInteger integer = new AtomicInteger(0);
         jar.forEach(pair -> {
-                    int index = integer.incrementAndGet();
-                    sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
-                            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue() +"-CF"))
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ComponentBuilder(ChatColor.GREEN + "クリックしてこのリリースをインストール").create()))
-                            .create()
-                    );
-                });
+            int index = integer.incrementAndGet();
+            sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue() + "-CF"))
+                    .event(new HoverEvent(
+                            HoverEvent.Action.SHOW_TEXT,
+                            new ComponentBuilder(ChatColor.GREEN + "クリックしてこのリリースをインストール").create()
+                    ))
+                    .create()
+            );
+        });
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "- [c] " + ChatColor.RED + "キャンセル");
 
         TeamKunPluginManager.functional.add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
-            if (s.equalsIgnoreCase("c"))
-            {
-                sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
-                return;
-            }
+                    if (s.equalsIgnoreCase("c"))
+                    {
+                        sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
+                        return;
+                    }
 
-            int i = Integer.parseInt(s);
-            if (i < 1 || i > jar.size() + 1)
-            {
-                sender.sendMessage(ChatColor.RED + "リソースは 1 以上、" + (jar.size() + 1) + " 以下である必要があります。");
-                sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
-                return;
-            }
+                    int i = Integer.parseInt(s);
+                    if (i < 1 || i > jar.size() + 1)
+                    {
+                        sender.sendMessage(ChatColor.RED + "リソースは 1 以上、" + (jar.size() + 1) + " 以下である必要があります。");
+                        sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
+                        return;
+                    }
 
-            Pair<String, String> resource = jar.get(--i);
-            install(sender, resource.getValue(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
+                    Pair<String, String> resource = jar.get(--i);
+                    install(sender, resource.getValue(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
 
-        }, (String[]) ArrayUtils.add(IntStream.range(1, jar.size() + 1).parallel()
-                .mapToObj(String::valueOf)
-                .toArray(String[]::new), "c"))
+                }, (String[]) ArrayUtils.add(IntStream.range(1, jar.size() + 1).parallel()
+                        .mapToObj(String::valueOf)
+                        .toArray(String[]::new), "c"))
         );
     }
 
@@ -672,7 +676,7 @@ public class Installer
 
         String result = "";
         String tmp = "";
-        for (Pair<String, String> pair: jar)
+        for (Pair<String, String> pair : jar)
         {
             String name = pair.getKey();
             if (!name.endsWith(".jar") && name.endsWith(".zip"))
@@ -737,7 +741,6 @@ public class Installer
         return result;
     }
 
-
     /**
      * プラグインデータフォルダを削除
      *
@@ -760,7 +763,19 @@ public class Installer
             return false;
 
         if (plugin != null)
-            return plugin.getDataFolder().delete(); //プラグインがあった場合、データフォルダを取得して削除
+        {
+            try
+            {
+                FileUtils.forceDelete(plugin.getDataFolder());
+                return true;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return false;
+            }
+
+        }
 
         try
         {

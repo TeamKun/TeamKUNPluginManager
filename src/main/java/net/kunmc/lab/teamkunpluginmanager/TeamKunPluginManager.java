@@ -41,6 +41,14 @@ public final class TeamKunPluginManager extends JavaPlugin
         DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
         DependencyTree.initializeTable();
         KnownPlugins.initialization(TeamKunPluginManager.config.getString("resolvePath"));
+
+        if (KnownPlugins.isLegacy())
+        {
+            getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
+            KnownPlugins.migration();
+            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
+        }
+
         new BukkitRunnable()
         {
 

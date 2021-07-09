@@ -71,7 +71,8 @@ public class CommandClean
                     if (args[0].equals("all"))
                         Arrays.stream(removable)
                                 .forEach(Installer::clean);
-                    Installer.clean(args[0]);
+                    else
+                        Installer.clean(args[0]);
                     sender.sendMessage(Messages.getStatusMessage(0, args[0].equals("all") ? removable.length: 1, 0));
                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
                     TeamKunPluginManager.session.unlock();
