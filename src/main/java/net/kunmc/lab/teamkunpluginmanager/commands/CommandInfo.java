@@ -4,10 +4,12 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -72,74 +74,72 @@ public class CommandInfo
 
         if (file != null)
         {
-            sender.sendMessage();
+            sender.sendMessage("");
             sender.sendMessage(pi("ファイル名", file.getName()));
             sender.sendMessage(pi("ダウンロードサイズ", PluginUtil.getFileSizeString(file.length())));
         }
 
-        sender.sendMessage();
+        sender.sendMessage("");
         sender.sendMessage(dependTree("依存関係", plugin.getDescription().getDepend()));
         sender.sendMessage(dependTree("被依存関係", info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.toList())));
 
-        sender.sendMessage();
+        sender.sendMessage("");
         sender.sendMessage(commandList(plugin.getDescription().getCommands()));
 
     }
 
-    private static BaseComponent[] dependTree(String name, List<String> l)
+    private static Component dependTree(String name, List<String> l)
     {
-        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + name + ": ");
+        TextComponent content = Component.text(ChatColor.GREEN + name + ": ");
 
         if (l.size() == 0)
-            return builder.append(ChatColor.DARK_GREEN + "なし").create();
+            return content.append(Component.text(ChatColor.DARK_GREEN + "なし")).asComponent();
 
-        l.forEach(s -> {
-            ComponentBuilder cbi = new ComponentBuilder(" " + ChatColor.DARK_GREEN + s);
-            cbi.event(new HoverEvent(
-                    HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder(ChatColor.AQUA + "クリックして詳細を表示").create()
-            ));
-            cbi.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm info " + s));
-            builder.append(cbi.create());
-        });
-        return builder.create();
+        for(String depend: l)
+        {
+            content = content.append(Component.text(" " + ChatColor.DARK_GREEN + depend)
+                    .hoverEvent(HoverEvent.showText(Component.text(ChatColor.AQUA + "クリックして詳細を表示")))
+                    .clickEvent(ClickEvent.runCommand("/kpm info " + depend)));
+        }
+
+        return content;
     }
 
     @SuppressWarnings("unchecked")
-    private static BaseComponent[] commandHover(String name, Map<String, Object> command)
+    private static Component commandHover(String name, Map<String, Object> command)
     {
-        ComponentBuilder builder = new ComponentBuilder(pi("コマンド名", name + "\n\n"));
+        Component component = Component.text(pi("コマンド名", name + "\n\n"));
 
         if (command.containsKey("aliases"))
         {
             if (command.get("aliases") instanceof String)
-                builder.append(pi("エイリアス", "/" + command.get("aliases")));
+                component = component.append(Component.text(pi("エイリアス", "/" + command.get("aliases"))));
             else if (command.get("aliases") instanceof List)
-                builder.append(pi("エイリアス", "/" + String.join(", /", (List<String>) command.get("aliases"))) + "\n");
-
+                component = component.append(Component.text(pi("エイリアス",
+                        "/" + String.join(", /", (List<String>) command.get("aliases"))) + "\n"));
         }
 
         if (command.containsKey("usage"))
-            builder.append(pi("使用法", command.get("usage")) + "\n");
+            component = component.append(Component.text(pi("使用法", command.get("usage")) + "\n"));
         if (command.containsKey("description"))
-            builder.append(pi("概要", command.get("description")) + "\n");
+            component = component.append(Component.text(pi("概要", command.get("description")) + "\n"));
         if (command.containsKey("permission"))
-            builder.append(pi("権限", command.get("permission")));
-        return builder.create();
+            component = component.append(Component.text(pi("権限", command.get("permission")) + "\n"));
+        return component;
     }
 
-    private static BaseComponent[] commandList(Map<String, Map<String, Object>> command)
+    private static Component commandList(Map<String, Map<String, Object>> command)
     {
-        ComponentBuilder builder = new ComponentBuilder(ChatColor.GREEN + "コマンド: ");
+        TextComponent component = Component.text(ChatColor.GREEN + "コマンド：");
 
-        command.forEach((s, obj) -> {
+        for (Map.Entry<String, Map<String, Object>> c: command.entrySet())
+        {
+            component = component.append(
+                    Component.text(ChatColor.DARK_GREEN + " /" + c.getKey())
+                    .hoverEvent(HoverEvent.showText(commandHover(c.getKey(), c.getValue()))));
+        }
 
-            ComponentBuilder b = new ComponentBuilder(ChatColor.DARK_GREEN + " /" + s);
-            b.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, commandHover(s, obj)));
-            builder.append(b.create());
-        });
-
-        return builder.create();
+        return component;
     }
 
     private static String pi(String property, String value)
