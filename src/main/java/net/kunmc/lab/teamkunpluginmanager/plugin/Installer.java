@@ -11,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -29,7 +30,10 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -818,6 +822,18 @@ public class Installer
             }
 
             @Override
+            public void sendMessage(@Nullable UUID sender, @NotNull String message)
+            {
+
+            }
+
+            @Override
+            public void sendMessage(@Nullable UUID sender, @Nonnull @NotNull String... messages)
+            {
+
+            }
+
+            @Override
             public Server getServer()
             {
                 return Bukkit.getServer();
@@ -833,6 +849,12 @@ public class Installer
             public Spigot spigot()
             {
                 return spigot();
+            }
+
+            @Override
+            public @NotNull Component name()
+            {
+                return null;
             }
 
             @Override

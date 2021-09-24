@@ -1,15 +1,16 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.Plugin;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
@@ -30,26 +31,28 @@ public class Say2Functional implements Listener
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onSay(AsyncPlayerChatEvent e)
+    public void onSay(AsyncChatEvent e)
     {
         if (!say2func.containsKey(e.getPlayer().getUniqueId()))
             return;
 
         FunctionalEntry entry = this.say2func.get(e.getPlayer().getUniqueId());
 
-        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getMessage(), s)))
+        String message = ((TextComponent) e.originalMessage()).getText();
+
+        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(message, s)))
             return;
         e.setCancelled(true);
 
         say2func.remove(e.getPlayer().getUniqueId());
         if (entry.keywords == null)
         {
-            entry.func.accept(e.getMessage());
+            entry.func.accept(message);
             return;
         }
 
         entry.func.accept(Arrays.stream(entry.keywords).
-                filter(s -> entry.matchType.apply(e.getMessage(), s))
+                filter(s -> entry.matchType.apply(message, s))
                 .collect(Collectors.toList()).get(0));
 
     }
