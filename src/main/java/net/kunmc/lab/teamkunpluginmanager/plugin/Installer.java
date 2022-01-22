@@ -638,7 +638,7 @@ public class Installer
         jar.forEach(pair -> {
             int index = integer.incrementAndGet();
             sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue() + "-CF"))
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue()))
                     .event(new HoverEvent(
                             HoverEvent.Action.SHOW_TEXT,
                             new ComponentBuilder(ChatColor.GREEN + "クリックしてこのリリースをインストール").create()
@@ -646,8 +646,13 @@ public class Installer
                     .create()
             );
         });
-
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "- [c] " + ChatColor.RED + "キャンセル");
+        sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [c] " + ChatColor.RED + "キャンセル")
+                        .event(new HoverEvent(
+                                HoverEvent.Action.SHOW_TEXT,
+                                new ComponentBuilder(ChatColor.RED + "クリックしてこのリリースをキャンセル").create()
+                        ))
+                        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i $-CF$"))
+                        .create());
 
         TeamKunPluginManager.functional.add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
                     if (s.equalsIgnoreCase("c"))
