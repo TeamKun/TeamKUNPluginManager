@@ -34,9 +34,11 @@ public class CommandInstall
             return;
         }
 
-        if (args.length == 2 && args[1].equals("-CF"))
+        if (args.length == 1 && args[0].equals("$-CF$"))
         {
             TeamKunPluginManager.functional.remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
+            sender.sendMessage(ChatColor.GREEN + "E: 実行中のインストールをキャンセルしました。");
+            return;
         }
 
         if (!TeamKunPluginManager.session.lock())
