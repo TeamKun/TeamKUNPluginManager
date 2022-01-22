@@ -11,6 +11,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.awt.*;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
@@ -23,6 +24,24 @@ public class Say2Functional implements Listener
 
     private final HashMap<UUID, FunctionalEntry> say2func;
     private FunctionalEntry consoleFunc;
+
+    private static Class<?> LATEST_PAPER_CLASS;
+    private static Method LATEST_GET_CONTENT;
+    private static boolean LATEST;
+
+    static {
+        try
+        {
+            LATEST_PAPER_CLASS = Class.forName("net.kyori.adventure.text.TextComponentImpl");
+            LATEST_GET_CONTENT = LATEST_PAPER_CLASS.getDeclaredMethod("content");
+            LATEST_GET_CONTENT.setAccessible(true);
+            LATEST = true;
+        }
+        catch (ClassNotFoundException | NoSuchMethodException e)
+        {
+            LATEST = false;
+        }
+    }
 
     public Say2Functional(Plugin plugin)
     {
@@ -38,7 +57,21 @@ public class Say2Functional implements Listener
 
         FunctionalEntry entry = this.say2func.get(e.getPlayer().getUniqueId());
 
-        String message = ((TextComponent) e.originalMessage()).getText();
+        String message;
+
+        if (!LATEST)
+            message = ((TextComponent) e.originalMessage()).getText();
+        else
+        {
+            try
+            {
+                message = (String) LATEST_GET_CONTENT.invoke(LATEST_PAPER_CLASS.cast(e.message()));
+            }
+            catch (Exception ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
 
         if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(message, s)))
             return;
