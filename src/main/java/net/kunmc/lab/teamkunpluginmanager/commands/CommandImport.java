@@ -70,7 +70,7 @@ public class CommandImport
 
         Pair<Integer, String> json = URLUtils.getAsString(url);
 
-        switch (json.getKey())
+        switch (json.getLeft())
         {
             case 404:
                 sender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
@@ -80,7 +80,7 @@ public class CommandImport
                 break;
         }
 
-        if (json.getKey() != 200)
+        if (json.getLeft() != 200)
         {
             sender.sendMessage(ChatColor.RED + "E: 不明なエラーが発生しました。");
             return;
@@ -91,7 +91,7 @@ public class CommandImport
         LinkedList<PluginContainer> container;
         try
         {
-            container = new Gson().fromJson(json.getValue(), new TypeToken<LinkedList<PluginContainer>>()
+            container = new Gson().fromJson(json.getRight(), new TypeToken<LinkedList<PluginContainer>>()
             {
             }.getType());
         }
@@ -108,9 +108,9 @@ public class CommandImport
         container.stream().parallel()
                 .forEach(pluginContainer -> {
                     InstallResult result = Installer.install(null, pluginContainer.downloadUrl, true, true, true, false);
-                    add.addAndGet(result.add);
-                    remove.addAndGet(result.remove);
-                    modify.addAndGet(result.modify);
+                    add.addAndGet(result.getAdd());
+                    remove.addAndGet(result.getRemove());
+                    modify.addAndGet(result.getModify());
                     results.add(result);
                 });
 
@@ -142,11 +142,11 @@ public class CommandImport
         });
 
         loadOrder.forEach(installResult -> {
-            if (!installResult.success)
+            if (!installResult.isSuccess())
                 return;
-            if (PluginUtil.isPluginLoaded(installResult.pluginName))
+            if (PluginUtil.isPluginLoaded(installResult.getPluginName()))
             {
-                JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(installResult.pluginName);
+                JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(installResult.getPluginName());
 
                 PluginUtil.unload(plugin);
 
@@ -162,8 +162,8 @@ public class CommandImport
                     }
                 }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 20L);
             }
-            PluginUtil.load(installResult.fileName.substring(0, installResult.fileName.length() - 4));
-            sender.sendMessage(ChatColor.GREEN + "+ " + installResult.pluginName);
+            PluginUtil.load(installResult.getFileName().substring(0, installResult.getFileName().length() - 4));
+            sender.sendMessage(ChatColor.GREEN + "+ " + installResult.getPluginName());
         });
         TeamKunPluginManager.enableBuildTree = true;
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを構築中...");

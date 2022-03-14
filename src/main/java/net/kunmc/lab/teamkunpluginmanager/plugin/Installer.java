@@ -235,15 +235,15 @@ public class Installer
 
             //ファイルをダウンロード
             downloadResult = URLUtils.downloadFile(jarURL);
-            if (downloadResult.getKey() == null && downloadResult.getValue().startsWith("ERROR "))
+            if (downloadResult.getLeft() == null && downloadResult.getRight().startsWith("ERROR "))
             {
-                finalSender.sendMessage(ChatColor.YELLOW + "W: " + downloadResult.getValue().substring(6));
+                finalSender.sendMessage(ChatColor.YELLOW + "W: " + downloadResult.getRight().substring(6));
                 finalSender.sendMessage(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
             }
 
-            finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadResult.getValue()));
+            finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadResult.getRight()));
             add++;
 
             finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
@@ -258,13 +258,13 @@ public class Installer
         try
         {
             //plugin.ymlを読み取り
-            description = PluginUtil.loadDescription(new File("plugins/" + downloadResult.getValue()));
+            description = PluginUtil.loadDescription(new File("plugins/" + downloadResult.getRight()));
         }
         catch (FileNotFoundException e) //ファイルが見つからない場合はreturn
         {
             finalSender.sendMessage(ChatColor.RED + "E: ファイルが見つかりませんでした。");
             if (!withoutRemove)
-                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+                delete(finalSender, new File("plugins/" + downloadResult.getRight()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
 
@@ -274,7 +274,7 @@ public class Installer
         {
             finalSender.sendMessage(ChatColor.RED + "E: 情報を読み込めませんでした。");
             if (!withoutRemove)
-                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+                delete(finalSender, new File("plugins/" + downloadResult.getRight()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
@@ -286,7 +286,7 @@ public class Installer
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
             if (!withoutRemove)
-                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+                delete(finalSender, new File("plugins/" + downloadResult.getRight()));
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
         }
@@ -304,7 +304,7 @@ public class Installer
                 //ファイルを移動
                 //114514.jar => YJSNPIPlugin-1.0.jar
                 FileUtils.moveFile(
-                        new File("plugins/" + downloadResult.getValue()),
+                        new File("plugins/" + downloadResult.getRight()),
                         new File("plugins/" + fileName)
                 );
                 downloadResult = new Pair<>(false, fileName);
@@ -358,7 +358,7 @@ public class Installer
             {
                 //ファイルの比較を行う
                 finalSender.sendMessage(getDiffMessage(PluginUtil.getFile(plugin), false));
-                finalSender.sendMessage(getDiffMessage(new File("plugins/" + downloadResult.getValue()), true));
+                finalSender.sendMessage(getDiffMessage(new File("plugins/" + downloadResult.getRight()), true));
                 finalSender.sendMessage("\n");
                 sender.sendMessage(ChatColor.RED + "プラグインを置換しますか？? " +
                         ChatColor.WHITE + "[" +
@@ -371,7 +371,7 @@ public class Installer
                 int finalAdd = add;
                 int finalModify = modify;
 
-                String fileName = downloadResult.getValue();
+                String fileName = downloadResult.getRight();
 
                 TeamKunPluginManager.functional.add(
                         sender instanceof Player ? ((Player) sender).getUniqueId(): null,
@@ -392,26 +392,26 @@ public class Installer
                                     //y(yes)だった場合
                                     unInstall(null, description.getName(), true);
                                     InstallResult ir = install(finalSender, fileName, false, false, false, true);
-                                    finalSender.sendMessage(Messages.getStatusMessage(ir.add, ir.remove, ++ir.modify));
+                                    finalSender.sendMessage(Messages.getStatusMessage(ir.getAdd(), ir.getRemove(), ir.getModify() + 1));
                                 },
                                 "y", "n"
                         )
                 );
 
-                return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+                return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
             }
 
             //削除
-            if (!withoutRemove && new File("plugins/" + downloadResult.getValue()).exists())
-                delete(finalSender, new File("plugins/" + downloadResult.getValue()));
+            if (!withoutRemove && new File("plugins/" + downloadResult.getRight()).exists())
+                delete(finalSender, new File("plugins/" + downloadResult.getRight()));
 
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
-            return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+            return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
 
         }
 
-        added.add(new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true));
+        added.add(new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true));
 
         //==================依存関係解決処理 ここから==================
 
@@ -455,7 +455,7 @@ public class Installer
             //依存関係のインストール
             InstallResult dependResolve = Installer.install(null, dependUrl, true, false, true, false);
             //ファイルの名前がない場合は失敗としてマーク
-            if (dependResolve.fileName.equals(""))
+            if (dependResolve.getFileName().equals(""))
             {
                 failedResolve.add(dependency);
                 continue;
@@ -487,7 +487,7 @@ public class Installer
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.YELLOW + "W: " + description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
             finalSender.sendMessage(ChatColor.RED + String.join(", ", failedResolve));
-            return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+            return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
         }
 
         AtomicBoolean success = new AtomicBoolean(true);
@@ -509,7 +509,7 @@ public class Installer
 
                         //削除する場合は削除
                         if (!withoutRemove)
-                            delete(finalSender, new File("plugins/" + f.fileName));
+                            delete(finalSender, new File("plugins/" + f.getFileName()));
 
                         //プラグインをアンロード
                         PluginUtil.unload(plugin);
@@ -528,13 +528,13 @@ public class Installer
                     }
 
                     //依存関係をロード
-                    PluginUtil.load(f.fileName.substring(0, f.fileName.length() - 4));
+                    PluginUtil.load(f.getFileName().substring(0, f.getFileName().length() - 4));
                 }
                 catch (Exception e) //例外が発生した場合
                 {
                     //削除する場合は削除
                     if (!withoutRemove)
-                        delete(finalSender, new File("plugins/" + f.fileName));
+                        delete(finalSender, new File("plugins/" + f.getFileName()));
                     e.printStackTrace();
                     //失敗フラグを建てる
                     success.set(false);
@@ -568,7 +568,7 @@ public class Installer
         finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
             /*}
         }.runTaskLater(TeamKunPluginManager.plugin, 10L);*/
-        return new InstallResult(downloadResult.getValue(), description.getName(), add, remove, modify, true);
+        return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
     }
 
     private static String getDiffMessage(File f, boolean isNew)
@@ -637,8 +637,8 @@ public class Installer
         AtomicInteger integer = new AtomicInteger(0);
         jar.forEach(pair -> {
             int index = integer.incrementAndGet();
-            sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getKey())
-                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getValue()))
+            sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getLeft())
+                    .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i " + pair.getRight()))
                     .event(new HoverEvent(
                             HoverEvent.Action.SHOW_TEXT,
                             new ComponentBuilder(ChatColor.GREEN + "クリックしてこのリリースをインストール").create()
@@ -670,7 +670,7 @@ public class Installer
                     }
 
                     Pair<String, String> resource = jar.get(--i);
-                    install(sender, resource.getValue(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
+                    install(sender, resource.getRight(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
 
                 }, (String[]) ArrayUtils.add(IntStream.range(1, jar.size() + 1).parallel()
                         .mapToObj(String::valueOf)
@@ -687,21 +687,21 @@ public class Installer
         String tmp = "";
         for (Pair<String, String> pair : jar)
         {
-            String name = pair.getKey();
+            String name = pair.getLeft();
             if (!name.endsWith(".jar") && name.endsWith(".zip"))
                 continue;
 
             if (StringUtils.containsIgnoreCase(name, "plugin-") ||
                     StringUtils.containsIgnoreCase(name, "plugin."))
-                result = pair.getValue();
+                result = pair.getRight();
             if (StringUtils.containsIgnoreCase(name, "plugin"))
-                tmp = pair.getValue();
+                tmp = pair.getRight();
         }
 
         if (result.equals("") && !tmp.equals(""))
             result = tmp;
         if (result.equals(""))
-            result = jar.get(0).getValue();
+            result = jar.get(0).getRight();
 
         return result;
     }
@@ -813,15 +813,14 @@ public class Installer
     {
         return new CommandSender()
         {
-
             @Override
-            public void sendMessage(String message)
+            public void sendMessage(@NotNull String message)
             {
 
             }
 
             @Override
-            public void sendMessage(String[] messages)
+            public void sendMessage(@Nonnull @NotNull String[] messages)
             {
 
             }
@@ -833,85 +832,79 @@ public class Installer
             }
 
             @Override
-            public void sendMessage(@Nullable UUID sender, @Nonnull @NotNull String... messages)
+            public void sendMessage(@Nullable UUID sender, @Nonnull @NotNull String[] messages)
             {
 
             }
 
             @Override
-            public Server getServer()
+            public @NotNull Server getServer()
             {
                 return Bukkit.getServer();
             }
 
             @Override
-            public String getName()
+            public @NotNull String getName()
             {
                 return "DUMMY1145141919810931";
             }
 
             @Override
-            public Spigot spigot()
-            {
-                return spigot();
-            }
-
-            @Override
-            public @NotNull Component name()
+            public @NotNull Spigot spigot()
             {
                 return null;
             }
 
             @Override
-            public boolean isPermissionSet(String name)
+            public boolean isPermissionSet(@NotNull String name)
             {
                 return false;
             }
 
             @Override
-            public boolean isPermissionSet(Permission perm)
+            public boolean isPermissionSet(@NotNull Permission perm)
             {
                 return false;
             }
 
             @Override
-            public boolean hasPermission(String name)
+            public boolean hasPermission(@NotNull String name)
             {
                 return false;
             }
 
             @Override
-            public boolean hasPermission(Permission perm)
+            public boolean hasPermission(@NotNull Permission perm)
             {
                 return false;
             }
 
             @Override
-            public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value)
+            public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value)
             {
                 return null;
             }
 
             @Override
-            public PermissionAttachment addAttachment(Plugin plugin)
+            public @NotNull PermissionAttachment addAttachment(@NotNull Plugin plugin)
             {
                 return null;
             }
 
             @Override
-            public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks)
+            public @Nullable PermissionAttachment addAttachment(@NotNull Plugin plugin, @NotNull String name, boolean value, int ticks)
             {
                 return null;
             }
 
             @Override
-            public PermissionAttachment addAttachment(Plugin plugin, int ticks)
+            public @Nullable PermissionAttachment addAttachment(@NotNull Plugin plugin, int ticks)
             {
                 return null;
             }
 
             @Override
-            public void removeAttachment(PermissionAttachment attachment)
+            public void removeAttachment(@NotNull PermissionAttachment attachment)
             {
 
             }
@@ -923,7 +916,7 @@ public class Installer
             }
 
             @Override
-            public Set<PermissionAttachmentInfo> getEffectivePermissions()
+            public @NotNull Set<PermissionAttachmentInfo> getEffectivePermissions()
             {
                 return null;
             }

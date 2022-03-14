@@ -1,14 +1,19 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin;
 
+import lombok.AllArgsConstructor;
+import lombok.Value;
+
+@Value
+@AllArgsConstructor
 public class InstallResult
 {
 
-    public String fileName;
-    public String pluginName;
-    public int add;
-    public int remove;
-    public int modify;
-    public boolean success;
+    String fileName;
+    String pluginName;
+    int add;
+    int remove;
+    int modify;
+    boolean success;
 
     public InstallResult(boolean success)
     {
@@ -25,13 +30,4 @@ public class InstallResult
         this(fileName, pluginName, 0, 0, 0, true);
     }
 
-    public InstallResult(String fileName, String pluginName, int add, int remove, int modify, boolean success)
-    {
-        this.fileName = fileName;
-        this.pluginName = pluginName;
-        this.add = add;
-        this.remove = remove;
-        this.modify = modify;
-        this.success = success;
-    }
 }

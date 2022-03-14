@@ -230,13 +230,13 @@ public class PluginUtil
                 .forEach(stringStringPair -> {
                     if (!want.contains(stringStringPair)) //既に処理されていた(処理待ちになかった)場合は無視
                         return;
-                    if (!stringStringPair.success)
+                    if (!stringStringPair.isSuccess())
                         return;
 
                     PluginDescriptionFile desc; //dependとか
                     try
                     {
-                        desc = loadDescription(new File("plugins/" + stringStringPair.fileName)); //読み込み順番を取得
+                        desc = loadDescription(new File("plugins/" + stringStringPair.getFileName())); //読み込み順番を取得
                     }
                     catch (Exception e)
                     {
@@ -264,7 +264,7 @@ public class PluginUtil
                 });
 
         want.forEach(stringStringPair -> {
-            if (order.contains(stringStringPair.fileName))
+            if (order.contains(stringStringPair.getFileName()))
                 return;
             order.add(stringStringPair); //後回しプラグインの指示
         });
@@ -275,7 +275,7 @@ public class PluginUtil
     {
         for (InstallResult p : keys)
         {
-            if (p.pluginName.equals(contain))
+            if (p.getPluginName().equals(contain))
                 return p;
         }
         return null;
@@ -285,7 +285,7 @@ public class PluginUtil
     {
         AtomicBoolean ab = new AtomicBoolean(false);
         keys.stream()
-                .filter(stringStringPair -> stringStringPair.pluginName.equals(contain))
+                .filter(stringStringPair -> stringStringPair.getPluginName().equals(contain))
                 .forEach(stringStringPair -> ab.set(true));
         return ab.get();
     }
@@ -296,7 +296,7 @@ public class PluginUtil
 
         original.stream().parallel()
                 .forEach(stringStringPair -> {
-                    if (stringStringPair.getValue().equals(value))
+                    if (stringStringPair.getRight().equals(value))
                         copyOf.remove(stringStringPair);
                 });
 

@@ -249,10 +249,7 @@ public class CommandUpdate
                     {
                         String name = a.getKey();
                         String url = a.getValue().getAsString();
-                        KnownPluginEntry ent = new KnownPluginEntry();
-                        ent.name = name;
-                        ent.url = url;
-                        ent.source = source;
+                        KnownPluginEntry ent = new KnownPluginEntry(name, url, source);
                         KnownPlugins.addKnownPlugin(ent);
                         atomicInteger.incrementAndGet();
                     }

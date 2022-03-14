@@ -53,9 +53,7 @@ public class CompactBuilder implements Cloneable
 
         String url = PluginResolver.asUrl(name);
 
-        if (!url.startsWith("ERROR"))
-            this.pre.downloadUrl = url;
-        else
+        if (url.startsWith("ERROR"))
             this.rs = (BuildResult[]) ArrayUtils.add(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
 
         this.pre.downloadUrl = url;

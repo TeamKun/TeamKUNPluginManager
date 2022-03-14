@@ -1,8 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin;
 
+import lombok.Value;
+
+@Value
 public class KnownPluginEntry
 {
-    public String name;
-    public String url;
-    public String source;
+    String name;
+    String url;
+    String source;
 }

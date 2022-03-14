@@ -26,7 +26,7 @@ public class KnownPlugins
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -52,14 +52,11 @@ public class KnownPlugins
         {
             DatabaseMetaData meta = connection.getMetaData();
             ResultSet set = meta.getTables(null, null, "DEPEND", null);
-            boolean a = set.next();
-            set.close();
-            return a;
+            return set.next();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -75,7 +72,7 @@ public class KnownPlugins
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         initTables();
 
@@ -93,7 +90,7 @@ public class KnownPlugins
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -111,20 +108,20 @@ public class KnownPlugins
             pstmt.setString(1, org[0]);
             if (org.length == 2)
                 pstmt.setString(2, org[1]);
+
             ResultSet set = pstmt.executeQuery();
+
             if (!set.next())
                 return null;
-            KnownPluginEntry entry = new KnownPluginEntry();
-            entry.name = set.getString("NAME");
-            entry.url = set.getString("URL");
-            entry.source = set.getString("SOURCE");
-            set.close();
-            return entry;
+
+            return new KnownPluginEntry(
+                    set.getString("NAME"),
+                    set.getString("URL"),
+                    set.getString("SOURCE"));
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
@@ -138,14 +135,14 @@ public class KnownPlugins
         try (Connection connection = dataSource.getConnection();
              PreparedStatement pstmt = connection.prepareStatement("INSERT INTO PLUGIN VALUES (?, ?, ?)"))
         {
-            pstmt.setString(1, entry.name);
-            pstmt.setString(2, entry.url);
-            pstmt.setString(3, entry.source);
+            pstmt.setString(1, entry.getName());
+            pstmt.setString(2, entry.getUrl());
+            pstmt.setString(3, entry.getSource());
             pstmt.execute();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

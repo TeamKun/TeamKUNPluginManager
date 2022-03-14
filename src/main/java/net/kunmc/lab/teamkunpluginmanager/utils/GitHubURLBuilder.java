@@ -109,13 +109,13 @@ public class GitHubURLBuilder
         //URLをペアから作る。
         Pair<String, String> urlPair = buildAPIUrl(repoName, tagName);
 
-        switch (urlPair.getKey())
+        switch (urlPair.getLeft())
         {
             case "GITHUB_REPO_RELEASES_URL":
             {
                 //APIを叩く。
-                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
-                switch (json.getKey())
+                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getRight());
+                switch (json.getLeft())
                 {
                     case 404:
                         return "ERROR ファイルが見つかりませんでした。";
@@ -124,15 +124,15 @@ public class GitHubURLBuilder
                 }
 
                 //200ではない場合はエラー。
-                if (json.getKey() != 200)
+                if (json.getLeft() != 200)
                     return "ERROR 不明なエラーが発生しました。";
 
                 //APIレスポンスがエラーかどうか。
-                String error = error(json.getValue());
+                String error = error(json.getRight());
                 if (!error.equals(""))
                     return "ERROR " + error;
 
-                JsonArray array = new Gson().fromJson(json.getValue(), JsonArray.class);
+                JsonArray array = new Gson().fromJson(json.getRight(), JsonArray.class);
 
                 if (array.size() == 0)
                     return "ERROR リリースが見つかりませんでした。";
@@ -162,8 +162,8 @@ public class GitHubURLBuilder
             case "GITHUB_REPO_RELEASE_NAME_URL":
             {
                 //APIを叩く。
-                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getValue());
-                switch (json.getKey())
+                Pair<Integer, String> json = URLUtils.getAsString(urlPair.getRight());
+                switch (json.getLeft())
                 {
                     case 404:
                         return "ERROR ファイルが見つかりませんでした。";
@@ -172,16 +172,16 @@ public class GitHubURLBuilder
                 }
 
                 //200ではない場合はエラー。
-                if (json.getKey() != 200)
+                if (json.getLeft() != 200)
                     return "ERROR 不明なエラーが発生しました。";
 
                 //APIレスポンスがエラーかどうか。
-                String error = error(json.getValue());
+                String error = error(json.getRight());
                 if (!error.equals(""))
                     return "ERROR " + error;
 
                 //アセットを上からなめる
-                JsonObject array = new Gson().fromJson(json.getValue(), JsonObject.class);
+                JsonObject array = new Gson().fromJson(json.getRight(), JsonObject.class);
                 JsonArray asset = array.get("assets").getAsJsonArray();
 
                 //assetが一つしかなかったら返す。

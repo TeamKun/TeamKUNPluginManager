@@ -67,13 +67,13 @@ public class CommandRegister
                 "", "application/json", "text/plain"
         );
 
-        if (data.getKey() != 200)
+        if (data.getLeft() != 200)
         {
             sender.sendMessage(ChatColor.RED + "E: エラーが発生しました。しばらくしてからもう一度お試しください。");
             return;
         }
 
-        JsonObject object = new Gson().fromJson(data.getValue(), JsonObject.class);
+        JsonObject object = new Gson().fromJson(data.getRight(), JsonObject.class);
 
         final String device_code = object.get("device_code").getAsString();
         final String user_code = object.get("user_code").getAsString();
@@ -101,14 +101,14 @@ public class CommandRegister
                         "application/json",
                         "text/plain"
                 );
-                if (data.getKey() != 200)
+                if (data.getLeft() != 200)
                 {
-                    sender.sendMessage(ChatColor.RED + "E: エラーが発生しました。: Server response with" + data.getKey());
+                    sender.sendMessage(ChatColor.RED + "E: エラーが発生しました。: Server response with" + data.getLeft());
                     this.cancel();
                     return;
                 }
 
-                JsonObject response = new Gson().fromJson(data.getValue(), JsonObject.class);
+                JsonObject response = new Gson().fromJson(data.getRight(), JsonObject.class);
 
                 if (response.has("error"))
                 {
@@ -117,7 +117,7 @@ public class CommandRegister
                     String error = response.get("error").getAsString();
                     sender.sendMessage(ChatColor.RED + "E: エラーが発生いたしました。：" + parseError(error));
                     if (sender instanceof Player)
-                        ((Player) sender).resetTitle();
+                        sender.resetTitle();
                     this.cancel();
                     return;
                 }
@@ -125,7 +125,7 @@ public class CommandRegister
                 TeamKunPluginManager.vault.vault(response.get("access_token").getAsString());
                 sender.sendMessage(ChatColor.GREEN + "S: トークンを正常に保管しました！");
                 if (sender instanceof Player)
-                    ((Player) sender).resetTitle();
+                    sender.resetTitle();
                 TeamKunPluginManager.session.unlock();
                 success[0] = true;
                 this.cancel();
