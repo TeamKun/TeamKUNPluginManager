@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -73,7 +73,7 @@ public class Say2Functional implements Listener
             }
         }
 
-        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(message, s)))
+        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.test(message, s)))
             return;
         e.setCancelled(true);
 
@@ -85,7 +85,7 @@ public class Say2Functional implements Listener
         }
 
         entry.func.accept(Arrays.stream(entry.keywords).
-                filter(s -> entry.matchType.apply(message, s))
+                filter(s -> entry.matchType.test(message, s))
                 .collect(Collectors.toList()).get(0));
 
     }
@@ -99,7 +99,7 @@ public class Say2Functional implements Listener
         e.setCancelled(true);
 
         FunctionalEntry entry = consoleFunc;
-        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.apply(e.getCommand(), s)))
+        if (entry.keywords != null && Arrays.stream(entry.keywords).noneMatch(s -> entry.matchType.test(e.getCommand(), s)))
             return;
         e.setCancelled(true);
 
@@ -111,7 +111,7 @@ public class Say2Functional implements Listener
         }
 
         entry.func.accept(Arrays.stream(entry.keywords)
-                .filter(s -> entry.matchType.apply(e.getCommand(), s))
+                .filter(s -> entry.matchType.test(e.getCommand(), s))
                 .collect(Collectors.toList()).get(0));
 
     }
@@ -149,14 +149,14 @@ public class Say2Functional implements Listener
     {
         public final String[] keywords;
         public final Consumer<String> func;
-        public final BiFunction<String, String, Boolean> matchType;
+        public final BiPredicate<String, String> matchType;
 
-        public FunctionalEntry(BiFunction<String, String, Boolean> matchType, Consumer<String> runas, String... keywords)
+        public FunctionalEntry(BiPredicate<String, String> matchType, Consumer<String> runas, String... keywords)
         {
             this(null, matchType, runas, keywords);
         }
 
-        public FunctionalEntry(String comment, BiFunction<String, String, Boolean> matchType, Consumer<String> runas, String... keywords)
+        public FunctionalEntry(String comment, BiPredicate<String, String> matchType, Consumer<String> runas, String... keywords)
         {
             if (keywords.length == 0)
                 this.keywords = null;
