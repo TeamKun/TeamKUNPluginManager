@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
@@ -35,6 +36,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         config = getConfig();
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
+        resolver.getResolvers().add(new GitHubResolver());
 
         vault = new TokenVault();
 
