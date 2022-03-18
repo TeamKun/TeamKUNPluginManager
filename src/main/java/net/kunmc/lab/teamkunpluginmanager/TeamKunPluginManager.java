@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
     public static Session session;
+    private static PluginResolver resolver;
 
     @Override
     public void onEnable()
@@ -32,6 +34,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         plugin = this;
         config = getConfig();
         functional = new Say2Functional(this);
+        resolver = new PluginResolver();
 
         vault = new TokenVault();
 
