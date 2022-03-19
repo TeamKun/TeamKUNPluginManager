@@ -50,9 +50,9 @@ public class ErrorResult implements ResolveResult
          */
         PLUGIN_NOT_FOUND("プラグインが見つかりませんでした。"),
         /**
-         * サーバに合ったプラグインのバージョンが見つからなかった
+         * サーバに合ったプラグインが見つからなかった
          */
-        MATCH_PLUGIN_NOT_FOUND("対応するバージョンが見つかりませんでした。"),
+        MATCH_PLUGIN_NOT_FOUND("対応するプラグインが見つかりませんでした。"),
         /**
          * プラグイン自体は見つかったが、アセット(jarファイル)が見つからない。
          */
