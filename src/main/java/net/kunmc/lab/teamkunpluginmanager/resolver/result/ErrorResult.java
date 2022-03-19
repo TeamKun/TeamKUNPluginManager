@@ -52,7 +52,7 @@ public class ErrorResult implements ResolveResult
         /**
          * サーバに合ったプラグインのバージョンが見つからなかった
          */
-        MATCH_VERSION_NOT_FOUND("対応するバージョンが見つかりませんでした。"),
+        MATCH_PLUGIN_NOT_FOUND("対応するバージョンが見つかりませんでした。"),
         /**
          * プラグイン自体は見つかったが、アセット(jarファイル)が見つからない。
          */
