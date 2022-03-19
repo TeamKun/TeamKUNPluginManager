@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -42,6 +43,21 @@ public interface URLResolver extends BaseResolver
     static String errorCodeWith(String message, int code)
     {
         return message + "(The server responded with " + code + ")。";
+    }
+
+    default Matcher urlMatcher(Pattern pattern, String urlString)
+    {
+        URL url;
+        try
+        {
+            url = new URL(urlString);
+        }
+        catch (MalformedURLException e)
+        {
+            return null;
+        }
+
+        return pattern.matcher(url.getPath());
     }
 
     default ErrorResult processErrorResponse(int code, ResolveResult.Source source)
