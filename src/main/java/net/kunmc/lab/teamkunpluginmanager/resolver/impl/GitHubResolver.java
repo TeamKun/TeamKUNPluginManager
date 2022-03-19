@@ -81,12 +81,7 @@ public class GitHubResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        ResolveResult[] results = multiResult.getResults();
-
-        if (results.length == 0)
-            return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
-
-        return results[0];
+        return autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
     }
 
     private ResolveResult processGitHubAPI(String owner, String repository, String tag)
