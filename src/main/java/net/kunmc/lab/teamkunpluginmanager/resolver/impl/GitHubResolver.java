@@ -25,29 +25,22 @@ public class GitHubResolver implements URLResolver
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
 
     private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repository>[a-zA-Z\\d]" +
-            "(?<owner>[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}/[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100})" +
+            "(?<owner>[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}/(?<repoName>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100}))" +
             "(?:/(?:tags|releases(?:/(?:tag/(?<tag>[^/]+)/?$|download/(?<downloadTag>[^/]+)/" +
             "(?<fileName>[^/]+)))?))?/?$");
 
     @Override
     public ResolveResult resolve(String query)
     {
-        URL url;
-        try
-        {
+        Matcher matcher = urlMatcher(GITHUB_REPO_PATTERN, query);
 
-            url = new URL(query);
-        }
-        catch (MalformedURLException e)
-        {
+        if (matcher == null)
             return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
-        }
-
-        Matcher matcher = GITHUB_REPO_PATTERN.matcher(url.getPath());
 
         String repository = null;
         String owner = null;
         String tag = null;
+        String repositoryName = null;
 
         while (matcher.find())
         {
@@ -56,9 +49,10 @@ public class GitHubResolver implements URLResolver
             String tagGroup = matcher.group("tag");
             String fileNameGroup = matcher.group("fileName");
             String ownerGroup = matcher.group("owner");
+            String repoNameGroup = matcher.group("repoName");
 
             if (fileNameGroup != null && !fileNameGroup.isEmpty()) // URLが自己解決。
-                return new SuccessResult(url.getPath(), ResolveResult.Source.GITHUB);
+                return new SuccessResult(query, ResolveResult.Source.GITHUB);
 
             if (!repositoryGroup.isEmpty())
                 repository = repositoryGroup;
@@ -70,12 +64,15 @@ public class GitHubResolver implements URLResolver
 
             if (ownerGroup != null && !ownerGroup.isEmpty())
                 owner = ownerGroup;
+
+            if (repoNameGroup != null && !repoNameGroup.isEmpty())
+                repositoryName = repoNameGroup;
         }
 
         if (repository == null)
             return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
 
-        return processGitHubAPI(owner, repository, tag);
+        return processGitHubAPI(owner, repositoryName, repository, tag);
     }
 
     @Override
@@ -84,7 +81,7 @@ public class GitHubResolver implements URLResolver
         return autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
     }
 
-    private ResolveResult processGitHubAPI(String owner, String repository, String tag)
+    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag)
     {
         String apiURL;
         if (tag != null)
@@ -107,7 +104,7 @@ public class GitHubResolver implements URLResolver
         {
             JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
 
-            return buildResultSingle(owner, jsonObject);
+            return buildResultSingle(owner, repositoryName, jsonObject);
         }
 
         JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
@@ -115,7 +112,7 @@ public class GitHubResolver implements URLResolver
 
         for (JsonElement jsonElement : jsonArray)
         {
-            ResolveResult result = buildResultSingle(owner, jsonElement.getAsJsonObject());
+            ResolveResult result = buildResultSingle(owner,  repositoryName, jsonElement.getAsJsonObject());
 
             if (result instanceof ErrorResult)
                 continue;
@@ -126,7 +123,7 @@ public class GitHubResolver implements URLResolver
         return new MultiResult(results.toArray(new ResolveResult[0]));
     }
 
-    private ResolveResult buildResultSingle(String owner, JsonObject object)
+    private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object)
     {
         List<GitHubSuccessResult> results = new ArrayList<>();
 
@@ -134,6 +131,7 @@ public class GitHubResolver implements URLResolver
         String body = object.get("body").getAsString();
         String version = object.get("tag_name").getAsString();
         long releaseId = object.get("id").getAsLong();
+        String htmlUrl = object.get("html_url").getAsString();
 
         JsonArray assets = object.getAsJsonArray("assets");
 
@@ -151,7 +149,7 @@ public class GitHubResolver implements URLResolver
             String fileName = assetObject.get("name").getAsString();
             long size = assetObject.get("size").getAsLong();
 
-            GitHubSuccessResult result = new GitHubSuccessResult(downloadURL, fileName, version, owner, size, releaseName, body, releaseId);
+            GitHubSuccessResult result = new GitHubSuccessResult(downloadURL, fileName, version, repositoryName, htmlUrl, owner, size, releaseName, body, releaseId);
 
             if (assets.size() == 1)
                 return result;
