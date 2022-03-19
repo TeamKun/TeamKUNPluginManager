@@ -13,31 +13,29 @@ import java.util.regex.Pattern;
 public interface URLResolver extends BaseResolver
 {
     /**
-     * 使用可能なURLのパターン
-     * @return パターン
+     * 使用可能なURLのホスト
+     * @return ホスト
      */
-    Pattern[] getURLPatterns();
+    String[] getHosts();
 
     @Override
     default boolean isValidResolver(String query)
     {
         try
         {
-            new URL(query);
+            URL url = new URL(query);
+
+            if (getHosts().length == 0)
+                return true;
+
+            for (String host : getHosts())
+                if (url.getHost().equalsIgnoreCase(host))
+                    return true;
         }
         catch (MalformedURLException e)
         {
             return false;
         }
-
-        Pattern[] patterns = getURLPatterns();
-        if (patterns == null || patterns.length == 0)
-            return true;
-
-        for (Pattern pattern : patterns)
-            if (pattern.matcher(query).matches())
-                return true;
-
         return false;
     }
 

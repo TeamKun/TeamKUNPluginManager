@@ -163,11 +163,8 @@ public class GitHubResolver implements URLResolver
     }
 
     @Override
-    public Pattern[] getURLPatterns()
+    public String[] getHosts()
     {
-        return new Pattern[] {
-                Pattern.compile("^https?://(www\\.)?github.com/")
-        };
+        return new String[] { "github.com", "www.github.com" };
     }
-
 }
