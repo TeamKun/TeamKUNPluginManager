@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
@@ -39,6 +40,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         resolver = new PluginResolver();
         resolver.getResolvers().add(new GitHubResolver());
         resolver.getResolvers().add(new SpigotMCResolver());
+        resolver.getResolvers().add(new CurseBukkitResolver());
 
         vault = new TokenVault();
 
