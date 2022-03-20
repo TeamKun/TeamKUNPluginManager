@@ -28,6 +28,10 @@ public interface ResolveResult
          */
         CURSE_FORGE,
         /**
+         * ローカルの既知プラグイン
+         */
+        LOCAL_KNOWN,
+        /**
          * 直リンク
          */
         DIRECT
