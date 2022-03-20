@@ -86,7 +86,14 @@ public class URLUtils
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
 
-            return new Pair<>(connection.getResponseCode(), IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8));
+            try
+            {
+                return new Pair<>(connection.getResponseCode(), IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8));
+            }
+            catch (IOException e)
+            {
+                return new Pair<>(connection.getResponseCode(), null);
+            }
 
         }
         catch (Exception e)

@@ -21,11 +21,15 @@ public class QueryParser
 
         String version = null;
 
-        int versionSeparatorIndex = queryParts[1].lastIndexOf(queryVersionSeparator);
-        if (versionSeparatorIndex != -1)
-            version = queryParts[1].substring(versionSeparatorIndex + 1);
+        String part = queryParts[queryParts.length - 1];
 
-        String plainQuery = queryParts[1].substring(0, versionSeparatorIndex);
+        int versionSeparatorIndex = part.lastIndexOf(queryVersionSeparator);
+        if (versionSeparatorIndex != -1)
+            version = part.substring(versionSeparatorIndex + 1);
+
+        String plainQuery = part;
+        if (version != null)
+            plainQuery = part.substring(0, versionSeparatorIndex);
 
         return new QueryContext(resolverName, plainQuery, version);
     }

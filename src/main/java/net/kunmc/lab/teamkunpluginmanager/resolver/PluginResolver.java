@@ -67,6 +67,8 @@ public class PluginResolver
     {
         URL url = null;
 
+        List<BaseResolver> finishedResolvers = new ArrayList<>();
+
         String resolverName = queryContext.getResolverName();
         if (resolverName != null)
             url = toURL(queryContext.getQuery());
@@ -77,6 +79,11 @@ public class PluginResolver
 
         for (BaseResolver resolver : resolvers)
         {
+            if (finishedResolvers.contains(resolver))
+                continue;
+
+            finishedResolvers.add(resolver);
+
             if (resolver instanceof URLResolver)
             {
                 URLResolver urlResolver = (URLResolver) resolver;
@@ -92,8 +99,11 @@ public class PluginResolver
             {
                 ErrorResult error = (ErrorResult) result;
 
+                if (error.getCause() != ErrorResult.ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorResult.ErrorCause.INVALID_QUERY)
+                    return error;
                 if (error.getCause() != ErrorResult.ErrorCause.RESOLVER_MISMATCH)
                     errorResult = result;
+
                 continue;
             }
 
