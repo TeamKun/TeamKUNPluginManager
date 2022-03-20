@@ -36,7 +36,7 @@ public class PluginResolver
      */
     public ResolveResult resolve(String query)
     {
-        ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.UNKNOWN_ERROR, ResolveResult.Source.DIRECT);
+        ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.UNKNOWN);
 
         URL url = toURL(query);
 
@@ -55,7 +55,10 @@ public class PluginResolver
 
             if (result instanceof ErrorResult)
             {
-                errorResult = result;
+                ErrorResult error = (ErrorResult) result;
+
+                if (error.getCause() != ErrorResult.ErrorCause.RESOLVER_MISMATCH)
+                    errorResult = result;
                 continue;
             }
 

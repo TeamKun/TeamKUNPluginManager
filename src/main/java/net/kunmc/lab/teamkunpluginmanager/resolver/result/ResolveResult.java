@@ -34,6 +34,10 @@ public interface ResolveResult
         /**
          * 直リンク
          */
-        DIRECT
+        DIRECT,
+        /**
+         * 不明
+         */
+        UNKNOWN
     }
 }
