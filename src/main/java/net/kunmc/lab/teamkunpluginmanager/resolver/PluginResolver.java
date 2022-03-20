@@ -8,16 +8,18 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * プラグインを解決するクラス
  */
 public class PluginResolver
 {
-    private final HashMap<String, BaseResolver> resolvers; // TODO: LIST
+    private final HashMap<String, List<BaseResolver>> resolvers;
 
     public PluginResolver()
     {
@@ -31,7 +33,12 @@ public class PluginResolver
             if (name.equalsIgnoreCase("http") || name.equalsIgnoreCase("https"))
                 throw new IllegalArgumentException("HTTP and HTTPS are reserved names.");
 
-            resolvers.put(name.toLowerCase(), resolver);
+            List<BaseResolver> resolverList = resolvers.get(name.toLowerCase());
+
+            if (resolverList == null)
+                resolvers.put(name.toLowerCase(), new ArrayList<>(Collections.singletonList(resolver)));
+            else
+                resolverList.add(resolver);
         }
     }
 
@@ -44,14 +51,16 @@ public class PluginResolver
         QueryContext context = QueryParser.parseQuery(query);
 
         if (context.getResolverName() == null)
-            return actuallyResolve(new ArrayList<>(resolvers.values()), context);
+        {
+            return actuallyResolve(resolvers.values().stream()
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList()), context);
+        }
 
-        BaseResolver resolver = resolvers.get(context.getResolverName().toLowerCase());
-
-        if (resolver == null || !resolver.isValidResolver(query))
+        if (!resolvers.containsKey(context.getResolverName().toLowerCase()))
             return new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
 
-        return resolver.resolve(query);
+        return actuallyResolve(resolvers.get(context.getResolverName().toLowerCase()), context);
     }
 
     private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
