@@ -24,8 +24,8 @@ public class GitHubResolver implements URLResolver
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
 
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repository>[a-zA-Z\\d]" +
-            "(?<owner>[a-zA-Z\\d]|-(?=[a-zA-Z\\d]){0,38})/(?<repoName>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100}))" +
+    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repository>(?<owner>[a-zA-Z\\d]" +
+            "(?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38})/(?<repoName>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100}))" +
             "(?:/(?:tags|releases(?:/(?:tag/(?<tag>[^/]+)/?$|download/(?<downloadTag>[^/]+)/" +
             "(?<fileName>[^/]+)))?))?/?$");
 
