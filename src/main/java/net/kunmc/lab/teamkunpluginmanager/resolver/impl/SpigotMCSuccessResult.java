@@ -27,7 +27,7 @@ public class SpigotMCSuccessResult extends SuccessResult implements MarketplaceR
     public SpigotMCSuccessResult(@Nullable String version, @NotNull String title, long id, @NotNull String description, @NotNull List<String> versions)
     {
         super("https://apple.api.spiget.org/v2/resources/" + id +
-                (version != null ? "versions/" + version : "") + "/download",
+                (version != null ? "/versions/" + version : "") + "/download",
                 null, version, Source.SPIGOT_MC);
         this.title = title;
         this.description = description;
