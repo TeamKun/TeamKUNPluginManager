@@ -6,10 +6,13 @@ import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,9 +38,17 @@ public class PluginResolver
     {
         ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.UNKNOWN_ERROR, ResolveResult.Source.DIRECT);
 
+        URL url = toURL(query);
+
         for (BaseResolver resolver : resolvers)
         {
-            if (!resolver.isValidResolver(query))
+            if (resolver instanceof URLResolver)
+            {
+                URLResolver urlResolver = (URLResolver) resolver;
+                if (url != null && !isValidURLResolver(url, urlResolver))
+                    continue;
+            }
+            else if (!resolver.isValidResolver(query))
                 continue;
 
             ResolveResult result = resolver.resolve(query);
@@ -53,4 +64,28 @@ public class PluginResolver
 
         return errorResult;
     }
+
+    private static boolean isValidURLResolver(URL url, URLResolver resolver)
+    {
+        for (String host: resolver.getHosts())
+        {
+            if (url.getHost().equalsIgnoreCase(host))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static URL toURL(String url)
+    {
+        try
+        {
+            return new URL(url);
+        }
+        catch (MalformedURLException e)
+        {
+            return null;
+        }
+    }
+
 }
