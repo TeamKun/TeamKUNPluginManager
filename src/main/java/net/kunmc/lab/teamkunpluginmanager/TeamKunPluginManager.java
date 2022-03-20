@@ -39,10 +39,10 @@ public final class TeamKunPluginManager extends JavaPlugin
         config = getConfig();
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
-        resolver.getResolvers().add(new GitHubResolver());
-        resolver.getResolvers().add(new SpigotMCResolver());
-        resolver.getResolvers().add(new CurseBukkitResolver());
-        resolver.getResolvers().add(new KnownPluginsResolver());
+        resolver.addResolver(new GitHubResolver(), "github", "gh");
+        resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
+        resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge");
+        resolver.addResolver(new KnownPluginsResolver(), "local", "alias");
 
         vault = new TokenVault();
 

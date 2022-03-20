@@ -1,33 +1,38 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Value;
-import lombok.experimental.FieldDefaults;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * プラグインを解決するクラス
  */
-@Getter
-@Setter
 public class PluginResolver
 {
-    private final List<BaseResolver> resolvers;
+    private final HashMap<String, BaseResolver> resolvers; // TODO: LIST
 
     public PluginResolver()
     {
-        this.resolvers = new ArrayList<>();
+        this.resolvers = new HashMap<>();
+    }
+
+    public void addResolver(BaseResolver resolver, String... names)
+    {
+        for (String name : names)
+        {
+            if (name.equalsIgnoreCase("http") || name.equalsIgnoreCase("https"))
+                throw new IllegalArgumentException("HTTP and HTTPS are reserved names.");
+
+            resolvers.put(name.toLowerCase(), resolver);
+        }
     }
 
     /**
@@ -36,9 +41,30 @@ public class PluginResolver
      */
     public ResolveResult resolve(String query)
     {
-        ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.UNKNOWN);
+        QueryContext context = QueryParser.parseQuery(query);
 
-        URL url = toURL(query);
+        if (context.getResolverName() == null)
+            return actuallyResolve(new ArrayList<>(resolvers.values()), context);
+
+        BaseResolver resolver = resolvers.get(context.getResolverName().toLowerCase());
+
+        if (resolver == null || !resolver.isValidResolver(query))
+            return new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+
+        return resolver.resolve(query);
+    }
+
+    private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
+    {
+        URL url = null;
+
+        String resolverName = queryContext.getResolverName();
+        if (resolverName != null)
+            url = toURL(queryContext.getQuery());
+
+        ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+
+        String queryString = queryContext.getQuery();
 
         for (BaseResolver resolver : resolvers)
         {
@@ -48,10 +74,10 @@ public class PluginResolver
                 if (url != null && !isValidURLResolver(url, urlResolver))
                     continue;
             }
-            else if (!resolver.isValidResolver(query))
+            else if (!resolver.isValidResolver(queryString))
                 continue;
 
-            ResolveResult result = resolver.resolve(query);
+            ResolveResult result = resolver.resolve(queryString);
 
             if (result instanceof ErrorResult)
             {
