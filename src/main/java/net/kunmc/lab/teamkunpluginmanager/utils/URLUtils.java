@@ -79,7 +79,7 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (url.getHost().equals("api.github.com"))
+            if (url.getHost().equals("api.github.com") && !TeamKunPluginManager.vault.getToken().isEmpty())
                 connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
