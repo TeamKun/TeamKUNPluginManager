@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.resolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.PipeResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 
 import java.net.MalformedURLException;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +48,7 @@ public class PluginResolver
      */
     public ResolveResult resolve(String query)
     {
-        QueryContext context = QueryParser.parseQuery(query);
+        QueryContext context = QueryContext.fromString(query);
 
         if (context.getResolverName() == null)
         {
@@ -75,8 +75,6 @@ public class PluginResolver
 
         ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
 
-        String queryString = queryContext.getQuery();
-
         for (BaseResolver resolver : resolvers)
         {
             if (finishedResolvers.contains(resolver))
@@ -90,10 +88,10 @@ public class PluginResolver
                 if (url != null && !isValidURLResolver(url, urlResolver))
                     continue;
             }
-            else if (!resolver.isValidResolver(queryString))
+            else if (!resolver.isValidResolver(queryContext))
                 continue;
 
-            ResolveResult result = resolver.resolve(queryString);
+            ResolveResult result = resolver.resolve(queryContext);
 
             if (result instanceof ErrorResult)
             {
@@ -106,6 +104,8 @@ public class PluginResolver
 
                 continue;
             }
+            else if (result instanceof PipeResult)
+                continue;
 
             return result;
         }

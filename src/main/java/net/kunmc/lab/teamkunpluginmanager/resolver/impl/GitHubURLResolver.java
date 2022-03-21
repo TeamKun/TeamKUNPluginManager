@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
@@ -28,9 +29,9 @@ public class GitHubURLResolver implements URLResolver
             "(?<fileName>[^/]+)))?))?/?$");
 
     @Override
-    public ResolveResult resolve(String query)
+    public ResolveResult resolve(QueryContext query)
     {
-        Matcher matcher = urlMatcher(GITHUB_REPO_PATTERN, query);
+        Matcher matcher = urlMatcher(GITHUB_REPO_PATTERN, query.getQuery());
 
         if (matcher == null)
             return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
@@ -50,7 +51,7 @@ public class GitHubURLResolver implements URLResolver
             String repoNameGroup = matcher.group("repoName");
 
             if (fileNameGroup != null && !fileNameGroup.isEmpty()) // URLが自己解決。
-                return new SuccessResult(query, ResolveResult.Source.GITHUB);
+                return new SuccessResult(query.getQuery(), ResolveResult.Source.GITHUB);
 
             if (!repositoryGroup.isEmpty())
                 repository = repositoryGroup;

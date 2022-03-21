@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.interfaces;
 
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 
@@ -20,11 +21,11 @@ public interface URLResolver extends BaseResolver
     String[] getHosts();
 
     @Override
-    default boolean isValidResolver(String query)
+    default boolean isValidResolver(QueryContext query)
     {
         try
         {
-            URL url = new URL(query);
+            URL url = new URL(query.getQuery());
 
             if (getHosts().length == 0)
                 return true;

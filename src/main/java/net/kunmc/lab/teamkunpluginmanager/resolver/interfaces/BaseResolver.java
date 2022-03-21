@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.interfaces;
 
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
@@ -15,7 +16,7 @@ public interface BaseResolver
      * @param query クエリ
      * @return クエリの解決結果
      */
-    ResolveResult resolve(String query);
+    ResolveResult resolve(QueryContext query);
 
     /**
      * 複数のリソースを自動で一意に特定します。
@@ -26,10 +27,11 @@ public interface BaseResolver
 
     /**
      * 与えられたクエリが解決可能かどうかを返します。
+     *
      * @param query クエリ
      * @return クエリが解決可能ならばtrue
      */
-    boolean isValidResolver(String query);
+    boolean isValidResolver(QueryContext query);
 
     /**
      * MultiResult から最初の要素を取得します。

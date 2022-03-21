@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
@@ -10,11 +11,10 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 
 public class KnownPluginsResolver implements BaseResolver
 {
-
     @Override
-    public ResolveResult resolve(String query)
+    public ResolveResult resolve(QueryContext query)
     {
-        KnownPluginEntry entry = KnownPlugins.getKnown(query);
+        KnownPluginEntry entry = KnownPlugins.getKnown(query.getQuery());
 
         if (entry == null)
             return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
@@ -29,7 +29,7 @@ public class KnownPluginsResolver implements BaseResolver
     }
 
     @Override
-    public boolean isValidResolver(String query)
+    public boolean isValidResolver(QueryContext query)
     {
         return true;
     }

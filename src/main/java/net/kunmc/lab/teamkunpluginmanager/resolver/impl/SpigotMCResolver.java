@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
@@ -24,9 +25,9 @@ public class SpigotMCResolver implements URLResolver
     private static final Pattern PATTERN = Pattern.compile("/resources/([\\w-]+\\.?(?<resourceId>[\\d]+))(?:/|/updates/?|/downloads/?|(?:update/?\\?update=|download/?\\?version=)(?<version>\\d+))?");
 
     @Override
-    public ResolveResult resolve(String query)
+    public ResolveResult resolve(QueryContext query)
     {
-        Matcher matcher = urlMatcher(PATTERN, query);
+        Matcher matcher = urlMatcher(PATTERN, query.getQuery());
 
         String id = null;
         String version = null;

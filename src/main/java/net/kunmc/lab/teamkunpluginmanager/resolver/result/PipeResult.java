@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
 import lombok.Value;
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -10,5 +11,5 @@ import org.jetbrains.annotations.NotNull;
 public class PipeResult implements ResolveResult
 {
     @NotNull
-    String query;
+    QueryContext query;
 }

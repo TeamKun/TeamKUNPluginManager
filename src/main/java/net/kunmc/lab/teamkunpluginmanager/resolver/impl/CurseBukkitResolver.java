@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
@@ -23,18 +24,19 @@ public class CurseBukkitResolver implements URLResolver
     private static final Pattern BUKKIT_PATTERN = Pattern.compile("^/projects/" + basePatterns);
     private static final Pattern CURSE_PATTERN = Pattern.compile("^/minecraft/bukkit-plugins/" + basePatterns);
     private static final String BUKKIT_API_VERSION = StringUtils.split(Bukkit.getVersion(), "-")[0];
-    @Override
-    public ResolveResult resolve(String query)
-    {
-        boolean bukkitFlag = StringUtils.containsIgnoreCase(query, "bukkit.org");
 
-        ResolveResult.Source errorSource = bukkitFlag ? ResolveResult.Source.DEV_BUKKIT : ResolveResult.Source.CURSE_FORGE;
+    @Override
+    public ResolveResult resolve(QueryContext query)
+    {
+        boolean bukkitFlag = StringUtils.containsIgnoreCase(query.getQuery(), "bukkit.org");
+
+        ResolveResult.Source errorSource = bukkitFlag ? ResolveResult.Source.DEV_BUKKIT: ResolveResult.Source.CURSE_FORGE;
 
         Matcher matcher;
         if (bukkitFlag)
-            matcher = urlMatcher(BUKKIT_PATTERN, query);
+            matcher = urlMatcher(BUKKIT_PATTERN, query.getQuery());
         else
-            matcher = urlMatcher(CURSE_PATTERN, query);
+            matcher = urlMatcher(CURSE_PATTERN, query.getQuery());
 
         String slug = null;
         String version = null;
