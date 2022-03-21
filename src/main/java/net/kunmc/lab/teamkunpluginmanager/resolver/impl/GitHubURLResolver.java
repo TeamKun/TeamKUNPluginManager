@@ -12,14 +12,12 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GitHubResolver implements URLResolver
+public class GitHubURLResolver implements URLResolver
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";

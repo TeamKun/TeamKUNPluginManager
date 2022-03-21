@@ -7,7 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
@@ -39,7 +39,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         config = getConfig();
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
-        resolver.addResolver(new GitHubResolver(), "github", "gh");
+        resolver.addResolver(new GitHubURLResolver(), "github", "gh");
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge");
         resolver.addResolver(new KnownPluginsResolver(), "local", "alias");
