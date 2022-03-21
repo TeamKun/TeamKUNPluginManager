@@ -12,6 +12,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class GitHubURLResolver implements URLResolver
         if (repository == null)
             return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
 
-        return processGitHubAPI(owner, repositoryName, repository, tag);
+        return processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
     }
 
     @Override
@@ -80,7 +81,7 @@ public class GitHubURLResolver implements URLResolver
         return autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
     }
 
-    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag)
+    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable String version)
     {
         String apiURL;
         if (tag != null)
@@ -103,26 +104,37 @@ public class GitHubURLResolver implements URLResolver
         {
             JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
 
-            return buildResultSingle(owner, repositoryName, jsonObject);
+            return buildResultSingle(owner, repositoryName, jsonObject, version);
         }
 
         JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
         List<ResolveResult> results = new ArrayList<>();
 
+        boolean isFound = false;
         for (JsonElement jsonElement : jsonArray)
         {
-            ResolveResult result = buildResultSingle(owner,  repositoryName, jsonElement.getAsJsonObject());
+            ResolveResult result = buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
 
             if (result instanceof ErrorResult)
+            {
+                if (((ErrorResult) result).getCause() == ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
+                    isFound = true;
                 continue;
+            }
 
             results.add(result);
         }
 
+        if (results.isEmpty() && isFound)
+            return new ErrorResult(
+                    ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("指定されたバージョンが見つかりませんでした。"),
+                    ResolveResult.Source.GITHUB
+            );
+
         return new MultiResult(results.toArray(new ResolveResult[0]));
     }
 
-    private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object)
+    private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object, @Nullable String queryVersion)
     {
         List<GitHubSuccessResult> results = new ArrayList<>();
 
@@ -131,6 +143,10 @@ public class GitHubURLResolver implements URLResolver
         String version = object.get("tag_name").getAsString();
         long releaseId = object.get("id").getAsLong();
         String htmlUrl = object.get("html_url").getAsString();
+
+        if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
+                ("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
+            return new ErrorResult(ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         JsonArray assets = object.getAsJsonArray("assets");
 
