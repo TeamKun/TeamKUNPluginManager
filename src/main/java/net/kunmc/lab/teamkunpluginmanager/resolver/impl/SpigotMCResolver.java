@@ -29,6 +29,9 @@ public class SpigotMCResolver implements URLResolver
     {
         Matcher matcher = urlMatcher(PATTERN, query.getQuery());
 
+        if (matcher == null)
+            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
+
         String id = null;
         String version = null;
 

@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +22,7 @@ public class CurseBukkitResolver implements URLResolver
     private static final String basePatterns = "(?<slug>\\w+)(/files(/(?<version>\\d+))?(/download)?)?/?$";
     private static final Pattern BUKKIT_PATTERN = Pattern.compile("^/projects/" + basePatterns);
     private static final Pattern CURSE_PATTERN = Pattern.compile("^/minecraft/bukkit-plugins/" + basePatterns);
-    private static final String BUKKIT_API_VERSION = StringUtils.split(Bukkit.getVersion(), "-")[0];
+    private static final String BUKKIT_API_VERSION = StringUtils.split("1.16.5", "-")[0];
 
     @Override
     public ResolveResult resolve(QueryContext query)
@@ -37,6 +36,9 @@ public class CurseBukkitResolver implements URLResolver
             matcher = urlMatcher(BUKKIT_PATTERN, query.getQuery());
         else
             matcher = urlMatcher(CURSE_PATTERN, query.getQuery());
+
+        if (matcher == null)
+            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
 
         String slug = null;
         String version = null;
