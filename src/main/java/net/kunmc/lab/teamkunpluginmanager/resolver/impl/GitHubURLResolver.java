@@ -145,7 +145,7 @@ public class GitHubURLResolver implements URLResolver
         String htmlUrl = object.get("html_url").getAsString();
 
         if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
-                ("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
+                !("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
             return new ErrorResult(ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         JsonArray assets = object.getAsJsonArray("assets");
