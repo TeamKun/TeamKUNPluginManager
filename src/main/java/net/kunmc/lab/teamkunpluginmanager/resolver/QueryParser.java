@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 public class QueryParser
 {
     private static final String resolverNameQuerySeparator = ">";
-    private static final String queryVersionSeparator = "=";
+    private static final String versionEqualQuerySeparator = "==";
 
     public static QueryContext parseQuery(@NotNull String query)
     {
@@ -23,9 +23,9 @@ public class QueryParser
 
         String part = queryParts[queryParts.length - 1];
 
-        int versionSeparatorIndex = part.lastIndexOf(queryVersionSeparator);
+        int versionSeparatorIndex = part.lastIndexOf(versionEqualQuerySeparator);
         if (versionSeparatorIndex != -1)
-            version = part.substring(versionSeparatorIndex + 1);
+            version = part.substring(versionSeparatorIndex + 2);
 
         String plainQuery = part;
         if (version != null)
