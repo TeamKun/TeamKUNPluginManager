@@ -20,10 +20,12 @@ import java.util.stream.Collectors;
 public class PluginResolver
 {
     private final HashMap<String, List<BaseResolver>> resolvers;
+    private final List<BaseResolver> onNotFoundResolvers;
 
     public PluginResolver()
     {
         this.resolvers = new HashMap<>();
+        this.onNotFoundResolvers = new ArrayList<>();
     }
 
     public void addResolver(BaseResolver resolver, String... names)
@@ -42,8 +44,14 @@ public class PluginResolver
         }
     }
 
+    public void addOnNotFoundResolver(BaseResolver resolver)
+    {
+        onNotFoundResolvers.add(resolver);
+    }
+
     /**
      * クエリを使用してプラグインを解決する
+     *
      * @param query クエリ
      */
     public ResolveResult resolve(String query)
@@ -67,14 +75,28 @@ public class PluginResolver
     {
         URL url = null;
 
-        List<BaseResolver> finishedResolvers = new ArrayList<>();
-
         String resolverName = queryContext.getResolverName();
         if (resolverName != null)
             url = toURL(queryContext.getQuery());
 
-        ResolveResult errorResult = new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+        ResolveResult result = resolves(resolvers, queryContext, url);
 
+
+        if (result instanceof ErrorResult)
+        {
+            ErrorResult error = (ErrorResult) result;
+            if (error.getCause() != ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
+                result = resolves(onNotFoundResolvers, queryContext, url);
+        }
+
+        return result;
+    }
+
+    private ResolveResult resolves(List<BaseResolver> resolvers, QueryContext queryContext, URL url)
+    {
+        List<BaseResolver> finishedResolvers = new ArrayList<>();
+
+        ErrorResult errorResult = new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
         for (BaseResolver resolver : resolvers)
         {
             if (finishedResolvers.contains(resolver))
@@ -82,30 +104,21 @@ public class PluginResolver
 
             finishedResolvers.add(resolver);
 
-            if (resolver instanceof URLResolver)
-            {
-                URLResolver urlResolver = (URLResolver) resolver;
-                if (url != null && !isValidURLResolver(url, urlResolver))
-                    continue;
-            }
-            else if (!resolver.isValidResolver(queryContext))
+            ResolveResult result = actuallyResolve(resolver, queryContext, url);
+
+            if (result == null || result instanceof PipeResult)
                 continue;
-
-            ResolveResult result = resolver.resolve(queryContext);
-
-            if (result instanceof ErrorResult)
+            else if (result instanceof ErrorResult)
             {
                 ErrorResult error = (ErrorResult) result;
 
                 if (error.getCause() != ErrorResult.ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorResult.ErrorCause.INVALID_QUERY)
                     return error;
                 if (error.getCause() != ErrorResult.ErrorCause.RESOLVER_MISMATCH)
-                    errorResult = result;
+                    errorResult = (ErrorResult) result;
 
                 continue;
             }
-            else if (result instanceof PipeResult)
-                continue;
 
             return result;
         }
@@ -113,9 +126,23 @@ public class PluginResolver
         return errorResult;
     }
 
+    private ResolveResult actuallyResolve(BaseResolver resolver, QueryContext queryContext, URL url)
+    {
+        if (resolver instanceof URLResolver)
+        {
+            URLResolver urlResolver = (URLResolver) resolver;
+            if (url != null && !isValidURLResolver(url, urlResolver))
+                return null;
+        }
+        else if (!resolver.isValidResolver(queryContext))
+            return null;
+
+        return resolver.resolve(queryContext);
+    }
+
     private static boolean isValidURLResolver(URL url, URLResolver resolver)
     {
-        for (String host: resolver.getHosts())
+        for (String host : resolver.getHosts())
         {
             if (url.getHost().equalsIgnoreCase(host))
                 return true;
