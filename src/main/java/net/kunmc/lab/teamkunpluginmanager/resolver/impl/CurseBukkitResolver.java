@@ -11,7 +11,8 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Matcher;
@@ -22,7 +23,16 @@ public class CurseBukkitResolver implements URLResolver
     private static final String basePatterns = "(?<slug>\\w+)(/files(/(?<version>\\d+))?(/download)?)?/?$";
     private static final Pattern BUKKIT_PATTERN = Pattern.compile("^/projects/" + basePatterns);
     private static final Pattern CURSE_PATTERN = Pattern.compile("^/minecraft/bukkit-plugins/" + basePatterns);
-    private static final String BUKKIT_API_VERSION = StringUtils.split("1.16.5", "-")[0];
+    private static final String BUKKIT_API_VERSION;
+
+    static
+    {
+        String baseVersion = Bukkit.getMinecraftVersion();
+        // remove patch version
+        if (StringUtils.countMatches(baseVersion, ".") >= 2)
+            baseVersion = StringUtils.split(baseVersion, ".")[0] + "." + StringUtils.split(baseVersion, ".")[1];
+        BUKKIT_API_VERSION = baseVersion;
+    }
 
     @Override
     public ResolveResult resolve(QueryContext query)
