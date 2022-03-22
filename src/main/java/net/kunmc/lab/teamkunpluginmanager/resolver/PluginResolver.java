@@ -66,7 +66,7 @@ public class PluginResolver
         }
 
         if (!resolvers.containsKey(context.getResolverName().toLowerCase()))
-            return new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+            return new ErrorResult(null, ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
 
         return actuallyResolve(resolvers.get(context.getResolverName().toLowerCase()), context);
     }
@@ -96,7 +96,7 @@ public class PluginResolver
     {
         List<BaseResolver> finishedResolvers = new ArrayList<>();
 
-        ErrorResult errorResult = new ErrorResult(ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+        ErrorResult errorResult = new ErrorResult(null, ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
         for (BaseResolver resolver : resolvers)
         {
             if (finishedResolvers.contains(resolver))

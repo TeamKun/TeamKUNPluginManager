@@ -30,7 +30,7 @@ public class SpigotMCResolver implements URLResolver
         Matcher matcher = urlMatcher(PATTERN, query.getQuery());
 
         if (matcher == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
 
         String id = null;
         String version = null;
@@ -47,7 +47,7 @@ public class SpigotMCResolver implements URLResolver
         }
 
         if (id == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
 
         String spigotAPIUrl = "https://apple.api.spiget.org/v2/resources/" + id;
 
@@ -70,8 +70,9 @@ public class SpigotMCResolver implements URLResolver
     {
         boolean external = jsonObject.get("external").getAsBoolean();
         if (external)
-            return new ErrorResult(ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("SpigotMC ではホストされていません。"),
-                    ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("SpigotMC ではホストされていません。"),
+                    ResolveResult.Source.SPIGOT_MC
+            );
 
         String description = b64Decode(jsonObject.get("description").getAsString());
         String name = jsonObject.get("name").getAsString();
@@ -82,8 +83,9 @@ public class SpigotMCResolver implements URLResolver
 
         boolean premium = jsonObject.get("premium").getAsBoolean();
         if (premium)
-            return new ErrorResult(ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("このプラグインはプレミアムプラグインです。"),
-                    ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("このプラグインはプレミアムプラグインです。"),
+                    ResolveResult.Source.SPIGOT_MC
+            );
 
         long[] versions = StreamSupport.stream(jsonObject.get("versions").getAsJsonArray().spliterator(), false)
                 .mapToLong(e -> e.getAsJsonObject().get("id").getAsLong())
@@ -91,24 +93,25 @@ public class SpigotMCResolver implements URLResolver
 
 
         if (versions.length == 0)
-            return new ErrorResult(ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.SPIGOT_MC);
 
 
         if (version == null)
         {
             List<SpigotMCSuccessResult> results = new ArrayList<>();
             for (long v : versions)
-                results.add(new SpigotMCSuccessResult(String.valueOf(v), name, id, description, testedVersions));
+                results.add(new SpigotMCSuccessResult(this, String.valueOf(v), name, id, description, testedVersions));
 
-            return new MultiResult(results.toArray(new SpigotMCSuccessResult[0]));
+            return new MultiResult(this, results.toArray(new SpigotMCSuccessResult[0]));
         }
 
         for (long v : versions)
             if (String.valueOf(v).equals(version))
-                return new SpigotMCSuccessResult(version, name, id, description, testedVersions);
+                return new SpigotMCSuccessResult(this, version, name, id, description, testedVersions);
 
-        return new ErrorResult(ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("指定されたバージョンのプラグインが見つかりませんでした。"),
-                ResolveResult.Source.SPIGOT_MC);
+        return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("指定されたバージョンのプラグインが見つかりませんでした。"),
+                ResolveResult.Source.SPIGOT_MC
+        );
     }
 
     private String b64Decode(String str)

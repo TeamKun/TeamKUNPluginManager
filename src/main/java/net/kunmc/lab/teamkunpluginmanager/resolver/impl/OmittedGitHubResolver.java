@@ -15,7 +15,7 @@ public class OmittedGitHubResolver implements BaseResolver
     public ResolveResult resolve(QueryContext query)
     {
         query.setQuery("https://github.com/" + query.getQuery());
-        return new PipeResult(query);
+        return new PipeResult(this, query);
     }
 
     @Override

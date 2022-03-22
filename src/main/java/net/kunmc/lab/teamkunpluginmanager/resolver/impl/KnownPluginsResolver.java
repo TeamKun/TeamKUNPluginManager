@@ -17,9 +17,9 @@ public class KnownPluginsResolver implements BaseResolver
         KnownPluginEntry entry = KnownPlugins.getKnown(query.getQuery());
 
         if (entry == null)
-            return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
+            return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
 
-        return new SuccessResult(entry.getUrl(), null, null, ResolveResult.Source.LOCAL_KNOWN);
+        return new SuccessResult(this, entry.getUrl(), null, null, ResolveResult.Source.LOCAL_KNOWN);
     }
 
     @Override

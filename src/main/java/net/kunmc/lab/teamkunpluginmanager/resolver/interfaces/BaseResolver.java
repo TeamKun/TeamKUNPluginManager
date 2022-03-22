@@ -43,7 +43,7 @@ public interface BaseResolver
         ResolveResult[] results = multiResult.getResults();
 
         if (results.length == 0)
-            return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         return results[0];
     }

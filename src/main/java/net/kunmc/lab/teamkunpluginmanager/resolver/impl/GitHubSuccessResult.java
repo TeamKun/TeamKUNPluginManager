@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MarketplaceResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +44,9 @@ public class GitHubSuccessResult extends SuccessResult implements MarketplaceRes
      */
     private final long releaseId;
 
-    public GitHubSuccessResult(@NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull String repoName, @NotNull String htmlPage, @NotNull String owner, long size, @NotNull String releaseName, @NotNull String releaseBody, long releaseId)
+    public GitHubSuccessResult(@NotNull BaseResolver resolver, @NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull String repoName, @NotNull String htmlPage, @NotNull String owner, long size, @NotNull String releaseName, @NotNull String releaseBody, long releaseId)
     {
-        super(downloadUrl, fileName, version, Source.GITHUB);
+        super(resolver, downloadUrl, fileName, version, Source.GITHUB);
         this.owner = owner;
         this.size = size;
         this.releaseId = releaseId;

@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
 import lombok.Data;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,13 +35,20 @@ public class SuccessResult implements ResolveResult
     @NotNull
     private final Source source;
 
-    public SuccessResult(@NotNull String downloadUrl, @NotNull Source source)
+    /**
+     * この結果を提供したリゾルバ
+     */
+    @NotNull
+    private final BaseResolver resolver;
+
+    public SuccessResult(BaseResolver resolver, @NotNull String downloadUrl, @NotNull Source source)
     {
-        this(downloadUrl, null, null, source);
+        this(resolver, downloadUrl, null, null, source);
     }
 
-    public SuccessResult(@NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull Source source)
+    public SuccessResult(@NotNull BaseResolver resolver, @NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull Source source)
     {
+        this.resolver = resolver;
         this.downloadUrl = downloadUrl;
         this.fileName = fileName;
         this.version = version;

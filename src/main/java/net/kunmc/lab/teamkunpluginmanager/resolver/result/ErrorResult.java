@@ -2,7 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * プラグイン解決中のエラーの結果。
@@ -24,11 +26,19 @@ public class ErrorResult implements ResolveResult
     @NotNull
     private final Source source; // TODO: フロントエンドに依存しないよう、メッセージプロバイダ作る。
 
-    public ErrorResult(@NotNull ErrorCause cause, @NotNull Source source)
+    /**
+     * この結果を提供したリゾルバ
+     */
+    @Nullable
+    private final BaseResolver resolver;
+
+    public ErrorResult(@Nullable BaseResolver resolver, @NotNull ErrorCause cause, @NotNull Source source)
     {
+        this.resolver = resolver;
         this.cause = cause;
         this.source = source;
     }
+
     /**
      * エラーケース
      */

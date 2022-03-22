@@ -31,7 +31,7 @@ public class BruteforceGitHubResolver implements BaseResolver
         if (!(obj instanceof List) && !(obj instanceof String[]))
             throw new IllegalArgumentException("Invalid config: gitHubName: config must be a string or a list of strings");
 
-        ResolveResult result = new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+        ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         for (String str : plugin.getConfig().getStringList("gitHubName"))
         {
@@ -44,7 +44,7 @@ public class BruteforceGitHubResolver implements BaseResolver
                 ErrorResult error = (ErrorResult) result;
 
                 if (error.getCause() == ErrorResult.ErrorCause.INVALID_QUERY)
-                    return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+                    return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
                 if (error.getCause() != ErrorResult.ErrorCause.PLUGIN_NOT_FOUND)
                     return error;

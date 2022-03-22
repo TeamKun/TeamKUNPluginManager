@@ -2,12 +2,19 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 
 /**
  * プラグイン解決結果のインタフェース
  */
 public interface ResolveResult
 {
+    /**
+     * この結果を解決したリゾルバ
+     *
+     * @return リゾルバ
+     */
+    BaseResolver getResolver();
 
     /**
      * プラグイン供給元

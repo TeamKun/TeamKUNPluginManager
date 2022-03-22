@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MarketplaceResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.VersionedResult;
@@ -24,11 +25,12 @@ public class SpigotMCSuccessResult extends SuccessResult implements MarketplaceR
     @NotNull
     private final List<String> versions;
 
-    public SpigotMCSuccessResult(@Nullable String version, @NotNull String title, long id, @NotNull String description, @NotNull List<String> versions)
+    public SpigotMCSuccessResult(@NotNull BaseResolver resolver, @Nullable String version, @NotNull String title, long id, @NotNull String description, @NotNull List<String> versions)
     {
-        super("https://apple.api.spiget.org/v2/resources/" + id +
-                (version != null ? "/versions/" + version : "") + "/download",
-                null, version, Source.SPIGOT_MC);
+        super(resolver, "https://apple.api.spiget.org/v2/resources/" + id +
+                        (version != null ? "/versions/" + version: "") + "/download",
+                null, version, Source.SPIGOT_MC
+        );
         this.title = title;
         this.description = description;
         this.url = "https://www.spigotmc.org/resources/" + id;

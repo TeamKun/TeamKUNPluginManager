@@ -22,9 +22,9 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
 
     private final long id;
 
-    public CurseBukkitSuccessResult(@NotNull String downloadUrl, long id, @Nullable String fileName, @Nullable String version, @NotNull Source source, @NotNull String slug, @NotNull String title)
+    public CurseBukkitSuccessResult(@NotNull CurseBukkitResolver resolver, @NotNull String downloadUrl, long id, @Nullable String fileName, @Nullable String version, @NotNull Source source, @NotNull String slug, @NotNull String title)
     {
-        super(downloadUrl, fileName, version, source);
+        super(resolver, downloadUrl, fileName, version, source);
 
         if (source != Source.CURSE_FORGE && source != Source.DEV_BUKKIT)
             throw new IllegalArgumentException("source must be CurseForge or DevBukkit");

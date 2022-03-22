@@ -70,21 +70,22 @@ public interface URLResolver extends BaseResolver
             case 200:
                 return null;
             case 403:
-                return new ErrorResult(cause
+                return new ErrorResult(this, cause
                         .value(errorCodeWith("サーバからリソースをダウンロードする権限がありません。", code)), source);
             case 404:
-                return new ErrorResult(cause
+                return new ErrorResult(this, cause
                         .value(errorCodeWith("サーバからリソースを見つけることができません。", code)), source);
             case 418:
-                return new ErrorResult(cause.value(errorCodeWith("ティーポットでコーヒーを淹れようとしました。", code)), source);
+                return new ErrorResult(this, cause.value(errorCodeWith("ティーポットでコーヒーを淹れようとしました。", code)), source);
             default:
                 if (code >= 500 && code < 600)
-                    return new ErrorResult(cause
+                    return new ErrorResult(this, cause
                             .value(errorCodeWith("サーバーがダウンしています。", code)), source);
 
-                return new ErrorResult(cause
+                return new ErrorResult(this, cause
                         .value(errorCodeWith("サーバーがエラーレスポンスを返答しました。。", code)),
-                        source);
+                        source
+                );
         }
     }
 }

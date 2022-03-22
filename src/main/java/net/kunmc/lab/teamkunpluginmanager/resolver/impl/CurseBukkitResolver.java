@@ -38,7 +38,7 @@ public class CurseBukkitResolver implements URLResolver
             matcher = urlMatcher(CURSE_PATTERN, query.getQuery());
 
         if (matcher == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
 
         String slug = null;
         String version = null;
@@ -55,7 +55,7 @@ public class CurseBukkitResolver implements URLResolver
         }
 
         if (slug == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
 
         Pair<Integer, String> projectSearchResponse =  URLUtils.getAsString("https://servermods.forgesvc.net/servermods/projects?search=" + slug);
 
@@ -79,7 +79,7 @@ public class CurseBukkitResolver implements URLResolver
         }
 
         if (projectId == -1)
-            return new ErrorResult(ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, errorSource);
+            return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, errorSource);
 
         return processFiles(slug, name, projectId, version, errorSource);
     }
@@ -94,17 +94,17 @@ public class CurseBukkitResolver implements URLResolver
 
         JsonArray projectFilesResult = new Gson().fromJson(projectFilesResponse.getRight(), JsonArray.class);
         if (projectFilesResult.size() == 0)
-            return new ErrorResult(ErrorResult.ErrorCause.ASSET_NOT_FOUND, source);
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, source);
 
         JsonObject pickedPlugin = pickUpValidVersion(projectFilesResult, version);
         if (pickedPlugin == null)
-            return new ErrorResult(ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, source);
+            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, source);
 
         String downloadUrl = pickedPlugin.get("downloadUrl").getAsString();
         String fileName = pickedPlugin.get("fileName").getAsString();
         String versionName = pickedPlugin.get("name").getAsString();
 
-        return new CurseBukkitSuccessResult(downloadUrl, projectId, fileName, versionName, source, slug, name);
+        return new CurseBukkitSuccessResult(this, downloadUrl, projectId, fileName, versionName, source, slug, name);
     }
 
     private static JsonObject pickUpValidVersion(JsonArray versions, @Nullable String version)

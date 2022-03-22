@@ -35,7 +35,7 @@ public class GitHubURLResolver implements URLResolver
         Matcher matcher = urlMatcher(GITHUB_REPO_PATTERN, query.getQuery());
 
         if (matcher == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
 
         String repository = null;
         String owner = null;
@@ -52,7 +52,7 @@ public class GitHubURLResolver implements URLResolver
             String repoNameGroup = matcher.group("repoName");
 
             if (fileNameGroup != null && !fileNameGroup.isEmpty()) // URLが自己解決。
-                return new SuccessResult(query.getQuery(), ResolveResult.Source.GITHUB);
+                return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
 
             if (!repositoryGroup.isEmpty())
                 repository = repositoryGroup;
@@ -70,7 +70,7 @@ public class GitHubURLResolver implements URLResolver
         }
 
         if (repository == null)
-            return new ErrorResult(ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
 
         return processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
     }
@@ -127,11 +127,12 @@ public class GitHubURLResolver implements URLResolver
 
         if (results.isEmpty() && isFound)
             return new ErrorResult(
+                    this,
                     ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("指定されたバージョンが見つかりませんでした。"),
                     ResolveResult.Source.GITHUB
             );
 
-        return new MultiResult(results.toArray(new ResolveResult[0]));
+        return new MultiResult(this, results.toArray(new ResolveResult[0]));
     }
 
     private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object, @Nullable String queryVersion)
@@ -146,12 +147,12 @@ public class GitHubURLResolver implements URLResolver
 
         if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
                 !("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
-            return new ErrorResult(ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         JsonArray assets = object.getAsJsonArray("assets");
 
         if (assets.size() == 0)
-            return new ErrorResult(ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.GITHUB);
 
         for (JsonElement asset : assets)
         {
@@ -164,7 +165,7 @@ public class GitHubURLResolver implements URLResolver
             String fileName = assetObject.get("name").getAsString();
             long size = assetObject.get("size").getAsLong();
 
-            GitHubSuccessResult result = new GitHubSuccessResult(downloadURL, fileName, version, repositoryName, htmlUrl, owner, size, releaseName, body, releaseId);
+            GitHubSuccessResult result = new GitHubSuccessResult(this, downloadURL, fileName, version, repositoryName, htmlUrl, owner, size, releaseName, body, releaseId);
 
             if (assets.size() == 1)
                 return result;
@@ -172,7 +173,7 @@ public class GitHubURLResolver implements URLResolver
                 results.add(result);
         }
 
-        return new MultiResult(results.toArray(new GitHubSuccessResult[0]));
+        return new MultiResult(this, results.toArray(new GitHubSuccessResult[0]));
     }
 
     @Override
