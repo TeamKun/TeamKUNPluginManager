@@ -1,5 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * プラグイン解決結果のインタフェース
  */
@@ -9,35 +12,40 @@ public interface ResolveResult
     /**
      * プラグイン供給元
      */
+    @AllArgsConstructor
     enum Source
     {
         /**
          * GitHub
          */
-        GITHUB,
+        GITHUB("GitHub"),
         /**
          * @link https://www.spigotmc.org/resources/
          */
-        SPIGOT_MC,
+        SPIGOT_MC("Spigot-MC"),
         /**
          * @link https://dev.bukkit.org/projects/plugins/
          */
-        DEV_BUKKIT,
+        DEV_BUKKIT("Bukkit-Project"),
         /**
          * @link https://curseforge.com/bukkit-plugins/
          */
-        CURSE_FORGE,
+        CURSE_FORGE("CurseForge"),
         /**
          * ローカルの既知プラグイン
          */
-        LOCAL_KNOWN,
+        LOCAL_KNOWN("Alias"),
         /**
          * 直リンク
          */
-        DIRECT,
+        DIRECT("Direct"),
         /**
          * 不明
          */
-        UNKNOWN
+        UNKNOWN("Unknown");
+
+        @Getter
+        private final String name;
+
     }
 }

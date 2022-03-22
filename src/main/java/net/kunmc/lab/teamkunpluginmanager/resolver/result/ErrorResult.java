@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +32,6 @@ public class ErrorResult implements ResolveResult
     /**
      * エラーケース
      */
-    @AllArgsConstructor
     public enum ErrorCause
     {
         /**
@@ -52,11 +50,11 @@ public class ErrorResult implements ResolveResult
         /**
          * サーバに合ったプラグインが見つからなかった
          */
-        MATCH_PLUGIN_NOT_FOUND("対応するプラグインが見つかりませんでした。"),
+        MATCH_PLUGIN_NOT_FOUND("サーバに対応するプラグインが見つかりませんでした。"),
         /**
          * プラグイン自体は見つかったが、アセット(jarファイル)が見つからない。
          */
-        ASSET_NOT_FOUND("アセットが見つかりませんでした。"),
+        ASSET_NOT_FOUND("プラグインは見つかりましたが、ファイルが見つかりませんでした。"),
         /**
          * サーバのレスポンスが破損している/おかしい。
          */
@@ -64,7 +62,7 @@ public class ErrorResult implements ResolveResult
         /**
          * その他のサーバに関するエラー
          */
-        SERVER_RESPONSE_ERROR("サーバがエラーを返しました。"),
+        SERVER_RESPONSE_ERROR("サーバがエラーを返答しました。"),
         /**
          * その他のエラー
          */
@@ -73,9 +71,19 @@ public class ErrorResult implements ResolveResult
         @Getter
         private String message;
 
+        @Getter
+        private boolean messageChanged;
+
+        ErrorCause(String message)
+        {
+            this.message = message;
+            this.messageChanged = false;
+        }
+
         public ErrorCause value(String message)
         {
             this.message = message;
+            this.messageChanged = true;
             return this;
         }
 
