@@ -236,7 +236,7 @@ public class Installer
                         else if (resolveResult instanceof SuccessResult)
                             jarURL = ((SuccessResult) resolveResult).getDownloadUrl();
                         else
-                            throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
+                            throw new IllegalStateException("resolveResultが不正です：プラグイン作成者に報告してください。");
                     }
                     else
                     {
@@ -505,12 +505,12 @@ public class Installer
                 else if (resolveResult instanceof SuccessResult)
                     dependUrl = ((SuccessResult) resolveResult).getDownloadUrl();
                 else
-                    throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
+                    throw new IllegalStateException("resolveResultが不正です：プラグイン作成者に報告してください。");
             }
             else if (resolveResult instanceof SuccessResult)
                 dependUrl = ((SuccessResult) resolveResult).getDownloadUrl();
             else
-                throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
+                throw new IllegalStateException("resolveResultが不正です：プラグイン作成者に報告してください。");
 
             //依存関係のインストール
             InstallResult dependResolve = Installer.install(null, dependUrl, true, false, true, false);

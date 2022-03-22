@@ -22,6 +22,8 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
 
     private final long id;
 
+    private String description = null;
+
     public CurseBukkitSuccessResult(@NotNull CurseBukkitResolver resolver, @NotNull String downloadUrl, long id, @Nullable String fileName, @Nullable String version, @NotNull Source source, @NotNull String slug, @NotNull String title)
     {
         super(resolver, downloadUrl, fileName, version, source);
@@ -43,7 +45,6 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
             return "https://dev.bukkit.org/projects/" + this.slug;
     }
 
-    private String description = null;
 
     @Override
     public String getDescription()
