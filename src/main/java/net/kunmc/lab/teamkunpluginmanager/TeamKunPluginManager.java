@@ -5,6 +5,13 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
@@ -23,6 +30,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     public static Say2Functional functional;
     public static boolean enableBuildTree = true;
     public static Session session;
+    public static PluginResolver resolver;
 
     @Override
     public void onEnable()
@@ -32,6 +40,16 @@ public final class TeamKunPluginManager extends JavaPlugin
         plugin = this;
         config = getConfig();
         functional = new Say2Functional(this);
+        resolver = new PluginResolver();
+
+        GitHubURLResolver githubResolver = new GitHubURLResolver();
+        resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
+        resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
+        resolver.addResolver(new KnownPluginsResolver(), "local", "alias");
+        resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
+        resolver.addResolver(githubResolver, "github", "gh");
+
+        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(this, githubResolver));
 
         vault = new TokenVault();
 

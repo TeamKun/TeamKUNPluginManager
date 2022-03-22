@@ -1,6 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.compactor;
 
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.Map;
@@ -51,12 +54,12 @@ public class CompactBuilder implements Cloneable
 
         this.pre.pluginName = name;
 
-        String url = PluginResolver.asUrl(name);
+        ResolveResult result = TeamKunPluginManager.resolver.resolve(name);
 
-        if (url.startsWith("ERROR"))
+        if (result instanceof ErrorResult)
             this.rs = (BuildResult[]) ArrayUtils.add(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);
-
-        this.pre.downloadUrl = url;
+        else if (result instanceof SuccessResult)
+            this.pre.downloadUrl = ((SuccessResult) result).getDownloadUrl();
 
         return this;
     }
