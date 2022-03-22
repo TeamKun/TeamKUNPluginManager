@@ -6,9 +6,11 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
+import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
@@ -39,10 +41,15 @@ public final class TeamKunPluginManager extends JavaPlugin
         config = getConfig();
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
-        resolver.addResolver(new GitHubURLResolver(), "github", "gh");
+
+        GitHubURLResolver githubResolver = new GitHubURLResolver();
+        resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
+        resolver.addResolver(githubResolver, "github", "gh");
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
         resolver.addResolver(new KnownPluginsResolver(), "local", "alias");
+
+        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(this, githubResolver));
 
         vault = new TokenVault();
 
