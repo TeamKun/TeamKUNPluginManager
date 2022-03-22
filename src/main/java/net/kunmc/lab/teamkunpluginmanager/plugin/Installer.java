@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
