@@ -255,6 +255,8 @@ public class Installer
                 {
                 }
             }
+            else if (resolveResult instanceof SuccessResult)
+                jarURL = ((SuccessResult) resolveResult).getDownloadUrl();
         }
 
         Pair<Boolean, String> downloadResult;

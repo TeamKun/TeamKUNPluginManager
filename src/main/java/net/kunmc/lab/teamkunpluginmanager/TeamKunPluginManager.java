@@ -43,11 +43,11 @@ public final class TeamKunPluginManager extends JavaPlugin
         resolver = new PluginResolver();
 
         GitHubURLResolver githubResolver = new GitHubURLResolver();
-        resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
-        resolver.addResolver(githubResolver, "github", "gh");
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
         resolver.addResolver(new KnownPluginsResolver(), "local", "alias");
+        resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
+        resolver.addResolver(githubResolver, "github", "gh");
 
         resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(this, githubResolver));
 
