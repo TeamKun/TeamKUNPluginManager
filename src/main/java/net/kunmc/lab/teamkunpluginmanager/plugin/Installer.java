@@ -4,6 +4,10 @@ import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
@@ -11,7 +15,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -200,26 +203,58 @@ public class Installer
         //ダウンロードする場合はURL・クエリを直リンに変換
         if (!withoutDownload)
         {
-            jarURL = PluginResolver.asUrl(url);
+            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(url);
 
-            if (jarURL.startsWith("MULTI"))
+            if (resolveResult instanceof ErrorResult)
             {
-                //MULTIリザルトをパース。
-                List<Pair<String, String>> multi = parseMultiResult(jarURL.substring(6));
-                if (sender.getName().equals("DUMMY1145141919810931"))
-                    jarURL = pickPluginJar(multi);
-                else
-                {
-                    depend_askToCommandSender(sender, multi, ignoreInstall, withoutResolveDepends, withoutRemove);
-                    return new InstallResult(0, 0, 0, true);
-                }
-            }
+                ErrorResult errorResult = (ErrorResult) resolveResult;
 
-            if (jarURL.startsWith("ERROR "))
-            {
-                finalSender.sendMessage(ChatColor.RED + "E: " + jarURL.substring(6)); //ERROR <-までをきりだし
+                sender.sendMessage(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
+                        " リゾルバ：" + errorResult.getSource().getName());
+
                 finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
+            }
+            else if (resolveResult instanceof MultiResult)
+            {
+                MultiResult multiResult = (MultiResult) resolveResult;
+
+                try
+                {
+                    if (sender.getName().equals("DUMMY1145141919810931"))  // TODO: なんやねんこのクソコード
+                    {
+                        resolveResult = multiResult.getResolver().autoPickOnePlugin(multiResult);
+                        if (resolveResult instanceof ErrorResult)
+                        {
+                            ErrorResult errorResult = (ErrorResult) resolveResult;
+
+                            sender.sendMessage(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
+                                    " リゾルバ：" + errorResult.getSource().getName());
+
+                            finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+                            return new InstallResult(add, remove, modify, false);
+                        }
+                        else if (resolveResult instanceof SuccessResult)
+                            jarURL = ((SuccessResult) resolveResult).getDownloadUrl();
+                        else
+                            throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
+                    }
+                    else
+                    {
+                        List<Pair<String, String>> multi = Arrays.stream(multiResult.getResults())
+                                .filter(result -> result instanceof SuccessResult)
+                                .map(result -> {
+                                    SuccessResult successResult = (SuccessResult) result;
+                                    return new Pair<>(successResult.getVersion(), successResult.getDownloadUrl());
+                                }).collect(Collectors.toList());
+
+                        depend_askToCommandSender(sender, multi, ignoreInstall, withoutResolveDepends, withoutRemove);
+                        return new InstallResult(add, remove, modify, false);
+                    }
+                }
+                catch (IllegalArgumentException ignored)
+                {
+                }
             }
         }
 
