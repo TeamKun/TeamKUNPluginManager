@@ -143,7 +143,6 @@ public class GitHubURLResolver implements URLResolver
         String body = object.get("body").getAsString();
         String version = object.get("tag_name").getAsString();
         long releaseId = object.get("id").getAsLong();
-        String htmlUrl = object.get("html_url").getAsString();
 
         if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
                 !("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
@@ -165,7 +164,7 @@ public class GitHubURLResolver implements URLResolver
             String fileName = assetObject.get("name").getAsString();
             long size = assetObject.get("size").getAsLong();
 
-            GitHubSuccessResult result = new GitHubSuccessResult(this, downloadURL, fileName, version, repositoryName, htmlUrl, owner, size, releaseName, body, releaseId);
+            GitHubSuccessResult result = new GitHubSuccessResult(this, downloadURL, fileName, version, repositoryName, owner, size, releaseName, body, releaseId);
 
             if (assets.size() == 1)
                 return result;

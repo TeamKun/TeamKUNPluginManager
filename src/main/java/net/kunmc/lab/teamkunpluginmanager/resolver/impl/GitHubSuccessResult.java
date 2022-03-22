@@ -44,7 +44,7 @@ public class GitHubSuccessResult extends SuccessResult implements MarketplaceRes
      */
     private final long releaseId;
 
-    public GitHubSuccessResult(@NotNull BaseResolver resolver, @NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull String repoName, @NotNull String htmlPage, @NotNull String owner, long size, @NotNull String releaseName, @NotNull String releaseBody, long releaseId)
+    public GitHubSuccessResult(@NotNull BaseResolver resolver, @NotNull String downloadUrl, @Nullable String fileName, @Nullable String version, @NotNull String repoName, @NotNull String owner, long size, @NotNull String releaseName, @NotNull String releaseBody, long releaseId)
     {
         super(resolver, downloadUrl, fileName, version, Source.GITHUB);
         this.owner = owner;
