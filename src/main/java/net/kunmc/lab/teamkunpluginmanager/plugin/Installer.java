@@ -476,15 +476,39 @@ public class Installer
             }
 
             //クエリを直リンに変換
-            String dependUrl = PluginResolver.asUrl(dependency);
-            //エラーから始まった場合はエラーとして表示し、
-            //失敗としてマーク
-            if (dependUrl.startsWith("ERROR "))
+            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(url);
+            String dependUrl;
+
+            if (resolveResult instanceof ErrorResult)
             {
+                ErrorResult errorResult = (ErrorResult) resolveResult;
+
+                sender.sendMessage(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
+                        " リゾルバ：" + errorResult.getSource().getName());
                 finalSender.sendMessage(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));
                 failedResolve.add(dependency);
                 continue;
             }
+            else if (resolveResult instanceof MultiResult)
+            {
+                MultiResult multiResult = (MultiResult) resolveResult;
+
+                resolveResult = multiResult.getResolver().autoPickOnePlugin(multiResult);
+                if (resolveResult instanceof ErrorResult)
+                {
+                    finalSender.sendMessage(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));
+                    failedResolve.add(dependency);
+                    continue;
+                }
+                else if (resolveResult instanceof SuccessResult)
+                    dependUrl = ((SuccessResult) resolveResult).getDownloadUrl();
+                else
+                    throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
+            }
+            else if (resolveResult instanceof SuccessResult)
+                dependUrl = ((SuccessResult) resolveResult).getDownloadUrl();
+            else
+                throw new RuntimeException("resolveResultが不正です：プラグイン作成者に報告してください。");
 
             //依存関係のインストール
             InstallResult dependResolve = Installer.install(null, dependUrl, true, false, true, false);
