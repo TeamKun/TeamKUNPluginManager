@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * プラグインを解決するクラス
@@ -21,11 +20,13 @@ public class PluginResolver
 {
     private final HashMap<String, List<BaseResolver>> resolvers;
     private final List<BaseResolver> onNotFoundResolvers;
+    private final List<BaseResolver> allResolvers;
 
     public PluginResolver()
     {
         this.resolvers = new HashMap<>();
         this.onNotFoundResolvers = new ArrayList<>();
+        this.allResolvers = new ArrayList<>();
     }
 
     public void addResolver(BaseResolver resolver, String... names)
@@ -41,6 +42,8 @@ public class PluginResolver
                 resolvers.put(name.toLowerCase(), new ArrayList<>(Collections.singletonList(resolver)));
             else
                 resolverList.add(resolver);
+
+            allResolvers.add(resolver);
         }
     }
 
@@ -59,11 +62,7 @@ public class PluginResolver
         QueryContext context = QueryContext.fromString(query);
 
         if (context.getResolverName() == null)
-        {
-            return actuallyResolve(resolvers.values().stream()
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList()), context);
-        }
+            return actuallyResolve(allResolvers, context);
 
         if (!resolvers.containsKey(context.getResolverName().toLowerCase()))
             return new ErrorResult(null, ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
