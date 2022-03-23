@@ -478,7 +478,7 @@ public class Installer
             }
 
             //クエリを直リンに変換
-            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(url);
+            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(dependency);
             String dependUrl;
 
             if (resolveResult instanceof ErrorResult)
