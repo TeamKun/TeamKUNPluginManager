@@ -45,6 +45,10 @@ public interface BaseResolver
         if (results.length == 0)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
-        return results[0];
+        ResolveResult result = results[0];
+        if (result instanceof MultiResult)
+            return autoPickFirst((MultiResult) result, source);
+
+        return result;
     }
 }
