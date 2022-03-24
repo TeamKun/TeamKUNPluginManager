@@ -29,7 +29,9 @@ public class CommandClean
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
+
+        if (!kpmInstance.getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -42,7 +44,7 @@ public class CommandClean
         if (removable.length == 0)
         {
             sender.sendMessage(ChatColor.RED + "E: 削除可能が項目が見つかりませんでした。");
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
@@ -54,14 +56,14 @@ public class CommandClean
                 if (!args[0].equals("all") && Arrays.stream(removable).noneMatch(s -> args[0].equalsIgnoreCase(s)))
                 {
                     sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
-                    TeamKunPluginManager.session.unlock();
+                    kpmInstance.getSession().unlock();
                     return;
                 }
 
                 if (args.length == 2 && !args[1].equals("no-preserve") && !(sender instanceof Player))
                 {
                     sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean " + args[0] + " no-preserve");
-                    TeamKunPluginManager.session.unlock();
+                    kpmInstance.getSession().unlock();
                     return;
                 }
 
@@ -75,7 +77,7 @@ public class CommandClean
                         Installer.clean(args[0]);
                     sender.sendMessage(Messages.getStatusMessage(0, args[0].equals("all") ? removable.length: 1, 0));
                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
-                    TeamKunPluginManager.session.unlock();
+                    kpmInstance.getSession().unlock();
                     return;
                 }
 
@@ -87,7 +89,7 @@ public class CommandClean
                         ChatColor.RED + "N" +
                         ChatColor.WHITE + "]");
 
-                TeamKunPluginManager.functional.add(
+                kpmInstance.getFunctional().add(
                         ((Player) sender).getUniqueId(),
                         new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
                             switch (s)
@@ -111,7 +113,7 @@ public class CommandClean
                 if (!(sender instanceof Player))
                 {
                     sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean all no-preserve");
-                    TeamKunPluginManager.session.unlock();
+                    kpmInstance.getSession().unlock();
                     return;
                 }
                 sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
@@ -120,14 +122,14 @@ public class CommandClean
                         ChatColor.WHITE + "/" +
                         ChatColor.RED + "N" +
                         ChatColor.WHITE + "]");
-                TeamKunPluginManager.functional.add(
+                kpmInstance.getFunctional().add(
                         ((Player) sender).getUniqueId(),
                         new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
                             switch (s)
                             {
                                 case "n":
                                     sender.sendMessage(ChatColor.RED + "キャンセルしました。");
-                                    TeamKunPluginManager.session.unlock();
+                                    kpmInstance.getSession().unlock();
                                     break;
                                 case "y":
                                     sender.sendMessage(ChatColor.GREEN + "削除を実行しています...");
@@ -135,7 +137,7 @@ public class CommandClean
                                             .forEach(Installer::clean);
                                     sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
                                     sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
-                                    TeamKunPluginManager.session.unlock();
+                                    kpmInstance.getSession().unlock();
                             }
                         }, "y", "n")
                 );

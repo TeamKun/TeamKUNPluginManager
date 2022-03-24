@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class CommandRegister
 {
     private final static String CLIENT_ID = "94c5d446dbc765895979";
+    private static final TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
     public static void onCommand(CommandSender sender, String[] args)
     {
@@ -33,23 +34,24 @@ public class CommandRegister
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!kpmInstance.getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
+
         if (args.length == 1)
         {
-            TeamKunPluginManager.vault.vault(args[0]);
+            kpmInstance.getVault().vault(args[0]);
             sender.sendMessage(ChatColor.GREEN + "S: トークンを正常に保管しました！");
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
 
         sender.sendMessage(ChatColor.GREEN + "GitHubサーバを用いてトークンを生成しますか? y/N> ");
-        TeamKunPluginManager.functional.add(sender instanceof Player ? ((Player) sender).getUniqueId(): null, new Say2Functional.FunctionalEntry(
+        kpmInstance.getFunctional().add(sender instanceof Player ? ((Player) sender).getUniqueId(): null, new Say2Functional.FunctionalEntry(
                 String::startsWith,
                 s -> {
                     if (!s.equalsIgnoreCase("y"))
@@ -122,16 +124,16 @@ public class CommandRegister
                     return;
                 }
 
-                TeamKunPluginManager.vault.vault(response.get("access_token").getAsString());
+                kpmInstance.getVault().vault(response.get("access_token").getAsString());
                 sender.sendMessage(ChatColor.GREEN + "S: トークンを正常に保管しました！");
                 if (sender instanceof Player)
                     sender.resetTitle();
-                TeamKunPluginManager.session.unlock();
+                kpmInstance.getSession().unlock();
                 success[0] = true;
                 this.cancel();
             }
         };
-        BukkitTask task = polling.runTaskTimer(TeamKunPluginManager.plugin, 100L, (get_interval * 20L) + 20L);
+        BukkitTask task = polling.runTaskTimer(kpmInstance, 100L, (get_interval * 20L) + 20L);
 
         BukkitRunnable expire = new BukkitRunnable()
         {
@@ -143,7 +145,7 @@ public class CommandRegister
                 task.cancel();
             }
         };
-        expire.runTaskLater(TeamKunPluginManager.plugin, get_interval * 20L);
+        expire.runTaskLater(kpmInstance, get_interval * 20L);
     }
 
     private static String parseError(String err)

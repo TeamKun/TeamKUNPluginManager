@@ -39,7 +39,9 @@ public class CommandImport
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
+
+        if (!kpmInstance.getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -49,7 +51,7 @@ public class CommandImport
         {
             sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
             sender.sendMessage(ChatColor.RED + "使用法: /kpm import URL");
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
@@ -62,7 +64,7 @@ public class CommandImport
         {
             sender.sendMessage(ChatColor.RED + "E: 第一引数に適切なURLを入力してください。");
             sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
@@ -98,7 +100,7 @@ public class CommandImport
         catch (JsonParseException e)
         {
             sender.sendMessage(ChatColor.RED + "E: JSONファイルが正しくないようです。");
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
@@ -117,7 +119,7 @@ public class CommandImport
 
         ArrayList<InstallResult> loadOrder = PluginUtil.mathLoadOrder(results);
 
-        TeamKunPluginManager.enableBuildTree = false;
+        kpmInstance.setEnableBuildTree(false);
 
         sender.sendMessage(ChatColor.GOLD + "設定を書き込み中...");
 
@@ -160,12 +162,12 @@ public class CommandImport
                         if (file != null)
                             file.delete();
                     }
-                }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 20L);
+                }.runTaskLaterAsynchronously(kpmInstance, 20L);
             }
             PluginUtil.load(installResult.getFileName().substring(0, installResult.getFileName().length() - 4));
             sender.sendMessage(ChatColor.GREEN + "+ " + installResult.getPluginName());
         });
-        TeamKunPluginManager.enableBuildTree = true;
+        kpmInstance.setEnableBuildTree(true);
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを構築中...");
         container.parallelStream().forEach(pluginContainer -> {
             DependencyTree.crawlPlugin(pluginContainer.pluginName);
@@ -174,6 +176,6 @@ public class CommandImport
 
         sender.sendMessage(ChatColor.GREEN + "S: 正常にインポートしました。");
         sender.sendMessage(Messages.getStatusMessage(add.get(), remove.get(), modify.get()));
-        TeamKunPluginManager.session.unlock();
+        kpmInstance.getSession().unlock();
     }
 }

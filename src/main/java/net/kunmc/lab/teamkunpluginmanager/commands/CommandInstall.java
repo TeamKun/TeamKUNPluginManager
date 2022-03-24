@@ -26,22 +26,24 @@ public class CommandInstall
             return;
         }
 
-        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
+
+        if (!kpmInstance.isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
             sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
-            TeamKunPluginManager.session.unlock();
+            kpmInstance.getSession().unlock();
             return;
         }
 
         if (args.length == 1 && args[0].equals("$-CF$"))
         {
-            TeamKunPluginManager.functional.remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
+            kpmInstance.getFunctional().remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
             sender.sendMessage(ChatColor.GREEN + "E: 実行中のインストールをキャンセルしました。");
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!kpmInstance.getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -54,8 +56,8 @@ public class CommandInstall
             public void run()
             {
                 Installer.install(sender, args[0], false, false, false, false);
-                TeamKunPluginManager.session.unlock();
+                kpmInstance.getSession().unlock();
             }
-        }.runTaskAsynchronously(TeamKunPluginManager.plugin);
+        }.runTaskAsynchronously(kpmInstance);
     }
 }

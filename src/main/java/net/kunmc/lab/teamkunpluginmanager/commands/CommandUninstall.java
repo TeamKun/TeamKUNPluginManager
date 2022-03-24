@@ -24,7 +24,7 @@ public class CommandUninstall
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -36,8 +36,8 @@ public class CommandUninstall
             public void run()
             {
                 Installer.unInstall(sender, args[0], false);
-                TeamKunPluginManager.session.unlock();
+                TeamKunPluginManager.getPlugin().getSession().unlock();
             }
-        }.runTaskAsynchronously(TeamKunPluginManager.plugin);
+        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
     }
 }

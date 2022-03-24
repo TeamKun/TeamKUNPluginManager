@@ -49,7 +49,7 @@ public class CommandExport
             return;
         }
 
-        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
             sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
@@ -164,7 +164,7 @@ public class CommandExport
         else
             sender.sendMessage(ChatColor.GREEN + "これを解決するには、チャットでURLを発言してください。");
 
-        TeamKunPluginManager.functional.add(uuid == CONSOLE_UUID ? null: uuid, new Say2Functional.FunctionalEntry(String::startsWith, s -> {
+        TeamKunPluginManager.getPlugin().getFunctional().add(uuid == CONSOLE_UUID ? null: uuid, new Say2Functional.FunctionalEntry(String::startsWith, s -> {
             ppc.fixUrl(target, s);
             sender.sendMessage(ChatColor.GREEN + "プラグイン " +
                     ChatColor.GOLD + "'" + target + "' " +
@@ -192,7 +192,7 @@ public class CommandExport
         SimpleDateFormat f = new SimpleDateFormat("yyyyMMddhhmmss");
 
         File exportAs = new File(
-                TeamKunPluginManager.plugin.getDataFolder(),
+                TeamKunPluginManager.getPlugin().getDataFolder(),
                 "exports/" + f.format(new Date()) + ".pmx"
         );
 

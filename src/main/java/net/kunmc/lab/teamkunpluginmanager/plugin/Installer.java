@@ -89,7 +89,8 @@ public class Installer
         }
 
         //保護されているプラグインの場合は削除せずreturn
-        if (TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
+        if (TeamKunPluginManager.getPlugin().getConfig().
+                getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
         {
             sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは保護されています。\n" +
                     ChatColor.YELLOW + "   保護されているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
@@ -143,7 +144,7 @@ public class Installer
                 finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
                 finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
             }
-        }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 20L);
+        }.runTaskLaterAsynchronously(TeamKunPluginManager.getPlugin(), 20L);
     }
 
     /**
@@ -202,7 +203,7 @@ public class Installer
         //ダウンロードする場合はURL・クエリを直リンに変換
         if (!withoutDownload)
         {
-            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(url);
+            ResolveResult resolveResult = TeamKunPluginManager.getPlugin().getResolver().resolve(url);
 
             if (resolveResult instanceof ErrorResult)
             {
@@ -317,7 +318,7 @@ public class Installer
         }
 
         //保護されているプラグインの場合はインスコ・変換せずreturn
-        if (TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
+        if (TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
@@ -381,7 +382,7 @@ public class Installer
 
 
                 }
-            }.runTaskLater(TeamKunPluginManager.plugin, 10L);
+            }.runTaskLater(TeamKunPluginManager.getPlugin(), 10L);
 
         }
         else if (PluginUtil.isPluginLoaded(description.getName())) //バージョンが変わらない(もしくは低い)。
@@ -409,7 +410,7 @@ public class Installer
 
                 String fileName = downloadResult.getRight();
 
-                TeamKunPluginManager.functional.add(
+                TeamKunPluginManager.getPlugin().getFunctional().add(
                         sender instanceof Player ? ((Player) sender).getUniqueId(): null,
                         new Say2Functional.FunctionalEntry(
                                 StringUtils::startsWithIgnoreCase,
@@ -478,7 +479,7 @@ public class Installer
             }
 
             //クエリを直リンに変換
-            ResolveResult resolveResult = TeamKunPluginManager.resolver.resolve(dependency);
+            ResolveResult resolveResult = TeamKunPluginManager.getPlugin().getResolver().resolve(dependency);
             String dependUrl;
 
             if (resolveResult instanceof ErrorResult)
@@ -584,7 +585,7 @@ public class Installer
                                 if (!withoutRemove && file != null)
                                     file.delete();
                             }
-                        }.runTaskLaterAsynchronously(TeamKunPluginManager.plugin, 20L);
+                        }.runTaskLaterAsynchronously(TeamKunPluginManager.getPlugin(), 20L);
                     }
 
                     //依存関係をロード
@@ -659,7 +660,7 @@ public class Installer
         try
         {
             //ignoreされているものを全て取得
-            List<String> bb = TeamKunPluginManager.config.getStringList("ignore");
+            List<String> bb = TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore");
 
             return Arrays.stream(Objects.requireNonNull(new File("plugins/").listFiles(File::isDirectory))) //plugins/の中のフォルダを全取得
                     .map(File::getName)                               //Stream<File> => Stream<String> ファイルの名前
@@ -707,14 +708,14 @@ public class Installer
             );
         });
         sender.sendMessage(new ComponentBuilder(ChatColor.LIGHT_PURPLE + "- [c] " + ChatColor.RED + "キャンセル")
-                        .event(new HoverEvent(
-                                HoverEvent.Action.SHOW_TEXT,
-                                new ComponentBuilder(ChatColor.RED + "クリックしてこのリリースをキャンセル").create()
-                        ))
-                        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i $-CF$"))
-                        .create());
+                .event(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder(ChatColor.RED + "クリックしてこのリリースをキャンセル").create()
+                ))
+                .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kpm i $-CF$"))
+                .create());
 
-        TeamKunPluginManager.functional.add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
+        TeamKunPluginManager.getPlugin().getFunctional().add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
                     if (s.equalsIgnoreCase("c"))
                     {
                         sender.sendMessage(ChatColor.RED + "E: キャンセルされました。");
@@ -827,7 +828,7 @@ public class Installer
         if (PluginUtil.isPluginLoaded(name))
             return false;  //プラグインがイネーブルの時、プロセスロックが掛かる
 
-        if (TeamKunPluginManager.config.getStringList("ignore").stream()
+        if (TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore").stream()
                 .anyMatch(s -> s.equalsIgnoreCase(name))) // 保護されていたら除外
             return false;
 

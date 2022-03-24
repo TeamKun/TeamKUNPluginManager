@@ -33,7 +33,10 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                );
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -79,8 +82,12 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (url.getHost().equals("api.github.com") && !TeamKunPluginManager.vault.getToken().isEmpty())
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+            if (url.getHost().equals("api.github.com") &&
+                    !TeamKunPluginManager.getPlugin().getVault().getToken().isEmpty())
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                );
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -138,7 +145,7 @@ public class URLUtils
 
         tryna = 0;
 
-        final int redirectLimit = TeamKunPluginManager.config.getInt("redirectLimit", 15);
+        final int redirectLimit = TeamKunPluginManager.getPlugin().getConfig().getInt("redirectLimit", 15);
 
         try
         {
@@ -155,7 +162,10 @@ public class URLUtils
                     connection.setRequestMethod("GET");
                     connection.setInstanceFollowRedirects(false);
                     if (urlObj.getHost().equals("api.github.com"))
-                        connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                        connection.setRequestProperty(
+                                "Authorization",
+                                "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                        );
                     connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
                     connection.connect();
 
@@ -221,7 +231,10 @@ public class URLUtils
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
             if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                );
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             return connection.getResponseCode();

@@ -15,7 +15,7 @@ public class CommandFix
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -25,13 +25,13 @@ public class CommandFix
         if (!DependencyTree.isErrors())
         {
             sender.sendMessage(ChatColor.RED + "E: エラーは検出されませんでした。");
-            TeamKunPluginManager.session.unlock();
+            TeamKunPluginManager.getPlugin().getSession().unlock();
             return;
         }
 
         sender.sendMessage(ChatColor.GREEN + "エラーを解決しています...");
         DependencyTree.fix();
         sender.sendMessage(ChatColor.GREEN + "S: エラーの解決に成功しました。");
-        TeamKunPluginManager.session.unlock();
+        TeamKunPluginManager.getPlugin().getSession().unlock();
     }
 }

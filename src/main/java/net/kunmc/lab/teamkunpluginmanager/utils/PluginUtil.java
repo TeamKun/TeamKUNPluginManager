@@ -503,7 +503,7 @@ public class PluginUtil
                     {
                         try
                         {
-                            if (TeamKunPluginManager.plugin.getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name))
+                            if (TeamKunPluginManager.getPlugin().getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name))
                             {
                                 pluginFile = f;
                                 break;
@@ -547,14 +547,14 @@ public class PluginUtil
 
                             Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
                         }
-                    }.runTaskLater(TeamKunPluginManager.plugin, 10L);
+                    }.runTaskLater(TeamKunPluginManager.getPlugin(), 10L);
                 }
                 catch (InvalidDescriptionException | InvalidPluginException e2)
                 {
                     e2.printStackTrace();
                 }
             }
-        }.runTask(TeamKunPluginManager.plugin);
+        }.runTask(TeamKunPluginManager.getPlugin());
 
     }
 

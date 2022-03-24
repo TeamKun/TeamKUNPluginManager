@@ -25,7 +25,7 @@ public class CommandAutoRemove
 
         ArrayList<String> rem = new ArrayList<>();
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return null;
@@ -40,7 +40,7 @@ public class CommandAutoRemove
             sender.sendMessage(ChatColor.RED + "E: 削除可能なプラグインはありません。");
             sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
             sender.sendMessage(ChatColor.GREEN + "S: 操作が正常に完了しました。");
-            TeamKunPluginManager.session.unlock();
+            TeamKunPluginManager.getPlugin().getSession().unlock();
             return rem;
         }
 
@@ -56,7 +56,7 @@ public class CommandAutoRemove
         });
         sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
 
-        TeamKunPluginManager.session.unlock();
+        TeamKunPluginManager.getPlugin().getSession().unlock();
         return rem;
     }
 

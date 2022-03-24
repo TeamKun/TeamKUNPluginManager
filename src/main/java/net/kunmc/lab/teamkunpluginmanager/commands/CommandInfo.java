@@ -8,8 +8,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -63,7 +61,7 @@ public class CommandInfo
         sender.sendMessage(pi("作成者", String.join(", ", plugin.getDescription().getAuthors())));
         sender.sendMessage(pi("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
         sender.sendMessage(pi("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
-        sender.sendMessage(pi("保護", TeamKunPluginManager.config.getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
+        sender.sendMessage(pi("保護", TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
 
         if (plugin.getDescription().getWebsite() != null)
             sender.sendMessage(pi("ウェブサイト", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));

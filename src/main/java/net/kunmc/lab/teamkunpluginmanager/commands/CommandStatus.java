@@ -28,7 +28,10 @@ public class CommandStatus
         sender.sendMessage(ChatColor.GREEN + "ステータス: " + (!statusError.equals("") ? ChatColor.RED + "エラー": ChatColor.DARK_GREEN + "正常"));
         sender.sendMessage(pi("プラグイン数", Bukkit.getPluginManager().getPlugins().length));
 
-        File resolve = new File(TeamKunPluginManager.plugin.getDataFolder(), TeamKunPluginManager.config.getString("resolvePath"));
+        File resolve = new File(
+                TeamKunPluginManager.getPlugin().getDataFolder(),
+                TeamKunPluginManager.getPlugin().getConfig().getString("resolvePath")
+        );
         if (resolve.exists())
             sender.sendMessage(pi("最終アップデート", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(resolve.lastModified()))));
         if (!statusError.equals(""))
@@ -39,7 +42,7 @@ public class CommandStatus
         if (!autoRemovable.equals(""))
             sender.sendMessage(autoRemovable);
 
-        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
             sender.sendMessage(ChatColor.RED + "トークンがセットされていません！/kpm register でトークンを発行してください。");
     }
 

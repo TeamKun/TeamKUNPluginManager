@@ -35,7 +35,7 @@ public class KnownPlugins
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.sqlite.JDBC");
 
-        config.setJdbcUrl("jdbc:sqlite:" + new File(TeamKunPluginManager.plugin.getDataFolder().getPath(), fileName).getAbsolutePath());
+        config.setJdbcUrl("jdbc:sqlite:" + new File(TeamKunPluginManager.getPlugin().getDataFolder().getPath(), fileName).getAbsolutePath());
 
         config.setMaximumPoolSize(20);
         config.setLeakDetectionThreshold(300000);
@@ -48,7 +48,7 @@ public class KnownPlugins
 
     public static boolean isLegacy()
     {
-        try(Connection connection = dataSource.getConnection();)
+        try (Connection connection = dataSource.getConnection())
         {
             DatabaseMetaData meta = connection.getMetaData();
             ResultSet set = meta.getTables(null, null, "DEPEND", null);

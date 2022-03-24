@@ -7,16 +7,13 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.utils.FileUploadUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.management.monitor.StringMonitor;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,14 +46,14 @@ public class CommandUpdate
         if (sender == null)
             sender = Installer.dummySender();
 
-        if (!TeamKunPluginManager.plugin.isTokenAvailable())
+        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
         {
             sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
             sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
             return;
         }
 
-        if (!TeamKunPluginManager.session.lock())
+        if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
             sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
             return;
@@ -86,9 +83,9 @@ public class CommandUpdate
                             "これらは無視されるか、古いものが代わりに使われます。");
                 finalSender.sendMessage(ChatColor.GREEN + "項目数: " + aliases);
                 finalSender.sendMessage(ChatColor.GREEN + "S: プラグイン定義ファイルのアップデートに成功しました。");
-                TeamKunPluginManager.session.unlock();
+                TeamKunPluginManager.getPlugin().getSession().unlock();
             }
-        }.runTaskAsynchronously(TeamKunPluginManager.plugin);
+        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
     }
 
     private static DownloadResult doDownload(CommandSender finalSender)
@@ -97,7 +94,7 @@ public class CommandUpdate
         Map<String, String> paths = new HashMap<>();
         AtomicBoolean error = new AtomicBoolean(false);
         long start = System.currentTimeMillis();
-        TeamKunPluginManager.config.getMapList("config")
+        TeamKunPluginManager.getPlugin().getConfig().getMapList("config")
                 .forEach(s -> {
                     String fileName;
 
@@ -116,7 +113,10 @@ public class CommandUpdate
                         connection.setRequestMethod("GET");
                         if (Boolean.parseBoolean(s.get("auth").toString()) && (urlObj.getHost().equals("api.github.com") ||
                                 urlObj.getHost().equals("raw.githubusercontent.com")))
-                            connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                            connection.setRequestProperty(
+                                    "Authorization",
+                                    "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                            );
                         connection.setRequestProperty(
                                 "User-Agent",
                                 "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop"

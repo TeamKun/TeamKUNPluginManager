@@ -54,7 +54,7 @@ public class CompactBuilder implements Cloneable
 
         this.pre.pluginName = name;
 
-        ResolveResult result = TeamKunPluginManager.resolver.resolve(name);
+        ResolveResult result = TeamKunPluginManager.getPlugin().getResolver().resolve(name);
 
         if (result instanceof ErrorResult)
             this.rs = (BuildResult[]) ArrayUtils.add(this.rs, BuildResult.DOWNLOAD_LINK_RESOLVE_FAILED);

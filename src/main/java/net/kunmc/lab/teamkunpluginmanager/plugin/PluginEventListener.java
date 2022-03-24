@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.event.EventHandler;
@@ -10,22 +11,25 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
+@AllArgsConstructor
 public class PluginEventListener implements Listener
 {
+    private final TeamKunPluginManager kpmInstance;
+
     @EventHandler
     public void onEnable(PluginEnableEvent e)
     {
-        if (!TeamKunPluginManager.enableBuildTree)
+        if (!kpmInstance.isEnableBuildTree())
             return;
-        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中(ADD:" + e.getPlugin().getName() + ")...");
+        kpmInstance.getLogger().info("依存関係ツリーを構築中(ADD:" + e.getPlugin().getName() + ")...");
         DependencyTree.crawlPlugin(e.getPlugin());
-        TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
+        kpmInstance.getLogger().info("依存関係ツリーの構築完了");
     }
 
     @EventHandler
     public void onDisable(PluginDisableEvent e)
     {
-        if (!TeamKunPluginManager.enableBuildTree)
+        if (!kpmInstance.isEnableBuildTree())
             return;
         new BukkitRunnable()
         {
@@ -36,11 +40,11 @@ public class PluginEventListener implements Listener
                 File f = PluginUtil.getFile(e.getPlugin());
                 if (f == null || !f.exists())
                 {
-                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーを構築中(RMV:" + e.getPlugin().getName() + ")...");
+                    kpmInstance.getLogger().info("依存関係ツリーを構築中(RMV:" + e.getPlugin().getName() + ")...");
                     DependencyTree.wipePlugin(e.getPlugin());
-                    TeamKunPluginManager.plugin.getLogger().info("依存関係ツリーの構築完了");
+                    kpmInstance.getLogger().info("依存関係ツリーの構築完了");
                 }
             }
-        }.runTaskLater(TeamKunPluginManager.plugin, 2L);
+        }.runTaskLater(kpmInstance, 2L);
     }
 }

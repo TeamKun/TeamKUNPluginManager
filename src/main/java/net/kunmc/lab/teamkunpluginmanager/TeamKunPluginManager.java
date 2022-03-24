@@ -1,5 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandMain;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
@@ -21,16 +23,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
+@Getter
 public final class TeamKunPluginManager extends JavaPlugin
 {
     public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
-    public static TeamKunPluginManager plugin;
-    public static FileConfiguration config;
-    public static TokenVault vault;
-    public static Say2Functional functional;
-    public static boolean enableBuildTree = true;
-    public static Session session;
-    public static PluginResolver resolver;
+    @Getter
+    private static TeamKunPluginManager plugin;
+
+    private FileConfiguration config;
+    private TokenVault vault;
+    private Say2Functional functional;
+    @Setter
+    private boolean enableBuildTree = true;
+    private Session session;
+    private PluginResolver resolver;
 
     @Override
     public void onEnable()
@@ -56,9 +62,9 @@ public final class TeamKunPluginManager extends JavaPlugin
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
-        DependencyTree.initialize(TeamKunPluginManager.config.getString("dependPath"));
+        DependencyTree.initialize(this.config.getString("dependPath"));
         DependencyTree.initializeTable();
-        KnownPlugins.initialization(TeamKunPluginManager.config.getString("resolvePath"));
+        KnownPlugins.initialization(this.config.getString("resolvePath"));
 
         if (KnownPlugins.isLegacy())
         {
@@ -78,7 +84,10 @@ public final class TeamKunPluginManager extends JavaPlugin
                 DependencyTree.crawlAllPlugins();
                 getLogger().info("依存関係ツリーの構築完了");
                 //すべてのPLが読み終わった後にイベントリスナを登録
-                Bukkit.getPluginManager().registerEvents(new PluginEventListener(), TeamKunPluginManager.plugin);
+                Bukkit.getPluginManager().registerEvents(
+                        new PluginEventListener(TeamKunPluginManager.this),
+                        TeamKunPluginManager.plugin
+                );
             }
         }.runTaskLater(this, 1L);
 
