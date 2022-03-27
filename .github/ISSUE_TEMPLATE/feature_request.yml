@@ -1,0 +1,60 @@
+name: 機能リクエスト
+description: なにかよくないバグを発見した場合はこちら
+title: "【機能】"
+labels: ["Type: Enchantment"]
+assignees: ["peyang-Celeron"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        TeamKUNPluginManagerに貢献いただきありがとうございます。以下のフォームを記入し提出してください！
+  - type: textarea
+    id: description
+    attributes:
+      label: "詳細"
+      description: "あなたが希望する新規機能についての明確で簡潔な説明を記入してください。"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "使用法"
+      description: "あなたが希望する新規機能のついての使用法を説明してください。"
+      placeholder: |
+        1. プレイヤーから /example コマンドを実行する
+        2. コンソールから /sample コマンドを実行する
+        3. Example というメッセージをクリックする
+        4. Herobrine を見つける
+        5. ティーポットでコーヒーを淹れようとする
+    validations:
+      required: false
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: "期待される動作"
+      description: "あなたが期待している正常な動作を簡潔に、明確に説明してください。"
+    validations:
+      required: true
+  - type: input
+    id: kpm_version
+    attributes:
+      label: "TeamKUNPluginManager のバージョン"
+      description: "現在使用している TeamKUNPluginManager のバージョンを記入してください。"
+    validations:
+      required: true
+  - type: input
+    id: server_description
+    attributes:
+      label: "サーバーの詳細"
+      description: "/version コマンドで取得できるサーバーの詳細を**正確に**記入してください。"
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: "その他"
+      description: |
+        ログ、スクリーンショット等その他お好きなように添付してください。
+        このエリアに画像をドラッグ&ドロップすることでも添付できます。
+    validations:
+      required: false
