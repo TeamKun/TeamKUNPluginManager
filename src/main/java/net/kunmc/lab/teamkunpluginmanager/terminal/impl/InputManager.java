@@ -94,10 +94,11 @@ public class InputManager implements Listener
     {
         ArrayList<InputTask> inputTasks = this.inputTasks.get(null);
 
-        e.setCancelled(true);
-
         if (inputTasks == null || inputTasks.isEmpty())
             return;
+
+        e.setCancelled(true);
+
         InputTask inputTask = inputTasks.get(0);
         String message = e.getCommand();
 
