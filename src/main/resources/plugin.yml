@@ -6,6 +6,8 @@ api-version: 1.16
 description: Manage your plugin!
 website: https://kunmc.net/
 
+softdepend: [PeyangPaperUtils]
+
 commands:
   kunpluginmanager:
     aliases: [pm, kpm, kunpm, kunmgmt] #devicemgmt.mscへの恨み
