@@ -30,7 +30,7 @@ public class CommandStatus
 
         File resolve = new File(
                 TeamKunPluginManager.getPlugin().getDataFolder(),
-                TeamKunPluginManager.getPlugin().getConfig().getString("resolvePath")
+                TeamKunPluginManager.getPlugin().getPluginConfig().getString("resolvePath")
         );
         if (resolve.exists())
             sender.sendMessage(pi("最終アップデート", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(resolve.lastModified()))));

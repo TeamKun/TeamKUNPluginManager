@@ -145,7 +145,7 @@ public class URLUtils
 
         tryna = 0;
 
-        final int redirectLimit = TeamKunPluginManager.getPlugin().getConfig().getInt("redirectLimit", 15);
+        final int redirectLimit = TeamKunPluginManager.getPlugin().getPluginConfig().getInt("redirectLimit", 15);
 
         try
         {

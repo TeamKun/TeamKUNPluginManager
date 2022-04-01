@@ -94,7 +94,7 @@ public class CommandUpdate
         Map<String, String> paths = new HashMap<>();
         AtomicBoolean error = new AtomicBoolean(false);
         long start = System.currentTimeMillis();
-        TeamKunPluginManager.getPlugin().getConfig().getMapList("config")
+        TeamKunPluginManager.getPlugin().getPluginConfig().getMapList("config")
                 .forEach(s -> {
                     String fileName;
 

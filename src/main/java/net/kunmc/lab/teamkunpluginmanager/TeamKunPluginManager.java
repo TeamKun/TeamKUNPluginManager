@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandMain;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
@@ -19,7 +20,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
@@ -30,7 +30,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Getter
     private static TeamKunPluginManager plugin;
 
-    private FileConfiguration config;
+    private FileConfiguration pluginConfig;
     private TokenVault vault;
     private Say2Functional functional;
     @Setter
@@ -38,15 +38,36 @@ public final class TeamKunPluginManager extends JavaPlugin
     private Session session;
     private PluginResolver resolver;
 
-    @Override
-    public void onEnable()
+    private static void setupDependencyTree(TeamKunPluginManager plugin)
     {
-        session = new Session();
-        saveDefaultConfig();
-        plugin = this;
-        config = getConfig();
-        functional = new Say2Functional(this);
-        resolver = new PluginResolver();
+        DependencyTree.initialize(plugin.getPluginConfig().getString("dependPath"));
+        DependencyTree.initializeTable();
+        KnownPlugins.initialization(plugin.getPluginConfig().getString("resolvePath"));
+
+        if (KnownPlugins.isLegacy())
+        {
+            plugin.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
+            KnownPlugins.migration();
+            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
+        }
+
+        Runner.runLater(() -> {
+            DependencyTree.wipeAllPlugin();
+            plugin.getLogger().info("依存関係ツリーを構築中...");
+            DependencyTree.crawlAllPlugins();
+            plugin.getLogger().info("依存関係ツリーの構築完了");
+
+            //すべてのPLが読み終わった後にイベントリスナを登録
+            Bukkit.getPluginManager().registerEvents(
+                    new PluginEventListener(plugin),
+                    TeamKunPluginManager.plugin
+            );
+        }, 1L);
+    }
+
+    private static void setupResolver(TeamKunPluginManager plugin)
+    {
+        PluginResolver resolver = plugin.getResolver();
 
         GitHubURLResolver githubResolver = new GitHubURLResolver();
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
@@ -55,41 +76,41 @@ public final class TeamKunPluginManager extends JavaPlugin
         resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
         resolver.addResolver(githubResolver, "github", "gh");
 
-        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(this, githubResolver));
+        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(plugin, githubResolver));
+    }
+
+    @Override
+    public void onDisable()
+    {
+        if (DependencyTree.dataSource != null)
+            DependencyTree.dataSource.close();
+        if (KnownPlugins.dataSource != null)
+            KnownPlugins.dataSource.close();
+    }
+
+    public boolean isTokenAvailable()
+    {
+        return !vault.getToken().isEmpty();
+    }
+
+    @Override
+    public void onEnable()
+    {
+        session = new Session();
+        saveDefaultConfig();
+        plugin = this;
+        pluginConfig = getConfig();
+        functional = new Say2Functional(this);
+        resolver = new PluginResolver();
+
+        setupResolver(this);
 
         vault = new TokenVault();
 
         Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
         Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
 
-        DependencyTree.initialize(this.config.getString("dependPath"));
-        DependencyTree.initializeTable();
-        KnownPlugins.initialization(this.config.getString("resolvePath"));
-
-        if (KnownPlugins.isLegacy())
-        {
-            getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
-            KnownPlugins.migration();
-            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
-        }
-
-        new BukkitRunnable()
-        {
-
-            @Override
-            public void run()
-            {
-                DependencyTree.wipeAllPlugin();
-                getLogger().info("依存関係ツリーを構築中...");
-                DependencyTree.crawlAllPlugins();
-                getLogger().info("依存関係ツリーの構築完了");
-                //すべてのPLが読み終わった後にイベントリスナを登録
-                Bukkit.getPluginManager().registerEvents(
-                        new PluginEventListener(TeamKunPluginManager.this),
-                        TeamKunPluginManager.plugin
-                );
-            }
-        }.runTaskLater(this, 1L);
+        setupDependencyTree(this);
 
         if (!new File(DATABASE_PATH).exists())
             CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
@@ -107,17 +128,4 @@ public final class TeamKunPluginManager extends JavaPlugin
             vault.vault("");
     }
 
-    @Override
-    public void onDisable()
-    {
-        if (DependencyTree.dataSource != null)
-            DependencyTree.dataSource.close();
-        if (KnownPlugins.dataSource != null)
-            KnownPlugins.dataSource.close();
-    }
-
-    public boolean isTokenAvailable()
-    {
-        return !vault.getToken().isEmpty();
-    }
 }

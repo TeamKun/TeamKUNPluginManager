@@ -89,7 +89,7 @@ public class Installer
         }
 
         //保護されているプラグインの場合は削除せずreturn
-        if (TeamKunPluginManager.getPlugin().getConfig().
+        if (TeamKunPluginManager.getPlugin().getPluginConfig().
                 getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
         {
             sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは保護されています。\n" +
@@ -318,7 +318,7 @@ public class Installer
         }
 
         //保護されているプラグインの場合はインスコ・変換せずreturn
-        if (TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
+        if (TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
         {
             sender.sendMessage(ChatColor.RED + "E: このプラグインは保護されています。");
             add--;
@@ -660,7 +660,7 @@ public class Installer
         try
         {
             //ignoreされているものを全て取得
-            List<String> bb = TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore");
+            List<String> bb = TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore");
 
             return Arrays.stream(Objects.requireNonNull(new File("plugins/").listFiles(File::isDirectory))) //plugins/の中のフォルダを全取得
                     .map(File::getName)                               //Stream<File> => Stream<String> ファイルの名前
@@ -828,7 +828,7 @@ public class Installer
         if (PluginUtil.isPluginLoaded(name))
             return false;  //プラグインがイネーブルの時、プロセスロックが掛かる
 
-        if (TeamKunPluginManager.getPlugin().getConfig().getStringList("ignore").stream()
+        if (TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream()
                 .anyMatch(s -> s.equalsIgnoreCase(name))) // 保護されていたら除外
             return false;
 
