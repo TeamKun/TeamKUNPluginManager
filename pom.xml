@@ -142,7 +142,6 @@
             <groupId>com.github.TeamKUN</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
             <version>1.0.0</version>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>
