@@ -32,7 +32,7 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            if (url.getHost().equals("api.github.com"))
+            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
                 connection.setRequestProperty(
                         "Authorization",
                         "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
@@ -82,7 +82,7 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (url.getHost().equals("api.github.com") &&
+            if ((url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com")) &&
                     !TeamKunPluginManager.getPlugin().getVault().getToken().isEmpty())
                 connection.setRequestProperty(
                         "Authorization",
@@ -161,7 +161,7 @@ public class URLUtils
 
                     connection.setRequestMethod("GET");
                     connection.setInstanceFollowRedirects(false);
-                    if (urlObj.getHost().equals("api.github.com"))
+                    if (urlObj.getHost().endsWith("github.com") || urlObj.getHost().equals("raw.githubusercontent.com"))
                         connection.setRequestProperty(
                                 "Authorization",
                                 "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
@@ -230,7 +230,7 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
-            if (url.getHost().equals("api.github.com"))
+            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
                 connection.setRequestProperty(
                         "Authorization",
                         "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
