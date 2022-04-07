@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -192,6 +191,12 @@ public class URLUtils
                  OutputStream os = new FileOutputStream(file))
             {
                 IOUtils.copy(is, os);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                file.delete();
+                return new Pair<>(null, "ERROR エラー '" + e.getClass().getName() + "' が発生しました。");
             }
 
 
