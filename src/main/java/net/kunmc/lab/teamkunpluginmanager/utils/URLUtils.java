@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -32,8 +31,11 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.vault.getToken()
+                );
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -79,8 +81,12 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+            if ((url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com")) &&
+                    !TeamKunPluginManager.vault.getToken().isEmpty())
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.vault.getToken()
+                );
             if (url.getHost().equals("file.io"))
                 connection.setRequestProperty("Referer", "https://www.file.io/");
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
@@ -147,8 +153,11 @@ public class URLUtils
 
                     connection.setRequestMethod("GET");
                     connection.setInstanceFollowRedirects(false);
-                    if (urlObj.getHost().equals("api.github.com"))
-                        connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+                    if (urlObj.getHost().endsWith("github.com") || urlObj.getHost().equals("raw.githubusercontent.com"))
+                        connection.setRequestProperty(
+                                "Authorization",
+                                "token " + TeamKunPluginManager.vault.getToken()
+                        );
                     connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
                     connection.connect();
 
@@ -213,8 +222,11 @@ public class URLUtils
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method);
-            if (url.getHost().equals("api.github.com"))
-                connection.setRequestProperty("Authorization", "token " + TeamKunPluginManager.vault.getToken());
+            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
+                connection.setRequestProperty(
+                        "Authorization",
+                        "token " + TeamKunPluginManager.vault.getToken()
+                );
             connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
             connection.connect();
             return connection.getResponseCode();
