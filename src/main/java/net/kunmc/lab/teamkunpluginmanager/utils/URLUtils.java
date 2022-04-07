@@ -202,6 +202,12 @@ public class URLUtils
             {
                 IOUtils.copy(is, os);
             }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                file.delete();
+                return new Pair<>(null, "ERROR エラー '" + e.getClass().getName() + "' が発生しました。");
+            }
 
 
             //FileUtils.copyInputStreamToFile(connection.getInputStream(), file);
