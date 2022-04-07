@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
-import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -854,12 +853,6 @@ public class Installer
             public Spigot spigot()
             {
                 return spigot();
-            }
-
-            @Override
-            public @NotNull Component name()
-            {
-                return null;
             }
 
             @Override
