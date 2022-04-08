@@ -1,0 +1,40 @@
+name: KPMに関する質問
+description: なにか質問がある場合はこちら
+title: "【質問】"
+labels: ["Type: Question"]
+assignees: ["peyang-Celeron"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        TeamKUNPluginManager でなにか分からないことがあります？以下のフォームを記入し提出してください！
+  - type: textarea
+    id: description
+    attributes:
+      label: "詳細"
+      description: "質問の詳細について明確で簡潔な説明を記入してください。"
+    validations:
+      required: true
+  - type: input
+    id: kpm_version
+    attributes:
+      label: "TeamKUNPluginManager のバージョン"
+      description: "現在使用している TeamKUNPluginManager のバージョンを記入してください。"
+    validations:
+      required: true
+  - type: input
+    id: server_description
+    attributes:
+      label: "サーバーの詳細"
+      description: "/version コマンドで取得できるサーバーの詳細を**正確に**記入してください。"
+    validations:
+      required: true
+  - type: textarea
+    id: other
+    attributes:
+      label: "その他"
+      description: |
+        ログ、スクリーンショット等その他お好きなように添付してください。
+        このエリアに画像をドラッグ&ドロップすることでも添付できます。
+    validations:
+      required: false
