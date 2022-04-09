@@ -67,12 +67,6 @@ public class CommandMain implements CommandExecutor, TabCompleter
             case "info":
                 CommandInfo.onCommand(sender, argsList.toArray(new String[0]));
                 break;
-            case "export":
-                CommandExport.onCommand(sender, argsList.toArray(new String[0]));
-                break;
-            case "import":
-                CommandImport.onCommand(sender, argsList.toArray(new String[0]));
-                break;
             case "register":
                 CommandRegister.onCommand(sender, argsList.toArray(new String[0]));
                 break;
@@ -100,7 +94,7 @@ public class CommandMain implements CommandExecutor, TabCompleter
         switch (args.length)
         {
             case 1:
-                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "export", "import", "register"));
+                completes.addAll(Arrays.asList("install", "i", "uninstall", "remove", "rm", "status", "autoremove", "fix", "update", "clean", "info", "register"));
                 break;
             case 2:
                 String cmd = args[0];
@@ -121,12 +115,6 @@ public class CommandMain implements CommandExecutor, TabCompleter
                     completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
                     completes.add("all");
                 }
-        }
-
-        if (args.length > 1 && args[0].equals("export"))
-        {
-            completes = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toCollection(ArrayList::new));
-            completes.add("all");
         }
 
         ArrayList<String> asCopy = new ArrayList<>();
