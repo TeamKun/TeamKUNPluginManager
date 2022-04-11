@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
@@ -31,7 +32,6 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,35 +116,31 @@ public class Installer
 
         CommandSender finalSender = sender;
         //非同期実行
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                //プラグインのファイルを取得
-                File file = PluginUtil.getFile(plugin);
-                //ファイルが有った場合は削除
-                if (file != null)
-                    file.delete();
+        Runner.runLaterAsync(() -> {
+            //プラグインのファイルを取得
+            File file = PluginUtil.getFile(plugin);
+            //ファイルが有った場合は削除
+            if (file != null)
+                file.delete();
 
-                //依存関係ツリーをワイプする
-                DependencyTree.wipePlugin(plugin);
-                finalSender.sendMessage(ChatColor.RED + "- " + plugin.getName() + ":" + plugin.getDescription().getVersion());
+            //依存関係ツリーをワイプする
+            DependencyTree.wipePlugin(plugin);
+            finalSender.sendMessage(ChatColor.RED + "- " + plugin.getName() + ":" + plugin.getDescription().getVersion());
 
-                // エラーが有っる場合は表示
-                String statusError = Messages.getErrorMessage();
-                if (!statusError.equals(""))
-                    finalSender.sendMessage(statusError);
+            // エラーが有っる場合は表示
+            String statusError = Messages.getErrorMessage();
+            if (!statusError.equals("")) // TODO: Replace all empty equals like this to String#isEmpty().
+                finalSender.sendMessage(statusError);
 
-                // 削除できるプラグイン(使われない依存関係等)があれば通知
-                String autoRemovable = Messages.getUnInstallableMessage();
+            // 削除できるプラグイン(使われない依存関係等)があれば通知
+            String autoRemovable = Messages.getUnInstallableMessage();
 
-                if (!autoRemovable.equals(""))
-                    finalSender.sendMessage(autoRemovable);
-                finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
-                finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
-            }
-        }.runTaskLaterAsynchronously(TeamKunPluginManager.getPlugin(), 20L);
+            if (!autoRemovable.equals(""))
+                finalSender.sendMessage(autoRemovable);
+            finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
+            finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
+
+        }, 20L);
     }
 
     /**
@@ -371,19 +367,11 @@ public class Installer
             //バージョンの低いプラグインをアンインストール。
             PluginUtil.unload(plugin);
 
-            new BukkitRunnable()
-            {
-                @Override
-                public void run()
-                {
-                    //削除する場合は削除
-                    if (!withoutRemove)
-                        delete(finalSender, PluginUtil.getFile(plugin));
-
-
-                }
-            }.runTaskLater(TeamKunPluginManager.getPlugin(), 10L);
-
+            Runner.runLater(() -> {
+                //削除する場合は削除
+                if (!withoutRemove)
+                    delete(finalSender, PluginUtil.getFile(plugin));
+            }, 10L);
         }
         else if (PluginUtil.isPluginLoaded(description.getName())) //バージョンが変わらない(もしくは低い)。
         {
@@ -575,17 +563,11 @@ public class Installer
                         //プラグインをアンロード
                         PluginUtil.unload(plugin);
 
-                        new BukkitRunnable()
-                        {
-
-                            @Override
-                            public void run()
-                            {
-                                File file = PluginUtil.getFile(plugin);
-                                if (!withoutRemove && file != null)
-                                    file.delete();
-                            }
-                        }.runTaskLaterAsynchronously(TeamKunPluginManager.getPlugin(), 20L);
+                        Runner.runLaterAsync(() -> {
+                            File file = PluginUtil.getFile(plugin);
+                            if (!withoutRemove && file != null)
+                                file.delete();
+                        }, 20L);
                     }
 
                     //依存関係をロード

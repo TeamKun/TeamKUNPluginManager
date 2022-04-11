@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
@@ -14,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -230,29 +230,25 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
         }
 
         terminal.info("プラグインデータセットファイルのダウンロードを開始します...");
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                new File(TeamKunPluginManager.DATABASE_PATH).mkdirs();
 
-                DownloadResult downloadResult = doDownload(terminal);
-                printDownloadMessage(terminal, downloadResult);
-                sender.sendMessage(ChatColor.LIGHT_PURPLE + "リストを読み込んでいます...");
+        Runner.runAsync(() -> {
+            new File(TeamKunPluginManager.DATABASE_PATH).mkdirs();
 
-                int aliases = doRegister(downloadResult);
+            DownloadResult downloadResult = doDownload(terminal);
+            printDownloadMessage(terminal, downloadResult);
+            sender.sendMessage(ChatColor.LIGHT_PURPLE + "リストを読み込んでいます...");
 
-                doCleanUp(downloadResult);
+            int aliases = doRegister(downloadResult);
 
-                if (downloadResult.errors)
-                    terminal.warn("いくつかのエイリアスセットファイルのダウンロードに失敗しました。" +
-                            "これらは無視されるか、古いものが代わりに使われます。");
-                terminal.writeLine(ChatColor.GREEN + "項目数: " + aliases);
-                terminal.success("プラグイン定義ファイルのアップデートに成功しました。");
-                TeamKunPluginManager.getPlugin().getSession().unlock();
-            }
-        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
+            doCleanUp(downloadResult);
+
+            if (downloadResult.errors)
+                terminal.warn("いくつかのエイリアスセットファイルのダウンロードに失敗しました。" +
+                        "これらは無視されるか、古いものが代わりに使われます。");
+            terminal.writeLine(ChatColor.GREEN + "項目数: " + aliases);
+            terminal.success("プラグイン定義ファイルのアップデートに成功しました。");
+            TeamKunPluginManager.getPlugin().getSession().unlock();
+        });
     }
 
     @Override

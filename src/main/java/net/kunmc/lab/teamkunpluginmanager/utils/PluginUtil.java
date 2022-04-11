@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import org.bukkit.Bukkit;
@@ -22,7 +23,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -472,39 +472,28 @@ public class PluginUtil
 
 
         File finalPluginFile = pluginFile;
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
+        Runner.run(() -> {
+            try
             {
-                try
-                {
-                    Plugin target = Bukkit.getPluginManager().loadPlugin(finalPluginFile);
-                    Objects.requireNonNull(target).onLoad();
-                    Bukkit.getPluginManager().enablePlugin(target);
-                    new BukkitRunnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            getKnownCommands().entrySet().stream().parallel()
-                                    .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
-                                    .forEach(stringCommandEntry -> {
-                                        wrapCommand(stringCommandEntry.getValue(), stringCommandEntry.getKey());
-                                    });
+                Plugin target = Bukkit.getPluginManager().loadPlugin(finalPluginFile);
+                Objects.requireNonNull(target).onLoad();
+                Bukkit.getPluginManager().enablePlugin(target);
+                Runner.runLater(() -> { // TODO: Remove this runLater cuz PluginManager#enablePlugin() seems return on Plugin's enable method has returned.
+                    getKnownCommands().entrySet().stream().parallel()
+                            .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
+                            .forEach(stringCommandEntry -> {
+                                wrapCommand(stringCommandEntry.getValue(), stringCommandEntry.getKey());
+                            });
 
 
-                            Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
-                        }
-                    }.runTaskLater(TeamKunPluginManager.getPlugin(), 10L);
-                }
-                catch (InvalidDescriptionException | InvalidPluginException e2)
-                {
-                    e2.printStackTrace();
-                }
+                    Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
+                }, 10L);
             }
-        }.runTask(TeamKunPluginManager.getPlugin());
-
+            catch (InvalidDescriptionException | InvalidPluginException e2)
+            {
+                e2.printStackTrace();
+            }
+        });
     }
 
     public static void reload(Plugin plugin)
