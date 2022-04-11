@@ -142,9 +142,7 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
     {
         AtomicLong size = new AtomicLong(0);
 
-        result.lists.values().stream().parallel().forEach(s -> {
-            size.addAndGet(new File(s).length());
-        });
+        result.lists.values().stream().parallel().forEach(s -> size.addAndGet(new File(s).length()));
 
         double seconds = new BigDecimal(result.sec)
                 .divide(new BigDecimal("1000"), 2, RoundingMode.DOWN).doubleValue();
