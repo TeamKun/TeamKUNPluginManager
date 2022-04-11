@@ -32,6 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -127,66 +128,27 @@ public class PluginUtil
         return ((PluginClassLoader) plugin.getClass().getClassLoader()).getPlugin() != null;
     }
 
+    private static final String[] fileUnits = {
+            "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+    };
+
     public static String getFileSizeString(long bytes)
     {
         String suffix = "B";
 
         BigDecimal dec = new BigDecimal(String.valueOf(bytes));
-        BigDecimal div = new BigDecimal(1024);
-        if (dec.compareTo(div) >= 0)
+        BigDecimal base = new BigDecimal(1024);
+
+        for (String fileUnit : fileUnits)
         {
-            dec = dec.divide(div);
-            suffix = "KiB";
+            if (dec.compareTo(base) < 0)
+            {
+                suffix = fileUnit;
+                dec = dec.divide(base, 3, RoundingMode.HALF_UP);
+            }
+            else
+                break;
         }
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "MiB";
-        }
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "GiB";
-        }
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "TiB";
-        }
-
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "PiB";
-        }
-
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "EiB";
-        }
-
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "ZiB";
-        }
-
-
-        if (dec.compareTo(div) >= 0)
-        {
-            dec = dec.divide(div);
-            suffix = "YiB";
-        }
-
-        dec = dec.setScale(3, BigDecimal.ROUND_HALF_UP);
-
 
         return new DecimalFormat("#,###.##;#,###.##").format(dec) + suffix;
     }
@@ -288,19 +250,6 @@ public class PluginUtil
                 .filter(stringStringPair -> stringStringPair.getPluginName().equals(contain))
                 .forEach(stringStringPair -> ab.set(true));
         return ab.get();
-    }
-
-    private static ArrayList<Pair<String, String>> removeByValue(ArrayList<Pair<String, String>> original, String value)
-    {
-        ArrayList<Pair<String, String>> copyOf = (ArrayList<Pair<String, String>>) original.clone();
-
-        original.stream().parallel()
-                .forEach(stringStringPair -> {
-                    if (stringStringPair.getRight().equals(value))
-                        copyOf.remove(stringStringPair);
-                });
-
-        return copyOf;
     }
 
     public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, IOException
