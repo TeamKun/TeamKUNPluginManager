@@ -1,31 +1,35 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
-import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
-import org.apache.commons.lang.StringUtils;
+import net.kyori.adventure.text.TextComponent;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public class CommandClean
+public class CommandClean extends CommandBase
 {
-    public static void onCommand(CommandSender sender, String[] args)
+    @Override
+    public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        if (!sender.hasPermission("kpm.clean"))
-        {
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
-            return;
-        }
-
         if (DependencyTree.isErrors())
         {
-            sender.sendMessage(Messages.getErrorMessage());
-            sender.sendMessage(ChatColor.RED + "E: エラーが検出されたため、システムが保護されました。");
+            terminal.error("重大なエラーが検出されました。/kpm fix で修正を行ってください。");
+            terminal.info("エラーが検出されたため、システムが保護されました。");
             return;
         }
 
@@ -33,116 +37,95 @@ public class CommandClean
 
         if (!kpmInstance.getSession().lock())
         {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            terminal.error("TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
-
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
+        terminal.info("依存関係ツリーを読み込み中...");
 
         String[] removable = Installer.getRemovableDataDirs();
         if (removable.length == 0)
         {
-            sender.sendMessage(ChatColor.RED + "E: 削除可能が項目が見つかりませんでした。");
+            terminal.info("削除可能な項目が見つかりませんでした。");
             kpmInstance.getSession().unlock();
             return;
         }
 
-        switch (args.length)
-        {
-            case 2:
-            case 1:
-                sender.sendMessage(ChatColor.GREEN + "データを検索中...");
-                if (!args[0].equals("all") && Arrays.stream(removable).noneMatch(s -> args[0].equalsIgnoreCase(s)))
-                {
-                    sender.sendMessage(ChatColor.RED + "E: プラグインが見つかりませんでした。");
-                    kpmInstance.getSession().unlock();
-                    return;
-                }
+        String pluginName = null;
+        if (args.length > 0 && !args[0].equals("all"))
+            pluginName = args[0];
 
-                if (args.length == 2 && !args[1].equals("no-preserve") && !(sender instanceof Player))
-                {
-                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean " + args[0] + " no-preserve");
-                    kpmInstance.getSession().unlock();
-                    return;
-                }
+        if (pluginName != null)
+            if (ArrayUtils.contains(removable, pluginName))
+                removable = new String[]{pluginName};
+            else
+            {
+                terminal.error("指定されたプラグインのデータフォルダが見つかりませんでした。");
+                kpmInstance.getSession().unlock();
+                return;
+            }
 
-                if (args.length == 2 && args[1].equals("no-preserve"))
-                {
-                    sender.sendMessage(ChatColor.GREEN + "削除を実行しています...");
-                    if (args[0].equals("all"))
-                        Arrays.stream(removable)
-                                .forEach(Installer::clean);
-                    else
-                        Installer.clean(args[0]);
-                    sender.sendMessage(Messages.getStatusMessage(0, args[0].equals("all") ? removable.length: 1, 0));
-                    sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
-                    kpmInstance.getSession().unlock();
-                    return;
-                }
+        // TODO: aptっぽく、スキャンで引っかかったプラグインのリストを表示する
 
+        terminal.writeLine(ChatColor.GREEN + "この操作で、以下の" + removable.length + "つのプラグインデータが削除されます: ");
+        terminal.writeLine(ChatColor.AQUA + String.join(", ", removable));
 
-                sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
-                        ChatColor.WHITE + "[" +
-                        ChatColor.GREEN + "y" +
-                        ChatColor.WHITE + "/" +
-                        ChatColor.RED + "N" +
-                        ChatColor.WHITE + "]");
+        String[] finalRemovable = removable;
+        Runner.run(() -> {
+            QuestionResult result = terminal.getInput().
+                    showQuestion("本当に続行しますか?", QuestionAttribute.YES, QuestionAttribute.CANCELLABLE)
+                    .waitAndGetResult();
 
-                kpmInstance.getFunctional().add(
-                        ((Player) sender).getUniqueId(),
-                        new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
-                            switch (s)
-                            {
-                                case "n":
-                                    sender.sendMessage(ChatColor.RED + "キャンセルしました。");
-                                    break;
-                                case "y":
-                                    sender.sendMessage(ChatColor.GREEN + "削除を実行しています...");
-                                    sender.sendMessage(Messages.getStatusMessage(0, args[0].equals("all") ? removable.length: 1, 0));
-                                    sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
-                                    sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
-                            }
-                        }, "y", "n")
-                );
+            if (result.test(QuestionAttribute.CANCELLABLE))
+                terminal.error("キャンセルしました。");
+            else if (result.test(QuestionAttribute.YES))
+                removeDatas(terminal, finalRemovable);
 
-                break;
-            case 0:
-                sender.sendMessage(ChatColor.GREEN + "この操作で、以下の" + removable.length + "つのプラグインデータが削除されます: ");
-                sender.sendMessage(ChatColor.AQUA + String.join(", ", removable));
-                if (!(sender instanceof Player))
-                {
-                    sender.sendMessage(ChatColor.RED + "本当に実行する場合、次のコマンドを実行してください: /kpm clean all no-preserve");
-                    kpmInstance.getSession().unlock();
-                    return;
-                }
-                sender.sendMessage(ChatColor.RED + "本当に続行しますか? " +
-                        ChatColor.WHITE + "[" +
-                        ChatColor.GREEN + "y" +
-                        ChatColor.WHITE + "/" +
-                        ChatColor.RED + "N" +
-                        ChatColor.WHITE + "]");
-                kpmInstance.getFunctional().add(
-                        ((Player) sender).getUniqueId(),
-                        new Say2Functional.FunctionalEntry(StringUtils::startsWithIgnoreCase, s -> {
-                            switch (s)
-                            {
-                                case "n":
-                                    sender.sendMessage(ChatColor.RED + "キャンセルしました。");
-                                    kpmInstance.getSession().unlock();
-                                    break;
-                                case "y":
-                                    sender.sendMessage(ChatColor.GREEN + "削除を実行しています...");
-                                    Arrays.stream(removable)
-                                            .forEach(Installer::clean);
-                                    sender.sendMessage(Messages.getStatusMessage(0, removable.length, 0));
-                                    sender.sendMessage(ChatColor.GREEN + "S: 削除に成功しました。");
-                                    kpmInstance.getSession().unlock();
-                            }
-                        }, "y", "n")
-                );
+            kpmInstance.getSession().unlock();
+        }, (exception, bukkitTask) -> {
+        });
 
-        }
     }
 
+    private void removeDatas(Terminal terminal, String[] removables)
+    {
+        for (String removable : removables)
+        {
+            terminal.info(removable + " を削除しています...");
+            Installer.clean(removable);
+        }
+
+        terminal.writeLine(Messages.getStatusMessage(0, removables.length, 0));
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        List<String> list = new ArrayList<>(Collections.singleton("all"));
+
+        if (args.length == 1)
+            list.addAll(Arrays.asList(Installer.getRemovableDataDirs()));
+
+        return list;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.clean";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("削除されて使用されなくなったプラグインのデータフォルダを再帰的に削除します。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[]{
+                optional("name", "プラグイン名", "all"),
+        };
+    }
 }

@@ -15,7 +15,7 @@ commands:
 
 
 permissions:
-  kpm.use:
+  kpm:
     description: "このプラグインを使用できます。"
     default: op
     children:
@@ -46,3 +46,5 @@ permissions:
     description: "プラグインの状態を閲覧します。"
   kpm.update:
     description: "エイリアス定義データベースを更新します。"
+  kpm.help:
+    description: "プラグインのヘルプを表示します。"

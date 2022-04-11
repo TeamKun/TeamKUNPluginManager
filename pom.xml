@@ -141,7 +141,7 @@
         <dependency>
             <groupId>com.github.TeamKUN</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.4</version>
         </dependency>
     </dependencies>
 </project>

@@ -3,16 +3,20 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,67 +32,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class CommandUpdate
+public class CommandUpdate extends CommandBase // TODO: Rewrite this
 {
-    public static void onCommand(CommandSender sender, String[] args)
-    {
-        if (sender != null && !sender.hasPermission("kpm.update"))
-        {
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
-            return;
-        }
-
-        if (sender == null)
-            sender = Installer.dummySender();
-
-        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
-        {
-            sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
-            sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
-            return;
-        }
-
-        if (!TeamKunPluginManager.getPlugin().getSession().lock())
-        {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
-            return;
-        }
-
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "エイリアスセットファイルのダウンロードを開始します...");
-        CommandSender finalSender = sender;
-
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                HashMap<String, String> paths = new HashMap<>();
-                new File(TeamKunPluginManager.DATABASE_PATH).mkdirs();
-
-                DownloadResult downloadResult = doDownload(finalSender);
-                printDownloadMessage(finalSender, downloadResult);
-                finalSender.sendMessage(ChatColor.LIGHT_PURPLE + "リストを読み込んでいます...");
-
-                int aliases = doRegister(downloadResult);
-
-                doCleanUp(downloadResult);
-
-                if (downloadResult.errors)
-                    finalSender.sendMessage(ChatColor.YELLOW + "W: いくつかのエイリアスセットファイルのダウンロードに失敗しました。" +
-                            "これらは無視されるか、古いものが代わりに使われます。");
-                finalSender.sendMessage(ChatColor.GREEN + "項目数: " + aliases);
-                finalSender.sendMessage(ChatColor.GREEN + "S: プラグイン定義ファイルのアップデートに成功しました。");
-                TeamKunPluginManager.getPlugin().getSession().unlock();
-            }
-        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
-    }
-
-    private static DownloadResult doDownload(CommandSender finalSender)
+    private static DownloadResult doDownload(Terminal terminal)
     {
         AtomicInteger num = new AtomicInteger(0);
         Map<String, String> paths = new HashMap<>();
@@ -124,8 +76,8 @@ public class CommandUpdate
                         connection.connect();
                         if (connection.getResponseCode() != 200)
                         {
-                            finalSender.sendMessage(ChatColor.RED + "無視：" + num.incrementAndGet() + " " + url);
-                            finalSender.sendMessage(ChatColor.RED + "  " +
+                            terminal.writeLine(ChatColor.RED + "無視：" + num.incrementAndGet() + " " + url);
+                            terminal.writeLine(ChatColor.RED + "  " +
                                     connection.getResponseCode() + "  " +
                                     connection.getResponseMessage() + " [IP: " +
                                     InetAddress.getByName(urlObj.getHost()).getHostAddress() +
@@ -140,15 +92,15 @@ public class CommandUpdate
 
                         if (paths.containsKey(name))
                         {
-                            finalSender.sendMessage(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + name);
-                            finalSender.sendMessage(ChatColor.RED + "  エイリアスセット '" + name + "' が重複しています。");
+                            terminal.writeLine(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + name);
+                            terminal.writeLine(ChatColor.RED + "  エイリアスセット '" + name + "' が重複しています。");
                             error.set(true);
                             return;
                         }
                         paths.put(name, fileName);
                         if (!file.createNewFile())
                         {
-                            finalSender.sendMessage(ChatColor.GREEN + "ヒット：" + num.incrementAndGet() + " " + url);
+                            terminal.writeLine(ChatColor.GREEN + "ヒット：" + num.incrementAndGet() + " " + url);
                             return;
                         }
                         try (InputStream is = connection.getInputStream();
@@ -158,25 +110,25 @@ public class CommandUpdate
                         }
 
 
-                        finalSender.sendMessage(ChatColor.GREEN + "取得：" + num.incrementAndGet() +
+                        terminal.writeLine(ChatColor.GREEN + "取得：" + num.incrementAndGet() +
                                 " " + url + " [" + PluginUtil.getFileSizeString(file.length()) + "]");
                     }
                     catch (MalformedURLException e)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
-                        finalSender.sendMessage(ChatColor.RED + "  '" + url + "' はURLではありません。");
+                        terminal.writeLine(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
+                        terminal.writeLine(ChatColor.RED + "  '" + url + "' はURLではありません。");
                         error.set(true);
                     }
                     catch (UnknownHostException e)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
-                        finalSender.sendMessage(ChatColor.RED + "  '" + url + "' を解決できませんでした。");
+                        terminal.writeLine(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
+                        terminal.writeLine(ChatColor.RED + "  '" + url + "' を解決できませんでした。");
                         error.set(true);
                     }
                     catch (Exception e)
                     {
-                        finalSender.sendMessage(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
-                        finalSender.sendMessage(ChatColor.RED + "  エラー " + e.getClass().getName() + " が発生しました。");
+                        terminal.writeLine(ChatColor.RED + "エラー：" + num.incrementAndGet() + " " + url);
+                        terminal.writeLine(ChatColor.RED + "  エラー " + e.getClass().getName() + " が発生しました。");
                         error.set(true);
                         e.printStackTrace();
                     }
@@ -185,7 +137,7 @@ public class CommandUpdate
         return new DownloadResult(paths, error.get(), System.currentTimeMillis() - start);
     }
 
-    private static void printDownloadMessage(CommandSender sender, DownloadResult result)
+    private static void printDownloadMessage(Terminal terminal, DownloadResult result)
     {
         AtomicLong size = new AtomicLong(0);
 
@@ -193,10 +145,11 @@ public class CommandUpdate
             size.addAndGet(new File(s).length());
         });
 
-        double seconds = new BigDecimal(result.sec).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+        double seconds = new BigDecimal(result.sec).divide(new BigDecimal("1000"))
+                .setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
 
 
-        sender.sendMessage(
+        terminal.writeLine(
                 ChatColor.LIGHT_PURPLE +
                         PluginUtil.getFileSizeString(size.get()) +
                         " を " +
@@ -256,6 +209,73 @@ public class CommandUpdate
                 });
 
         return atomicInteger.get();
+    }
+
+    @Override
+    public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        if (!TeamKunPluginManager.getPlugin().getSession().lock())
+        {
+            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            return;
+        }
+
+        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
+        { // TODO: Set level to warn
+            terminal.error("トークンが設定されていません！");
+            terminal.info("/kpm register でトークンを発行することができます！");
+            TeamKunPluginManager.getPlugin().getSession().unlock();
+            return;
+        }
+
+        terminal.info("プラグインデータセットファイルのダウンロードを開始します...");
+        new BukkitRunnable()
+        {
+            @Override
+            public void run()
+            {
+                new File(TeamKunPluginManager.DATABASE_PATH).mkdirs();
+
+                DownloadResult downloadResult = doDownload(terminal);
+                printDownloadMessage(terminal, downloadResult);
+                sender.sendMessage(ChatColor.LIGHT_PURPLE + "リストを読み込んでいます...");
+
+                int aliases = doRegister(downloadResult);
+
+                doCleanUp(downloadResult);
+
+                if (downloadResult.errors)
+                    terminal.warn("いくつかのエイリアスセットファイルのダウンロードに失敗しました。" +
+                            "これらは無視されるか、古いものが代わりに使われます。");
+                terminal.writeLine(ChatColor.GREEN + "項目数: " + aliases);
+                terminal.success("プラグイン定義ファイルのアップデートに成功しました。");
+                TeamKunPluginManager.getPlugin().getSession().unlock();
+            }
+        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        return null;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.update";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("既知プラグインデータセットをアップデートします。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[0];
     }
 
     private static class DownloadResult

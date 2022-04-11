@@ -2,8 +2,18 @@ package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.commands.CommandMain;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandAutoRemove;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandClean;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandFix;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandRegister;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandReload;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandStatus;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
@@ -37,6 +47,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private boolean enableBuildTree = true;
     private Session session;
     private PluginResolver resolver;
+    private CommandManager commandManager;
 
     private static void setupDependencyTree(TeamKunPluginManager plugin)
     {
@@ -48,7 +59,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         {
             plugin.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
             KnownPlugins.migration();
-            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
+            new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
         }
 
         Runner.runLater(() -> {
@@ -93,6 +104,20 @@ public final class TeamKunPluginManager extends JavaPlugin
         return !vault.getToken().isEmpty();
     }
 
+    public static void registerCommands(CommandManager commandManager)
+    {
+        commandManager.registerCommand("autoremove", new CommandAutoRemove());
+        commandManager.registerCommand("clean", new CommandClean());
+        commandManager.registerCommand("fix", new CommandFix());
+        commandManager.registerCommand("info", new CommandInfo());
+        commandManager.registerCommand("install", new CommandInstall());
+        commandManager.registerCommand("register", new CommandRegister());
+        commandManager.registerCommand("reload", new CommandReload());
+        commandManager.registerCommand("status", new CommandStatus());
+        commandManager.registerCommand("uninstall", new CommandUninstall());
+        commandManager.registerCommand("update", new CommandUpdate());
+    }
+
     @Override
     public void onEnable()
     {
@@ -102,18 +127,18 @@ public final class TeamKunPluginManager extends JavaPlugin
         pluginConfig = getConfig();
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
+        commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+
+        registerCommands(commandManager);
 
         setupResolver(this);
 
         vault = new TokenVault();
 
-        Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
-        Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
-
         setupDependencyTree(this);
 
         if (!new File(DATABASE_PATH).exists())
-            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
+            new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
 
         String tokenEnv = System.getenv("TOKEN");
 
