@@ -100,7 +100,7 @@ public class Installer
 
         //他のプラグインの依存関係になっている場合はreturn
         // 強制アンインストールである場合は無視
-        if (info.rdepends.size() != 0 && !force)
+        if (!info.rdepends.isEmpty() && !force)
         {
             sender.sendMessage(ChatColor.YELLOW + "W: このプラグインは以下のプラグインの依存関係です。");
             sender.sendMessage(ChatColor.BLUE + info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.joining(" ")));
@@ -129,13 +129,13 @@ public class Installer
 
             // エラーが有っる場合は表示
             String statusError = Messages.getErrorMessage();
-            if (!statusError.equals("")) // TODO: Replace all empty equals like this to String#isEmpty().
+            if (!statusError.isEmpty())
                 finalSender.sendMessage(statusError);
 
             // 削除できるプラグイン(使われない依存関係等)があれば通知
             String autoRemovable = Messages.getUnInstallableMessage();
 
-            if (!autoRemovable.equals(""))
+            if (!autoRemovable.isEmpty())
                 finalSender.sendMessage(autoRemovable);
             finalSender.sendMessage(Messages.getStatusMessage(0, 1, 0));
             finalSender.sendMessage(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
@@ -504,7 +504,7 @@ public class Installer
             //依存関係のインストール
             InstallResult dependResolve = Installer.install(null, dependUrl, true, false, true, false);
             //ファイルの名前がない場合は失敗としてマーク
-            if (dependResolve.getFileName().equals(""))
+            if (dependResolve.getFileName().isEmpty())
             {
                 failedResolve.add(dependency);
                 continue;
@@ -527,11 +527,11 @@ public class Installer
             finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
 
         //結果を表示しないモードで依存関係エラーが発生した場合はreturn
-        if (sender.equals(dummySender()) && failedResolve.size() > 0)
+        if (sender.equals(dummySender()) && !failedResolve.isEmpty())
             return new InstallResult(add, remove, modify, true);
 
         //依存関係エラーが発生した場合は表示
-        if (failedResolve.size() > 0)
+        if (!failedResolve.isEmpty())
         {
             finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
             finalSender.sendMessage(ChatColor.YELLOW + "W: " + description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
@@ -599,12 +599,12 @@ public class Installer
             {*/
         //エラーが発生した場合
         String statusError = Messages.getErrorMessage();
-        if (!statusError.equals(""))
+        if (!statusError.isEmpty())
             finalSender.sendMessage(statusError);
 
         // 削除できるプラグイン(使われない依存関係等)があれば通知
         String autoRemovable = Messages.getUnInstallableMessage();
-        if (!autoRemovable.equals(""))
+        if (!autoRemovable.isEmpty())
             finalSender.sendMessage(autoRemovable);
 
         finalSender.sendMessage(Messages.getStatusMessage(finalAdd1, remove, finalModify1));
@@ -723,7 +723,7 @@ public class Installer
 
     private static String pickPluginJar(List<Pair<String, String>> jar)
     {
-        if (jar.size() == 0)
+        if (jar.isEmpty())
             return null;
 
         String result = "";
@@ -741,9 +741,9 @@ public class Installer
                 tmp = pair.getRight();
         }
 
-        if (result.equals("") && !tmp.equals(""))
+        if (result.isEmpty() && !tmp.isEmpty())
             result = tmp;
-        if (result.equals(""))
+        if (result.isEmpty())
             result = jar.get(0).getRight();
 
         return result;
@@ -765,7 +765,7 @@ public class Installer
 
             if (!escape && c == '|')
             {
-                if (!name.toString().equals("") && !url.toString().equals(""))
+                if (!name.toString().isEmpty() && !url.toString().isEmpty())
                 {
                     result.add(new Pair<>(name.toString(), url.toString()));
                     name = new StringBuilder();

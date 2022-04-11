@@ -132,7 +132,7 @@ public class URLUtils
     {
         boolean duplicateFile = false;
 
-        if (fileName.equals(""))
+        if (fileName.isEmpty())
             fileName = "tmp1.jar";
 
         int tryna = 0;

@@ -90,15 +90,15 @@ public class GitHubURLBuilder
             String file = matcher.group("fileName");
 
             //ファイルがない、もしくは""だった場合はオウム返し。
-            if (file != null && !file.equals(""))
+            if (file != null && !file.isEmpty())
                 return urlName;
 
             //この辺は代入なので無視。
-            if (!repository.equals(""))
+            if (!repository.isEmpty())
                 repoName = repository;
-            if (tag != null && !tag.equals(""))
+            if (tag != null && !tag.isEmpty())
                 tagName = tag;
-            else if (tagNF != null && !tagNF.equals(""))
+            else if (tagNF != null && !tagNF.isEmpty())
                 tagName = tagNF;
         }
 
@@ -129,7 +129,7 @@ public class GitHubURLBuilder
 
                 //APIレスポンスがエラーかどうか。
                 String error = error(json.getRight());
-                if (!error.equals(""))
+                if (!error.isEmpty())
                     return "ERROR " + error;
 
                 JsonArray array = new Gson().fromJson(json.getRight(), JsonArray.class);
@@ -177,7 +177,7 @@ public class GitHubURLBuilder
 
                 //APIレスポンスがエラーかどうか。
                 String error = error(json.getRight());
-                if (!error.equals(""))
+                if (!error.isEmpty())
                     return "ERROR " + error;
 
                 //アセットを上からなめる

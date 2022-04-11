@@ -149,7 +149,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             return;
         }
 
-        if (vault.getToken().equals(""))
+        if (vault.getToken().isEmpty())
             vault.vault("");
     }
 
