@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -145,8 +146,8 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
             size.addAndGet(new File(s).length());
         });
 
-        double seconds = new BigDecimal(result.sec).divide(new BigDecimal("1000"))
-                .setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+        double seconds = new BigDecimal(result.sec)
+                .divide(new BigDecimal("1000"), 2, RoundingMode.DOWN).doubleValue();
 
 
         terminal.writeLine(
