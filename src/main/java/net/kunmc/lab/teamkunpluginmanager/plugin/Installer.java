@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -279,7 +280,9 @@ public class Installer
             finalSender.sendMessage(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadResult.getRight()));
             add++;
 
-            finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
+            finalSender.sendMessage(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis()))
+                    .subtract(new BigDecimal(String.valueOf(startTime)))
+                    .divide(new BigDecimal("1000"), 2, RoundingMode.DOWN) + "秒で取得しました。");
         }
         else //ダウンロードしない
             downloadResult = new Pair<>(true, url);
