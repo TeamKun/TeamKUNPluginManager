@@ -3,6 +3,9 @@ package net.kunmc.lab.teamkunpluginmanager.plugin;
 import com.g00fy2.versioncompare.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
@@ -388,45 +391,36 @@ public class Installer
                 finalSender.sendMessage(getDiffMessage(PluginUtil.getFile(plugin), false));
                 finalSender.sendMessage(getDiffMessage(new File("plugins/" + downloadResult.getRight()), true));
                 finalSender.sendMessage("\n");
-                sender.sendMessage(ChatColor.RED + "プラグインを置換しますか？? " +
-                        ChatColor.WHITE + "[" +
-                        ChatColor.GREEN + "y" +
-                        ChatColor.WHITE + "/" +
-                        ChatColor.RED + "N" +
-                        ChatColor.WHITE + "]");
-
                 //ファイナルにコピーする。
-                int finalAdd = add;
-                int finalModify = modify;
-
                 String fileName = downloadResult.getRight();
 
-                TeamKunPluginManager.getPlugin().getFunctional().add(
-                        sender instanceof Player ? ((Player) sender).getUniqueId(): null,
-                        new Say2Functional.FunctionalEntry(
-                                StringUtils::startsWithIgnoreCase,
-                                s -> {
-                                    //n(No)だった場合は削除しreturn
-                                    if (StringUtils.startsWithIgnoreCase(s, "n"))
-                                    {
-                                        if (!withoutRemove && new File("plugins/" + fileName).exists())
-                                            delete(finalSender, new File("plugins/" + fileName));
+                try
+                {
+                    QuestionResult questionResult = Terminals.of(sender).getInput()
+                            .showQuestion("プラグインを置換しますか？", QuestionAttribute.YES, QuestionAttribute.CANCELLABLE)
+                            .waitAndGetResult();
 
-                                        finalSender.sendMessage(Messages.getStatusMessage(finalAdd, remove, finalModify));
-                                        finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
-                                        return;
-                                    }
+                    if (questionResult.test(QuestionAttribute.CANCELLABLE))
+                    {
+                        if (!withoutRemove && new File("plugins/" + fileName).exists())
+                            delete(finalSender, new File("plugins/" + fileName));
 
-                                    //y(yes)だった場合
-                                    unInstall(null, description.getName(), true);
-                                    InstallResult ir = install(finalSender, fileName, false, false, false, true);
-                                    finalSender.sendMessage(Messages.getStatusMessage(ir.getAdd(), ir.getRemove(), ir.getModify() + 1));
-                                },
-                                "y", "n"
-                        )
-                );
+                        finalSender.sendMessage(Messages.getStatusMessage(add, remove, modify));
+                        finalSender.sendMessage(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+                    }
+                    else
+                    {
+                        unInstall(null, description.getName(), true);
+                        InstallResult ir = install(finalSender, fileName, false, false, false, true);
+                        finalSender.sendMessage(Messages.getStatusMessage(ir.getAdd(), ir.getRemove(), ir.getModify() + 1));
+                    }
+                    return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
 
-                return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
             }
 
             //削除
