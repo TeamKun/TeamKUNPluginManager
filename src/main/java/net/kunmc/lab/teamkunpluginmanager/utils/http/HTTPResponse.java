@@ -102,6 +102,7 @@ public class HTTPResponse implements AutoCloseable
         REDIRECT_LOCATION_MALFORMED,
         REDIRECT_LIMIT_EXCEED,
         UNABLE_TO_RESOLVE_HOST,
-        IO_EXCEPTION_OCCURRED
+        IO_EXCEPTION_OCCURRED,
+        URL_MALFORMED
     }
 }
