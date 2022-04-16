@@ -36,22 +36,37 @@ public class Requests
 
         String location = response.getHeader("Location");
         if (location == null)
-            return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED);
+            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED,
+                    request, response.getStatusCode(), response.getHeaders(), null
+            );
 
         if (redirectCount > REDIRECT_LIMIT)
-            return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
+            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED,
+                    request, response.getStatusCode(), response.getHeaders(), null
+            );
 
-        HTTPResponse newResponse = request(RequestContext.builder()
-                .cacheable(request.isCacheable())
-                .method(request.getMethod())
-                .extraHeaders(request.getExtraHeaders())
-                .followRedirects(false)
-                .timeout(request.getTimeout())
-                .body(request.getBody())
-                .url(location)
-                .build());
+        try
+        {
+            URL newURL = new URL(location);
 
-        return doRedirect(newResponse, redirectCount + 1);
+            HTTPResponse newResponse = request(RequestContext.builder()
+                    .cacheable(request.isCacheable())
+                    .method(request.getMethod())
+                    .extraHeaders(request.getExtraHeaders())
+                    .followRedirects(false)
+                    .timeout(request.getTimeout())
+                    .body(request.getBody())
+                    .url(newURL)
+                    .build());
+
+            return doRedirect(newResponse, redirectCount + 1);
+        }
+        catch (MalformedURLException ex)
+        {
+            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED,
+                    response.getRequest(), response.getStatusCode(), response.getHeaders(), null
+            );
+        }
     }
 
     private static Map<String, String> setupDefaultHeaders(@NotNull String host)
@@ -59,7 +74,7 @@ public class Requests
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
-                "1");
+                TeamKunPluginManager.getPlugin().getDescription().getVersion());
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
@@ -86,10 +101,8 @@ public class Requests
 
         try
         {
-            URL url = new URL(context.getUrl());
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) context.getUrl().openConnection();
 
-            connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(context.getMethod().name());
             connection.setDoOutput(context.getBody() != null);
             connection.setDoInput(true);
@@ -102,7 +115,7 @@ public class Requests
             for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
 
-            setupDefaultHeaders(url.getHost())
+            setupDefaultHeaders(context.getUrl().getHost())
                     .forEach(connection::setRequestProperty);
 
             connection.connect();
@@ -117,56 +130,27 @@ public class Requests
 
             HashMap<String, String> serverHeaders = connection.getHeaderFields().entrySet().stream().parallel()
                     .map(stringListEntry -> new AbstractMap.SimpleEntry<>(
-                            stringListEntry.getKey() == null ? null: stringListEntry.getKey().toLowerCase(),
+                            stringListEntry.getKey().toLowerCase(),
                             String.join(" ", stringListEntry.getValue())
                     ))
                     .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
 
-            String protocol = "HTTP";
-            String protocolVersion = "1.1";
-
-            if (serverHeaders.containsKey(null))
-            {
-                String[] protocolAndStatus = StringUtils.split(serverHeaders.get(null), " ");
-                if (protocolAndStatus.length > 1)
-                {
-                    String[] protocolAndVersion = StringUtils.split(protocolAndStatus[0], "/");
-                    if (protocolAndVersion.length > 0)
-                        protocol = protocolAndVersion[0];
-                    if (protocolAndVersion.length > 1)
-                        protocolVersion = protocolAndVersion[1];
-                }
-
-                serverHeaders.remove(null);
-            }
-
-            HTTPResponse.RequestStatus status = HTTPResponse.RequestStatus.OK;
-            if (responseCode >= 500)
-                status = HTTPResponse.RequestStatus.SERVER_ERROR;
-            else if (responseCode >= 400)
-                status = HTTPResponse.RequestStatus.CLIENT_ERROR;
-
-            HTTPResponse response = new HTTPResponse(status,
-                    context, protocol, protocolVersion, responseCode, serverHeaders,
-                    connection.getInputStream()
+            HTTPResponse response = new HTTPResponse(HTTPResponse.RequestStatus.OK,
+                    context, responseCode, serverHeaders, connection.getInputStream()
             );
 
             if (context.isFollowRedirects())
-                return doRedirect(response, 0);
+                doRedirect(response, 0);
 
             return response;
         }
-        catch (MalformedURLException ex)
-        {
-            return HTTPResponse.error(context, HTTPResponse.RequestStatus.URL_MALFORMED);
-        }
         catch (UnknownHostException ex)
         {
-            return HTTPResponse.error(context, HTTPResponse.RequestStatus.UNABLE_TO_RESOLVE_HOST);
+            return new HTTPResponse(HTTPResponse.RequestStatus.UNABLE_TO_RESOLVE_HOST, context, 0, null, null);
         }
         catch (IOException ex)
         {
-            return HTTPResponse.error(context, HTTPResponse.RequestStatus.IO_EXCEPTION_OCCURRED);
+            return new HTTPResponse(HTTPResponse.RequestStatus.IO_EXCEPTION_OCCURRED, context, 0, null, null);
         }
     }
 
@@ -180,7 +164,7 @@ public class Requests
      * @return The downloaded file size or -1 if the download failed.
      * @throws IOException If the download failed
      */
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
+    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull URL url,
                                     @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
     {
         try (HTTPResponse response = request(RequestContext.builder()
@@ -232,7 +216,7 @@ public class Requests
         }
     }
 
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
+    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull URL url,
                                     @NotNull Path path) throws IOException
     {
         return downloadFile(method, url, path, null);

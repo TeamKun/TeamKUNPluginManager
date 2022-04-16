@@ -2,9 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
+import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,32 +10,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-@Data
+@Value
 public class HTTPResponse implements AutoCloseable
 {
-    private final RequestStatus status;
-    private final RequestContext request;
+    RequestStatus status;
+    RequestContext request;
 
-    private final String serverProtocol;
-    private final String protocolVersion;
+    int statusCode;
 
-    private final int statusCode;
-
-    private final HashMap<String, String> headers;
+    HashMap<String, String> headers;
 
     @Nullable
-    private final InputStream inputStream;
-
-    @Getter(AccessLevel.PRIVATE)
-    private String bodyCache = null;
+    InputStream inputStream;
 
     public String getAsString()
     {
         if (inputStream == null)
             return null;
-        else if (bodyCache != null)
-            return bodyCache;
-
         StringBuilder sb = new StringBuilder();
 
         byte[] buffer = new byte[1024];
@@ -52,8 +41,7 @@ public class HTTPResponse implements AutoCloseable
             e.printStackTrace();
         }
 
-        bodyCache = sb.toString();
-        return bodyCache;
+        return sb.toString();
     }
 
     public JsonElement getAsJson()
@@ -108,21 +96,12 @@ public class HTTPResponse implements AutoCloseable
         return statusCode == 200;
     }
 
-    public static HTTPResponse error(@NotNull RequestContext request, @NotNull RequestStatus status)
-    {
-        return new HTTPResponse(status, request, null, null, -1, null, null);
-    }
-
     public enum RequestStatus
     {
         OK,
-        SERVER_ERROR,
-        CLIENT_ERROR,
-
         REDIRECT_LOCATION_MALFORMED,
         REDIRECT_LIMIT_EXCEED,
         UNABLE_TO_RESOLVE_HOST,
-        IO_EXCEPTION_OCCURRED,
-        URL_MALFORMED
+        IO_EXCEPTION_OCCURRED
     }
 }

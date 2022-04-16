@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 
+import java.net.URL;
 import java.util.Map;
 
 @Value
 @Builder
 public class RequestContext
 {
-    String url;
+    URL url;
 
     @Builder.Default
     RequestMethod method = RequestMethod.GET;
