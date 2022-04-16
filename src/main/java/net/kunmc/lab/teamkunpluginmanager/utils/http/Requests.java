@@ -45,28 +45,17 @@ public class Requests
                     request, response.getStatusCode(), response.getHeaders(), null
             );
 
-        try
-        {
-            URL newURL = new URL(location);
+        HTTPResponse newResponse = request(RequestContext.builder()
+                .cacheable(request.isCacheable())
+                .method(request.getMethod())
+                .extraHeaders(request.getExtraHeaders())
+                .followRedirects(false)
+                .timeout(request.getTimeout())
+                .body(request.getBody())
+                .url(location)
+                .build());
 
-            HTTPResponse newResponse = request(RequestContext.builder()
-                    .cacheable(request.isCacheable())
-                    .method(request.getMethod())
-                    .extraHeaders(request.getExtraHeaders())
-                    .followRedirects(false)
-                    .timeout(request.getTimeout())
-                    .body(request.getBody())
-                    .url(newURL)
-                    .build());
-
-            return doRedirect(newResponse, redirectCount + 1);
-        }
-        catch (MalformedURLException ex)
-        {
-            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED,
-                    response.getRequest(), response.getStatusCode(), response.getHeaders(), null
-            );
-        }
+        return doRedirect(newResponse, redirectCount + 1);
     }
 
     private static Map<String, String> setupDefaultHeaders(@NotNull String host)
@@ -101,7 +90,8 @@ public class Requests
 
         try
         {
-            HttpURLConnection connection = (HttpURLConnection) context.getUrl().openConnection();
+            URL url = new URL(context.getUrl());
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod(context.getMethod().name());
             connection.setDoOutput(context.getBody() != null);
@@ -115,7 +105,7 @@ public class Requests
             for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
 
-            setupDefaultHeaders(context.getUrl().getHost())
+            setupDefaultHeaders(url.getHost())
                     .forEach(connection::setRequestProperty);
 
             connection.connect();
@@ -144,6 +134,10 @@ public class Requests
 
             return response;
         }
+        catch (MalformedURLException ex)
+        {
+            return new HTTPResponse(HTTPResponse.RequestStatus.URL_MALFORMED, context, 0, null, null);
+        }
         catch (UnknownHostException ex)
         {
             return new HTTPResponse(HTTPResponse.RequestStatus.UNABLE_TO_RESOLVE_HOST, context, 0, null, null);
@@ -164,7 +158,7 @@ public class Requests
      * @return The downloaded file size or -1 if the download failed.
      * @throws IOException If the download failed
      */
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull URL url,
+    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
                                     @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
     {
         try (HTTPResponse response = request(RequestContext.builder()
@@ -216,7 +210,7 @@ public class Requests
         }
     }
 
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull URL url,
+    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
                                     @NotNull Path path) throws IOException
     {
         return downloadFile(method, url, path, null);
