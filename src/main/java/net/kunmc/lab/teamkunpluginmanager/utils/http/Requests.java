@@ -36,14 +36,10 @@ public class Requests
 
         String location = response.getHeader("Location");
         if (location == null)
-            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED,
-                    request, response.getStatusCode(), response.getHeaders(), null
-            );
+            return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED);
 
         if (redirectCount > REDIRECT_LIMIT)
-            return new HTTPResponse(HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED,
-                    request, response.getStatusCode(), response.getHeaders(), null
-            );
+            return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
 
         HTTPResponse newResponse = request(RequestContext.builder()
                 .cacheable(request.isCacheable())
@@ -136,15 +132,15 @@ public class Requests
         }
         catch (MalformedURLException ex)
         {
-            return new HTTPResponse(HTTPResponse.RequestStatus.URL_MALFORMED, context, 0, null, null);
+            return HTTPResponse.error(context, HTTPResponse.RequestStatus.URL_MALFORMED);
         }
         catch (UnknownHostException ex)
         {
-            return new HTTPResponse(HTTPResponse.RequestStatus.UNABLE_TO_RESOLVE_HOST, context, 0, null, null);
+            return HTTPResponse.error(context, HTTPResponse.RequestStatus.UNABLE_TO_RESOLVE_HOST);
         }
         catch (IOException ex)
         {
-            return new HTTPResponse(HTTPResponse.RequestStatus.IO_EXCEPTION_OCCURRED, context, 0, null, null);
+            return HTTPResponse.error(context, HTTPResponse.RequestStatus.IO_EXCEPTION_OCCURRED);
         }
     }
 
