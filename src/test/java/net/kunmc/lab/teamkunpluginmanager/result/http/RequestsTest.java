@@ -55,5 +55,16 @@ public class RequestsTest
         Assert.assertEquals(response.getHeader("Location"), mockUrl);
     }
 
+    @Test
+    public void testGetCache()
+    {
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url(mockUrl)
+                .build());
 
+        String first = response.getAsString();
+        String second = response.getAsString();
+
+        Assert.assertEquals(first, second);
+    }
 }
