@@ -107,6 +107,9 @@ public class HTTPResponse implements AutoCloseable
     public enum RequestStatus
     {
         OK,
+        SERVER_ERROR,
+        CLIENT_ERROR,
+
         REDIRECT_LOCATION_MALFORMED,
         REDIRECT_LIMIT_EXCEED,
         UNABLE_TO_RESOLVE_HOST,

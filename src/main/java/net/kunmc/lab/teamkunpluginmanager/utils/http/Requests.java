@@ -140,7 +140,13 @@ public class Requests
                 serverHeaders.remove(null);
             }
 
-            HTTPResponse response = new HTTPResponse(HTTPResponse.RequestStatus.OK,
+            HTTPResponse.RequestStatus status = HTTPResponse.RequestStatus.OK;
+            if (responseCode >= 500)
+                status = HTTPResponse.RequestStatus.SERVER_ERROR;
+            else if (responseCode >= 400)
+                status = HTTPResponse.RequestStatus.CLIENT_ERROR;
+
+            HTTPResponse response = new HTTPResponse(status,
                     context, protocol, protocolVersion, responseCode, serverHeaders,
                     connection.getInputStream()
             );
