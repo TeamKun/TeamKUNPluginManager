@@ -2,7 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import lombok.Value;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,26 +12,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-@Value
+@Data
 public class HTTPResponse implements AutoCloseable
 {
-    RequestStatus status;
-    RequestContext request;
+    private final RequestStatus status;
+    private final RequestContext request;
 
-    String serverProtocol;
-    String protocolVersion;
+    private final String serverProtocol;
+    private final String protocolVersion;
 
-    int statusCode;
+    private final int statusCode;
 
-    HashMap<String, String> headers;
+    private final HashMap<String, String> headers;
 
     @Nullable
-    InputStream inputStream;
+    private final InputStream inputStream;
+
+    @Getter(AccessLevel.PRIVATE)
+    private String bodyCache = null;
 
     public String getAsString()
     {
         if (inputStream == null)
             return null;
+        else if (bodyCache != null)
+            return bodyCache;
+
         StringBuilder sb = new StringBuilder();
 
         byte[] buffer = new byte[1024];
@@ -44,7 +52,8 @@ public class HTTPResponse implements AutoCloseable
             e.printStackTrace();
         }
 
-        return sb.toString();
+        bodyCache = sb.toString();
+        return bodyCache;
     }
 
     public JsonElement getAsJson()
