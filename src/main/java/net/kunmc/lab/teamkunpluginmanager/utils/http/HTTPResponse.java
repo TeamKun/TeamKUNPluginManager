@@ -96,6 +96,11 @@ public class HTTPResponse implements AutoCloseable
         return statusCode == 200;
     }
 
+    public static HTTPResponse error(@NotNull RequestContext request, @NotNull RequestStatus status)
+    {
+        return new HTTPResponse(status, request, -1, null, null);
+    }
+
     public enum RequestStatus
     {
         OK,
