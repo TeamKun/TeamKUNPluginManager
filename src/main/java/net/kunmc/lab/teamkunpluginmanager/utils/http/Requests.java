@@ -59,7 +59,7 @@ public class Requests
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
-                TeamKunPluginManager.getPlugin().getDescription().getVersion());
+                "1");
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
@@ -89,6 +89,7 @@ public class Requests
             URL url = new URL(context.getUrl());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+            connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(context.getMethod().name());
             connection.setDoOutput(context.getBody() != null);
             connection.setDoInput(true);
@@ -145,7 +146,7 @@ public class Requests
             );
 
             if (context.isFollowRedirects())
-                doRedirect(response, 0);
+                return doRedirect(response, 0);
 
             return response;
         }
