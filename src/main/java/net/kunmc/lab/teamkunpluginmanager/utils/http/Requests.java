@@ -116,13 +116,32 @@ public class Requests
 
             HashMap<String, String> serverHeaders = connection.getHeaderFields().entrySet().stream().parallel()
                     .map(stringListEntry -> new AbstractMap.SimpleEntry<>(
-                            stringListEntry.getKey().toLowerCase(),
+                            stringListEntry.getKey() == null ? null: stringListEntry.getKey().toLowerCase(),
                             String.join(" ", stringListEntry.getValue())
                     ))
                     .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
 
+            String protocol = "HTTP";
+            String protocolVersion = "1.1";
+
+            if (serverHeaders.containsKey(null))
+            {
+                String[] protocolAndStatus = StringUtils.split(serverHeaders.get(null), " ");
+                if (protocolAndStatus.length > 1)
+                {
+                    String[] protocolAndVersion = StringUtils.split(protocolAndStatus[0], "/");
+                    if (protocolAndVersion.length > 0)
+                        protocol = protocolAndVersion[0];
+                    if (protocolAndVersion.length > 1)
+                        protocolVersion = protocolAndVersion[1];
+                }
+
+                serverHeaders.remove(null);
+            }
+
             HTTPResponse response = new HTTPResponse(HTTPResponse.RequestStatus.OK,
-                    context, responseCode, serverHeaders, connection.getInputStream()
+                    context, protocol, protocolVersion, responseCode, serverHeaders,
+                    connection.getInputStream()
             );
 
             if (context.isFollowRedirects())
