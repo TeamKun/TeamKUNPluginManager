@@ -16,6 +16,9 @@ public class HTTPResponse implements AutoCloseable
     RequestStatus status;
     RequestContext request;
 
+    String serverProtocol;
+    String protocolVersion;
+
     int statusCode;
 
     HashMap<String, String> headers;
@@ -98,7 +101,7 @@ public class HTTPResponse implements AutoCloseable
 
     public static HTTPResponse error(@NotNull RequestContext request, @NotNull RequestStatus status)
     {
-        return new HTTPResponse(status, request, -1, null, null);
+        return new HTTPResponse(status, request, null, null, -1, null, null);
     }
 
     public enum RequestStatus
