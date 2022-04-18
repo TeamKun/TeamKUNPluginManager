@@ -3,8 +3,9 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MarketplaceResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,13 +53,13 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
         if (this.description != null)
             return this.description;
 
-        Pair<Integer, String> description =
-                URLUtils.getAsString("https://addons-ecs.forgesvc.net/api/v2/addon/" + this.id +"/description");
-
-        if (description.getLeft() != 200)
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url("https://addons-ecs.forgesvc.net/api/v2/addon/" + this.id + "/description")
+                .build());
+        if (response.isError())
             return "Failed to get description";
 
-        this.description = description.getRight();
+        this.description = response.getAsString();
         return this.description;
     }
 

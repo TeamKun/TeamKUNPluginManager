@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,8 +8,9 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
@@ -67,12 +67,18 @@ public class CurseBukkitResolver implements URLResolver
         if (slug == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
 
-        Pair<Integer, String> projectSearchResponse =  URLUtils.getAsString("https://servermods.forgesvc.net/servermods/projects?search=" + slug);
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url("https://servermods.forgesvc.net/servermods/projects?search=" + slug)
+                .build());
 
-        if (projectSearchResponse.getLeft() != 200)
-            return processErrorResponse(projectSearchResponse.getLeft(), errorSource);
+        if (response.getStatus() != HTTPResponse.RequestStatus.OK)
+            return processErrorResponse(response, errorSource);
 
-        JsonArray projectSearchResult = new Gson().fromJson(projectSearchResponse.getRight(), JsonArray.class);
+        JsonElement json = response.getAsJson();
+        if (!json.isJsonArray())
+            return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED, errorSource);
+
+        JsonArray projectSearchResult = (JsonArray) json;
 
         String name = null;
         long projectId = -1;
@@ -96,13 +102,19 @@ public class CurseBukkitResolver implements URLResolver
 
     private ResolveResult processFiles(String slug, String name, long projectId, String version, ResolveResult.Source source)
     {
-        Pair<Integer, String> projectFilesResponse =  URLUtils.getAsString("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId);
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId)
+                .build());
 
-        ErrorResult mayError = processErrorResponse(projectFilesResponse.getLeft(), source);
+        ErrorResult mayError = processErrorResponse(response, source);
         if (mayError != null)
             return mayError;
 
-        JsonArray projectFilesResult = new Gson().fromJson(projectFilesResponse.getRight(), JsonArray.class);
+        JsonElement json = response.getAsJson();
+        if (!json.isJsonArray())
+            return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED, source);
+
+        JsonArray projectFilesResult = (JsonArray) json;
         if (projectFilesResult.size() == 0)
             return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, source);
 

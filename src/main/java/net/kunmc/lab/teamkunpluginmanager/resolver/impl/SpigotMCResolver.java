@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
@@ -8,8 +7,9 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -51,19 +51,16 @@ public class SpigotMCResolver implements URLResolver
 
         String spigotAPIUrl = "https://apple.api.spiget.org/v2/resources/" + id;
 
-        Pair<Integer, String> data = URLUtils.getAsString(spigotAPIUrl);
+        HTTPResponse data = Requests.request(RequestContext.builder()
+                .url(spigotAPIUrl)
+                .build());
 
-
-        ErrorResult mayError = processErrorResponse(data.getLeft(), ResolveResult.Source.SPIGOT_MC);
+        ErrorResult mayError = processErrorResponse(data, ResolveResult.Source.SPIGOT_MC);
 
         if (mayError != null)
             return mayError;
 
-        String json = data.getRight();
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-
-        return buildResult(jsonObject, version);
+        return buildResult(data.getAsJson().getAsJsonObject(), version);
     }
 
     private ResolveResult buildResult(JsonObject jsonObject, @Nullable String version)

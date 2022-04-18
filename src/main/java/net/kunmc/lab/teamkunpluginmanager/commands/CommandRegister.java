@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
@@ -9,8 +8,9 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
@@ -24,22 +24,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandRegister extends CommandBase
 {
-    private final static String CLIENT_ID = "94c5d446dbc765895979";
+    private static final String CLIENT_ID = "94c5d446dbc765895979";
+    private static final String OAUTH_SCOPE = "repo%20public_repo";
+    private static final String OAUTH_PREPARE_URL =
+            "https://github.com/login/device/code?client_id=" + CLIENT_ID + "&scope=" + OAUTH_SCOPE;
+    private static final String OAUTH_ACCESS_URL =
+            "https://github.com/login/oauth/access_token?client_id=" + CLIENT_ID +
+                    "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=";
+
     private static final TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
-    private static void parseErrorAndPost(Terminal terminal, String data, int code)
+    private static void parseErrorAndPost(Terminal terminal, HTTPResponse response)
     {
         try
         {
-            JsonObject response = new Gson().fromJson(data, JsonObject.class);
-            if (response.has("error"))
-                terminal.error("エラーが発生しました。：Server response with " + parseError(response.get("error").getAsString()));
+            JsonObject json = response.getAsJson().getAsJsonObject();
+            if (json.has("error"))
+                terminal.error("エラーが発生しました。：Server response with " + parseError(json.get("error").getAsString()));
             else
-                terminal.error("エラーが発生しました。：Server response with code " + code);
+                terminal.error("エラーが発生しました。：Server response with code " + response.getStatusCode());
         }
-        catch (JsonSyntaxException e)
+        catch (JsonSyntaxException | IllegalStateException e)
         {
-            terminal.error("サーバから不正なデータを受信しました。：" + data.substring(0, Math.min(data.length(), 50)));
+            String responseString = response.getAsString();
+
+            terminal.error("サーバから不正なデータを受信しました。：" +
+                    responseString.substring(0, Math.min(responseString.length(), 50)));
         }
     }
 
@@ -47,18 +57,17 @@ public class CommandRegister extends CommandBase
     {
         terminal.info(ChatColor.LIGHT_PURPLE + "サーバと通信しています...");
 
-        Pair<Integer, String> data = URLUtils.postAsString(
-                "https://github.com/login/device/code?client_id=" + CLIENT_ID + "&scope=repo%20public_repo",
-                "", "application/json", "text/plain"
-        );
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .method(RequestContext.RequestMethod.GET)
+                .url(OAUTH_PREPARE_URL)
+                .build());
 
-        if (data.getLeft() != 200)
+        if (response.getStatus() != HTTPResponse.RequestStatus.OK)
         {
-            parseErrorAndPost(terminal, data.getRight(), data.getLeft());
-            return;
+            parseErrorAndPost(terminal, response);
         }
 
-        JsonObject object = new Gson().fromJson(data.getRight(), JsonObject.class);
+        JsonObject object = response.getAsJson().getAsJsonObject();
 
         String deviceCode = object.get("device_code").getAsString();
         String userCode = object.get("user_code").getAsString();
@@ -93,20 +102,18 @@ public class CommandRegister extends CommandBase
     private static Runner.GeneralExceptableRunner polling(Terminal terminal, String device_code, AtomicBoolean successFlag)
     {
         return () -> {
-            Pair<Integer, String> pollingData = URLUtils.postAsString(
-                    "https://github.com/login/oauth/access_token?client_id=" + CLIENT_ID +
-                            "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=" + device_code,
-                    "",
-                    "application/json",
-                    "text/plain"
-            );
-            if (pollingData.getLeft() != 200)
+            HTTPResponse httpResponse = Requests.request(RequestContext.builder()
+                    .method(RequestContext.RequestMethod.POST)
+                    .url(OAUTH_ACCESS_URL + device_code)
+                    .build());
+
+            if (httpResponse.getStatus() != HTTPResponse.RequestStatus.OK)
             {
-                parseErrorAndPost(terminal, pollingData.getRight(), pollingData.getLeft());
+                parseErrorAndPost(terminal, httpResponse);
                 throw new RuntimeException(); // For cancel bukkit task
             }
 
-            JsonObject response = new Gson().fromJson(pollingData.getRight(), JsonObject.class);
+            JsonObject response = httpResponse.getAsJson().getAsJsonObject();
 
             if (response.has("error"))
             {
