@@ -67,7 +67,7 @@ public class Installer
         //プラグインが見つからない場合はreturn
         if (info == null)
         {
-            terminal.writeLine(ChatColor.RED + "E: プラグインが見つかりませんでした。");
+            terminal.error("プラグインが見つかりませんでした。");
             return;
         }
 
@@ -77,7 +77,7 @@ public class Installer
         //アンインストール対象が存在するかチェック
         if (!PluginUtil.isPluginLoaded(info.name))
         {
-            terminal.writeLine(ChatColor.RED + "E: プラグインが見つかりませんでした。");
+            terminal.error("プラグインが見つかりませんでした。");
             return;
         }
 
@@ -85,9 +85,9 @@ public class Installer
         if (TeamKunPluginManager.getPlugin().getPluginConfig().
                 getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name)))
         {
-            terminal.writeLine(ChatColor.YELLOW + "W: このプラグインは保護されています。\n" +
+            terminal.warn("このプラグインは保護されています。\n" +
                     ChatColor.YELLOW + "   保護されているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
-            terminal.writeLine(ChatColor.RED + "E: システムが保護されました。");
+            terminal.error("システムが保護されました。");
             return;
         }
 
@@ -95,10 +95,10 @@ public class Installer
         // 強制アンインストールである場合は無視
         if (!info.rdepends.isEmpty() && !force)
         {
-            terminal.writeLine(ChatColor.YELLOW + "W: このプラグインは以下のプラグインの依存関係です。");
+            terminal.warn("このプラグインは以下のプラグインの依存関係です。");
             terminal.writeLine(ChatColor.BLUE + info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.joining(" ")));
             terminal.writeLine(ChatColor.YELLOW + "    依存関係になっているプラグインを削除すると、サーバの動作に支障を来す可能性がございます。");
-            terminal.writeLine(ChatColor.RED + "E: システムが保護されました。");
+            terminal.error("システムが保護されました。");
             return;
         }
 
@@ -130,7 +130,7 @@ public class Installer
             if (!autoRemovable.isEmpty())
                 terminal.writeLine(autoRemovable);
             terminal.writeLine(Messages.getStatusMessage(0, 1, 0));
-            terminal.writeLine(ChatColor.GREEN + "S: " + plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
+            terminal.success(plugin.getName() + ":" + plugin.getDescription().getVersion() + " を正常にアンインストールしました。");
 
         }, 20L);
     }
@@ -191,8 +191,7 @@ public class Installer
             {
                 ErrorResult errorResult = (ErrorResult) resolveResult;
 
-                terminal.writeLine(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
-                        " リゾルバ：" + errorResult.getSource().getName());
+                terminal.error(errorResult.getCause().getMessage() + " リゾルバ：" + errorResult.getSource().getName());
 
                 terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
@@ -203,14 +202,14 @@ public class Installer
 
                 try
                 {
-                    if (terminal.isQuiet())  // TODO: なんやねんこのクソコード
+                    if (terminal.isQuiet())
                     {
                         resolveResult = multiResult.getResolver().autoPickOnePlugin(multiResult);
                         if (resolveResult instanceof ErrorResult)
                         {
                             ErrorResult errorResult = (ErrorResult) resolveResult;
 
-                            terminal.writeLine(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
+                            terminal.error(errorResult.getCause().getMessage() +
                                     " リゾルバ：" + errorResult.getSource().getName());
 
                             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
@@ -256,8 +255,8 @@ public class Installer
             downloadResult = URLUtils.downloadFile(jarURL);
             if (downloadResult.getLeft() == null && downloadResult.getRight().startsWith("ERROR "))
             {
-                terminal.writeLine(ChatColor.YELLOW + "W: " + downloadResult.getRight().substring(6));
-                terminal.writeLine(ChatColor.RED + "E: ファイルのダウンロードに失敗しました。");
+                terminal.warn(downloadResult.getRight().substring(6));
+                terminal.error("ファイルのダウンロードに失敗しました。");
                 terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
             }
@@ -283,7 +282,7 @@ public class Installer
         }
         catch (FileNotFoundException e) //ファイルが見つからない場合はreturn
         {
-            terminal.writeLine(ChatColor.RED + "E: ファイルが見つかりませんでした。");
+            terminal.error("ファイルが見つかりませんでした。");
             if (!withoutRemove)
                 delete(terminal, new File("plugins/" + downloadResult.getRight()));
 
@@ -293,7 +292,7 @@ public class Installer
         }
         catch (IOException | InvalidDescriptionException e) //plugin.ymlがおかしい場合はreturn
         {
-            terminal.writeLine(ChatColor.RED + "E: 情報を読み込めませんでした。");
+            terminal.error("情報を読み込めませんでした。");
             if (!withoutRemove)
                 delete(terminal, new File("plugins/" + downloadResult.getRight()));
 
@@ -304,7 +303,7 @@ public class Installer
         //保護されているプラグインの場合はインスコ・変換せずreturn
         if (TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(description.getName())))
         {
-            terminal.writeLine(ChatColor.RED + "E: このプラグインは保護されています。");
+            terminal.error("このプラグインは保護されています。");
             add--;
             if (!withoutRemove)
                 delete(terminal, new File("plugins/" + downloadResult.getRight()));
@@ -364,7 +363,7 @@ public class Installer
         else if (PluginUtil.isPluginLoaded(description.getName())) //バージョンが変わらない(もしくは低い)。
         {
             add--;
-            terminal.writeLine(ChatColor.YELLOW + "W: 既に同じプラグインが存在します。");
+            terminal.warn("既に同じプラグインが存在します。");
 
             //それでもインストールするかどうかを尋
             if (terminal.isPlayer())  // TODO: Remove this if statement
@@ -388,7 +387,7 @@ public class Installer
                             delete(terminal, new File("plugins/" + fileName));
 
                         terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
-                        terminal.writeLine(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+                        terminal.success(description.getFullName() + " を正常にインストールしました。");
                     }
                     else
                     {
@@ -410,7 +409,7 @@ public class Installer
                 delete(terminal, new File("plugins/" + downloadResult.getRight()));
 
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
-            terminal.writeLine(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+            terminal.success(description.getFullName() + " を正常にインストールしました。");
             return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
 
         }
@@ -453,9 +452,9 @@ public class Installer
             {
                 ErrorResult errorResult = (ErrorResult) resolveResult;
 
-                terminal.writeLine(ChatColor.RED + "E: " + errorResult.getCause().getMessage() +
+                terminal.error(errorResult.getCause().getMessage() +
                         " リゾルバ：" + errorResult.getSource().getName());
-                terminal.writeLine(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));
+                terminal.warn(dependency + ": " + dependency.substring(5));
                 failedResolve.add(dependency);
                 continue;
             }
@@ -466,7 +465,7 @@ public class Installer
                 resolveResult = multiResult.getResolver().autoPickOnePlugin(multiResult);
                 if (resolveResult instanceof ErrorResult)
                 {
-                    terminal.writeLine(ChatColor.YELLOW + "W: " + dependency + ": " + dependency.substring(5));
+                    terminal.warn(dependency + ": " + dependency.substring(5));
                     failedResolve.add(dependency);
                     continue;
                 }
@@ -513,7 +512,7 @@ public class Installer
         if (!failedResolve.isEmpty())
         {
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
-            terminal.writeLine(ChatColor.YELLOW + "W: " + description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
+            terminal.warn(description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
             terminal.writeLine(ChatColor.RED + String.join(", ", failedResolve));
             return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
         }
@@ -533,7 +532,7 @@ public class Installer
                     //プラグインが既に読まれてい場合はreturn
                     if (PluginUtil.isPluginLoaded(description.getName()))
                     {
-                        terminal.writeLine(ChatColor.RED + "E: Bukkitのインジェクションに失敗しました。");
+                        terminal.error("Bukkitのインジェクションに失敗しました。");
 
                         //削除する場合は削除
                         if (!withoutRemove)
@@ -566,7 +565,7 @@ public class Installer
 
         //失敗フラグが立っていた場合は表示
         if (!success.get())
-            terminal.writeLine(ChatColor.RED + "E: プラグインの読み込みに失敗しました。");
+            terminal.error("プラグインの読み込みに失敗しました。");
 
         int finalAdd1 = add;
         int finalModify1 = modify;
@@ -587,7 +586,7 @@ public class Installer
             terminal.writeLine(autoRemovable);
 
         terminal.writeLine(Messages.getStatusMessage(finalAdd1, remove, finalModify1));
-        terminal.writeLine(ChatColor.GREEN + "S: " + description.getFullName() + " を正常にインストールしました。");
+        terminal.success(description.getFullName() + " を正常にインストールしました。");
             /*}
         }.runTaskLater(TeamKunPluginManager.plugin, 10L);*/
         return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
@@ -644,7 +643,7 @@ public class Installer
         }
         catch (Exception e)
         {
-            terminal.writeLine(ChatColor.RED + "E: ファイルの削除に失敗しました: " + f.getName());
+            terminal.error("ファイルの削除に失敗しました: " + f.getName());
         }
 
     }
@@ -655,7 +654,7 @@ public class Installer
         if (terminal instanceof Player)
             uuid = ((Player) terminal).getUniqueId();
 
-        terminal.writeLine(ChatColor.YELLOW + "W: リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
+        terminal.warn("リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
         AtomicInteger integer = new AtomicInteger(0);
         jar.forEach(pair -> {
             int index = integer.incrementAndGet();
@@ -666,7 +665,7 @@ public class Installer
 
         });
         terminal.write(Component.text(ChatColor.LIGHT_PURPLE + "- [C] " + ChatColor.GREEN + "キャンセル")
-                .clickEvent(ClickEvent.runCommand("/kpm i $CF$"))
+                .clickEvent(ClickEvent.runCommand("/kpm i $-CF$"))
                 .hoverEvent(HoverEvent.showText(
                         Component.text(ChatColor.GREEN + "クリックしてこのリリースをインストール"))));
 
@@ -674,7 +673,7 @@ public class Installer
         TeamKunPluginManager.getPlugin().getFunctional().add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
             if (s.equalsIgnoreCase("c"))
             {
-                terminal.writeLine(ChatColor.RED + "E: キャンセルされました。");
+                terminal.error("キャンセルされました。");
                 return;
             }
 
@@ -682,7 +681,7 @@ public class Installer
                     if (i < 1 || i > jar.size() + 1)
                     {
                         terminal.writeLine(ChatColor.RED + "リソースは 1 以上、" + (jar.size() + 1) + " 以下である必要があります。");
-                        terminal.writeLine(ChatColor.RED + "E: キャンセルされました。");
+                        terminal.error("キャンセルされました。");
                         return;
                     }
 
