@@ -17,7 +17,8 @@ import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -32,6 +33,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -236,7 +239,8 @@ public class Installer
                 jarURL = ((SuccessResult) resolveResult).getDownloadUrl();
         }
 
-        Pair<Boolean, String> downloadResult;
+        long downloadResult;
+        Path downloadPath;
 
         //ダウンロード
         if (!withoutDownload)
@@ -247,16 +251,24 @@ public class Installer
             long startTime = System.currentTimeMillis();
 
             //ファイルをダウンロード
-            downloadResult = URLUtils.downloadFile(jarURL);
-            if (downloadResult.getLeft() == null && downloadResult.getRight().startsWith("ERROR "))
+            try
             {
-                terminal.warn(downloadResult.getRight().substring(6));
-                terminal.error("ファイルのダウンロードに失敗しました。");
+                downloadPath = Paths.get("plugins", jarURL.substring(url.lastIndexOf("/") + 1));
+                downloadResult = Requests.downloadFile(
+                        RequestContext.RequestMethod.GET,
+                        jarURL,
+                        downloadPath
+                );
+            }
+            catch (IOException e)
+            {
+                terminal.error("ファイルのダウンロードに失敗しました：" + e.getMessage());
                 terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
                 return new InstallResult(add, remove, modify, false);
             }
 
-            terminal.writeLine(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadResult.getRight()));
+
+            terminal.writeLine(Messages.getModifyMessage(Messages.ModifyType.ADD, downloadPath.getFileName().toString()));
             add++;
 
             terminal.writeLine(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis()))
@@ -264,7 +276,10 @@ public class Installer
                     .divide(new BigDecimal("1000"), 2, RoundingMode.DOWN) + "秒で取得しました。");
         }
         else //ダウンロードしない
-            downloadResult = new Pair<>(true, url);
+        {
+            downloadResult = -1;
+            downloadPath = Paths.get(url);
+        }
 
         terminal.writeLine(ChatColor.LIGHT_PURPLE + "情報を読み込み中...");
 
@@ -273,13 +288,13 @@ public class Installer
         try
         {
             //plugin.ymlを読み取り
-            description = PluginUtil.loadDescription(new File("plugins/" + downloadResult.getRight()));
+            description = PluginUtil.loadDescription(downloadPath.toFile());
         }
         catch (FileNotFoundException e) //ファイルが見つからない場合はreturn
         {
             terminal.error("ファイルが見つかりませんでした。");
             if (!withoutRemove)
-                delete(terminal, new File("plugins/" + downloadResult.getRight()));
+                delete(terminal, downloadPath.toFile());
 
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
 
@@ -289,7 +304,7 @@ public class Installer
         {
             terminal.error("情報を読み込めませんでした。");
             if (!withoutRemove)
-                delete(terminal, new File("plugins/" + downloadResult.getRight()));
+                delete(terminal, downloadPath.toFile());
 
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
@@ -301,7 +316,7 @@ public class Installer
             terminal.error("このプラグインは保護されています。");
             add--;
             if (!withoutRemove)
-                delete(terminal, new File("plugins/" + downloadResult.getRight()));
+                delete(terminal, downloadPath.toFile());
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
             return new InstallResult(add, remove, modify, false);
         }
@@ -319,10 +334,10 @@ public class Installer
                 //ファイルを移動
                 //114514.jar => YJSNPIPlugin-1.0.jar
                 FileUtils.moveFile(
-                        new File("plugins/" + downloadResult.getRight()),
+                        downloadPath.toFile(),
                         new File("plugins/" + fileName)
                 );
-                downloadResult = new Pair<>(false, fileName);
+                downloadPath = Paths.get("plugins/" + fileName);
             }
             catch (IOException e)
             {
@@ -365,10 +380,10 @@ public class Installer
             {
                 //ファイルの比較を行う
                 terminal.writeLine(getDiffMessage(PluginUtil.getFile(plugin), false));
-                terminal.writeLine(getDiffMessage(new File("plugins/" + downloadResult.getRight()), true));
+                terminal.writeLine(getDiffMessage(downloadPath.toFile(), true));
                 terminal.writeLine("\n");
                 //ファイナルにコピーする。
-                String fileName = downloadResult.getRight();
+                String fileName = downloadPath.getFileName().toString();
 
                 try
                 {
@@ -390,7 +405,9 @@ public class Installer
                         InstallResult ir = install(terminal, fileName, false, false, false, true);
                         terminal.writeLine(Messages.getStatusMessage(ir.getAdd(), ir.getRemove(), ir.getModify() + 1));
                     }
-                    return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
+                    return new InstallResult(downloadPath.getFileName().toString(), description.getName(),
+                            add, remove, modify, true
+                    );
 
                 }
                 catch (InterruptedException e)
@@ -400,16 +417,18 @@ public class Installer
             }
 
             //削除
-            if (!withoutRemove && new File("plugins/" + downloadResult.getRight()).exists())
-                delete(terminal, new File("plugins/" + downloadResult.getRight()));
+            if (!withoutRemove && downloadPath.toFile().exists())
+                delete(terminal, downloadPath.toFile());
 
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
             terminal.success(description.getFullName() + " を正常にインストールしました。");
-            return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
+            return new InstallResult(downloadPath.getFileName().toString(), description.getName(),
+                    add, remove, modify, true
+            );
 
         }
 
-        added.add(new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true));
+        added.add(new InstallResult(downloadPath.getFileName().toString(), description.getName(), add, remove, modify, true));
 
         //==================依存関係解決処理 ここから==================
 
@@ -509,7 +528,9 @@ public class Installer
             terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
             terminal.warn(description.getFullName() + " を正常にインストールしましたが、以下の依存関係の処理に失敗しました。");
             terminal.writeLine(ChatColor.RED + String.join(", ", failedResolve));
-            return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
+            return new InstallResult(downloadPath.getFileName().toString(), description.getName(),
+                    add, remove, modify, true
+            );
         }
 
         AtomicBoolean success = new AtomicBoolean(true);
@@ -584,7 +605,9 @@ public class Installer
         terminal.success(description.getFullName() + " を正常にインストールしました。");
             /*}
         }.runTaskLater(TeamKunPluginManager.plugin, 10L);*/
-        return new InstallResult(downloadResult.getRight(), description.getName(), add, remove, modify, true);
+        return new InstallResult(downloadPath.getFileName().toString(), description.getName(),
+                add, remove, modify, true
+        );
     }
 
     private static String getDiffMessage(File f, boolean isNew)
