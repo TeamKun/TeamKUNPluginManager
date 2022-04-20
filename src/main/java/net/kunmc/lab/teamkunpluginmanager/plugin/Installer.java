@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
@@ -16,17 +17,11 @@ import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -37,15 +32,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 public class Installer
@@ -222,15 +217,15 @@ public class Installer
                     }
                     else
                     {
-                        List<Pair<String, String>> multi = Arrays.stream(multiResult.getResults())
-                                .filter(result -> result instanceof SuccessResult)
-                                .map(result -> {
-                                    SuccessResult successResult = (SuccessResult) result;
-                                    return new Pair<>(successResult.getVersion(), successResult.getDownloadUrl());
-                                }).collect(Collectors.toList());
+                        SuccessResult result = dependAskToTerminal(terminal, multiResult);
 
-                        depend_askToCommandSender(terminal, multi, ignoreInstall, withoutResolveDepends, withoutRemove);
-                        return new InstallResult(add, remove, modify, false);
+                        if (result == null)
+                        {
+                            terminal.writeLine(Messages.getStatusMessage(add, remove, modify));
+                            return new InstallResult(add, remove, modify, false);
+                        }
+
+                        jarURL = result.getDownloadUrl();
                     }
                 }
                 catch (IllegalArgumentException ignored)
@@ -648,50 +643,58 @@ public class Installer
 
     }
 
-    private static void depend_askToCommandSender(Terminal terminal, List<Pair<String, String>> jar, boolean ignoreInstall, boolean withoutResolveDepends, boolean withoutRemove)
+    private static HashMap<String, SuccessResult> buildChoicesRecursive(int count, MultiResult result)
     {
-        UUID uuid = null;
-        if (terminal instanceof Player)
-            uuid = ((Player) terminal).getUniqueId();
+        HashMap<String, SuccessResult> choices = new HashMap<>();
 
-        terminal.warn("リソースが複数見つかりました。インストールするリソースを選択するか、キャンセルを行ってください。");
-        AtomicInteger integer = new AtomicInteger(0);
-        jar.forEach(pair -> {
-            int index = integer.incrementAndGet();
-            terminal.write(Component.text(ChatColor.LIGHT_PURPLE + "- [" + index + "] " + ChatColor.GREEN + pair.getLeft())
-                    .clickEvent(ClickEvent.runCommand("/kpm i " + pair.getRight()))
-                    .hoverEvent(HoverEvent.showText(
-                            Component.text(ChatColor.GREEN + "クリックしてこのリリースをインストール"))));
-
-        });
-        terminal.write(Component.text(ChatColor.LIGHT_PURPLE + "- [C] " + ChatColor.GREEN + "キャンセル")
-                .clickEvent(ClickEvent.runCommand("/kpm i $-CF$"))
-                .hoverEvent(HoverEvent.showText(
-                        Component.text(ChatColor.GREEN + "クリックしてこのリリースをインストール"))));
-
-        // TODO: Replace to Question
-        TeamKunPluginManager.getPlugin().getFunctional().add(uuid, new Say2Functional.FunctionalEntry(StringUtils::equalsIgnoreCase, s -> {
-            if (s.equalsIgnoreCase("c"))
+        for (ResolveResult resolveResult : result.getResults())
+        {
+            if (resolveResult instanceof SuccessResult)
             {
-                terminal.error("キャンセルされました。");
-                return;
+                choices.put(count + "." + resolveResult.hashCode(), (SuccessResult) resolveResult);
+                continue;
             }
 
-            int i = Integer.parseInt(s);
-                    if (i < 1 || i > jar.size() + 1)
-                    {
-                        terminal.writeLine(ChatColor.RED + "リソースは 1 以上、" + (jar.size() + 1) + " 以下である必要があります。");
-                        terminal.error("キャンセルされました。");
-                        return;
-                    }
+            if (resolveResult instanceof MultiResult)
+                choices.putAll(buildChoicesRecursive(count + 1, (MultiResult) resolveResult));
+        }
 
-                    Pair<String, String> resource = jar.get(--i);
-            install(terminal, resource.getRight(), ignoreInstall, withoutResolveDepends, withoutRemove, false);
+        return choices;
+    }
 
-                }, (String[]) ArrayUtils.add(IntStream.range(1, jar.size() + 1).parallel()
-                        .mapToObj(String::valueOf)
-                        .toArray(String[]::new), "c"))
-        );
+    private static SuccessResult dependAskToTerminal(Terminal terminal, MultiResult result)
+    {
+        terminal.warn("複数のリソースが見つかりました。");
+
+        Map<String, SuccessResult> hashResultMap = buildChoicesRecursive(1, result);
+        Map<String, String> hashTextMap = hashResultMap.entrySet().stream()
+                .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().getFileName()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+
+        QuestionResult questionResult;
+
+        try
+        {
+            questionResult =
+                    terminal.getInput().showQuestion("インストールするリリースを選択してください。",
+                                    new AttributeChoice(hashTextMap), QuestionAttribute.CANCELLABLE
+                            )
+                            .waitAndGetResult();
+        }
+        catch (InterruptedException e)
+        {
+            terminal.error("処理が中断されました。");
+            return null;
+        }
+
+        if (questionResult.test(QuestionAttribute.CANCELLABLE))
+        {
+            terminal.warn("インストールがキャンセルされました。");
+            return null;
+        }
+
+        return hashResultMap.get(questionResult.getRawAnswer());
     }
 
     private static String pickPluginJar(List<Pair<String, String>> jar)
