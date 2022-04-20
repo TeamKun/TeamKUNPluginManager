@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
@@ -29,7 +30,7 @@ public class CommandAutoRemove extends CommandBase
             Plugin plugin = Bukkit.getPluginManager().getPlugin(removable);
             if (plugin != null)
             {
-                Installer.unInstall(null, removable, true);
+                Installer.unInstall(Terminals.ofConsole().quiet(), removable, true);
                 removed.add(removable);
             }
             DependencyTree.purge(removable);
