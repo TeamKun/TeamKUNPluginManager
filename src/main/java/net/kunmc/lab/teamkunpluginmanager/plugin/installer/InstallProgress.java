@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -9,6 +10,9 @@ import java.util.List;
 @Getter
 public class InstallProgress
 {
+    @Setter
+    private InstallPhase phase;
+
     private final List<String> upgraded;
     private final List<String> installed;
     private final List<String> removed;
@@ -20,6 +24,8 @@ public class InstallProgress
         this.installed = new ArrayList<>();
         this.removed = new ArrayList<>();
         this.pending = new ArrayList<>();
+
+        this.phase = InstallPhase.STARTED;
     }
 
     private void removeFromAll(@NotNull String name)
