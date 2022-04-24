@@ -7,8 +7,8 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 
 @AllArgsConstructor
 @Data
-public class ResolvingPluginSignal implements InstallerSignal
+public class PluginResolvingSignal implements InstallerSignal
 {
-    private final PluginResolver resolver;
     private String query;
+    private final PluginResolver resolver;
 }

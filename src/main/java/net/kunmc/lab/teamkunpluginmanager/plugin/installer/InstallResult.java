@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.Component;
@@ -8,12 +9,23 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class InstallResult
 {
     private static final int MAX_RESULT_HOVER_ONE_LINE = 5;
 
+    private final boolean success;
     private final InstallProgress progress;
+
+    public static InstallResult success(InstallProgress progress)
+    {
+        return new InstallResult(true, progress);
+    }
+
+    public static InstallFailedInstallResult error(InstallProgress progress, FailedReason reason)
+    {
+        return new InstallFailedInstallResult(progress, reason);
+    }
 
     private static TextComponent getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)
     {
