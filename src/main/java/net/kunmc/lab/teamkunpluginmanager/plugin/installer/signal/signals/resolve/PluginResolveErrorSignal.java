@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve;
 
 import lombok.Data;
 import lombok.NonNull;
