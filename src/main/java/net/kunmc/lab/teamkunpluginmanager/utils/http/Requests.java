@@ -190,9 +190,7 @@ public class Requests
                 .build());
              OutputStream output = Files.newOutputStream(path))
         {
-            if (response.getStatus() != HTTPResponse.RequestStatus.OK)
-                throw new IOException("Download failed: " + response.getStatus());
-            else if (response.getStatusCode() < 200 || response.getStatusCode() >= 300)
+            if (response.getStatusCode() < 200 || response.getStatusCode() >= 300)
                 throw new IOException("HTTP error " + response.getStatusCode());
             else if (response.getInputStream() == null)
                 throw new IOException("No response body was returned");
