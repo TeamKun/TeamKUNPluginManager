@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -240,12 +239,4 @@ public class Requests
         return downloadFile(method, url, path, null);
     }
 
-    @Value
-    public static class DownloadProgress
-    {
-        long totalSize;
-        long downloaded;
-
-        double percentage;
-    }
 }
