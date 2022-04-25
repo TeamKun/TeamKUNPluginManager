@@ -17,7 +17,7 @@ import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -255,7 +255,7 @@ public class Installer
             {
                 downloadPath = Paths.get("plugins", jarURL.substring(url.lastIndexOf("/") + 1));
                 downloadResult = Requests.downloadFile(
-                        RequestContext.RequestMethod.GET,
+                        RequestMethod.GET,
                         jarURL,
                         downloadPath
                 );
