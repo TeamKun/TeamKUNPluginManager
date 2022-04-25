@@ -196,7 +196,11 @@ public class Requests
                 throw new IOException("No response body was returned");
 
             String contentLength = response.getHeader("Content-Length");
+
             long size = contentLength != null ? Long.parseLong(contentLength): -1;
+
+            if (size > 0)
+                throw new IOException("No response body was returned");
 
             byte[] buffer = new byte[1024];
 
