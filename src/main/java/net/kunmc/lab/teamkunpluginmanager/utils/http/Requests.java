@@ -179,7 +179,7 @@ public class Requests
      * @return The downloaded file size or -1 if the download failed.
      * @throws IOException If the download failed
      */
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
+    public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
                                     @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
     {
         try (HTTPResponse response = request(RequestContext.builder()
@@ -233,7 +233,7 @@ public class Requests
         }
     }
 
-    public static long downloadFile(@NotNull RequestContext.RequestMethod method, @NotNull String url,
+    public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
                                     @NotNull Path path) throws IOException
     {
         return downloadFile(method, url, path, null);

@@ -28,14 +28,4 @@ public class RequestContext
     @Builder.Default
     byte[] body = {};
 
-    public enum RequestMethod
-    {
-        GET,
-        POST,
-        PUT,
-        DELETE,
-        HEAD,
-        OPTIONS,
-        TRACE
-    }
 }

@@ -10,6 +10,7 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
@@ -58,7 +59,7 @@ public class CommandRegister extends CommandBase
         terminal.info(ChatColor.LIGHT_PURPLE + "サーバと通信しています...");
 
         HTTPResponse response = Requests.request(RequestContext.builder()
-                .method(RequestContext.RequestMethod.GET)
+                .method(RequestMethod.GET)
                 .url(OAUTH_PREPARE_URL)
                 .build());
 
@@ -103,7 +104,7 @@ public class CommandRegister extends CommandBase
     {
         return () -> {
             HTTPResponse httpResponse = Requests.request(RequestContext.builder()
-                    .method(RequestContext.RequestMethod.POST)
+                    .method(RequestMethod.POST)
                     .url(OAUTH_ACCESS_URL + device_code)
                     .build());
 
