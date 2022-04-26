@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorSignal;
@@ -43,6 +44,11 @@ class PlumbingInstaller
     @Getter
     private final InstallProgress progress;
 
+    public void postSignal(@NotNull InstallerSignal signal)
+    {
+        this.signalHandler.handleSignal(this.progress, signal);
+    }
+
     public static PlumbingInstaller initInstall(InstallerSignalHandler signalHandler)
             throws IOException, SecurityException
     {
@@ -57,7 +63,7 @@ class PlumbingInstaller
 
     public @NotNull ResolveResult resolvePlugin(@NotNull String query)
     {
-        this.signalHandler.handleSignal(new PluginResolvingSignal(query, PLUGIN_RESOLVER));
+        this.postSignal(new PluginResolvingSignal(query, PLUGIN_RESOLVER));
 
         return PLUGIN_RESOLVER.resolve(query);
     }
@@ -68,7 +74,7 @@ class PlumbingInstaller
             throw new IllegalStateException("MultiResult with no results.");
 
         MultiplePluginResolvedSignal signal = new MultiplePluginResolvedSignal(query, results);
-        this.signalHandler.handleSignal(signal);
+        this.postSignal(signal);
 
         if (signal.getSpecifiedResult() != null)
             return signal.getSpecifiedResult(); // Plugin actually resolved by SignalHandler.
@@ -86,7 +92,7 @@ class PlumbingInstaller
 
     private void onDownload(DownloadProgress downloadProgress)
     {
-        PlumbingInstaller.this.signalHandler.handleSignal(new DownloadProgressSignal(
+        PlumbingInstaller.this.postSignal(new DownloadProgressSignal(
                 downloadProgress.getTotalSize(),
                 downloadProgress.getDownloaded(),
                 downloadProgress.getPercentage()
@@ -100,7 +106,7 @@ class PlumbingInstaller
                 resolveResult.getDownloadUrl()
         );
 
-        this.signalHandler.handleSignal(downloadingSignal);  // SignalHandler can change the download URL and download path.
+        this.postSignal(downloadingSignal);  // SignalHandler can change the download URL and download path.
 
         Path path = downloadingSignal.getDownloadPath();
         String url = downloadingSignal.getUrl();
@@ -109,7 +115,7 @@ class PlumbingInstaller
         {
             long size = Requests.downloadFile(RequestMethod.GET, url, path, this::onDownload);
 
-            this.signalHandler.handleSignal(new DownloadSucceedSignal(path, size));
+            this.postSignal(new DownloadSucceedSignal(path, size));
 
             return new DownloadResult(path, true, size, null); // downloadFailedReason is null.
         }
@@ -135,13 +141,13 @@ class PlumbingInstaller
             }
 
             DownloadErrorSignal error = new DownloadErrorSignal(cause, signalValue);
-            this.signalHandler.handleSignal(error);
+            this.postSignal(error);
 
             return new DownloadResult(null, false, -1, cause.toFailedReason());
         }
         catch (Exception e)
         {
-            this.signalHandler.handleSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, e));
+            this.postSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, e));
 
             return new DownloadResult(null, false, -1, DownloadErrorCause.UNKNOWN_ERROR.toFailedReason());
         }
@@ -151,7 +157,7 @@ class PlumbingInstaller
     {
         if (queryResolveResult instanceof ErrorResult)
         {
-            this.signalHandler.handleSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult));
+            this.postSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult));
             return null;
         }
         else if (queryResolveResult instanceof MultiResult)
@@ -164,7 +170,7 @@ class PlumbingInstaller
             if (actualResolveResult instanceof ErrorResult)
             {
                 // MultiResult has been resolved, but the actual result is an error
-                this.signalHandler.handleSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult));
+                this.postSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult));
                 return null;
             }
 

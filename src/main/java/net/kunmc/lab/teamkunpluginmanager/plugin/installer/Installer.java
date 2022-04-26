@@ -39,7 +39,7 @@ public class Installer
 
         assert queryResolveResult != null;  // if queryResolveResult is null, mayQueryError must not be null.
 
-        signalHandler.handleSignal(new PluginResolvedSuccessfulSignal((SuccessResult) queryResolveResult));
+        internal.postSignal(new PluginResolvedSuccessfulSignal((SuccessResult) queryResolveResult));
         // endregion
 
         SuccessResult resolvedPlugin = (SuccessResult) queryResolveResult;
