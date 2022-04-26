@@ -19,11 +19,13 @@ public class InstallResult
 
     public static InstallResult success(InstallProgress progress)
     {
+        progress.finish();
         return new InstallResult(true, progress);
     }
 
     public static InstallFailedInstallResult error(InstallProgress progress, FailedReason reason)
-    {
+    {  // TODO: Implement debug mode
+        progress.finish();
         return new InstallFailedInstallResult(progress, reason);
     }
 

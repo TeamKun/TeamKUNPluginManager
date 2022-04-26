@@ -6,4 +6,10 @@ public enum InstallPhase
     STARTED,
     INITIALIZING,
 
+    // Install phases
+    QUERY_RESOLVING,
+    MULTIPLE_RESULT_RESOLVING,
+    START_DOWNLOADING,
+    DOWNLOADING
+
 }
