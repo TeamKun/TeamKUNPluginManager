@@ -9,7 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSigna
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadProgressSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadStartedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadStartingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.MultiplePluginResolvedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.PluginResolveErrorSignal;
@@ -27,8 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class PlumbingInstaller
@@ -86,12 +84,18 @@ class PlumbingInstaller
         return result;
     }
 
+    private void onDownload(DownloadProgress downloadProgress)
+    {
+        PlumbingInstaller.this.signalHandler.handleSignal(new DownloadProgressSignal(
+                downloadProgress.getTotalSize(),
+                downloadProgress.getDownloaded(),
+                downloadProgress.getPercentage()
+        ));
+    }
+
     public @NotNull DownloadResult downloadJar(@NotNull InstallProgress progress, @NotNull SuccessResult resolveResult)
     {
-        UUID downloadID = progress.getInstallActionID();
-
-        DownloadStartedSignal downloadingSignal = new DownloadStartedSignal(
-                downloadID,
+        DownloadStartingSignal downloadingSignal = new DownloadStartingSignal(
                 progress.getInstallTempDir().resolve(progress.getInstallActionID().toString() + ".jar"),
                 resolveResult.getDownloadUrl()
         );
@@ -103,9 +107,9 @@ class PlumbingInstaller
 
         try
         {
-            long size = Requests.downloadFile(RequestMethod.GET, url, path, new DownloadProgressConsumer(downloadID));
+            long size = Requests.downloadFile(RequestMethod.GET, url, path, this::onDownload);
 
-            this.signalHandler.handleSignal(new DownloadSucceedSignal(downloadID, path, size));
+            this.signalHandler.handleSignal(new DownloadSucceedSignal(path, size));
 
             return new DownloadResult(path, true, size, null); // downloadFailedReason is null.
         }
@@ -130,14 +134,14 @@ class PlumbingInstaller
                 signalValue = e;
             }
 
-            DownloadErrorSignal error = new DownloadErrorSignal(downloadID, cause, signalValue);
+            DownloadErrorSignal error = new DownloadErrorSignal(cause, signalValue);
             this.signalHandler.handleSignal(error);
 
             return new DownloadResult(null, false, -1, cause.toFailedReason());
         }
         catch (Exception e)
         {
-            this.signalHandler.handleSignal(new DownloadErrorSignal(downloadID, DownloadErrorCause.UNKNOWN_ERROR, e));
+            this.signalHandler.handleSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, e));
 
             return new DownloadResult(null, false, -1, DownloadErrorCause.UNKNOWN_ERROR.toFailedReason());
         }
@@ -193,22 +197,5 @@ class PlumbingInstaller
         long totalSize;
 
         FailedReason downloadFailedReason;
-    }
-
-    @Value
-    private class DownloadProgressConsumer implements Consumer<DownloadProgress>
-    {
-        UUID installID;
-
-        @Override
-        public void accept(DownloadProgress downloadProgress)
-        {
-            PlumbingInstaller.this.signalHandler.handleSignal(new DownloadProgressSignal(
-                    installID,
-                    downloadProgress.getTotalSize(),
-                    downloadProgress.getDownloaded(),
-                    downloadProgress.getPercentage()
-            ));
-        }
     }
 }
