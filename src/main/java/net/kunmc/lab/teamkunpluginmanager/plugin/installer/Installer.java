@@ -1,9 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.plugin.LoadPluginDescriptionSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.PluginResolvedSuccessfulSignal;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.IOException;
 
@@ -51,6 +55,33 @@ public class Installer
 
         if (!downloadResult.isSuccess())
             return InstallResult.error(progress, downloadResult.getDownloadFailedReason());
+
+        // endregion
+
+        // region Load plugin.yml. Phase: LOADING_PLUGIN_DESCRIPTION
+        progress.setPhase(InstallPhase.LOADING_PLUGIN_DESCRIPTION);
+        internal.postSignal(new LoadPluginDescriptionSignal(downloadResult.getPath()));
+
+        PluginDescriptionFile pluginYml;
+
+        try
+        {
+            pluginYml = PluginUtil.loadDescription(downloadResult.getPath().toFile());
+        }
+        catch (InvalidDescriptionException e)
+        {
+            if (e.getMessage().equals("This file isn't plugin."))
+                return InstallResult.error(progress, FailedReason.NOT_A_PLUGIN);
+            else
+                return InstallResult.error(progress, FailedReason.INVALID_PLUGIN_DESCRIPTION);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return InstallResult.error(progress, FailedReason.IO_EXCEPTION_OCCURRED);
+        }
+
+        // endregion
 
 
     }
