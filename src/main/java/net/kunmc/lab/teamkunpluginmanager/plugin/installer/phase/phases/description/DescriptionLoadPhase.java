@@ -2,9 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.descrip
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.FailedReason;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.plugin.LoadPluginDescriptionSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.signals.LoadPluginDescriptionSignal;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;

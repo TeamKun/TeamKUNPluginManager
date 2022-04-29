@@ -1,8 +1,8 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.signals;
 
 import lombok.Data;
 import lombok.NonNull;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 
 @Data

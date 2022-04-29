@@ -1,7 +1,7 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

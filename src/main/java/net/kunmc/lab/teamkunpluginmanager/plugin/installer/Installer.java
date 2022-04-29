@@ -10,7 +10,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
 
 import java.io.IOException;
 

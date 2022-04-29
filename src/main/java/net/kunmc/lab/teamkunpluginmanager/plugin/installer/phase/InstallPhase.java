@@ -2,8 +2,8 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.FailedReason;
 

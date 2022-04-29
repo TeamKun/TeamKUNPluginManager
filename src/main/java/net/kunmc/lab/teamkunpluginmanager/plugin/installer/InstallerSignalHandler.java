@@ -1,6 +1,5 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface

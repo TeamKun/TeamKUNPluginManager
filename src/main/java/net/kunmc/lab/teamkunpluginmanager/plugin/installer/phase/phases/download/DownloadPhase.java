@@ -1,13 +1,13 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorCause;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadErrorSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadProgressSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadStartingSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.download.DownloadSucceedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadErrorSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadStartingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.DownloadProgress;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;

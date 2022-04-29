@@ -3,11 +3,11 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.FailedReason;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.MultiplePluginResolvedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.PluginResolveErrorSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.PluginResolvingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.signals.MultiplePluginResolvedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.signals.PluginResolveErrorSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.signals.PluginResolvingSignal;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
