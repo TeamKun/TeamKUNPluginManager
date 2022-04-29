@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
-public enum InstallPhase
+public enum InstallPhases
 {
     // General phases
     STARTED,
@@ -8,8 +8,6 @@ public enum InstallPhase
 
     // Install phases
     QUERY_RESOLVING,
-    MULTIPLE_RESULT_RESOLVING,
-    START_DOWNLOADING,
     DOWNLOADING,
     LOADING_PLUGIN_DESCRIPTION
 

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class InstallProgress
 {
     @Setter
-    private InstallPhase phase;
+    private InstallPhases phase;
 
     private final List<String> upgraded;
     private final List<String> installed;
@@ -33,7 +33,7 @@ public class InstallProgress
         this.removed = new ArrayList<>();
         this.pending = new ArrayList<>();
 
-        this.phase = InstallPhase.STARTED;
+        this.phase = InstallPhases.STARTED;
 
         this.installActionID = UUID.randomUUID();
 

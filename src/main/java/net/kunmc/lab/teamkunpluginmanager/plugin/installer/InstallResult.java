@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -17,16 +18,23 @@ public class InstallResult
     private final boolean success;
     private final InstallProgress progress;
 
-    public static InstallResult success(InstallProgress progress)
+    public static InstallResult success(@NotNull InstallProgress progress)
     {
         progress.finish();
         return new InstallResult(true, progress);
     }
 
-    public static InstallFailedInstallResult error(InstallProgress progress, FailedReason reason)
+    public static InstallFailedInstallResult error(@NotNull InstallProgress progress, @NotNull FailedReason reason)
     {  // TODO: Implement debug mode
         progress.finish();
         return new InstallFailedInstallResult(progress, reason);
+    }
+
+    public static InstallFailedInstallResult error(@NotNull InstallProgress progress, @NotNull FailedReason reason,
+                                                   @NotNull PhaseEnum phaseStatus)
+    {  // TODO: Implement debug mode
+        progress.finish();
+        return new InstallFailedInstallResult(progress, reason, phaseStatus);
     }
 
     private static TextComponent getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)

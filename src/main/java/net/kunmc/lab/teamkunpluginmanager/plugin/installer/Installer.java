@@ -1,28 +1,38 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.plugin.LoadPluginDescriptionSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signal.signals.resolve.PluginResolvedSuccessfulSignal;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.IOException;
 
 public class Installer
 {
+    private static InstallResult handlePhaseError(InstallProgress progress, PhaseResult<?> result)
+    {
+        if (result.getErrorCause() != null)
+            return InstallResult.error(progress, result.getErrorCause(), result.getPhase());
+        else
+            return InstallResult.error(progress, FailedReason.ILLEGAL_INTERNAL_STATE, result.getPhase());
+    }
+
     public static InstallResult installPlugin(String query, InstallerSignalHandler signalHandler)
     {
-        PlumbingInstaller internal;
         InstallProgress progress;
 
         // region Initialize install. Phase: INITIALIZING
         try
         {
-            internal = PlumbingInstaller.initInstall(signalHandler);
-            progress = internal.getProgress();
+            progress = new InstallProgress(true);
+            progress.setPhase(InstallPhases.INITIALIZING);
         }
         catch (IOException | SecurityException e)
         {
@@ -31,56 +41,36 @@ public class Installer
 
         // endregion
 
-        // region Query resolving. Phase: QUERY_RESOLVING, MULTIPLE_RESULT_RESOLVING => QUERY_RESOLVING
-        progress.setPhase(InstallPhase.QUERY_RESOLVING);
+        // region Query resolving. Phase: QUERY_RESOLVE
+        progress.setPhase(InstallPhases.QUERY_RESOLVING);
 
-        ResolveResult queryResolveResult = internal.resolvePlugin(query);
-        queryResolveResult = internal.normalizeResolveResult(query, queryResolveResult);
+        PluginResolvePhase resolvePhase = new PluginResolvePhase(progress, signalHandler);
+        PluginResolveResult resolveResult = resolvePhase.runPhase(new PluginResolveArgument(query));
 
-        InstallResult mayQueryError = internal.checkResolveError(queryResolveResult);
-        if (mayQueryError != null)
-            return mayQueryError;
-
-        assert queryResolveResult != null;  // if queryResolveResult is null, mayQueryError must not be null.
-
-        internal.postSignal(new PluginResolvedSuccessfulSignal((SuccessResult) queryResolveResult));
+        if (!resolveResult.isSuccess() || resolveResult.getResolveResult() == null)  // getResolveResult() == null is never true.
+            return handlePhaseError(progress, resolveResult);
         // endregion
 
-        SuccessResult resolvedPlugin = (SuccessResult) queryResolveResult;
-
         // region Downloading. Phase: START_DOWNLOADING=>DOWNLOADING
-        progress.setPhase(InstallPhase.START_DOWNLOADING);
+        progress.setPhase(InstallPhases.DOWNLOADING);
 
-        PlumbingInstaller.DownloadResult downloadResult = internal.downloadJar(progress, resolvedPlugin);
+        DownloadPhase downloadPhase = new DownloadPhase(progress, signalHandler);
+        DownloadResult downloadResult = downloadPhase.runPhase(DownloadArgument.of(resolveResult));
 
         if (!downloadResult.isSuccess())
-            return InstallResult.error(progress, downloadResult.getDownloadFailedReason());
+            return handlePhaseError(progress, downloadResult);
 
         // endregion
 
         // region Load plugin.yml. Phase: LOADING_PLUGIN_DESCRIPTION
-        progress.setPhase(InstallPhase.LOADING_PLUGIN_DESCRIPTION);
-        internal.postSignal(new LoadPluginDescriptionSignal(downloadResult.getPath()));
+        progress.setPhase(InstallPhases.LOADING_PLUGIN_DESCRIPTION);
 
-        PluginDescriptionFile pluginYml;
+        DescriptionLoadPhase descriptionLoadPhase = new DescriptionLoadPhase(progress, signalHandler);
+        DescriptionLoadResult descriptionLoadResult =
+                descriptionLoadPhase.runPhase(DescriptionLoadArgument.of(downloadResult));
 
-        try
-        {
-            pluginYml = PluginUtil.loadDescription(downloadResult.getPath().toFile());
-        }
-        catch (InvalidDescriptionException e)
-        {
-            if (e.getMessage().equals("This file isn't plugin."))
-                return InstallResult.error(progress, FailedReason.NOT_A_PLUGIN);
-            else
-                return InstallResult.error(progress, FailedReason.INVALID_PLUGIN_DESCRIPTION);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return InstallResult.error(progress, FailedReason.IO_EXCEPTION_OCCURRED);
-        }
-
+        if (!downloadResult.isSuccess())
+            return handlePhaseError(progress, downloadResult);
         // endregion
 
 
