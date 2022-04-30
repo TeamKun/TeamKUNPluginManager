@@ -7,7 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandle
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
-public abstract class InstallPhase<A extends PhaseArgument, R extends PhaseResult<? extends Enum<?>>>
+public abstract class InstallPhase<A extends PhaseArgument, R extends PhaseResult<? extends Enum<?>, ? extends Enum<?>>>
 {
     @NotNull
     protected final InstallProgress progress;

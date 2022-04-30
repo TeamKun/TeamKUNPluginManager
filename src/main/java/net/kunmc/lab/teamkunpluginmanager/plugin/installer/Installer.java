@@ -1,5 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.GeneralPhaseErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
@@ -15,12 +17,12 @@ import java.io.IOException;
 
 public class Installer
 {
-    private static InstallResult handlePhaseError(InstallProgress progress, PhaseResult<?> result)
+    private static <T extends Enum<T> & PhaseEnum> InstallResult handlePhaseError(InstallProgress progress, PhaseResult<?, T> result)
     {
         if (result.getErrorCause() != null)
             return InstallResult.error(progress, result.getErrorCause(), result.getPhase());
         else
-            return InstallResult.error(progress, FailedReason.ILLEGAL_INTERNAL_STATE, result.getPhase());
+            return InstallResult.error(progress, GeneralPhaseErrorCause.ILLEGAL_INTERNAL_STATE, result.getPhase());
     }
 
     public static InstallResult installPlugin(String query, InstallerSignalHandler signalHandler)
@@ -35,7 +37,7 @@ public class Installer
         }
         catch (IOException | SecurityException e)
         {
-            return InstallResult.error(InstallProgress.dummy(), FailedReason.IO_EXCEPTION_OCCURRED);
+            return InstallResult.error(InstallProgress.dummy(), GeneralPhaseErrorCause.IO_EXCEPTION_OCCURRED);
         }
 
         // endregion
@@ -72,6 +74,6 @@ public class Installer
             return handlePhaseError(progress, downloadResult);
         // endregion
 
-
+        // region Check the plugin is already installed. Phase: CHECK_INSTALLED
     }
 }

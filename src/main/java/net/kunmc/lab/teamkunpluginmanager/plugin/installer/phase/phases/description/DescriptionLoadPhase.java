@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.FailedReason;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
@@ -37,17 +36,23 @@ public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, 
         catch (InvalidDescriptionException e)
         {
             if (e.getMessage().equals("This file isn't plugin."))
-                return new DescriptionLoadResult(false, this.phaseState, FailedReason.NOT_A_PLUGIN, null);
+                return new DescriptionLoadResult(false, this.phaseState,
+                        DescriptionLoadErrorCause.NOT_A_PLUGIN, null
+                );
             else
             {
                 e.printStackTrace();
-                return new DescriptionLoadResult(false, this.phaseState, FailedReason.INVALID_PLUGIN_DESCRIPTION, null);
+                return new DescriptionLoadResult(false, this.phaseState,
+                        DescriptionLoadErrorCause.INVALID_DESCRIPTION, null
+                );
             }
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            return new DescriptionLoadResult(false, this.phaseState, FailedReason.IO_EXCEPTION_OCCURRED, null);
+            return new DescriptionLoadResult(false, this.phaseState,
+                    DescriptionLoadErrorCause.IO_EXCEPTION, null
+            );
         }
 
         return new DescriptionLoadResult(true, this.phaseState, null, pluginYml);

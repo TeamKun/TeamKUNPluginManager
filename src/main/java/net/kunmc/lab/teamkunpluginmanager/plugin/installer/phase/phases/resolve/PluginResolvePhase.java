@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.FailedReason;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
@@ -71,7 +70,9 @@ public class PluginResolvePhase extends InstallPhase<PluginResolveArgument, Plug
         if (queryResolveResult instanceof ErrorResult)
         {
             this.postSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult));
-            return new PluginResolveResult(false, this.phaseState, FailedReason.GOT_ERROR_RESULT, null);
+            return new PluginResolveResult(false, this.phaseState,
+                    PluginResolveErrorCause.GOT_ERROR_RESULT, null
+            );
         }
         else if (queryResolveResult instanceof MultiResult)
         {
@@ -84,7 +85,7 @@ public class PluginResolvePhase extends InstallPhase<PluginResolveArgument, Plug
             {
                 // MultiResult has been resolved, but the actual result is an error
                 this.postSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult));
-                return new PluginResolveResult(false, this.phaseState, FailedReason.GOT_ERROR_RESULT, null);
+                return new PluginResolveResult(false, this.phaseState, PluginResolveErrorCause.GOT_ERROR_RESULT, null);
             }
 
             // MultiResult has been resolved, and the actual result is a SuccessResult
@@ -96,7 +97,7 @@ public class PluginResolvePhase extends InstallPhase<PluginResolveArgument, Plug
         this.phaseState = PluginResolveState.RESOLVE_FINISHED;
 
         if (!(queryResolveResult instanceof SuccessResult))
-            return new PluginResolveResult(false, this.phaseState, FailedReason.ILLEGAL_INTERNAL_STATE, null);
+            return new PluginResolveResult(false, this.phaseState, PluginResolveErrorCause.ILLEGAL_INTERNAL_STATE, null);
 
         return new PluginResolveResult(true, this.phaseState, (SuccessResult) queryResolveResult);
     }

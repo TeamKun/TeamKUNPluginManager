@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.downloa
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadStartingSignal;
@@ -84,15 +83,13 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
             DownloadErrorSignal error = new DownloadErrorSignal(cause, signalValue);
             this.postSignal(error);
 
-            return new DownloadResult(true, this.phaseState, path, -1, cause.toFailedReason());
+            return new DownloadResult(true, this.phaseState, path, -1, cause);
         }
         catch (Exception e)
         {
             this.postSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, e));
 
-            return new DownloadResult(true, this.phaseState, path, -1,
-                    DownloadErrorCause.UNKNOWN_ERROR.toFailedReason()
-            );
+            return new DownloadResult(true, this.phaseState, path, -1, DownloadErrorCause.UNKNOWN_ERROR);
         }
     }
 }

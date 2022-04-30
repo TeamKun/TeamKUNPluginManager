@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.downloa
 
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadErrorCause;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -24,17 +24,19 @@ public class InstallResult
         return new InstallResult(true, progress);
     }
 
-    public static InstallFailedInstallResult error(@NotNull InstallProgress progress, @NotNull FailedReason reason)
+    public static <T extends Enum<T> & PhaseEnum> InstallFailedInstallResult<T> error(@NotNull InstallProgress progress,
+                                                                                      @NotNull T reason)
     {  // TODO: Implement debug mode
         progress.finish();
-        return new InstallFailedInstallResult(progress, reason);
+        return new InstallFailedInstallResult<>(progress, reason);
     }
 
-    public static InstallFailedInstallResult error(@NotNull InstallProgress progress, @NotNull FailedReason reason,
-                                                   @NotNull PhaseEnum phaseStatus)
+    public static <T extends Enum<T> & PhaseEnum> InstallFailedInstallResult<T> error(@NotNull InstallProgress progress,
+                                                                                      @NotNull T reason,
+                                                                                      @NotNull PhaseEnum phaseStatus)
     {  // TODO: Implement debug mode
         progress.finish();
-        return new InstallFailedInstallResult(progress, reason, phaseStatus);
+        return new InstallFailedInstallResult<>(progress, reason, phaseStatus);
     }
 
     private static TextComponent getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)

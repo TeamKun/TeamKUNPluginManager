@@ -6,21 +6,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
-public class InstallFailedInstallResult extends InstallResult
+public class InstallFailedInstallResult<T extends Enum<T> & PhaseEnum> extends InstallResult
 {
     @NotNull
-    private final FailedReason reason;
+    private final T reason;
     @Nullable
     private final PhaseEnum phaseStatus;
 
-    InstallFailedInstallResult(@NotNull InstallProgress progress, @NotNull FailedReason reason, @NotNull PhaseEnum phaseStatus)
+    InstallFailedInstallResult(@NotNull InstallProgress progress, @NotNull T reason, @NotNull PhaseEnum phaseStatus)
     {
         super(false, progress);
         this.reason = reason;
         this.phaseStatus = phaseStatus;
     }
 
-    public InstallFailedInstallResult(InstallProgress progress, @NotNull FailedReason reason)
+    public InstallFailedInstallResult(InstallProgress progress, @NotNull T reason)
     {
         super(false, progress);
         this.reason = reason;
