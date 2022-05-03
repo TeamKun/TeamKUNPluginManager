@@ -1,8 +1,11 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install;
 
+import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallPhases;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.GeneralPhaseErrorCause;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
@@ -15,17 +18,9 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.
 
 import java.io.IOException;
 
-public class Installer
+public class PluginInstaller extends AbstractInstaller<InstallErrorCause>
 {
-    private static <T extends Enum<T> & PhaseEnum> InstallResult handlePhaseError(InstallProgress progress, PhaseResult<?, T> result)
-    {
-        if (result.getErrorCause() != null)
-            return InstallResult.error(progress, result.getErrorCause(), result.getPhase());
-        else
-            return InstallResult.error(progress, GeneralPhaseErrorCause.ILLEGAL_INTERNAL_STATE, result.getPhase());
-    }
-
-    public static InstallResult installPlugin(String query, InstallerSignalHandler signalHandler)
+    public InstallResult installPlugin(String query, InstallerSignalHandler signalHandler)
     {
         InstallProgress progress;
 
@@ -68,7 +63,7 @@ public class Installer
 
         DescriptionLoadPhase descriptionLoadPhase = new DescriptionLoadPhase(progress, signalHandler);
         DescriptionLoadResult descriptionLoadResult =
-                descriptionLoadPhase.runPhase(DescriptionLoadArgument.of(downloadResult));
+                descriptionLoadPhase.runPhase(new DescriptionLoadArgument(downloadResult));
 
         if (!downloadResult.isSuccess())
             return handlePhaseError(progress, downloadResult);

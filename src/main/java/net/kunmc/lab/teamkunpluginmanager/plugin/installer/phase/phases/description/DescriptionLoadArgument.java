@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadResult;
@@ -8,16 +9,24 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 @Value
-public class DescriptionLoadArgument implements PhaseArgument
+@EqualsAndHashCode(callSuper = false)
+public class DescriptionLoadArgument extends PhaseArgument
 {
     @NotNull
     Path pluginFile;
 
-    public static DescriptionLoadArgument of(@NotNull DownloadResult of)
+    public DescriptionLoadArgument(@NotNull Path pluginFile)
     {
-        if (!of.isSuccess() || of.getPath() == null)
-            throw new IllegalArgumentException("Download must be successful");
+        this.pluginFile = pluginFile;
+    }
 
-        return new DescriptionLoadArgument(of.getPath());
+    public DescriptionLoadArgument(DownloadResult previousPhaseResult)
+    {
+        super(previousPhaseResult);
+
+        if (previousPhaseResult.getPath() == null)
+            throw new IllegalArgumentException("DownloadResult.path is null");
+
+        this.pluginFile = previousPhaseResult.getPath();
     }
 }
