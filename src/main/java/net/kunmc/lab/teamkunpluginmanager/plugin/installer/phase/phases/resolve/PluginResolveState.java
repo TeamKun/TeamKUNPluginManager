@@ -1,8 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
-
-public enum PluginResolveState implements PhaseEnum
+public enum PluginResolveState
 {
     INITIALIZED,
 

@@ -1,8 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 
-public enum DescriptionLoadErrorCause implements PhaseEnum
+public enum DescriptionLoadErrorCause
 {
     NOT_A_PLUGIN,
     INVALID_DESCRIPTION,

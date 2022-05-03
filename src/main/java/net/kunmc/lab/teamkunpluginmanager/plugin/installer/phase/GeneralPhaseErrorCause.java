@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase;
 
-public enum GeneralPhaseErrorCause implements PhaseEnum
+public enum GeneralPhaseErrorCause
 {
     // General internal errors
     ILLEGAL_INTERNAL_STATE,

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 @Getter
-public abstract class PhaseResult<R extends Enum<?> & PhaseEnum, C extends Enum<?> & PhaseEnum>
+public abstract class PhaseResult<R extends Enum<?>, C extends Enum<?>>
 {
     private final boolean success;
     @NotNull

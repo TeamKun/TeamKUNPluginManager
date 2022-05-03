@@ -1,12 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
 import lombok.Getter;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
-public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T> & PhaseEnum, S extends Enum<S> & PhaseEnum>
+public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S extends Enum<S>>
         extends InstallResult<P>
 {
     @NotNull

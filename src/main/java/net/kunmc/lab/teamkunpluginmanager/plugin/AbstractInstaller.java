@@ -7,7 +7,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandle
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.GeneralPhaseErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,21 +35,20 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         return new InstallResult<>(true, this.progress);
     }
 
-    public <T extends Enum<T> & PhaseEnum> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
+    public <T extends Enum<T>> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
     {  // TODO: Implement debug mode
         return new InstallFailedInstallResult<>(this.progress, reason);
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Enum<T> & PhaseEnum, S extends Enum<S> & PhaseEnum> InstallFailedInstallResult<P, T, S> error(
+    public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
             @NotNull T reason,
-            @NotNull PhaseEnum phaseStatus)
+            @NotNull S phaseStatus)
     {  // TODO: Implement debug mode
-        return new InstallFailedInstallResult<>(this.progress, reason, (S) phaseStatus);
+        return new InstallFailedInstallResult<>(this.progress, reason, phaseStatus);
     }
 
     @NotNull
-    protected <T extends Enum<T> & PhaseEnum> InstallResult<P> handlePhaseError(@NotNull PhaseResult<?, T> result)
+    protected <S extends Enum<S>, T extends Enum<T>> InstallResult<P> handlePhaseError(@NotNull PhaseResult<S, T> result)
     {
         if (result.getErrorCause() != null)
             return this.error(result.getErrorCause(), result.getPhase());

@@ -1,8 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 
-public enum DownloadState implements PhaseEnum
+public enum DownloadState
 {
     INITIALIZED,
 
