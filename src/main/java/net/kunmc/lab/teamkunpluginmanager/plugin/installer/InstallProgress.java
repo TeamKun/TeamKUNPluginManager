@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class InstallProgress
+public class InstallProgress<P extends Enum<P>>
 {
     @Setter
-    private InstallPhases phase;
+    private P phase;
 
     private final List<String> upgraded;
     private final List<String> installed;
@@ -33,7 +33,7 @@ public class InstallProgress
         this.removed = new ArrayList<>();
         this.pending = new ArrayList<>();
 
-        this.phase = InstallPhases.STARTED;
+        this.phase = null;
 
         this.installActionID = UUID.randomUUID();
 
@@ -49,11 +49,11 @@ public class InstallProgress
         );
     }
 
-    public static InstallProgress dummy()
+    public static InstallProgress<?> dummy()
     {
         try
         {
-            return new InstallProgress(false);
+            return new InstallProgress<>(false);
         }
         catch (IOException e)
         { // should not happen

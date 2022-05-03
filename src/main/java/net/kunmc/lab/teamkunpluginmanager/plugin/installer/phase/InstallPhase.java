@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class InstallPhase<A extends PhaseArgument, R extends PhaseResult<? extends Enum<?>, ? extends Enum<?>>>
 {
     @NotNull
-    protected final InstallProgress progress;
+    protected final InstallProgress<?> progress;
     @NotNull
     private final InstallerSignalHandler signalHandler;
 

@@ -26,7 +26,7 @@ public class PluginResolvePhase extends InstallPhase<PluginResolveArgument, Plug
 
     private PluginResolveState phaseState;
 
-    public PluginResolvePhase(@NotNull InstallProgress progress, @NotNull InstallerSignalHandler signalHandler)
+    public PluginResolvePhase(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
     {
         super(progress, signalHandler);
 

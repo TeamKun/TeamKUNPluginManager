@@ -1,42 +1,27 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseEnum;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
-public class InstallResult
+public class InstallResult<P extends Enum<P>>
 {
     private static final int MAX_RESULT_HOVER_ONE_LINE = 5;
 
+    @Getter
     private final boolean success;
-    private final InstallProgress progress;
+    @Getter
+    private final InstallProgress<P> progress;
 
-    public static InstallResult success(@NotNull InstallProgress progress)
+    public InstallResult(boolean success, InstallProgress<P> progress)
     {
         progress.finish();
-        return new InstallResult(true, progress);
-    }
-
-    public static <T extends Enum<T> & PhaseEnum> InstallFailedInstallResult<T> error(@NotNull InstallProgress progress,
-                                                                                      @NotNull T reason)
-    {  // TODO: Implement debug mode
-        progress.finish();
-        return new InstallFailedInstallResult<>(progress, reason);
-    }
-
-    public static <T extends Enum<T> & PhaseEnum> InstallFailedInstallResult<T> error(@NotNull InstallProgress progress,
-                                                                                      @NotNull T reason,
-                                                                                      @NotNull PhaseEnum phaseStatus)
-    {  // TODO: Implement debug mode
-        progress.finish();
-        return new InstallFailedInstallResult<>(progress, reason, phaseStatus);
+        this.success = success;
+        this.progress = progress;
     }
 
     private static TextComponent getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)

@@ -1,6 +1,6 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install;
 
-public enum InstallPhases
+public enum InstallPhase
 {
     // General phases
     STARTED,
