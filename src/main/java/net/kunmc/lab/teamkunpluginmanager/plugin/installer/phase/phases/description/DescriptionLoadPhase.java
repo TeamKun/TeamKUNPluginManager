@@ -15,7 +15,7 @@ public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, 
 {
     private DescriptionLoadState phaseState;
 
-    public DescriptionLoadPhase(@NotNull InstallProgress progress, @NotNull InstallerSignalHandler signalHandler)
+    public DescriptionLoadPhase(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
     {
         super(progress, signalHandler);
         this.phaseState = DescriptionLoadState.INITIALIZED;
