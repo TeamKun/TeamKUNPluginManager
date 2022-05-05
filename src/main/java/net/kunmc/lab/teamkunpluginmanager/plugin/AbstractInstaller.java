@@ -1,9 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin;
 
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.GeneralPhaseErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
@@ -24,6 +26,11 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
     {
         this.progress = new InstallProgress<>(true);
         this.signalHandler = signalHandler;
+    }
+
+    protected void postSignal(@NotNull InstallerSignal signal)
+    {
+        this.signalHandler.handleSignal(this.progress, signal);
     }
 
     public abstract InstallResult<P> execute(@NotNull String query) throws IOException;
@@ -55,6 +62,7 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
             return this.error(GeneralPhaseErrorCause.ILLEGAL_INTERNAL_STATE, result.getPhase());
     }
 
+    @NotNull
     protected <A extends PhaseArgument, R extends PhaseResult<?, ?>, PP extends InstallPhase<A, R>>
     PhaseSubmitter<A, P, ? extends AbstractInstaller<E, P>, A, R, PP>
     submitter(@NotNull P phaseState, @NotNull PP phase)
@@ -62,4 +70,10 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         return new PhaseSubmitter<>(phaseState, this, phase);
     }
 
+    protected boolean isPluginIgnored(@NotNull String pluginName)
+    {
+        return TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream()
+                .parallel()
+                .anyMatch(s -> s.equalsIgnoreCase(pluginName));
+    }
 }
