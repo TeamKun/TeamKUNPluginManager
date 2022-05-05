@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -101,7 +102,7 @@ public class InstallProgress<P extends Enum<P>>
     {
         try
         {
-            Files.deleteIfExists(this.installTempDir);
+            FileUtils.forceDelete(this.installTempDir.toFile());
         }
         catch (IOException e)
         {
