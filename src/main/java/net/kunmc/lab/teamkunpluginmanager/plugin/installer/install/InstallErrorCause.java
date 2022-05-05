@@ -5,6 +5,9 @@ public enum InstallErrorCause
     PHASE_EXCEPTION_OCCURRED,
     PHASE_FAILED,
 
-    EXCEPTION_OCCURRED,
+    // Environment errors
+    IGNORED_PLUGIN,
+    ALREADY_INSTALLED,
 
+    EXCEPTION_OCCURRED,
 }
