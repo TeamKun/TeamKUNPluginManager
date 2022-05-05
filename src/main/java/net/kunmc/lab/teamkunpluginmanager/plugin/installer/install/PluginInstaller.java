@@ -32,9 +32,9 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         // region Do plugin resolve, download and description load.
 
         DescriptionLoadResult pluginDescriptionResult = (DescriptionLoadResult)
-                this.submitter(InstallPhases.QUERY_RESOLVING, new PluginResolvePhase(progress, signalHandler))
+                this.submitter(InstallPhases.RESOLVING_QUERY, new PluginResolvePhase(progress, signalHandler))
                         .then(InstallPhases.DOWNLOADING, new DownloadPhase(progress, signalHandler))
-                        .then(InstallPhases.PLUGIN_DESCRIPTION_LOADING, new DescriptionLoadPhase(progress, signalHandler))
+                        .then(InstallPhases.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadPhase(progress, signalHandler))
                         .submit(new PluginResolveArgument(query));
 
         if (!pluginDescriptionResult.isSuccess())
@@ -48,6 +48,8 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         boolean replacePlugin = false;
         // region Do assertions.
+
+        this.progress.setPhase(InstallPhases.CHECKING_ENVIRONMENT);
 
         // region Check if plugin is ignored.
         if (this.isPluginIgnored(pluginName))
