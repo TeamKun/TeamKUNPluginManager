@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install;
 
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
@@ -10,11 +11,13 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
@@ -82,6 +85,29 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         // endregion
 
+        // region Remove plugin if it is already installed. (only replacePlugin is true)
+        if (replacePlugin)
+        {
+            this.progress.setPhase(InstallPhases.REMOVING_OLD_PLUGIN);
 
+            File oldPluginFile = PluginUtil.getFile(sameServerPlugin);
+
+            PluginUtil.unload(sameServerPlugin);  // TODO: Replace with uninstall.
+
+            if (!safeDelete(oldPluginFile))
+                Runner.runLater(() -> {
+                    safeDelete(oldPluginFile);
+                }, 10L);
+        }
+        // endregion
+
+        // TODO: write process
+
+        if (replacePlugin)
+            this.progress.addUpgraded(pluginName);
+        else
+            this.progress.addInstalled(pluginName);
+
+        return this.success();
     }
 }

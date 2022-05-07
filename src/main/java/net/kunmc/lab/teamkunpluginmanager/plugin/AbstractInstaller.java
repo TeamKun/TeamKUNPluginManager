@@ -14,6 +14,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseSubmitter;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 
 public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
@@ -75,5 +76,18 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         return TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream()
                 .parallel()
                 .anyMatch(s -> s.equalsIgnoreCase(pluginName));
+    }
+
+    protected boolean safeDelete(@NotNull File f)
+    {
+        try
+        {
+            return f.delete();
+        }
+        catch (SecurityException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
