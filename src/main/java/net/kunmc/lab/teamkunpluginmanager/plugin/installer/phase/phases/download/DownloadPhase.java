@@ -19,7 +19,7 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
 {
     private DownloadState phaseState;
 
-    public DownloadPhase(@NotNull InstallProgress progress, @NotNull InstallerSignalHandler signalHandler)
+    public DownloadPhase(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
     {
         super(progress, signalHandler);
 
