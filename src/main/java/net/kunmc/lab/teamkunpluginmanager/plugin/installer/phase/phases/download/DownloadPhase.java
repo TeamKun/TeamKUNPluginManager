@@ -14,14 +14,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.UUID;
 
 public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult>
 {
+    private final String randomDownloadID;
+
     private DownloadState phaseState;
 
     public DownloadPhase(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
     {
         super(progress, signalHandler);
+
+        this.randomDownloadID = UUID.randomUUID().toString();
 
         this.phaseState = DownloadState.INITIALIZED;
     }
@@ -31,6 +36,7 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
         this.phaseState = DownloadState.DOWNLOADING;
 
         this.postSignal(new DownloadProgressSignal(
+                this.randomDownloadID,
                 downloadProgress.getTotalSize(),
                 downloadProgress.getDownloaded(),
                 downloadProgress.getPercentage()
@@ -41,7 +47,8 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
     public @NotNull DownloadResult runPhase(@NotNull DownloadArgument arguments)
     {
         DownloadStartingSignal downloadingSignal = new DownloadStartingSignal(
-                progress.getInstallTempDir().resolve(progress.getInstallActionID().toString() + ".jar"),
+                this.randomDownloadID,
+                progress.getInstallTempDir().resolve(this.randomDownloadID + ".jar"),
                 arguments.getUrl()
         );
 
@@ -55,9 +62,9 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
         {
             long size = Requests.downloadFile(RequestMethod.GET, url, path, this::onDownload);
 
-            this.postSignal(new DownloadSucceedSignal(path, size));
+            this.postSignal(new DownloadSucceedSignal(this.randomDownloadID, path, size));
 
-            return new DownloadResult(true, this.phaseState, path, size);
+            return new DownloadResult(true, this.phaseState, path, size, this.randomDownloadID);
         }
         catch (IOException e)
         {
@@ -80,16 +87,18 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
                 signalValue = e;
             }
 
-            DownloadErrorSignal error = new DownloadErrorSignal(cause, signalValue);
+            DownloadErrorSignal error = new DownloadErrorSignal(cause, this.randomDownloadID, signalValue);
             this.postSignal(error);
 
-            return new DownloadResult(true, this.phaseState, path, -1, cause);
+            return new DownloadResult(true, this.phaseState, path, -1, this.randomDownloadID, cause);
         }
         catch (Exception e)
         {
-            this.postSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, e));
+            this.postSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, this.randomDownloadID, e));
 
-            return new DownloadResult(true, this.phaseState, path, -1, DownloadErrorCause.UNKNOWN_ERROR);
+            return new DownloadResult(true, this.phaseState, path, -1, this.randomDownloadID,
+                    DownloadErrorCause.UNKNOWN_ERROR
+            );
         }
     }
 }

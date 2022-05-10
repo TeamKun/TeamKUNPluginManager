@@ -10,6 +10,9 @@ import java.nio.file.Path;
 public class DownloadStartingSignal implements InstallerSignal
 {
     @NotNull
+    String downloadId;
+
+    @NotNull
     private Path downloadPath;
     @NotNull
     private String url;

@@ -2,10 +2,14 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.downloa
 
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import org.jetbrains.annotations.NotNull;
 
 @Value
 public class DownloadProgressSignal implements InstallerSignal
 {
+    @NotNull
+    String downloadId;
+
     long totalSize;
     long downloaded;
 

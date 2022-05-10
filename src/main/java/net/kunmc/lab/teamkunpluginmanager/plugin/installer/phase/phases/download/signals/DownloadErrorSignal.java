@@ -11,6 +11,8 @@ public class DownloadErrorSignal implements InstallerSignal
 {
     @NotNull
     DownloadErrorCause cause;
+    @NotNull
+    String downloadId;
     @Nullable
     Object value;
 }

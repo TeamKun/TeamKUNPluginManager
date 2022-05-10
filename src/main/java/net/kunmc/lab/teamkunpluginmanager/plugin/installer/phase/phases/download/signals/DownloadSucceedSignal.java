@@ -10,12 +10,9 @@ import java.nio.file.Path;
 public class DownloadSucceedSignal implements InstallerSignal
 {
     @NotNull
+    String downloadId;
+
+    @NotNull
     Path downloadPath;
     long totalSize;
-
-    public DownloadSucceedSignal(@NotNull Path downloadPath, long totalSize)
-    {
-        this.downloadPath = downloadPath;
-        this.totalSize = totalSize;
-    }
 }

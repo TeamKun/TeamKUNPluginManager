@@ -14,16 +14,21 @@ public class DownloadResult extends PhaseResult<DownloadState, DownloadErrorCaus
     private final Path path;
     private final long totalSize;
 
+    @NotNull
+    private final String downloadID;
+
     public DownloadResult(boolean success, @NotNull DownloadState phase, @Nullable Path path,
-                          long totalSize, @Nullable DownloadErrorCause errorCause)
+                          long totalSize, @NotNull String downloadID, @Nullable DownloadErrorCause errorCause)
     {
         super(success, phase, errorCause);
         this.path = path;
         this.totalSize = totalSize;
+        this.downloadID = downloadID;
     }
 
-    public DownloadResult(boolean success, @NotNull DownloadState phase, @Nullable Path path, long totalSize)
+    public DownloadResult(boolean success, @NotNull DownloadState phase, @Nullable Path path, long totalSize,
+                          @NotNull String downloadID)
     {
-        this(success, phase, path, totalSize, null);
+        this(success, phase, path, totalSize, downloadID, null);
     }
 }
