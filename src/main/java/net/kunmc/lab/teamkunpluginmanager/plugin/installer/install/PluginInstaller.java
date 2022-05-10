@@ -101,7 +101,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         }
         // endregion
 
-        // TODO: write process
+        // TODO: write collect depends process
 
         if (replacePlugin)
             this.progress.addUpgraded(pluginName);
