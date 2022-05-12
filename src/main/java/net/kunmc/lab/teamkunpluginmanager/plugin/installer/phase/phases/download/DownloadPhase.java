@@ -46,9 +46,13 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
     @Override
     public @NotNull DownloadResult runPhase(@NotNull DownloadArgument arguments)
     {
+        Path downloadPath = arguments.getPath();
+        if (downloadPath == null)
+            downloadPath = progress.getInstallTempDir().resolve(this.randomDownloadID + ".kpmcache");
+
         DownloadStartingSignal downloadingSignal = new DownloadStartingSignal(
                 this.randomDownloadID,
-                progress.getInstallTempDir().resolve(this.randomDownloadID + ".jar"),
+                downloadPath,
                 arguments.getUrl()
         );
 
