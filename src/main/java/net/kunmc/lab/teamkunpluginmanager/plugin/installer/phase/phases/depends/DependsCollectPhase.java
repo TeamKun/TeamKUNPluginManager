@@ -3,9 +3,11 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsDescriptionLoadFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsCacheSaveFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsCollectDependsDependsFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsDownloadFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsEnumeratedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsLoadDescriptionFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
@@ -24,14 +26,15 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
     private final InstallerSignalHandler signalHandler;
+    private final DependsCollectCache cache;
 
     private DependsCollectState phaseState;
 
@@ -40,24 +43,17 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         super(progress, signalHandler);
 
         this.signalHandler = signalHandler;
+        this.cache = DependsCollectCache.of(progress.getInstallActionID().toString());
+
         this.phaseState = DependsCollectState.INITIALIZED;
-    }
-
-    private static HashMap<String, List<String>> convertStringHashSetToStringListHashMap(HashMap<String, HashSet<String>> hashSetHashMap)
-    {
-        HashMap<String, List<String>> listHashMap = new HashMap<>();
-        for (String key : hashSetHashMap.keySet())
-            listHashMap.put(key, new ArrayList<>(hashSetHashMap.get(key)));
-
-        return listHashMap;
     }
 
     @Override
     public @NotNull DependsCollectResult runPhase(@NotNull DependsCollectArgument arguments)
     {
         PluginDescriptionFile pluginDescription = arguments.getPluginDescription();
+        this.cache.setPluginName(pluginDescription.getName());
         String pluginName = pluginDescription.getName();
-        HashSet<String> collectingFailedDepends;
 
         // Enumerate dependencies
         DependsEnumeratedSignal dependsSignal = new DependsEnumeratedSignal(
@@ -67,15 +63,14 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         this.postSignal(dependsSignal);
 
+        dependsSignal.getDependencies().forEach(this.cache::addDependency);
+
         HashMap<String, ResolveResult> resolvedResults;
         // region Resolve dependencies
         this.phaseState = DependsCollectState.RESOLVING_DEPENDS;
 
         resolvedResults = this.resolveDepends(dependsSignal.getDependencies(), arguments.getAlreadyInstalledPlugins());
-        collectingFailedDepends = new HashSet<>(this.indicateResolveErrors(resolvedResults)); // Post signal on failed
-
-        // Remove failed dependencies from resolve results
-        collectingFailedDepends.stream().parallel().forEach(resolvedResults::remove);
+        resolvedResults.entrySet().removeIf(entry -> !(entry.getValue() instanceof SuccessResult)); // Remove failures
         // endregion
 
         HashMap<String, DownloadResult> downloadResults;
@@ -83,25 +78,26 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         this.phaseState = DependsCollectState.DOWNLOADING_DEPENDS;
 
         downloadResults = this.downloadDepends(resolvedResults);
-
-        List<String> downloadFailures = this.indicateDownloadErrors(downloadResults); // Post signal on failed
-        collectingFailedDepends.addAll(downloadFailures);
-
-        // Remove failed dependencies from download results
-        downloadFailures.stream().parallel().forEach(downloadResults::remove);
+        downloadResults.entrySet().removeIf(entry -> !entry.getValue().isSuccess()); // Remove failures
         // endregion
 
-        HashMap<String, HashSet<String>> collectFailures;
         // region Collect dependency's dependencies (Recursive via collectDependsDepends)
         this.phaseState = DependsCollectState.COLLECTING_DEPENDS_DEPENDS;
 
         HashMap<String, PluginDescriptionFile> dependsDescriptions = downloadResultsToPluginDescriptionFiles(downloadResults);
 
-        List<String> loadDescriptionsFailures = this.indicateLoadDescriptionErrors(dependsDescriptions); // Post signal on failed
-        collectingFailedDepends.addAll(loadDescriptionsFailures);
-
         // Remove failed dependencies from load description results
-        loadDescriptionsFailures.stream().parallel().forEach(dependsDescriptions::remove);
+        dependsDescriptions.entrySet().removeIf(entry -> entry.getValue() == null);
+
+        dependsDescriptions.entrySet().stream().parallel()
+                .filter(entry -> Objects.nonNull(entry.getValue()))
+                .filter(entry -> downloadResults.containsKey(entry.getKey()))
+                .forEach(entry ->
+                        this.cache.onCollect(entry.getValue().getName(), downloadResults.get(entry.getKey()).getPath())
+                );
+
+        if (!this.cache.save())
+            this.postSignal(new DependsCacheSaveFailedSignal());
 
         //------------------------
         // Collect dependency's dependencies
@@ -110,50 +106,17 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         alreadyInstalled.add(pluginName);
         alreadyInstalled.addAll(dependsDescriptions.keySet());
 
-
-        HashMap<String, DependsCollectResult> dependsCollectResults =
-                this.collectDependsDepends(dependsDescriptions, alreadyInstalled);
-
-        // Post signal on failed
-        collectFailures = this.indicateCollectDependsDependsErrors(dependsCollectResults);
-
+        this.collectDependsDepends(dependsDescriptions, alreadyInstalled);
 
         // endregion
 
-        if (!collectFailures.containsKey(pluginName))
-            collectFailures.put(pluginName, new HashSet<>());
-        collectFailures.get(pluginName).addAll(collectingFailedDepends);
-
-        boolean success = collectingFailedDepends.isEmpty();
+        boolean success = this.cache.isErrors();
         DependsCollectErrorCause errorCause = success ? null: DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED;
 
         return new DependsCollectResult(
                 success, this.phaseState, errorCause,
-                pluginName, convertStringHashSetToStringListHashMap(collectFailures)
+                pluginName, this.cache.getCollectedDependencies(), this.cache.getCollectFailedDependencies()
         );
-    }
-
-    private HashMap<String, HashSet<String>> indicateCollectDependsDependsErrors(@NotNull HashMap<String, DependsCollectResult> dependsCollectResults)
-    { // Not same as other indicate methods
-        HashMap<String, HashSet<String>> collectingFailedDepends = new HashMap<>();
-
-        for (Map.Entry<String, DependsCollectResult> entry : dependsCollectResults.entrySet())
-        {
-            DependsCollectResult dependsCollectResult = entry.getValue();
-
-            if (!dependsCollectResult.isSuccess())
-                for (Map.Entry<String, List<String>> entry2 : dependsCollectResult.getCollectingFailedPlugins().entrySet())
-                {
-                    String pluginName = entry2.getKey();
-                    List<String> collectingFailedDependsList = entry2.getValue();
-                    if (!collectingFailedDepends.containsKey(pluginName))
-                        collectingFailedDepends.put(pluginName, new HashSet<>());
-
-                    collectingFailedDepends.get(pluginName).addAll(collectingFailedDependsList);
-                }
-        }
-
-        return collectingFailedDepends;
     }
 
     private DependsCollectResult passCollector(@NotNull PluginDescriptionFile pluginDescription,
@@ -165,27 +128,29 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
                 .runPhase(arguments);
     }
 
-    private HashMap<String, DependsCollectResult> collectDependsDepends(@NotNull HashMap<String, PluginDescriptionFile> dependsDescriptions,
-                                                                        @NotNull List<String> alreadyCollectedPlugins)
+    private void collectDependsDepends(@NotNull HashMap<String, PluginDescriptionFile> dependsDescriptions,
+                                       @NotNull List<String> alreadyCollectedPlugins)
     {
-        return new HashMap<>(dependsDescriptions.entrySet().stream()
-                .parallel()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry ->
-                        this.passCollector(entry.getValue(), alreadyCollectedPlugins))
+        List<String> alreadyCollected = new ArrayList<>(alreadyCollectedPlugins);
+
+        for (Map.Entry<String, PluginDescriptionFile> entry : dependsDescriptions.entrySet())
+        {
+            this.cache.save();
+
+            DependsCollectResult dependsCollectResult = this.passCollector(entry.getValue(), alreadyCollected);
+
+            this.cache.update();
+
+            if (!dependsCollectResult.isSuccess())
+            {
+                this.postSignal(new DependsCollectDependsDependsFailedSignal(
+                        dependsCollectResult.getTargetPlugin(),
+                        dependsCollectResult.getCollectingFailedPlugins()
                 ));
-    }
-
-    private List<String> indicateLoadDescriptionErrors(@NotNull HashMap<String, PluginDescriptionFile> dependsDescriptions)
-    {
-        List<String> errors = (dependsDescriptions.entrySet().stream())
-                .filter(entry -> entry.getValue() == null)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        if (!errors.isEmpty())
-            this.postSignal(new DependsDescriptionLoadFailedSignal(errors));
-
-        return errors;
+            }
+            else
+                alreadyCollected.add(entry.getKey());
+        }
     }
 
     private PluginDescriptionFile downloadResultToPluginDescriptionFile(@NotNull DownloadResult downloadResult)
@@ -215,7 +180,10 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         {
             PluginDescriptionFile pluginDescriptionFile = this.downloadResultToPluginDescriptionFile(entry.getValue());
 
-            pluginDescriptionFiles.put(entry.getKey(), pluginDescriptionFile);
+            if (pluginDescriptionFile == null)
+                this.postSignal(new DependsLoadDescriptionFailedSignal(entry.getKey()));
+            else
+                pluginDescriptionFiles.put(entry.getKey(), pluginDescriptionFile);
         }
 
         return pluginDescriptionFiles;
@@ -231,37 +199,17 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
     private HashMap<String, DownloadResult> downloadDepends(@NotNull HashMap<String, ResolveResult> resolvedPlugins)
     {
-        return new HashMap<>(resolvedPlugins.entrySet().stream()
+        Map<String, DownloadResult> downloadResults = resolvedPlugins.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
                     SuccessResult successResult = (SuccessResult) entry.getValue();
                     return passDownloader(successResult.getDownloadUrl());  // Actual downloading
-                })));
-    }
+                }));
 
-    private List<String> indicateDownloadErrors(@NotNull HashMap<String, DownloadResult> downloadResults)
-    {
-        List<String> errors = (downloadResults.entrySet().stream())
+        downloadResults.entrySet().stream()
                 .filter(entry -> !entry.getValue().isSuccess())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .forEach(entry -> this.postSignal(new DependsDownloadFailedSignal(entry.getKey())));
 
-        if (!errors.isEmpty())
-            this.postSignal(new DependsDownloadFailedSignal(errors));
-
-        return errors;
-    }
-
-    private List<String> indicateResolveErrors(@NotNull HashMap<String, ResolveResult> resolveResults)
-    {
-        List<String> errors = resolveResults.entrySet().stream().parallel()
-                .filter(entry -> !(entry.getValue() instanceof SuccessResult))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        if (!errors.isEmpty())
-            this.postSignal(new DependsResolveFailedSignal(errors));
-
-        return errors;
+        return new HashMap<>(downloadResults);
     }
 
     private PluginResolveResult passResolver(@NotNull String dependency)
@@ -275,12 +223,18 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
     private HashMap<String, ResolveResult> resolveDepends(@NotNull List<String> dependencies,
                                                           @NotNull List<String> alreadyInstalledPlugins)
     {
-        return new HashMap<>(dependencies.stream()
+        Map<String, ResolveResult> resolveResults = new HashMap<>(dependencies.stream()
                 .filter(dependency -> !alreadyInstalledPlugins.contains(dependency))
                 .map(dependency -> new Pair<>(
                         dependency,
                         this.passResolver(dependency).getResolveResult()  // Actual resolving
                 ))
                 .collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+
+        resolveResults.entrySet().stream()
+                .filter(entry -> !(entry.getValue() instanceof SuccessResult))
+                .forEach(entry -> this.postSignal(new DependsResolveFailedSignal(entry.getKey())));
+
+        return new HashMap<>(resolveResults);
     }
 }

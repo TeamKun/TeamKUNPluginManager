@@ -2,11 +2,11 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends
 
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 @Value
-public class DependsDescriptionLoadFailedSignal implements InstallerSignal
+public class DependsLoadDescriptionFailedSignal implements InstallerSignal
 {
-    List<String> descriptionLoadFailedDependencies;
+    @NotNull
+    String descriptionLoadFailedDependency;
 }
