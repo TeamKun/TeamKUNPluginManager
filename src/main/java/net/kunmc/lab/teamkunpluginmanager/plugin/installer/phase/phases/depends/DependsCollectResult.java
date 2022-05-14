@@ -6,6 +6,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 
 @Value
@@ -16,24 +18,24 @@ public class DependsCollectResult extends PhaseResult<DependsCollectState, Depen
     String targetPlugin;
 
     @NotNull
-    List<String> collectedPlugin;
+    HashMap<String, Path> collectedPlugins;
 
     @NotNull
-    List<String> collectingFailedPlugins;
+    List<String> collectFailedPlugins;
 
     public DependsCollectResult(boolean success, @NotNull DependsCollectState phase,
                                 @Nullable DependsCollectErrorCause errorCause, @NotNull String targetPlugin,
-                                @NotNull List<String> collectedPlugin,
-                                @NotNull List<String> collectingFailedPlugins)
+                                @NotNull HashMap<String, Path> collectedPlugins,
+                                @NotNull List<String> collectFailedPlugins)
     {
         super(success, phase, errorCause);
         this.targetPlugin = targetPlugin;
-        this.collectedPlugin = collectedPlugin;
-        this.collectingFailedPlugins = collectingFailedPlugins;
+        this.collectedPlugins = collectedPlugins;
+        this.collectFailedPlugins = collectFailedPlugins;
     }
 
     public boolean hasErrors()
     {
-        return !collectingFailedPlugins.isEmpty();
+        return !collectFailedPlugins.isEmpty();
     }
 }

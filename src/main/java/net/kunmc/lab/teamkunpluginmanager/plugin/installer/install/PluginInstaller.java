@@ -4,6 +4,9 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
@@ -19,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
 {
@@ -106,7 +111,19 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         else
             this.progress.addInstalled(pluginName);
 
+        HashMap<String, Path> collectedDependencies;
         // region Collecting dependencies section.
+        this.progress.setPhase(InstallPhases.COLLECTING_DEPENDENCIES);
+
+        DependsCollectResult dependsCollectResult = new DependsCollectPhase(progress, signalHandler)
+                .runPhase(new DependsCollectArgument(pluginDescription));
+
+        if (!dependsCollectResult.isSuccess())
+            return this.error(InstallErrorCause.SOME_DEPENDENCY_COLLECT_FAILED);
+
+        collectedDependencies = dependsCollectResult.getCollectedPlugins();
+        //endregion
+
 
         return this.success();
     }

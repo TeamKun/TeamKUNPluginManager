@@ -40,4 +40,11 @@ public class DependsCollectArgument extends PhaseArgument
         this.pluginDescription = pluginDescription;
         this.alreadyInstalledPlugins = alreadyInstalledPlugins;
     }
+
+    public DependsCollectArgument(@NotNull PluginDescriptionFile pluginDescription)
+    {
+        this(pluginDescription, Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                .map(plugin -> plugin.getDescription().getName())
+                .collect(Collectors.toList()));
+    }
 }

@@ -85,12 +85,11 @@ public class DependsCollectCache
             enumeratedDependencies.put(dependencyName, dependencyPath);
     }
 
-    public List<String> getCollectedDependencies()
+    public HashMap<String, Path> getCollectedDependencies()
     {
-        return this.enumeratedDependencies.entrySet().stream().parallel()
+        return (HashMap<String, Path>) this.enumeratedDependencies.entrySet().stream().parallel()
                 .filter(entry -> entry.getValue() != null)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public List<String> getCollectFailedDependencies()

@@ -145,7 +145,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
             {
                 this.postSignal(new DependsCollectDependsDependsFailedSignal(
                         dependsCollectResult.getTargetPlugin(),
-                        dependsCollectResult.getCollectingFailedPlugins()
+                        dependsCollectResult.getCollectFailedPlugins()
                 ));
             }
             else
