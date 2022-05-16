@@ -1,12 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals;
 
-import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import org.jetbrains.annotations.NotNull;
-
-@Value
-public class DependsLoadDescriptionFailedSignal implements InstallerSignal
+public class DependsLoadDescriptionFailedSignal extends DependencyCollectFailedSignalBase
 {
-    @NotNull
-    String descriptionLoadFailedDependency;
+    public DependsLoadDescriptionFailedSignal(String failedDependency)
+    {
+        super(failedDependency);
+    }
 }
