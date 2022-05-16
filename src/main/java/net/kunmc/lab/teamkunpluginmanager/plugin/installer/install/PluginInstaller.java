@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.DependenciesCollectFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.DependsCollectResult;
@@ -119,7 +120,10 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
                 .runPhase(new DependsCollectArgument(pluginDescription));
 
         if (!dependsCollectResult.isSuccess())
+        {
+            this.postSignal(new DependenciesCollectFailedSignal(dependsCollectResult.getCollectFailedPlugins()));
             return this.error(InstallErrorCause.SOME_DEPENDENCY_COLLECT_FAILED);
+        }
 
         collectedDependencies = dependsCollectResult.getCollectedPlugins();
         //endregion
