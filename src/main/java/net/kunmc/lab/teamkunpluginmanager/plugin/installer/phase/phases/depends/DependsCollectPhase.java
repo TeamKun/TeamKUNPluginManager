@@ -43,7 +43,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         super(progress, signalHandler);
 
         this.signalHandler = signalHandler;
-        this.cache = DependsCollectCache.of(progress.getInstallActionID().toString());
+        this.cache = progress.getDependsCollectCache();
 
         this.phaseState = DependsCollectState.INITIALIZED;
     }
@@ -135,11 +135,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         for (Map.Entry<String, PluginDescriptionFile> entry : dependsDescriptions.entrySet())
         {
-            this.cache.save();
-
             DependsCollectResult dependsCollectResult = this.passCollector(entry.getValue(), alreadyCollected);
-
-            this.cache.update();
 
             if (!dependsCollectResult.isSuccess())
             {

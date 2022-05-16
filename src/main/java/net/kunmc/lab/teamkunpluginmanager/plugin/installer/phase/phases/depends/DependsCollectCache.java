@@ -36,7 +36,7 @@ public class DependsCollectCache
     @NotNull
     private String pluginName;
 
-    private DependsCollectCache(@NotNull String installId)
+    public DependsCollectCache(@NotNull String installId)
     {
         this.installId = installId;
         this.enumeratedDependencies = new HashMap<>();
