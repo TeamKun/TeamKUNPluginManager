@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Value
-public class DependsCollectDependsDependsFailedSignal implements InstallerSignal
+public class DependencyCollectDependencysDependsFailedSignal implements InstallerSignal
 {
     @NotNull
     String pluginName;

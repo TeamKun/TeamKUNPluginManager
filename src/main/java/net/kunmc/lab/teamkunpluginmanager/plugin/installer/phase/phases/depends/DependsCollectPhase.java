@@ -3,12 +3,12 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyCollectDependencysDependsFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyDownloadFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyLoadDescriptionFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsCacheSaveFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsCollectDependsDependsFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsDownloadFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsEnumeratedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsLoadDescriptionFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadResult;
@@ -139,7 +139,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
             if (!dependsCollectResult.isSuccess())
             {
-                this.postSignal(new DependsCollectDependsDependsFailedSignal(
+                this.postSignal(new DependencyCollectDependencysDependsFailedSignal(
                         dependsCollectResult.getTargetPlugin(),
                         dependsCollectResult.getCollectFailedPlugins()
                 ));
@@ -177,7 +177,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
             PluginDescriptionFile pluginDescriptionFile = this.downloadResultToPluginDescriptionFile(entry.getValue());
 
             if (pluginDescriptionFile == null)
-                this.postSignal(new DependsLoadDescriptionFailedSignal(entry.getKey()));
+                this.postSignal(new DependencyLoadDescriptionFailedSignal(entry.getKey()));
             else
                 pluginDescriptionFiles.put(entry.getKey(), pluginDescriptionFile);
         }
@@ -203,7 +203,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         downloadResults.entrySet().stream()
                 .filter(entry -> !entry.getValue().isSuccess())
-                .forEach(entry -> this.postSignal(new DependsDownloadFailedSignal(entry.getKey())));
+                .forEach(entry -> this.postSignal(new DependencyDownloadFailedSignal(entry.getKey())));
 
         return new HashMap<>(downloadResults);
     }
@@ -229,7 +229,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         resolveResults.entrySet().stream()
                 .filter(entry -> !(entry.getValue() instanceof SuccessResult))
-                .forEach(entry -> this.postSignal(new DependsResolveFailedSignal(entry.getKey())));
+                .forEach(entry -> this.postSignal(new DependencyResolveFailedSignal(entry.getKey())));
 
         return new HashMap<>(resolveResults);
     }
