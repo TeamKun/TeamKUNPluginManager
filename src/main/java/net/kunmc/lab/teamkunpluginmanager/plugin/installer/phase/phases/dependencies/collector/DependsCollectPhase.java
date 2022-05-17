@@ -1,14 +1,14 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyCollectDependencysDependsFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyDownloadFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyLoadDescriptionFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependencyResolveFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsCacheSaveFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends.signals.DependsEnumeratedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyDownloadFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyResolveFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCacheSaveFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadResult;

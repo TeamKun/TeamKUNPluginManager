@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector;
 
 public enum DependsCollectState
 {

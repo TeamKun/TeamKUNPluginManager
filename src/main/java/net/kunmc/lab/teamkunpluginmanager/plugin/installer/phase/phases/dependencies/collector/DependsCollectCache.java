@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.depends;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector;
 
 import com.google.gson.Gson;
 import lombok.AccessLevel;
