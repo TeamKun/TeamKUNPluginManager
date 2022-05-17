@@ -42,12 +42,12 @@ public class DependsCollectCache
         this.enumeratedDependencies = new HashMap<>();
         this.pluginName = "undefined-" + installId;
 
-        this.cacheFile = Paths.get(".cache", installId, installId + ".kpmcache").toFile();
+        this.cacheFile = Paths.get(installId, installId + ".kpmcache").toFile();
     }
 
     public static DependsCollectCache of(@NotNull String installId)
     {
-        File cacheFile = Paths.get(".cache", installId, installId + ".kpmcache").toFile();
+        File cacheFile = Paths.get(installId, installId + ".kpmcache").toFile();
 
         if (!cacheFile.exists())
             return new DependsCollectCache(installId);
