@@ -7,6 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependen
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyDownloadFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyNameMismatchSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCacheSaveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsEnumeratedSignal;
@@ -96,9 +97,16 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
                 .forEach(entry -> {
                     String exceptedName = entry.getValue().getName();
                     String actualName = entry.getKey();
+                    if (!exceptedName.equals(actualName))
+                    {
+                        this.postSignal(new DependencyNameMismatchSignal(actualName, exceptedName));
+                        return;
+                    }
+
                     Path pluginPath = downloadResults.get(actualName).getPath();
-                    if (pluginPath != null) // Should not be null
-                        this.cache.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath));
+
+                    assert pluginPath != null;
+                    this.cache.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath));
                 });
 
         if (!this.cache.save())
