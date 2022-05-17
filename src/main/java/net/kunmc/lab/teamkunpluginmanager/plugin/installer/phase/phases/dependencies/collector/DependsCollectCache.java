@@ -5,18 +5,18 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -31,7 +31,7 @@ public class DependsCollectCache
     private final String installId;
     @NotNull
     @Getter(AccessLevel.PRIVATE)
-    private final HashMap<String, Path> enumeratedDependencies;
+    private final HashMap<String, DependencyElement> enumeratedDependencies;
 
     @NotNull
     private String pluginName;
@@ -79,17 +79,18 @@ public class DependsCollectCache
         return enumeratedDependencies.containsValue(null);
     }
 
-    public void onCollect(@NotNull String dependencyName, @Nullable Path dependencyPath)
+    public void onCollect(@NotNull String dependencyName, DependencyElement dependencyElement)
     {
         if (enumeratedDependencies.containsKey(dependencyName))
-            enumeratedDependencies.put(dependencyName, dependencyPath);
+            enumeratedDependencies.put(dependencyName, dependencyElement);
     }
 
-    public HashMap<String, Path> getCollectedDependencies()
+    public List<DependencyElement> getCollectedDependencies()
     {
-        return (HashMap<String, Path>) this.enumeratedDependencies.entrySet().stream().parallel()
-                .filter(entry -> entry.getValue() != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return this.enumeratedDependencies.entrySet().stream().parallel()
+                .map(Map.Entry::getValue)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public List<String> getCollectFailedDependencies()
