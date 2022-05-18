@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.DependenciesCollectFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectResult;
@@ -23,8 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.List;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
 {
@@ -93,18 +93,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         // region Remove plugin if it is already installed. (only replacePlugin is true)
         if (replacePlugin)
-        {
-            this.progress.setPhase(InstallPhases.REMOVING_OLD_PLUGIN);
-
-            File oldPluginFile = PluginUtil.getFile(sameServerPlugin);
-
-            PluginUtil.unload(sameServerPlugin);  // TODO: Replace with uninstall.
-
-            if (!safeDelete(oldPluginFile))
-                Runner.runLater(() -> {
-                    safeDelete(oldPluginFile);
-                }, 10L);
-        }
+            this.removeOldPlugin(sameServerPlugin);
         // endregion
 
         if (replacePlugin)
@@ -112,7 +101,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         else
             this.progress.addInstalled(pluginName);
 
-        HashMap<String, Path> collectedDependencies;
+        List<DependencyElement> collectedDependencies;
         // region Collecting dependencies section.
         this.progress.setPhase(InstallPhases.COLLECTING_DEPENDENCIES);
 
@@ -130,5 +119,17 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
 
         return this.success();
+    }
+
+    private void removeOldPlugin(Plugin plugin)
+    {
+        File oldPluginFile = PluginUtil.getFile(plugin);
+
+        PluginUtil.unload(plugin);  // TODO: Replace with uninstall.
+
+        if (!safeDelete(oldPluginFile))
+            Runner.runLater(() -> {
+                safeDelete(oldPluginFile);
+            }, 10L);
     }
 }
