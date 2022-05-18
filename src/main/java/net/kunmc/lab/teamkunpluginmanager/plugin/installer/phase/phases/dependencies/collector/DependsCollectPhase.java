@@ -106,7 +106,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
                     Path pluginPath = downloadResults.get(actualName).getPath();
 
                     assert pluginPath != null;
-                    this.cache.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath));
+                    this.cache.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath, entry.getValue()));
                 });
 
         if (!this.cache.save())
