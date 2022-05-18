@@ -15,16 +15,4 @@ public class DependencyElement
     private final Path pluginPath;
     @NotNull
     private final PluginDescriptionFile pluginDescription;
-
-    private int loadOrder;
-
-    public DependencyElement(@NotNull String pluginName, @NotNull Path pluginPath,
-                             @NotNull PluginDescriptionFile pluginDescription)
-    {
-        this.pluginName = pluginName;
-        this.pluginPath = pluginPath;
-        this.pluginDescription = pluginDescription;
-
-        this.loadOrder = -1;
-    }
 }
