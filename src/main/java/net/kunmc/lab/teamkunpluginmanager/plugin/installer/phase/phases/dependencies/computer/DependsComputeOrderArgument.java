@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class DependsComputeOrderArgument extends PhaseArgument
 {
     @Getter
