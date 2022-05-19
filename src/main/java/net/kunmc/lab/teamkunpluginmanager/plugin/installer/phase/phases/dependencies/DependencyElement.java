@@ -1,18 +1,18 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies;
 
-import lombok.Data;
+import lombok.Value;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-@Data
+@Value
 public class DependencyElement
 {
     @NotNull
-    private final String pluginName;
+    String pluginName;
     @NotNull
-    private final Path pluginPath;
+    Path pluginPath;
     @NotNull
-    private final PluginDescriptionFile pluginDescription;
+    PluginDescriptionFile pluginDescription;
 }
