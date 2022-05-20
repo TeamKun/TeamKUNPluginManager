@@ -5,7 +5,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.DependenciesCollectFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.DependenciesLoadOrderComputedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
@@ -134,13 +133,6 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
 
         // Post signal and get order if user is modifying load order.
-        DependenciesLoadOrderComputedSignal dependenciesLoadOrderComputedSignal =
-                new DependenciesLoadOrderComputedSignal(new ArrayList<>(dependsComputeOrderResult.getOrder()));
-
-        this.postSignal(dependenciesLoadOrderComputedSignal);
-
-        loadOrder = dependenciesLoadOrderComputedSignal.getDependencies();
-
         // endregion
 
 

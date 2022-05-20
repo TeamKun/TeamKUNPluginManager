@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals;
 
 import lombok.Data;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;

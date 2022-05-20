@@ -4,6 +4,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependenciesLoadOrderComputedSignal;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +87,7 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
 
         this.state = DependsComputeOrderState.COMPUTING_DEPENDENCY_LOAD_ORDER;
 
-        List<DependencyElement> result = new ArrayList<>();
+        ArrayList<DependencyElement> result = new ArrayList<>();
         List<DependencyElement> last = new ArrayList<>();
 
         while (!plugins.isEmpty())
@@ -168,6 +169,13 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
 
         result.addAll(last);
 
-        return new DependsComputeOrderResult(true, this.state, null, result);
+
+        DependenciesLoadOrderComputedSignal dependenciesLoadOrderComputedSignal =
+                new DependenciesLoadOrderComputedSignal(result);
+
+        this.postSignal(dependenciesLoadOrderComputedSignal);
+
+        List<DependencyElement> actualResult = dependenciesLoadOrderComputedSignal.getDependencies();
+        return new DependsComputeOrderResult(true, this.state, null, actualResult);
     }
 }
