@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandle
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependenciesLoadOrderComputedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependenciesLoadOrderComputingSignal;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +53,9 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
     public @NotNull DependsComputeOrderResult runPhase(@NotNull DependsComputeOrderArgument arguments)
     {
         this.state = DependsComputeOrderState.CREATING_DEPENDENCY_MAP;
+        this.postSignal(new DependenciesLoadOrderComputingSignal(
+                Collections.unmodifiableList(arguments.getCollectedDependencies())
+        ));
 
         List<DependencyElement> plugins = new ArrayList<>(arguments.getCollectedDependencies());
 
