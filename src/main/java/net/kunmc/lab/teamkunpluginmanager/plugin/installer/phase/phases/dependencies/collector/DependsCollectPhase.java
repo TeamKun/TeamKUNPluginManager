@@ -10,6 +10,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependen
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyNameMismatchSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCacheSaveFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCollectFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
@@ -126,9 +127,13 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         boolean success = this.cache.isErrors();
         DependsCollectErrorCause errorCause = success ? null: DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED;
 
+        List<String> collectFailedDependencies = this.cache.getCollectFailedDependencies();
+        if (!success)
+            this.postSignal(new DependsCollectFailedSignal(collectFailedDependencies));
+
         return new DependsCollectResult(
                 success, this.phaseState, errorCause,
-                pluginName, this.cache.getCollectedDependencies(), this.cache.getCollectFailedDependencies()
+                pluginName, this.cache.getCollectedDependencies(), collectFailedDependencies
         );
     }
 

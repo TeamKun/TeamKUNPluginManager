@@ -4,12 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.DependenciesCollectFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
@@ -28,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
 {
@@ -105,27 +100,12 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         else
             this.progress.addInstalled(pluginName);
 
-        List<DependencyElement> collectedDependencies;
-        // region Collecting dependencies section.
-        this.progress.setPhase(InstallPhases.COLLECTING_DEPENDENCIES);
-
-        DependsCollectResult dependsCollectResult = new DependsCollectPhase(progress, signalHandler)
-                .runPhase(new DependsCollectArgument(pluginDescription));
-
-        if (!dependsCollectResult.isSuccess())
-        {
-            this.postSignal(new DependenciesCollectFailedSignal(dependsCollectResult.getCollectFailedPlugins()));
-            return this.error(InstallErrorCause.SOME_DEPENDENCY_COLLECT_FAILED);
-        }
-
-        collectedDependencies = dependsCollectResult.getCollectedPlugins();
-        //endregion
-
-        // region Do compute dependencies load order and install them.
+        // region Do collect dependencies, compute dependencies load order and install them.
         PluginsInstallResult pluginsInstallResult = (PluginsInstallResult)
-                this.submitter(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
+                this.submitter(InstallPhases.COLLECTING_DEPENDENCIES, new DependsCollectPhase(progress, signalHandler))
+                        .then(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
                         .then(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))
-                        .submit(new DependsComputeOrderArgument(collectedDependencies));
+                        .submit(new DependsCollectArgument(pluginDescription));
 
         if (!pluginsInstallResult.isSuccess())
             return handlePhaseError(pluginDescriptionResult);
