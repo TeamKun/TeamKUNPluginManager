@@ -11,10 +11,11 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependen
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.AlreadyInstalledPluginSignal;
@@ -27,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
@@ -121,15 +121,14 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         collectedDependencies = dependsCollectResult.getCollectedPlugins();
         //endregion
 
-        ArrayList<DependencyElement> loadOrder;
-        // region Compute load order of collected dependencies.
-        this.progress.setPhase(InstallPhases.COMPUTING_LOAD_ORDER);
+        // region Do compute dependencies load order and install them.
+        PluginsInstallResult pluginsInstallResult = (PluginsInstallResult)
+                this.submitter(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
+                        .then(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))
+                        .submit(new DependsComputeOrderArgument(collectedDependencies));
 
-        DependsComputeOrderResult dependsComputeOrderResult = new DependsComputeOrderPhase(progress, signalHandler)
-                .runPhase(new DependsComputeOrderArgument(collectedDependencies));
-
-        if (!dependsComputeOrderResult.isSuccess())
-            throw new IllegalStateException("Compute load order failed."); // Never happens.
+        if (!pluginsInstallResult.isSuccess())
+            return handlePhaseError(pluginDescriptionResult);
         // endregion
 
 
