@@ -130,9 +130,6 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         if (!dependsComputeOrderResult.isSuccess())
             throw new IllegalStateException("Compute load order failed."); // Never happens.
-
-
-        // Post signal and get order if user is modifying load order.
         // endregion
 
 

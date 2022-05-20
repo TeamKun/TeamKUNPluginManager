@@ -4,8 +4,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependenciesLoadOrderComputedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependenciesLoadOrderComputingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependsLoadOrderComputedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +53,7 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
     public @NotNull DependsComputeOrderResult runPhase(@NotNull DependsComputeOrderArgument arguments)
     {
         this.state = DependsComputeOrderState.CREATING_DEPENDENCY_MAP;
-        this.postSignal(new DependenciesLoadOrderComputingSignal(
+        this.postSignal(new DependsLoadOrderComputingSignal(
                 Collections.unmodifiableList(arguments.getCollectedDependencies())
         ));
 
@@ -174,12 +174,12 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
         result.addAll(last);
 
 
-        DependenciesLoadOrderComputedSignal dependenciesLoadOrderComputedSignal =
-                new DependenciesLoadOrderComputedSignal(result);
+        DependsLoadOrderComputedSignal dependsLoadOrderComputedSignal =
+                new DependsLoadOrderComputedSignal(result);
 
-        this.postSignal(dependenciesLoadOrderComputedSignal);
+        this.postSignal(dependsLoadOrderComputedSignal);
 
-        List<DependencyElement> actualResult = dependenciesLoadOrderComputedSignal.getDependencies();
+        List<DependencyElement> actualResult = dependsLoadOrderComputedSignal.getDependencies();
         return new DependsComputeOrderResult(true, this.state, null, actualResult);
     }
 }
