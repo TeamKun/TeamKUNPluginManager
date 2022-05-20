@@ -137,6 +137,8 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
     private void removeOldPlugin(Plugin plugin)
     {
+        this.progress.setPhase(InstallPhases.REMOVING_OLD_PLUGIN);
+
         File oldPluginFile = PluginUtil.getFile(plugin);
 
         PluginUtil.unload(plugin);  // TODO: Replace with uninstall.
