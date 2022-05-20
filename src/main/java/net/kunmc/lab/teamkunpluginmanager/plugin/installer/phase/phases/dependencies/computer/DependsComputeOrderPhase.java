@@ -4,6 +4,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +40,11 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
     private static boolean contains(String name, List<DependencyElement> plugins)
     {
         return get(name, plugins) != null;
+    }
+
+    private static boolean isInstalled(String name)
+    {
+        return Bukkit.getPluginManager().getPlugin(name) != null;
     }
 
     @Override
@@ -81,6 +87,7 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
         this.state = DependsComputeOrderState.COMPUTING_DEPENDENCY_LOAD_ORDER;
 
         List<DependencyElement> result = new ArrayList<>();
+        List<DependencyElement> last = new ArrayList<>();
 
         while (!plugins.isEmpty())
         {
@@ -100,7 +107,7 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
                     {
                         String dependency = dependencyIterator.next();
 
-                        if (contains(dependency, result))
+                        if (contains(dependency, result) || isInstalled(dependency))
                             dependencyIterator.remove();
                         else if (!contains(dependency, plugins))
                             missingDependency = false;
@@ -108,7 +115,7 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
 
                     if (!missingDependency)
                     {
-                        iterator.remove();
+                        last.add(plugin);
                         softDependencies.remove(name);
                         dependencies.remove(name);
 
@@ -158,6 +165,8 @@ public class DependsComputeOrderPhase extends InstallPhase<DependsComputeOrderAr
                 }
             }
         }
+
+        result.addAll(last);
 
         return new DependsComputeOrderResult(true, this.state, null, result);
     }
