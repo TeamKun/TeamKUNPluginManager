@@ -9,8 +9,6 @@ import org.jetbrains.annotations.NotNull;
 public class PluginModifiedSignal implements InstallerSignal
 {
     @NotNull
-    String pluginName;
-    @NotNull
     PluginDescriptionFile pluginDescription;
     @NotNull
     ModifyType modifyType;

@@ -96,9 +96,9 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         // endregion
 
         if (replacePlugin)
-            this.progress.addUpgraded(pluginName);
+            this.progress.addUpgraded(pluginDescription);
         else
-            this.progress.addInstalled(pluginName);
+            this.progress.addInstalled(pluginDescription);
 
         // region Do collect dependencies, compute dependencies load order and install them.
         PluginsInstallResult pluginsInstallResult = (PluginsInstallResult)

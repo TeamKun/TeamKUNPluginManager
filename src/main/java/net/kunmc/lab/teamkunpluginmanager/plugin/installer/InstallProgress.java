@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectCache;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +39,13 @@ public class InstallProgress<P extends Enum<P>>
     private final Path installTempDir;
 
     private final String installActionID;
+    private final InstallerSignalHandler signalHandler;
     private final DependsCollectCache dependsCollectCache;
 
-    private InstallProgress(@Nullable String id) throws IOException, SecurityException
+    private InstallProgress(@NotNull InstallerSignalHandler signalHandler, @Nullable String id) throws IOException, SecurityException
     {
+        this.signalHandler = signalHandler;
+
         this.upgraded = new ArrayList<>();
         this.installed = new ArrayList<>();
         this.removed = new ArrayList<>();
@@ -63,10 +68,11 @@ public class InstallProgress<P extends Enum<P>>
         progressCaches.put(this.getInstallActionID(), this);
     }
 
-    public static <P extends Enum<P>> InstallProgress<P> of(@Nullable String id) throws IOException, SecurityException
+    public static <P extends Enum<P>> InstallProgress<P> of(@NotNull InstallerSignalHandler signalHandler,
+                                                            @Nullable String id) throws IOException, SecurityException
     {
         if (id == null)
-            return new InstallProgress<>(null);
+            return new InstallProgress<>(signalHandler, null);
         else
             return (InstallProgress<P>) progressCaches.get(id);
     }
@@ -79,25 +85,39 @@ public class InstallProgress<P extends Enum<P>>
         this.pending.remove(name);
     }
 
-    public void addUpgraded(@NotNull String pluginName)
+    public void addUpgraded(@NotNull PluginDescriptionFile pluginDescription)
     {
-        this.removeFromAll(pluginName);
+        this.removeFromAll(pluginDescription.getName());
 
-        this.upgraded.add(pluginName);
+        this.signalHandler.handleSignal(
+                this,
+                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.UPGRADE)
+        );
+        this.upgraded.add(pluginDescription.getName());
     }
 
-    public void addInstalled(@NotNull String pluginName)
+    public void addInstalled(@NotNull PluginDescriptionFile pluginDescription)
     {
-        this.removeFromAll(pluginName);
+        this.removeFromAll(pluginDescription.getName());
 
-        this.installed.add(pluginName);
+        this.signalHandler.handleSignal(
+                this,
+                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.ADD)
+        );
+
+
+        this.installed.add(pluginDescription.getName());
     }
 
-    public void addRemoved(@NotNull String pluginName)
+    public void addRemoved(@NotNull PluginDescriptionFile pluginDescription)
     {
-        this.removeFromAll(pluginName);
+        this.removeFromAll(pluginDescription.getName());
 
-        this.removed.add(pluginName);
+        this.signalHandler.handleSignal(
+                this,
+                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.REMOVE)
+        );
+        this.removed.add(pluginDescription.getName());
     }
 
     public void addPending(@NotNull String pluginName)

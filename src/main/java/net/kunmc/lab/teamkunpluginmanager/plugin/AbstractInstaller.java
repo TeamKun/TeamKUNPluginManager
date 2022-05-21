@@ -25,7 +25,7 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
 
     public AbstractInstaller(InstallerSignalHandler signalHandler) throws IOException
     {
-        this.progress = InstallProgress.of(null);
+        this.progress = InstallProgress.of(signalHandler, null);
         this.signalHandler = signalHandler;
     }
 
