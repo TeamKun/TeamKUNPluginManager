@@ -94,6 +94,8 @@ public class PluginsInstallPhase extends InstallPhase<PluginsInstallArgument, Pl
             assert target != null;
             this.postSignal(new PluginLoadedSignal(target));
 
+            this.progress.addInstalled(target.getName());
+
             this.postSignal(new PluginOnLoadRunningSignal(target));
             this.state = PluginsInstallState.RUNNING_ONLOAD;
             target.onLoad();
