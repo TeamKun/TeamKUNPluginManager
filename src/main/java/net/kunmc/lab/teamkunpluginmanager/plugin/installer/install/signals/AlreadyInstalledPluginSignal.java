@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals;
 
 import lombok.Data;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
