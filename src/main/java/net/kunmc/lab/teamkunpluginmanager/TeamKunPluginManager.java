@@ -7,6 +7,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandAutoRemove;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandClean;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandDebug;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandFix;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
@@ -118,6 +119,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("status", new CommandStatus());
         commandManager.registerCommand("uninstall", new CommandUninstall(), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate());
+        commandManager.registerCommand("debug", new CommandDebug());
     }
 
     @Override

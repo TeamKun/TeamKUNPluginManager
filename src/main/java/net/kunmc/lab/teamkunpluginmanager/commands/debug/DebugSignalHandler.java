@@ -119,10 +119,9 @@ public class DebugSignalHandler implements InstallerSignalHandler
             return "L" + clazz.getName() + ";: ";
     }
 
-    private static void varDumpRecursive(Field field, Object o, Terminal terminal, int indent)
+    private static void varDumpRecursive(Field field, Object value, Terminal terminal, int indent)
             throws IllegalAccessException
     {
-        Object value = field.get(o);
         printField(field.getName(), value, terminal, indent);
 
         if (value != null)

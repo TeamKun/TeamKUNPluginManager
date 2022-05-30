@@ -51,7 +51,9 @@ permissions:
 
   kpm.debug:
     description: "プラグインのデバッグを行います。"
-    default: false
+    default: op
     children:
-      kpm.debug.install: true
+      kpm.debug.install:
+        description: "プラグインをインストールします。"
+        default: op
 
