@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -57,17 +59,11 @@ public class DebugSignalHandler implements InstallerSignalHandler
         terminal.writeLine("====================");
     }
 
-    private static void printField(String fieldName, Object o, Terminal terminal, int indent)
+    private static void printField(String fieldName, Object o, Terminal terminal, int indent, boolean noValue)
     {
         String typePrefix = getTypePrefix(o);
 
         String indentStr = StringUtils.repeat("  ", indent);
-
-        boolean noValue = o != null &&
-                o.getClass().isArray() ||
-                o instanceof Collection<?> ||
-                o instanceof Map;
-
 
         if (noValue)
             terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " + typePrefix);
@@ -81,13 +77,44 @@ public class DebugSignalHandler implements InstallerSignalHandler
             terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " + typePrefix + o);
     }
 
+    private static void printString(String fieldName, String value, Terminal terminal, int indent)
+    {
+        String indentStr = StringUtils.repeat("  ", indent);
+        terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " + value);
+    }
+
+    private static boolean isCompatible(Object o)
+    {
+        if (o == null)
+            return true;
+
+        Class<?> clazz = o.getClass();
+
+        return clazz.isPrimitive() ||
+                clazz.isAssignableFrom(String.class) ||
+                clazz.isAssignableFrom(Integer.class) ||
+                clazz.isAssignableFrom(Boolean.class) ||
+                clazz.isAssignableFrom(Double.class) ||
+                clazz.isAssignableFrom(Float.class) ||
+                clazz.isAssignableFrom(Long.class) ||
+                clazz.isAssignableFrom(Short.class) ||
+                clazz.isAssignableFrom(Byte.class) ||
+                clazz.isAssignableFrom(Character.class) ||
+                clazz.isArray() ||
+                clazz.isEnum() ||
+                clazz.isAssignableFrom(HashMap.class) ||
+                clazz.isAssignableFrom(List.class);
+    }
+
     private static String getTypePrefix(Object o)
     {
         if (o == null)
             return ChatColor.GRAY + "null";
 
+        String prefix = "";
+
         if (!(o instanceof Class<?>) && o.getClass().isArray())
-            return getTypePrefix(o.getClass().getComponentType()) + "[";
+            prefix = "[" + getTypePrefix(o.getClass().getComponentType());
 
         Class<?> clazz;
         if (o instanceof Class<?>)
@@ -96,33 +123,43 @@ public class DebugSignalHandler implements InstallerSignalHandler
             clazz = o.getClass();
 
         if (Integer.class.isAssignableFrom(clazz) || int.class.isAssignableFrom(clazz))
-            return ChatColor.BLUE + "I";
+            return prefix + ChatColor.BLUE + "I";
         else if (String.class.isAssignableFrom(clazz))
-            return ChatColor.GOLD + "S";
+            return prefix + ChatColor.GOLD + "S";
         else if (Boolean.class.isAssignableFrom(clazz) || boolean.class.isAssignableFrom(clazz))
-            return ChatColor.GREEN + "B";
+            return prefix + ChatColor.GREEN + "Z";
         else if (Character.class.isAssignableFrom(clazz) || char.class.isAssignableFrom(clazz))
-            return ChatColor.DARK_PURPLE + "C";
+            return prefix + ChatColor.DARK_PURPLE + "C";
         else if (Double.class.isAssignableFrom(clazz) || double.class.isAssignableFrom(clazz))
-            return ChatColor.AQUA + "D";
+            return prefix + ChatColor.AQUA + "D";
         else if (Float.class.isAssignableFrom(clazz) || float.class.isAssignableFrom(clazz))
-            return ChatColor.DARK_AQUA + "F";
+            return prefix + ChatColor.DARK_AQUA + "F";
         else if (Long.class.isAssignableFrom(clazz) || long.class.isAssignableFrom(clazz))
-            return ChatColor.DARK_GREEN + "L";
+            return prefix + ChatColor.DARK_GREEN + "J";
         else if (Short.class.isAssignableFrom(clazz) || short.class.isAssignableFrom(clazz))
-            return ChatColor.DARK_RED + "S";
+            return prefix + ChatColor.DARK_RED + "S";
         else if (Byte.class.isAssignableFrom(clazz) || byte.class.isAssignableFrom(clazz))
-            return ChatColor.DARK_PURPLE + "BY";
+            return prefix + ChatColor.DARK_PURPLE + "B";
         else if (Map.Entry.class.isAssignableFrom(clazz))
-            return getTypePrefix(clazz.getGenericSuperclass()) + " => " + getTypePrefix(clazz.getGenericInterfaces()[0]);
+            return prefix + getTypePrefix(clazz.getGenericSuperclass()) + " => " +
+                    getTypePrefix(clazz.getGenericInterfaces()[0]);
         else
-            return "L" + clazz.getName() + ";: ";
+            return prefix + "L" + clazz.getName() + ";: ";
     }
 
     private static void varDumpRecursive(Field field, Object value, Terminal terminal, int indent)
             throws IllegalAccessException
     {
-        printField(field.getName(), value, terminal, indent);
+        if (!isCompatible(value))
+        {
+            printField(field.getName(), value, terminal, indent, false);
+            varDump(value, terminal, indent + 1);
+            return;
+        }
+
+        printField(field.getName(), value, terminal, indent,
+                value != null && value.getClass().isArray() || value instanceof Collection<?> || value instanceof Map
+        );
 
         if (value != null)
         {
@@ -141,7 +178,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
         }
     }
 
-    private static void varDump(Object o, Terminal terminal)
+    private static void varDump(Object o, Terminal terminal, int indent)
     {
         Field[] fields = o.getClass().getDeclaredFields();
         for (Field field : fields)
@@ -150,13 +187,35 @@ public class DebugSignalHandler implements InstallerSignalHandler
 
             try
             {
-                varDumpRecursive(field, field.get(o), terminal, 0);
+                Object value = field.get(o);
+
+                if (value.equals(o))
+                    printString(field.getName(), ChatColor.RED + "Singleton", terminal, indent);
+
+                varDumpRecursive(field, value, terminal, indent);
             }
             catch (IllegalAccessException e)
             {
+                printString(field.getName(),
+                        ChatColor.RED + "Unable to get the field value: An exception has occurred.", terminal, indent
+                );
                 e.printStackTrace();
             }
+            catch (Exception e)
+            {
+                if (e.getClass().getName().equals("java.lang.reflect.InaccessibleObjectException"))
+                    printString(field.getName(),
+                            ChatColor.RED + "Unable to get the field value: VM security error.", terminal, indent
+                    );
+                else
+                    e.printStackTrace();
+            }
         }
+    }
+
+    private static void varDump(Object o, Terminal terminal)
+    {
+        varDump(o, terminal, 0);
     }
 
     @Override
