@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.AlreadyInstalledPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderPhase;
@@ -12,7 +13,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.descript
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
@@ -33,13 +33,14 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public InstallResult<InstallPhases> execute(@NotNull String query)
     {
         PluginDescriptionFile pluginDescription;
         String pluginName;
         // region Do plugin resolve, download and description load.
 
-        DescriptionLoadResult pluginDescriptionResult = (DescriptionLoadResult)
+        PhaseResult pluginDescriptionResult =
                 this.submitter(InstallPhases.RESOLVING_QUERY, new PluginResolvePhase(progress, signalHandler))
                         .then(InstallPhases.DOWNLOADING, new DownloadPhase(progress, signalHandler))
                         .then(InstallPhases.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadPhase(progress, signalHandler))
@@ -48,7 +49,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         if (!pluginDescriptionResult.isSuccess())
             return handlePhaseError(pluginDescriptionResult);
 
-        pluginDescription = pluginDescriptionResult.getDescription();
+        pluginDescription = ((DescriptionLoadResult) pluginDescriptionResult).getDescription();
         assert pluginDescription != null; // Not null because isSuccess() is true.
 
         pluginName = pluginDescription.getName();
@@ -101,7 +102,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
             this.progress.addInstalled(pluginDescription);
 
         // region Do collect dependencies, compute dependencies load order and install them.
-        PluginsInstallResult pluginsInstallResult = (PluginsInstallResult)
+        PhaseResult pluginsInstallResult =
                 this.submitter(InstallPhases.COLLECTING_DEPENDENCIES, new DependsCollectPhase(progress, signalHandler))
                         .then(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
                         .then(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))

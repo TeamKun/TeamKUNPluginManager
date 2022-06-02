@@ -55,7 +55,8 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
     }
 
     @NotNull
-    protected <S extends Enum<S>, T extends Enum<T>> InstallResult<P> handlePhaseError(@NotNull PhaseResult<S, T> result)
+    @SuppressWarnings("rawtypes")
+    protected InstallResult<P> handlePhaseError(@NotNull PhaseResult result)
     {
         if (result.getErrorCause() != null)
             return this.error(result.getErrorCause(), result.getPhase());

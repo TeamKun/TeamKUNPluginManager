@@ -78,6 +78,9 @@ public class PhaseSubmitter<
         {
             while (submitter.next != null)
             {
+                if (!result.isSuccess())
+                    return result;
+
                 submitter = submitter.next;
 
                 installer.getProgress().setPhase(submitter.phaseState);
@@ -85,8 +88,6 @@ public class PhaseSubmitter<
 
                 result = submitter.submitOnceUnsafe(nextArgument);
 
-                if (!result.isSuccess())
-                    return result;
             }
         }
         catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
