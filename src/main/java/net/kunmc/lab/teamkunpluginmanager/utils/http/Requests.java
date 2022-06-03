@@ -28,7 +28,7 @@ public class Requests
 
     private static HTTPResponse doRedirect(HTTPResponse response, int redirectCount)
     {
-        if (response.getStatus() == HTTPResponse.RequestStatus.OK && !response.isRedirect())
+        if (!response.isRedirect())
             return response;
 
         RequestContext request = response.getRequest();
@@ -147,7 +147,7 @@ public class Requests
 
             HTTPResponse response = new HTTPResponse(status,
                     context, protocol, protocolVersion, responseCode, serverHeaders,
-                    connection.getInputStream()
+                    responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
             );
 
             if (context.isFollowRedirects())
