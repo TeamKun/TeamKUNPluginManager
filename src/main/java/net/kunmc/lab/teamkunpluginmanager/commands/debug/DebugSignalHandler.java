@@ -153,7 +153,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
         if (!isCompatible(value))
         {
             printField(field.getName(), value, terminal, indent, false);
-            varDump(value, terminal, indent + 1);
+            varDump(value, terminal, indent + 1, false);
             return;
         }
 
@@ -178,7 +178,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
         }
     }
 
-    private static void varDump(Object o, Terminal terminal, int indent)
+    private static void varDump(Object o, Terminal terminal, int indent, boolean printFailedMessage)
     {
         Field[] fields = o.getClass().getDeclaredFields();
         for (Field field : fields)
@@ -196,17 +196,21 @@ public class DebugSignalHandler implements InstallerSignalHandler
             }
             catch (IllegalAccessException e)
             {
-                printString(field.getName(),
-                        ChatColor.RED + "Unable to get the field value: An exception has occurred.", terminal, indent
-                );
+                if (printFailedMessage)
+                    printString(field.getName(),
+                            ChatColor.RED + "Unable to get the field value: An exception has occurred.", terminal, indent
+                    );
                 e.printStackTrace();
             }
             catch (Exception e)
             {
                 if (e.getClass().getName().equals("java.lang.reflect.InaccessibleObjectException"))
-                    printString(field.getName(),
-                            ChatColor.RED + "Unable to get the field value: VM security error.", terminal, indent
-                    );
+                {
+                    if (printFailedMessage)
+                        printString(field.getName(),
+                                ChatColor.RED + "Unable to get the field value: VM security error.", terminal, indent
+                        );
+                }
                 else
                     e.printStackTrace();
             }
@@ -215,7 +219,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
 
     private static void varDump(Object o, Terminal terminal)
     {
-        varDump(o, terminal, 0);
+        varDump(o, terminal, 0, false);
     }
 
     @Override
