@@ -5,8 +5,10 @@ import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class RequestsTest
 {
     private static final String mockUrl = "https://run.mocky.io/v3/63f730d5-cb39-413e-a56f-37450aea4df0";

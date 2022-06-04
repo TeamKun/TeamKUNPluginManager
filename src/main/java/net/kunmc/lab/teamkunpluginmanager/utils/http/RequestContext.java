@@ -26,6 +26,6 @@ public class RequestContext
     int timeout = -1;
 
     @Builder.Default
-    byte[] body = {};
+    byte[] body = null;
 
 }

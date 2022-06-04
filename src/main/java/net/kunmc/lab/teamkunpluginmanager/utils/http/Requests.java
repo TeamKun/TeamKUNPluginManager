@@ -58,7 +58,7 @@ public class Requests
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
-                "1");
+                TeamKunPluginManager.getPlugin().getDescription().getVersion());
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
@@ -90,8 +90,6 @@ public class Requests
 
             connection.setInstanceFollowRedirects(false);
             connection.setRequestMethod(context.getMethod().name());
-            connection.setDoOutput(context.getBody() != null);
-            connection.setDoInput(true);
             connection.setUseCaches(false);
             connection.setConnectTimeout(10000);
 
