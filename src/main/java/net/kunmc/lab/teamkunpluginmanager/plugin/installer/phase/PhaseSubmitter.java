@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
 
 public class PhaseSubmitter<
         T extends PhaseArgument,
@@ -67,6 +68,39 @@ public class PhaseSubmitter<
         return this.phase.runPhase((A) argument);
     }
 
+    @SuppressWarnings("unchecked")
+    private static <T extends InstallPhase<?, ?>> Class<? extends PhaseArgument> getPhaseArgumentOf(@NotNull T phase)
+    {
+        return (Class<? extends PhaseArgument>) ((ParameterizedType) phase.getClass().getGenericSuperclass())
+                .getActualTypeArguments()[0];
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Constructor<PhaseArgument> getConstructor(@NotNull Class<? extends PhaseArgument> clazz,
+                                                             @NotNull PhaseResult<?, ?> parentResult)
+    {
+
+        try
+        {
+            for (Constructor<?> constructor : clazz.getConstructors())
+            {
+                Class<?>[] parameterTypes = constructor.getParameterTypes();
+                if (parameterTypes.length == 1 && parameterTypes[0].isAssignableFrom(parentResult.getClass()))
+                {
+                    constructor.setAccessible(true);
+                    return (Constructor<PhaseArgument>) constructor;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        throw new IllegalArgumentException("No constructor found for " + clazz.getName());
+    }
+
     public @NotNull PhaseResult<?, ?> submit(@NotNull T firstArgument)
     {
         PhaseSubmitter<T, P, I, ?, ?, ?> submitter = this.first;
@@ -84,7 +118,7 @@ public class PhaseSubmitter<
                 submitter = submitter.next;
 
                 installer.getProgress().setPhase(submitter.phaseState);
-                PhaseArgument nextArgument = getConstructor(result).newInstance(result);
+                PhaseArgument nextArgument = getConstructor(getPhaseArgumentOf(submitter.phase), result).newInstance(result);
 
                 result = submitter.submitOnceUnsafe(nextArgument);
 
@@ -96,31 +130,5 @@ public class PhaseSubmitter<
         }
 
         return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Constructor<PhaseArgument> getConstructor(@NotNull PhaseResult<?, ?> parentResult)
-    {
-        Class<? extends PhaseArgument> argumentClass = PhaseArgument.class;
-
-        try
-        {
-            for (Constructor<?> constructor : argumentClass.getConstructors())
-            {
-                Class<?>[] parameterTypes = constructor.getParameterTypes();
-                if (parameterTypes.length == 1 && parameterTypes[0].isAssignableFrom(parentResult.getClass()))
-                {
-                    constructor.setAccessible(true);
-                    return (Constructor<PhaseArgument>) constructor;
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-
-        throw new IllegalArgumentException("No constructor found for " + argumentClass.getName());
     }
 }

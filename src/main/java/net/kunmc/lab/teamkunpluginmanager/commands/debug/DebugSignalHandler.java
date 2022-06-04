@@ -187,7 +187,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
             {
                 Object value = field.get(o);
 
-                if (value.equals(o))
+                if (o.equals(value))
                     printString(field.getName(), ChatColor.RED + "Singleton", terminal, indent);
 
                 varDumpRecursive(field, value, terminal, indent);
