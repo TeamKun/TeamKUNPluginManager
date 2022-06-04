@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -102,8 +100,8 @@ public class DebugSignalHandler implements InstallerSignalHandler
                 clazz.isAssignableFrom(Character.class) ||
                 clazz.isArray() ||
                 clazz.isEnum() ||
-                clazz.isAssignableFrom(HashMap.class) ||
-                clazz.isAssignableFrom(List.class);
+                clazz.isAssignableFrom(Map.class) ||
+                clazz.isAssignableFrom(Collection.class);
     }
 
     private static String getTypePrefix(Object o)
@@ -113,14 +111,14 @@ public class DebugSignalHandler implements InstallerSignalHandler
 
         String prefix = "";
 
-        if (!(o instanceof Class<?>) && o.getClass().isArray())
-            prefix = "[" + getTypePrefix(o.getClass().getComponentType());
-
         Class<?> clazz;
         if (o instanceof Class<?>)
             clazz = (Class<?>) o;
         else
             clazz = o.getClass();
+
+        if (clazz.isArray())
+            prefix = "[" + getTypePrefix(clazz.getComponentType());
 
         if (Integer.class.isAssignableFrom(clazz) || int.class.isAssignableFrom(clazz))
             return prefix + ChatColor.BLUE + "I";
