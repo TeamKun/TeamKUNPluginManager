@@ -94,13 +94,13 @@ public class DownloadPhase extends InstallPhase<DownloadArgument, DownloadResult
             DownloadErrorSignal error = new DownloadErrorSignal(cause, this.randomDownloadID, signalValue);
             this.postSignal(error);
 
-            return new DownloadResult(true, this.phaseState, path, -1, this.randomDownloadID, cause);
+            return new DownloadResult(false, this.phaseState, path, -1, this.randomDownloadID, cause);
         }
         catch (Exception e)
         {
             this.postSignal(new DownloadErrorSignal(DownloadErrorCause.UNKNOWN_ERROR, this.randomDownloadID, e));
 
-            return new DownloadResult(true, this.phaseState, path, -1, this.randomDownloadID,
+            return new DownloadResult(false, this.phaseState, path, -1, this.randomDownloadID,
                     DownloadErrorCause.UNKNOWN_ERROR
             );
         }
