@@ -23,7 +23,9 @@ import java.util.Map;
  * <i>It would be nice if you provide credit to me if you use this class in a published project</i>
  *
  * @author DarkBlade12
- * @version 1.1
+ * @author Peyang
+ *
+ * @version 1.1-PYG
  */
 public final class ReflectionUtils
 {
@@ -46,14 +48,10 @@ public final class ReflectionUtils
     public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameterTypes) throws NoSuchMethodException
     {
         Class<?>[] primitiveTypes = DataType.getPrimitive(parameterTypes);
-        for (Constructor<?> constructor : clazz.getConstructors())
-        {
-            if (!DataType.compare(DataType.getPrimitive(constructor.getParameterTypes()), primitiveTypes))
-            {
-                continue;
-            }
-            return constructor;
-        }
+        for (Constructor<?> constructor : clazz.getDeclaredConstructors())
+            if (DataType.compare(DataType.getPrimitive(constructor.getParameterTypes()), primitiveTypes))
+                return constructor;
+
         throw new NoSuchMethodException("There is no such constructor in this class with the specified parameter types");
     }
 
@@ -65,12 +63,48 @@ public final class ReflectionUtils
      * @param parameterTypes Parameter types of the desired constructor
      * @return The constructor of the desired target class with the specified parameter types
      * @throws NoSuchMethodException  If the desired constructor with the specified parameter types cannot be found
-     * @throws ClassNotFoundException ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #getConstructor(Class, Class...)
      */
     public static Constructor<?> getConstructor(String className, PackageType packageType, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException
     {
         return getConstructor(packageType.getClass(className), parameterTypes);
+    }
+
+    /**
+     * Returns the constructor of a desired class with the given parameter types that is accessible
+     *
+     * @param clazz          Target class
+     * @param parameterTypes Parameter types of the desired constructor
+     * @return The constructor of the target class with the specified parameter types that are accessible
+     * @throws NoSuchMethodException If the desired constructor with the specified parameter types cannot be found
+     * @see DataType
+     * @see DataType#getPrimitive(Class[])
+     * @see DataType#compare(Class[], Class[])
+     */
+    public static Constructor<?> getAccessibleConstructor(Class<?> clazz, Class<?>... parameterTypes) throws NoSuchMethodException
+    {
+        Constructor<?> constructor = getConstructor(clazz, parameterTypes);
+        constructor.setAccessible(true);
+        return constructor;
+    }
+
+    /**
+     * Returns the constructor of a desired class with the given parameter types that is accessible
+     *
+     * @param className      Name of the desired target class
+     * @param packageType    Package where the desired target class is located
+     * @param parameterTypes Parameter types of the desired constructor
+     * @return The constructor of the desired target class with the specified parameter types that are accessible
+     * @throws NoSuchMethodException  If the desired constructor with the specified parameter types cannot be found
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getAccessibleConstructor(Class, Class...)
+     */
+    public static Constructor<?> getAccessibleConstructor(String className, PackageType packageType, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException
+    {
+        Constructor<?> constructor = getAccessibleConstructor(packageType.getClass(className), parameterTypes);
+        constructor.setAccessible(true);
+        return constructor;
     }
 
     /**
@@ -124,14 +158,9 @@ public final class ReflectionUtils
     public static Method getMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
     {
         Class<?>[] primitiveTypes = DataType.getPrimitive(parameterTypes);
-        for (Method method : clazz.getMethods())
-        {
-            if (!method.getName().equals(methodName) || !DataType.compare(DataType.getPrimitive(method.getParameterTypes()), primitiveTypes))
-            {
-                continue;
-            }
-            return method;
-        }
+        for (Method method : clazz.getDeclaredMethods())
+            if (method.getName().equals(methodName) && DataType.compare(DataType.getPrimitive(method.getParameterTypes()), primitiveTypes))
+                return method;
         throw new NoSuchMethodException("There is no such method in this class with the specified name and parameter types");
     }
 
@@ -150,6 +179,46 @@ public final class ReflectionUtils
     public static Method getMethod(String className, PackageType packageType, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException
     {
         return getMethod(packageType.getClass(className), methodName, parameterTypes);
+    }
+
+    /**
+     * Returns a method of a class with the given parameter types that is accessible
+     *
+     * @param clazz          Target class
+     * @param methodName     Name of the desired method
+     * @param parameterTypes Parameter types of the desired method
+     * @return The method of the target class with the specified name and parameter types
+     * @throws NoSuchMethodException If the desired method of the target class with the specified name and parameter types cannot be found
+     * @see DataType#getPrimitive(Class[])
+     * @see DataType#compare(Class[], Class[])
+     */
+    public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
+    {
+        Class<?>[] primitiveTypes = DataType.getPrimitive(parameterTypes);
+        for (Method method : clazz.getMethods())
+            if (method.getName().equals(methodName) && DataType.compare(DataType.getPrimitive(method.getParameterTypes()), primitiveTypes))
+            {
+                method.setAccessible(true);
+                return method;
+            }
+        throw new NoSuchMethodException("There is no such method in this class with the specified name and parameter types");
+    }
+
+    /**
+     * Returns a method of a desired class with the given parameter types that is accessible
+     *
+     * @param className      Name of the desired target class
+     * @param packageType    Package where the desired target class is located
+     * @param methodName     Name of the desired method
+     * @param parameterTypes Parameter types of the desired method
+     * @return The method of the desired target class with the specified name and parameter types
+     * @throws NoSuchMethodException  If the desired method of the desired target class with the specified name and parameter types cannot be found
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getAccessibleMethod(Class, String, Class...)
+     */
+    public static Method getAccessibleMethod(String className, PackageType packageType, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException, ClassNotFoundException
+    {
+        return getAccessibleMethod(packageType.getClass(className), methodName, parameterTypes);
     }
 
     /**
@@ -565,10 +634,10 @@ public final class ReflectionUtils
         {
             int length = classes == null ? 0: classes.length;
             Class<?>[] types = new Class<?>[length];
+
             for (int index = 0; index < length; index++)
-            {
                 types[index] = getReference(classes[index]);
-            }
+
             return types;
         }
 
@@ -582,10 +651,10 @@ public final class ReflectionUtils
         {
             int length = objects == null ? 0: objects.length;
             Class<?>[] types = new Class<?>[length];
+
             for (int index = 0; index < length; index++)
-            {
                 types[index] = getPrimitive(objects[index].getClass());
-            }
+
             return types;
         }
 
@@ -599,10 +668,10 @@ public final class ReflectionUtils
         {
             int length = objects == null ? 0: objects.length;
             Class<?>[] types = new Class<?>[length];
+
             for (int index = 0; index < length; index++)
-            {
                 types[index] = getReference(objects[index].getClass());
-            }
+
             return types;
         }
 
@@ -616,17 +685,15 @@ public final class ReflectionUtils
         public static boolean compare(Class<?>[] primary, Class<?>[] secondary)
         {
             if (primary == null || secondary == null || primary.length != secondary.length)
-            {
                 return false;
-            }
+
             for (int index = 0; index < primary.length; index++)
             {
                 Class<?> primaryClass = primary[index];
                 Class<?> secondaryClass = secondary[index];
                 if (primaryClass.equals(secondaryClass) || primaryClass.isAssignableFrom(secondaryClass))
-                {
                     continue;
-                }
+
                 return false;
             }
             return true;

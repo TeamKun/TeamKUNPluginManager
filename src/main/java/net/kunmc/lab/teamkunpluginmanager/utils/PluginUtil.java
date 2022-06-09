@@ -49,12 +49,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class PluginUtil
+public class PluginUtil  // TODO: Rewrite this class
 {
-    private static Method getCommandMap;
-    private static Object craftServer;
-    private static Object minecraftServer;
-    private static Object commandDispatcher;
+    private static final Method getCommandMap;
+    private static final Object craftServer;
+    private static final Object minecraftServer;
+    private static final Object commandDispatcher;
+
+    private static final Method pluginGetFile;
 
     static
     {
@@ -62,14 +64,16 @@ public class PluginUtil
         {
             craftServer = ReflectionUtils.PackageType.CRAFTBUKKIT.getClass("CraftServer").cast(Bukkit.getServer());
             minecraftServer = ReflectionUtils.getMethod(craftServer.getClass(), "getServer").invoke(craftServer);
-
             getCommandMap = ReflectionUtils.getMethod(craftServer.getClass(), "getCommandMap");
             commandDispatcher = ReflectionUtils.getMethod(minecraftServer.getClass(), "getCommandDispatcher")
                     .invoke(minecraftServer);
+
+            pluginGetFile = ReflectionUtils.getAccessibleMethod(JavaPlugin.class, "getFile");
+            pluginGetFile.setAccessible(true);
         }
         catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e)
         {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -168,19 +172,15 @@ public class PluginUtil
 
     public static File getFile(Plugin plugin)
     {
-        Method getFileMethod;
         try
         {
-            getFileMethod = JavaPlugin.class.getDeclaredMethod("getFile");
-            getFileMethod.setAccessible(true);
-
-            return (File) getFileMethod.invoke(plugin);
+            return (File) pluginGetFile.invoke(plugin);
         }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
+        catch (IllegalAccessException | InvocationTargetException e)
         {
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -253,7 +253,7 @@ public class PluginUtil
     }
 
     public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, IOException
-    {
+    { // TODO: File -> Path
         if (!file.exists())
             throw new FileNotFoundException("Not found a file.");
 
