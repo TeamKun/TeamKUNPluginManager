@@ -215,7 +215,7 @@ public class Requests
                 else
                     progress = 0;
 
-                onProgress.accept(new DownloadProgress(progress, downloaded, size));
+                onProgress.accept(new DownloadProgress(size, downloaded, progress));
             }
 
             return size;
