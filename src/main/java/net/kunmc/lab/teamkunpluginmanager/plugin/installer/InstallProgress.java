@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 public class InstallProgress<P extends Enum<P>>
 {
-    private static final HashMap<String, InstallProgress<?>> progressCaches;
+    private static final HashMap<String, InstallProgress<?>> PROGRESS_CACHES;
     private static final Path CACHE_DIRECTORY;
 
     @Setter
@@ -34,7 +34,7 @@ public class InstallProgress<P extends Enum<P>>
 
     static
     {
-        progressCaches = new HashMap<>();
+        PROGRESS_CACHES = new HashMap<>();
         CACHE_DIRECTORY = TeamKunPluginManager.getPlugin().getDataFolder().toPath().resolve(".cache");
 
         if (!Files.exists(CACHE_DIRECTORY))
@@ -78,7 +78,7 @@ public class InstallProgress<P extends Enum<P>>
 
         this.dependsCollectCache = new DependsCollectCache(this);
 
-        progressCaches.put(this.getInstallActionID(), this);
+        PROGRESS_CACHES.put(this.getInstallActionID(), this);
     }
 
     public static <P extends Enum<P>> InstallProgress<P> of(@NotNull InstallerSignalHandler signalHandler,
@@ -87,7 +87,7 @@ public class InstallProgress<P extends Enum<P>>
         if (id == null)
             return new InstallProgress<>(signalHandler, null);
         else
-            return (InstallProgress<P>) progressCaches.get(id);
+            return (InstallProgress<P>) PROGRESS_CACHES.get(id);
     }
 
     private void removeFromAll(@NotNull String name)
@@ -151,6 +151,6 @@ public class InstallProgress<P extends Enum<P>>
             e.printStackTrace();
         }
 
-        progressCaches.remove(this.getInstallActionID());
+        PROGRESS_CACHES.remove(this.getInstallActionID());
     }
 }
