@@ -22,6 +22,7 @@ import java.util.UUID;
 public class InstallProgress<P extends Enum<P>>
 {
     private static final HashMap<String, InstallProgress<?>> progressCaches;
+    private static final Path CACHE_DIRECTORY;
 
     @Setter
     private P phase;
@@ -34,6 +35,18 @@ public class InstallProgress<P extends Enum<P>>
     static
     {
         progressCaches = new HashMap<>();
+        CACHE_DIRECTORY = TeamKunPluginManager.getPlugin().getDataFolder().toPath().resolve(".cache");
+
+        if (!Files.exists(CACHE_DIRECTORY))
+            try
+            {
+                Files.createDirectory(CACHE_DIRECTORY);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
     }
 
     private final Path installTempDir;
@@ -59,11 +72,11 @@ public class InstallProgress<P extends Enum<P>>
             this.installActionID = id;
 
         this.installTempDir = Files.createTempDirectory(
-                TeamKunPluginManager.getPlugin().getDataFolder().toPath(),
+                CACHE_DIRECTORY,
                 this.getInstallActionID()
         );
 
-        this.dependsCollectCache = new DependsCollectCache(this.installActionID);
+        this.dependsCollectCache = new DependsCollectCache(this);
 
         progressCaches.put(this.getInstallActionID(), this);
     }

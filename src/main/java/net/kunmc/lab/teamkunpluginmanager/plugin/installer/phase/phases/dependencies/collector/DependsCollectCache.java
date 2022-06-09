@@ -5,14 +5,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,31 +35,13 @@ public class DependsCollectCache
     @NotNull
     private String pluginName;
 
-    public DependsCollectCache(@NotNull String installId)
+    public DependsCollectCache(InstallProgress<?> progress)
     {
-        this.installId = installId;
+        this.installId = progress.getInstallActionID();
         this.enumeratedDependencies = new HashMap<>();
-        this.pluginName = "undefined-" + installId;
+        this.pluginName = "undefined-" + this.installId;
 
-        this.cacheFile = Paths.get(installId, installId + ".kpmcache").toFile();
-    }
-
-    public static DependsCollectCache of(@NotNull String installId)
-    {
-        File cacheFile = Paths.get(installId, installId + ".kpmcache").toFile();
-
-        if (!cacheFile.exists())
-            return new DependsCollectCache(installId);
-
-        try (FileReader fis = new FileReader(cacheFile))
-        {
-            return gson.fromJson(fis, DependsCollectCache.class);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return new DependsCollectCache(installId);
-        }
+        this.cacheFile = progress.getInstallTempDir().resolve(this.installId + ".kpmcache").toFile();
     }
 
     public void addDependency(@NotNull String dependencyName)
@@ -113,10 +94,5 @@ public class DependsCollectCache
             e.printStackTrace();
             return false;
         }
-    }
-
-    public DependsCollectCache update()
-    {
-        return of(this.installId);
     }
 }
