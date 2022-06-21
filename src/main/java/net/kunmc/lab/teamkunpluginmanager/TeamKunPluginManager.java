@@ -12,6 +12,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandRegister;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandReload;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandResolve;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandStatus;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
@@ -113,6 +114,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("install", new CommandInstall());
         commandManager.registerCommand("register", new CommandRegister());
         commandManager.registerCommand("reload", new CommandReload());
+        commandManager.registerCommand("resolve", new CommandResolve());
         commandManager.registerCommand("status", new CommandStatus());
         commandManager.registerCommand("uninstall", new CommandUninstall());
         commandManager.registerCommand("update", new CommandUpdate());
