@@ -49,7 +49,7 @@ public class SpigotMCResolver implements URLResolver
         if (id == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
 
-        String spigotAPIUrl = "https://apple.api.spiget.org/v2/resources/" + id;
+        String spigotAPIUrl = "https://api.spiget.org/v2/resources/" + id;
 
         HTTPResponse data = Requests.request(RequestContext.builder()
                 .url(spigotAPIUrl)
