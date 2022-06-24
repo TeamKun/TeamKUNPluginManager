@@ -9,6 +9,8 @@ import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+
 /**
  * CurseForge または Bukkit.org の成功結果を表すクラス
  */
@@ -53,14 +55,20 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
         if (this.description != null)
             return this.description;
 
-        HTTPResponse response = Requests.request(RequestContext.builder()
+        try (HTTPResponse response = Requests.request(RequestContext.builder()
                 .url("https://addons-ecs.forgesvc.net/api/v2/addon/" + this.id + "/description")
-                .build());
-        if (response.isError())
-            return "Failed to get description";
+                .build()))
+        {
+            if (response.isError())
+                return "Failed to get description";
 
-        this.description = response.getAsString();
-        return this.description;
+            this.description = response.getAsString();
+            return this.description;
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
 
