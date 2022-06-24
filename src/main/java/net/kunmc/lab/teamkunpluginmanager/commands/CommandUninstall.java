@@ -31,7 +31,7 @@ public class CommandUninstall extends CommandBase
         }
 
         Runner.runAsync(() -> {
-            Installer.unInstall(sender, args[0], false);
+            Installer.unInstall(terminal, args[0], false);
             TeamKunPluginManager.getPlugin().getSession().unlock();
         });
     }

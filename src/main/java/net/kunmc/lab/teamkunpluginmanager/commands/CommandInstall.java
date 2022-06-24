@@ -44,7 +44,7 @@ public class CommandInstall extends CommandBase
         }
 
         Runner.runAsync(() -> {
-            Installer.install(sender, args[0], false, false, false, false);
+            Installer.install(terminal, args[0], false, false, false, false);
             kpmInstance.getSession().unlock();
         });
     }
