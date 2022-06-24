@@ -82,7 +82,7 @@ public class CommandResolve extends CommandBase
             GitHubSuccessResult githubSuccessResult = (GitHubSuccessResult) result;
 
             terminal.info("[GITHUB]");
-            terminal.info("リポジトリ：%s/%s" + githubSuccessResult.getOwner(), githubSuccessResult.getRepoName());
+            terminal.info("リポジトリ：" + githubSuccessResult.getOwner() + "/" + githubSuccessResult.getRepoName());
             terminal.info("ファイルサイズ：" + githubSuccessResult.getSize());
             terminal.info("リリース名：" + githubSuccessResult.getReleaseName());
             terminal.info("リリースID：" + githubSuccessResult.getReleaseId());
@@ -103,9 +103,9 @@ public class CommandResolve extends CommandBase
         {
             MarketplaceResult marketplaceResult = (MarketplaceResult) result;
             terminal.info("[MARKETPLACE]");
-            terminal.info("タイトル：", marketplaceResult.getTitle());
-            terminal.info("説明：", marketplaceResult.getDescription());
-            terminal.info("公開先：", marketplaceResult.getUrl());
+            terminal.info("タイトル：" + marketplaceResult.getTitle());
+            terminal.info("説明：" + marketplaceResult.getDescription());
+            terminal.info("公開先：" + marketplaceResult.getUrl());
             terminal.writeLine(DELIMITER_SMALL);
         }
     }
