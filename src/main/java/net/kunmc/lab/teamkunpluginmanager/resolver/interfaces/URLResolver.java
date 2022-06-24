@@ -96,26 +96,28 @@ public interface URLResolver extends BaseResolver
                 );
         }
 
-        ErrorResult.ErrorCause cause = ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR;
         int code = response.getStatusCode();
         switch (code)
         {
             case 200:
                 return null;
             case 403:
-                return new ErrorResult(this, cause
+                return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
                         .value(errorCodeWith("サーバからリソースをダウンロードする権限がありません。", code)), source);
             case 404:
-                return new ErrorResult(this, cause
+                return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND
                         .value(errorCodeWith("サーバからリソースを見つけることができません。", code)), source);
             case 418:
-                return new ErrorResult(this, cause.value(errorCodeWith("ティーポットでコーヒーを淹れようとしました。", code)), source);
+                return new ErrorResult(this,
+                        ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
+                                .value(errorCodeWith("ティーポットでコーヒーを淹れようとしました。", code)), source
+                );
             default:
                 if (code >= 500 && code < 600)
-                    return new ErrorResult(this, cause
+                    return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
                             .value(errorCodeWith("サーバーがダウンしています。", code)), source);
 
-                return new ErrorResult(this, cause
+                return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
                         .value(errorCodeWith("サーバーがエラーレスポンスを返答しました。。", code)),
                         source
                 );
