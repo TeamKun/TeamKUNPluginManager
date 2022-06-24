@@ -139,9 +139,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.TeamKUN</groupId>
+            <groupId>com.github.TeamKun</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
     </dependencies>
 </project>
