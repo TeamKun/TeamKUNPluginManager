@@ -9,6 +9,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
@@ -103,7 +104,7 @@ public class Installer
         terminal.writeLine(ChatColor.LIGHT_PURPLE + "プラグインを削除中...");
 
         //プラグインをアンロード
-        PluginUtil.unload(plugin);
+        PluginLoader.getInstance().unloadPlugin(plugin);
 
         //非同期実行
         Runner.runLaterAsync(() -> {
@@ -362,7 +363,7 @@ public class Installer
             ));
 
             //バージョンの低いプラグインをアンインストール。
-            PluginUtil.unload(plugin);
+            PluginLoader.getInstance().unloadPlugin(plugin);
 
             Runner.runLater(() -> {
                 //削除する場合は削除
@@ -555,7 +556,7 @@ public class Installer
                             delete(terminal, new File("plugins/" + f.getFileName()));
 
                         //プラグインをアンロード
-                        PluginUtil.unload(plugin);
+                        PluginLoader.getInstance().unloadPlugin(plugin);
 
                         Runner.runLaterAsync(() -> {
                             File file = PluginUtil.getFile(plugin);
@@ -565,7 +566,7 @@ public class Installer
                     }
 
                     //依存関係をロード
-                    PluginUtil.load(f.getFileName().substring(0, f.getFileName().length() - 4));
+                    PluginLoader.getInstance().loadPlugin(new File("plugins", f.getFileName()).toPath());
                 }
                 catch (Exception e) //例外が発生した場合
                 {
