@@ -127,7 +127,7 @@ public class CommandsPatcher
         // Get registerCommand method
         try
         {
-            this.mRegisterCommand = ReflectionUtils.getAccessibleMethod(cBukkitCommandWrapper, "registerCommand",
+            this.mRegisterCommand = ReflectionUtils.getAccessibleMethod(cBukkitCommandWrapper, "register",
                     CommandDispatcher.class, String.class
             );
         }
