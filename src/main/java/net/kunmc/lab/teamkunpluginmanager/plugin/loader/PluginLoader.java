@@ -14,6 +14,7 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
+import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -79,11 +80,11 @@ public class PluginLoader
             fLookupNames.setAccessible(true);
             this.lookupNames = (Map<String, Plugin>) fLookupNames.get(this.pluginManager);
 
-            Field fPlugin = this.pluginManager.getClass().getDeclaredField("plugin");
+            Field fPlugin = PluginClassLoader.class.getDeclaredField("plugin");
             fPlugin.setAccessible(true);
             this.fPlugin = fPlugin;
 
-            Field fPluginInit = this.pluginManager.getClass().getDeclaredField("pluginInit");
+            Field fPluginInit = PluginClassLoader.class.getDeclaredField("pluginInit");
             fPluginInit.setAccessible(true);
             this.fPluginInit = fPluginInit;
         }
