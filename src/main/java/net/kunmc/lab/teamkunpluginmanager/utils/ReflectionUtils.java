@@ -72,11 +72,11 @@ public final class ReflectionUtils
     }
 
     /**
-     * Returns the constructor of a desired class with the given parameter types that is accessible
+     * Returns the accessible constructor of a desired class with the given parameter types
      *
      * @param clazz          Target class
      * @param parameterTypes Parameter types of the desired constructor
-     * @return The constructor of the target class with the specified parameter types that are accessible
+     * @return The accessible constructor of the target class with the specified parameter types
      * @throws NoSuchMethodException If the desired constructor with the specified parameter types cannot be found
      * @see DataType
      * @see DataType#getPrimitive(Class[])
@@ -90,12 +90,12 @@ public final class ReflectionUtils
     }
 
     /**
-     * Returns the constructor of a desired class with the given parameter types that is accessible
+     * Returns the accessible constructor of a desired class with the given parameter types
      *
      * @param className      Name of the desired target class
      * @param packageType    Package where the desired target class is located
      * @param parameterTypes Parameter types of the desired constructor
-     * @return The constructor of the desired target class with the specified parameter types that are accessible
+     * @return The accessible constructor of the desired target class with the specified parameter types
      * @throws NoSuchMethodException  If the desired constructor with the specified parameter types cannot be found
      * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
      * @see #getAccessibleConstructor(Class, Class...)
@@ -182,7 +182,7 @@ public final class ReflectionUtils
     }
 
     /**
-     * Returns a method of a class with the given parameter types that is accessible
+     * Returns an accessible method of a class with the given parameter types
      *
      * @param clazz          Target class
      * @param methodName     Name of the desired method
@@ -205,7 +205,7 @@ public final class ReflectionUtils
     }
 
     /**
-     * Returns a method of a desired class with the given parameter types that is accessible
+     * Returns an accessible  method of a desired class with the given parameter types
      *
      * @param className      Name of the desired target class
      * @param packageType    Package where the desired target class is located
@@ -314,6 +314,41 @@ public final class ReflectionUtils
     public static Field getField(String className, PackageType packageType, boolean declared, String fieldName) throws NoSuchFieldException, SecurityException, ClassNotFoundException
     {
         return getField(packageType.getClass(className), declared, fieldName);
+    }
+
+    /**
+     * Returns an accessible field of the target class with the given name
+     *
+     * @param clazz     Target class
+     * @param declared  Whether the desired field is declared or not
+     * @param fieldName Name of the desired field
+     * @return The field of the target class with the specified name
+     * @throws NoSuchFieldException If the desired field of the given class cannot be found
+     * @throws SecurityException    If the desired field cannot be made accessible
+     */
+    public static Field getAccessibleField(Class<?> clazz, boolean declared, String fieldName) throws NoSuchFieldException, SecurityException
+    {
+        Field field = declared ? clazz.getDeclaredField(fieldName): clazz.getField(fieldName);
+        field.setAccessible(true);
+        return field;
+    }
+
+    /**
+     * Returns an accessible field of a desired class with the given name
+     *
+     * @param className   Name of the desired target class
+     * @param packageType Package where the desired target class is located
+     * @param declared    Whether the desired field is declared or not
+     * @param fieldName   Name of the desired field
+     * @return The field of the desired target class with the specified name
+     * @throws NoSuchFieldException   If the desired field of the desired class cannot be found
+     * @throws SecurityException      If the desired field cannot be made accessible
+     * @throws ClassNotFoundException If the desired target class with the specified name and package cannot be found
+     * @see #getAccessibleField(Class, boolean, String)
+     */
+    public static Field getAccessibleField(String className, PackageType packageType, boolean declared, String fieldName) throws NoSuchFieldException, SecurityException, ClassNotFoundException
+    {
+        return getAccessibleField(packageType.getClass(className), declared, fieldName);
     }
 
     /**
