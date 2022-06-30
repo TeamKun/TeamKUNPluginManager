@@ -149,8 +149,8 @@ public class CommandsPatcher
         // Get getKnownCommands method
         try
         {
-            Field fCommandMap = ReflectionUtils.getField(cCraftServer, true, "commandMap");
-            this.commandMap = (SimpleCommandMap) fCommandMap.get(iMinecraftServer);
+            Field fCommandMap = ReflectionUtils.getAccessibleField(cCraftServer, true, "commandMap");
+            this.commandMap = (SimpleCommandMap) fCommandMap.get(Bukkit.getServer());
             this.knownCommands = commandMap.getKnownCommands();
         }
         catch (IllegalAccessException | NoSuchFieldException e)
