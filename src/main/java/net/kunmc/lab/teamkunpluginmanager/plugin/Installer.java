@@ -254,7 +254,7 @@ public class Installer
             //ファイルをダウンロード
             try
             {
-                downloadPath = Paths.get("plugins", jarURL.substring(url.lastIndexOf("/") + 1));
+                downloadPath = Paths.get("plugins", jarURL.substring(jarURL.lastIndexOf("/") + 1));
                 downloadResult = Requests.downloadFile(
                         RequestMethod.GET,
                         jarURL,
@@ -675,7 +675,7 @@ public class Installer
         {
             if (resolveResult instanceof SuccessResult)
             {
-                choices.put(count + "." + resolveResult.hashCode(), (SuccessResult) resolveResult);
+                choices.put(String.valueOf(count++), (SuccessResult) resolveResult);
                 continue;
             }
 
