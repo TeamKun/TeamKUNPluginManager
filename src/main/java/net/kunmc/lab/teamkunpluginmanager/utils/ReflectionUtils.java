@@ -195,7 +195,7 @@ public final class ReflectionUtils
     public static Method getAccessibleMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException
     {
         Class<?>[] primitiveTypes = DataType.getPrimitive(parameterTypes);
-        for (Method method : clazz.getMethods())
+        for (Method method : clazz.getDeclaredMethods())
             if (method.getName().equals(methodName) && DataType.compare(DataType.getPrimitive(method.getParameterTypes()), primitiveTypes))
             {
                 method.setAccessible(true);
