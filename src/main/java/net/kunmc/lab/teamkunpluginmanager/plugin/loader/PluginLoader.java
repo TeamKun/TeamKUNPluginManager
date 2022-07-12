@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -206,7 +207,10 @@ public class PluginLoader
             {
                 PluginCommand pluginCommand = (PluginCommand) entry.getValue();
                 if (pluginCommand.getPlugin().getName().equalsIgnoreCase(plugin.getName()))
+                {
+                    pluginCommand.unregister(this.commandsPatcher.getCommandMap());
                     it.remove();
+                }
                 continue;
             }
 
@@ -214,7 +218,7 @@ public class PluginLoader
                     .filter(field -> field.getType().isAssignableFrom(Plugin.class))
                     .findFirst().orElse(null);
             if (fPlugin == null)
-                return;
+                continue;
 
             fPlugin.setAccessible(true);
             try
@@ -234,13 +238,15 @@ public class PluginLoader
                 if (!e.getMessage().equals("zip file closed"))
                 {
                     e.printStackTrace();
-                    return;
+                    continue;
                 }
 
                 entry.getValue().unregister(this.commandsPatcher.getCommandMap());
                 it.remove();
             }
         }
+
+        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
     }
 
     private List<NamespacedKey> getPluginRecipes(String pluginName)

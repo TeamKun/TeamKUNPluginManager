@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.loader;
 
 import com.mojang.brigadier.CommandDispatcher;
-import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -33,10 +32,8 @@ public class CommandsPatcher
     private Method mSyncCommands; // Lorg/bukkit/craftbukkit/<version>/CraftServer;
     // ->syncCommands();V
 
-    @Getter
-    private CommandMap commandMap;
-    @Getter
-    private Map<String, Command> knownCommands;
+    private Field fCommandMap; // Lorg/bukkit/craftbukkit/<version>/CraftServer;
+    // ->org/bukkit/command/SimpleCommandMap; commandMap;
 
     /**
      * BukkitCommandWrapperのコンストラクタ。
@@ -146,17 +143,32 @@ public class CommandsPatcher
             throw new IllegalStateException(generateFailedMessage("Failed to get syncCommands method"), e);
         }
 
-        // Get getKnownCommands method
+        // Get commandMap field
         try
         {
-            Field fCommandMap = ReflectionUtils.getAccessibleField(cCraftServer, true, "commandMap");
-            this.commandMap = (SimpleCommandMap) fCommandMap.get(Bukkit.getServer());
-            this.knownCommands = commandMap.getKnownCommands();
+            fCommandMap = ReflectionUtils.getAccessibleField(cCraftServer, true, "commandMap");
         }
-        catch (IllegalAccessException | NoSuchFieldException e)
+        catch (NoSuchFieldException e)
         {
-            throw new IllegalStateException(generateFailedMessage("Failed to get getKnownCommands method"), e);
+            throw new IllegalStateException(generateFailedMessage("Failed to get commandMap field"), e);
         }
+    }
+
+    public CommandMap getCommandMap()
+    {
+        try
+        {
+            return (SimpleCommandMap) this.fCommandMap.get(Bukkit.getServer());
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Command> getKnownCommands()
+    {
+        return this.getCommandMap().getKnownCommands();
     }
 
     public void wrapCommand(Command command, String alias)
