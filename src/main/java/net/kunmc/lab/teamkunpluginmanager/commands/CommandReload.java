@@ -4,7 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -40,7 +40,7 @@ public class CommandReload extends CommandBase
 
         Runner.runAsync(() -> {
             terminal.info("プラグイン %s を再読み込み中...", args[0]);
-            PluginUtil.reload(plugin);
+            PluginLoader.getInstance().reloadPlugin(plugin);
             terminal.success("プラグイン %s を正常に再読み込み中しました。", args[0]);
             TeamKunPluginManager.getPlugin().getSession().unlock();
         });

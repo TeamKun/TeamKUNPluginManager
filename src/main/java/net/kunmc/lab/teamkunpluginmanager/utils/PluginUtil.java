@@ -1,26 +1,12 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.PluginIdentifiableCommand;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
@@ -33,28 +19,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PluginUtil  // TODO: Rewrite this class
 {
-    private static final Method getCommandMap;
-    private static final Object craftServer;
-    private static final Object minecraftServer;
-    private static final Object commandDispatcher;
 
     private static final Method pluginGetFile;
 
@@ -62,16 +37,10 @@ public class PluginUtil  // TODO: Rewrite this class
     {
         try
         {
-            craftServer = ReflectionUtils.PackageType.CRAFTBUKKIT.getClass("CraftServer").cast(Bukkit.getServer());
-            minecraftServer = ReflectionUtils.getMethod(craftServer.getClass(), "getServer").invoke(craftServer);
-            getCommandMap = ReflectionUtils.getMethod(craftServer.getClass(), "getCommandMap");
-            commandDispatcher = ReflectionUtils.getMethod(minecraftServer.getClass(), "getCommandDispatcher")
-                    .invoke(minecraftServer);
-
             pluginGetFile = ReflectionUtils.getAccessibleMethod(JavaPlugin.class, "getFile");
             pluginGetFile.setAccessible(true);
         }
-        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e)
+        catch (NoSuchMethodException e)
         {
             throw new RuntimeException(e);
         }
@@ -277,306 +246,4 @@ public class PluginUtil  // TODO: Rewrite this class
 
         return desc;
     }
-
-    /**
-     * Unload a plugin.
-     *
-     * @param plugin the plugin to unload
-     * @author https://dev.bukkit.org/projects/plugman
-     */
-    @SuppressWarnings("unchecked")
-    public static void unload(Plugin plugin)
-    {
-        getKnownCommands().entrySet().stream().parallel()
-                .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
-                .filter(stringCommandEntry -> {
-                    PluginIdentifiableCommand command = (PluginIdentifiableCommand) stringCommandEntry.getValue();
-                    return command.getPlugin().getName().equalsIgnoreCase(plugin.getName());
-                })
-                .forEach(stringCommandEntry -> {
-                    unWrapCommand(stringCommandEntry.getKey());
-                });
-
-        getPluginRecipes(plugin.getName()).forEach(Bukkit::removeRecipe);
-
-        Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
-
-        String name = plugin.getName();
-
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
-        SimpleCommandMap commandMap;
-
-        List<Plugin> plugins;
-
-        Map<String, Plugin> names;
-        Map<String, Command> commands;
-        Map<Event, SortedSet<RegisteredListener>> listeners = null;
-
-        pluginManager.disablePlugin(plugin);
-
-        try
-        {
-
-            Field pluginsField = Bukkit.getPluginManager().getClass().getDeclaredField("plugins");
-            pluginsField.setAccessible(true);
-            plugins = (List<Plugin>) pluginsField.get(pluginManager);
-
-            Field lookupNamesField = Bukkit.getPluginManager().getClass().getDeclaredField("lookupNames");
-            lookupNamesField.setAccessible(true);
-            names = (Map<String, Plugin>) lookupNamesField.get(pluginManager);
-
-            try
-            {
-                Field listenersField = Bukkit.getPluginManager().getClass().getDeclaredField("listeners");
-                listenersField.setAccessible(true);
-                listeners = (Map<Event, SortedSet<RegisteredListener>>) listenersField.get(pluginManager);
-            }
-            catch (Exception ignored)
-            {
-            }
-
-            Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
-            commandMapField.setAccessible(true);
-            commandMap = (SimpleCommandMap) commandMapField.get(pluginManager);
-
-            Field knownCommandsField = SimpleCommandMap.class.getDeclaredField("knownCommands");
-            knownCommandsField.setAccessible(true);
-            commands = (Map<String, Command>) knownCommandsField.get(commandMap);
-
-        }
-        catch (NoSuchFieldException | IllegalAccessException e)
-        {
-            e.printStackTrace();
-            return;
-        }
-
-        pluginManager.disablePlugin(plugin);
-
-        if (plugins != null)
-            plugins.remove(plugin);
-
-        if (names != null)
-            names.remove(name);
-
-        if (listeners != null)
-        {
-            for (SortedSet<RegisteredListener> set : listeners.values())
-            {
-                set.removeIf(value -> value.getPlugin() == plugin);
-            }
-        }
-
-        if (commandMap != null)
-        {
-            for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext(); )
-            {
-                Map.Entry<String, Command> entry = it.next();
-                if (entry.getValue() instanceof PluginCommand)
-                {
-                    PluginCommand c = (PluginCommand) entry.getValue();
-                    if (c.getPlugin() == plugin)
-                    {
-                        c.setTabCompleter((a, b, c1, d) -> null);
-                        c.unregister(commandMap);
-                        it.remove();
-                    }
-                }
-            }
-        }
-
-        // Attempt to close the classloader to unlock any handles on the plugin's jar file.
-        ClassLoader cl = plugin.getClass().getClassLoader();
-
-        if (cl instanceof URLClassLoader)
-        {
-
-            try
-            {
-
-                Field pluginField = cl.getClass().getDeclaredField("plugin");
-                pluginField.setAccessible(true);
-                pluginField.set(cl, null);
-
-                Field pluginInitField = cl.getClass().getDeclaredField("pluginInit");
-                pluginInitField.setAccessible(true);
-                pluginInitField.set(cl, null);
-
-            }
-            catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ignored)
-            {
-            }
-
-            try
-            {
-
-                ((URLClassLoader) cl).close();
-            }
-            catch (IOException ignored)
-            {
-            }
-
-        }
-
-        // Will not work on processes started with the -XX:+DisableExplicitGC flag, but lets try it anyway.
-        // This tries to get around the issue where Windows refuses to unlock jar files that were previously loaded into the JVM.
-        System.gc();
-    }
-
-    private static void load(Plugin plugin)
-    {
-        load(plugin.getName());
-    }
-
-    public static void load(String name)
-    {
-        File pluginDir = new File("plugins");
-        if (!pluginDir.isDirectory())
-        {
-            return;
-        }
-        File pluginFile = new File(pluginDir, name + ".jar");
-        if (!pluginFile.isFile())
-        {
-            File[] listFiles = pluginDir.listFiles();
-            if (listFiles == null)
-                return;
-            int length = listFiles.length;
-            int i = 0;
-            while (true)
-            {
-                if (i < length)
-                {
-                    File f = listFiles[i];
-                    if (f.getName().endsWith(".jar"))
-                    {
-                        try
-                        {
-                            if (TeamKunPluginManager.getPlugin().getPluginLoader().getPluginDescription(f).getName().equalsIgnoreCase(name))
-                            {
-                                pluginFile = f;
-                                break;
-                            }
-                        }
-                        catch (InvalidDescriptionException ignored)
-                        {
-                            return;
-                        }
-                    }
-                    i++;
-                }
-                else
-                    break;
-            }
-        }
-
-
-        File finalPluginFile = pluginFile;
-        Runner.run(() -> {
-            try
-            {
-                Plugin target = Bukkit.getPluginManager().loadPlugin(finalPluginFile);
-                Objects.requireNonNull(target).onLoad();
-                Bukkit.getPluginManager().enablePlugin(target);
-                Runner.runLater(() -> { // TODO: Remove this runLater cuz PluginManager#enablePlugin() seems return on Plugin's enable method has returned.
-                    getKnownCommands().entrySet().stream().parallel()
-                            .filter(stringCommandEntry -> stringCommandEntry.getValue() instanceof PluginIdentifiableCommand)
-                            .forEach(stringCommandEntry -> {
-                                wrapCommand(stringCommandEntry.getValue(), stringCommandEntry.getKey());
-                            });
-
-
-                    Bukkit.getOnlinePlayers().stream().parallel().forEach(Player::updateCommands);
-                }, 10L);
-            }
-            catch (InvalidDescriptionException | InvalidPluginException e2)
-            {
-                e2.printStackTrace();
-            }
-        });
-    }
-
-    public static void reload(Plugin plugin)
-    {
-        unload(plugin);
-        load(plugin);
-    }
-
-    public static Map<String, Command> getKnownCommands()
-    {
-        try
-        {
-            SimpleCommandMap commandMap =
-                    (SimpleCommandMap) getCommandMap.invoke(craftServer);
-            return commandMap.getKnownCommands();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return new HashMap<>();
-    }
-
-    public static List<NamespacedKey> getPluginRecipes(String pluginName)
-    {
-        List<NamespacedKey> result = new ArrayList<>();
-        Recipe recipe;
-        Iterator<Recipe> iterator = Bukkit.recipeIterator();
-        while (iterator.hasNext())
-        {
-            recipe = iterator.next();
-            if (recipe instanceof ShapedRecipe)
-            {
-                ShapedRecipe sr = (ShapedRecipe) recipe;
-                if (sr.getKey().getNamespace().equals(pluginName.toLowerCase(Locale.ROOT)))
-                    result.add(sr.getKey());
-            }
-        }
-
-        return result;
-    }
-
-    public static void wrapCommand(Command command, String alias)
-    {
-        try
-        {
-            Class<?> bukkitCommandWrapper = ReflectionUtils.PackageType.CRAFTBUKKIT_COMMAND.getClass("BukkitCommandWrapper");
-            Object commandWrapper = bukkitCommandWrapper
-                    .getConstructor(craftServer.getClass(), Command.class)
-                    .newInstance(craftServer, command);
-
-            Method bukkitCommandWrapperRegister = ReflectionUtils.getMethod(
-                    bukkitCommandWrapper,
-                    "register",
-                    com.mojang.brigadier.CommandDispatcher.class,
-                    String.class
-            );
-
-            Method a = ReflectionUtils.getMethod(ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("CommandDispatcher"), "a");
-
-            bukkitCommandWrapperRegister.invoke(commandWrapper, a.invoke(commandDispatcher), alias);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("rawtypes")
-    public static void unWrapCommand(String command)
-    {
-
-        try
-        {
-            Field b = ReflectionUtils.getField(commandDispatcher.getClass(), true, "b");
-            ((com.mojang.brigadier.CommandDispatcher) b.get(commandDispatcher))
-                    .getRoot().removeCommand(command);
-        }
-        catch (IllegalAccessException | NoSuchFieldException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
-
 }

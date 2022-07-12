@@ -19,6 +19,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
@@ -130,6 +131,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         functional = new Say2Functional(this);
         resolver = new PluginResolver();
         commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+        new PluginLoader(); // Initialize plugin loader
 
         registerCommands(commandManager);
 
