@@ -16,6 +16,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -122,7 +123,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         File oldPluginFile = PluginUtil.getFile(plugin);
 
-        PluginUtil.unload(plugin);  // TODO: Replace with uninstall.
+        PluginLoader.getInstance().unloadPlugin(plugin);  // TODO: Replace with uninstall.
 
         if (!safeDelete(oldPluginFile))
             Runner.runLater(() -> {
