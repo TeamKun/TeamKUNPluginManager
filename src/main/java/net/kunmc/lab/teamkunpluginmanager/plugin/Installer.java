@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -691,10 +690,20 @@ public class Installer
         terminal.warn("複数のリソースが見つかりました。");
 
         Map<String, SuccessResult> hashResultMap = buildChoicesRecursive(1, result);
-        Map<String, String> hashTextMap = hashResultMap.entrySet().stream()
-                .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().getFileName()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<String, String> hashTextMap = new HashMap<>();
 
+        for (Map.Entry<String, SuccessResult> entry : hashResultMap.entrySet())
+        {
+            String key = entry.getKey();
+            SuccessResult value = entry.getValue();
+
+            String fileName = value.getFileName();
+
+            if (fileName == null)
+                fileName = ChatColor.RED + "不明なファイル名(バージョン " + value.getVersion() + ")";
+
+            hashTextMap.put(key, fileName);
+        }
 
         QuestionResult questionResult;
 
@@ -711,6 +720,7 @@ public class Installer
             terminal.error("処理が中断されました。");
             return null;
         }
+
 
         if (questionResult.test(QuestionAttribute.CANCELLABLE))
         {
