@@ -27,7 +27,6 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
-import net.kunmc.lab.teamkunpluginmanager.utils.Say2Functional;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,7 +43,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     private FileConfiguration pluginConfig;
     private TokenVault vault;
-    private Say2Functional functional;
+
     @Setter
     private boolean enableBuildTree = true;
     private Session session;
@@ -128,7 +127,6 @@ public final class TeamKunPluginManager extends JavaPlugin
         saveDefaultConfig();
         plugin = this;
         pluginConfig = getConfig();
-        functional = new Say2Functional(this);
         resolver = new PluginResolver();
         commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
         new PluginLoader(); // Initialize plugin loader
