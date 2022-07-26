@@ -22,5 +22,6 @@ config:
     auth: true
 # 保護
 ignore:
-  - bStats               #削除しないでください
-  - TeamKunPluginManager #削除しないでください
+  - bStats                #削除しないでください
+  - TeamKunPluginManager  #削除しないでください
+  - PeyangPaperUtils      #削除しないでください
