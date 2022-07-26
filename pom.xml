@@ -41,15 +41,6 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <artifactSet>
-                                <includes>
-                                    <include>commons-validator:*</include>
-                                    <include>commons-io:*</include>
-                                    <include>org.slf4j:*</include>
-                                    <include>com.zaxxer:*</include>
-                                    <include>*:version-compare</include>
-                                </includes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -90,29 +81,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.github.G00fY2</groupId>
             <artifactId>version-compare</artifactId>
             <version>1.3.7</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.minuskube.inv</groupId>
-            <artifactId>smart-invs</artifactId>
-            <version>1.2.7</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -142,6 +126,7 @@
             <groupId>com.github.TeamKUN</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
             <version>1.0.7</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>
