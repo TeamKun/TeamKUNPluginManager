@@ -1,63 +1,77 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandInstall
+import java.util.List;
+
+public class CommandInstall extends CommandBase
 {
-    public static void onCommand(CommandSender sender, String[] args)
+    @Override
+    public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-
-        if (!sender.hasPermission("kpm.install"))
-        {
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
+        if (indicateArgsLengthInvalid(terminal, args, 1, 2)) // TODO: Set max to 1 cuz arg of $-CF-$ will be removed.
             return;
-        }
-
-        if (args.length < 1)
-        {
-            sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
-            sender.sendMessage(ChatColor.RED + "使用法: /kpm i <Repo|url|name>");
-            return;
-        }
 
         TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
         if (!kpmInstance.isTokenAvailable())
-        {
-            sender.sendMessage(ChatColor.RED + "E: トークンがセットされていません！");
-            sender.sendMessage(ChatColor.RED + "/kpm register でトークンを発行してください。");
+        { // TODO: Set level to warn
+            terminal.error("トークンが設定されていません！");
+            terminal.info("/kpm register でトークンを発行することができます！");
             kpmInstance.getSession().unlock();
             return;
         }
 
-        if (args.length == 1 && args[0].equals("$-CF$"))
+        if (args.length == 1 && args[0].equals("$-CF$")) // TODO: Remove this and refactor to new Question system.
         {
-            kpmInstance.getFunctional().remove(sender instanceof ConsoleCommandSender ? null: ((Player) sender).getUniqueId());
-            sender.sendMessage(ChatColor.GREEN + "E: 実行中のインストールをキャンセルしました。");
+            terminal.success(ChatColor.GREEN + "実行中のインストールをキャンセルしました。");
             return;
         }
 
         if (!kpmInstance.getSession().lock())
         {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            terminal.error("TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
+        Runner.runAsync(() -> {
+            Installer.install(terminal, args[0], false, false, false, false);
+            kpmInstance.getSession().unlock();
+        });
+    }
 
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                Installer.install(sender, args[0], false, false, false, false);
-                kpmInstance.getSession().unlock();
-            }
-        }.runTaskAsynchronously(kpmInstance);
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        return null;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.install";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("クエリからプラグインを新規インストールします。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[]{
+                required("query", "string")
+        };
     }
 }

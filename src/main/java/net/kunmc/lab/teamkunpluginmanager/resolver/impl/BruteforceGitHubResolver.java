@@ -20,7 +20,7 @@ public class BruteforceGitHubResolver implements BaseResolver
     public ResolveResult resolve(QueryContext query)
     {
 
-        Object obj = plugin.getConfig().get("gitHubName");
+        Object obj = plugin.getPluginConfig().get("gitHubName");
 
         if (obj instanceof String) // Legacy support
         {
@@ -33,7 +33,7 @@ public class BruteforceGitHubResolver implements BaseResolver
 
         ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
-        for (String str : plugin.getConfig().getStringList("gitHubName"))
+        for (String str : plugin.getPluginConfig().getStringList("gitHubName"))
         {
 
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());

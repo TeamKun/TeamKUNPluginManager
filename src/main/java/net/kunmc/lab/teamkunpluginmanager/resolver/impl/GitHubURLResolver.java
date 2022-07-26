@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,8 +9,9 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
-import net.kunmc.lab.teamkunpluginmanager.utils.URLUtils;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class GitHubURLResolver implements URLResolver
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
 
     private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repository>(?<owner>[a-zA-Z\\d]" +
-            "(?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38})/(?<repoName>[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,100}))" +
+            "(?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38})/(?<repoName>\\w(?:\\w|-(?=\\w)){0,100}))" +
             "(?:/(?:tags|releases(?:/(?:tag/(?<tag>[^/]+)/?$|download/(?<downloadTag>[^/]+)/" +
             "(?<fileName>[^/]+)))?))?/?$");
 
@@ -89,25 +89,23 @@ public class GitHubURLResolver implements URLResolver
         else
             apiURL = String.format(GITHUB_REPO_RELEASES_URL, repository);
 
-        Pair<Integer, String> response = URLUtils.getAsString(apiURL);
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url(apiURL)
+                .build());
 
-        ErrorResult mayError = processErrorResponse(response.getLeft(), ResolveResult.Source.GITHUB);
+        ErrorResult mayError = processErrorResponse(response, ResolveResult.Source.GITHUB);
 
         if (mayError != null)
             return mayError;
 
-        String json = response.getRight();
-
-        Gson gson = new Gson();
-
         if (tag != null)
         {
-            JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+            JsonObject jsonObject = response.getAsJson().getAsJsonObject();
 
             return buildResultSingle(owner, repositoryName, jsonObject, version);
         }
 
-        JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
+        JsonArray jsonArray = response.getAsJson().getAsJsonArray();
         List<ResolveResult> results = new ArrayList<>();
 
         boolean isFound = false;

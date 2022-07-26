@@ -5,111 +5,15 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 
 public class URLUtils
 {
-    /**
-     * URLにPOSTした結果を返す。
-     *
-     * @param urlString URL
-     * @param data      データ
-     * @param accept    受け入れるタイプ。 application/
-     * @return レスポンスコード, 結果
-     */
-    public static Pair<Integer, String> postAsString(String urlString, String data, String accept, String content_type)
-    {
-        try
-        {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
-                connection.setRequestProperty(
-                        "Authorization",
-                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
-                );
-            if (url.getHost().equals("file.io"))
-                connection.setRequestProperty("Referer", "https://www.file.io/");
-            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-            connection.setRequestProperty("Accept", accept);
-            connection.setRequestProperty("Content-Type", content_type);
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.connect();
-
-            try (OutputStream os = connection.getOutputStream())
-            {
-                PrintStream prtstr = new PrintStream(os);
-                prtstr.println(data);
-                prtstr.close();
-                int resp = connection.getResponseCode();
-                if (resp < 200 || resp > 299)
-                    return new Pair<>(resp, "");
-
-                try (InputStream is = connection.getInputStream())
-                {
-                    return new Pair<>(resp, IOUtils.toString(is, StandardCharsets.UTF_8));
-                }
-            }
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return new Pair<>(-1, "");
-        }
-    }
-
-    /**
-     * URLから取得した結果を返す。
-     *
-     * @param urlString URL
-     * @return レスポンスコード, 結果
-     */
-    public static Pair<Integer, String> getAsString(String urlString)
-    {
-        try
-        {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            if ((url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com")) &&
-                    !TeamKunPluginManager.getPlugin().getVault().getToken().isEmpty())
-                connection.setRequestProperty(
-                        "Authorization",
-                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
-                );
-            if (url.getHost().equals("file.io"))
-                connection.setRequestProperty("Referer", "https://www.file.io/");
-            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-            connection.connect();
-
-            try
-            {
-                return new Pair<>(connection.getResponseCode(), IOUtils.toString(connection.getInputStream(), StandardCharsets.UTF_8));
-            }
-            catch (IOException e)
-            {
-                return new Pair<>(connection.getResponseCode(), null);
-            }
-
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return new Pair<>(-1, "");
-        }
-    }
-
     /**
      * ファイルをだうんろーど！
      *
@@ -132,7 +36,7 @@ public class URLUtils
     {
         boolean duplicateFile = false;
 
-        if (fileName.equals(""))
+        if (fileName.isEmpty())
             fileName = "tmp1.jar";
 
         int tryna = 0;
@@ -145,7 +49,7 @@ public class URLUtils
 
         tryna = 0;
 
-        final int redirectLimit = TeamKunPluginManager.getPlugin().getConfig().getInt("redirectLimit", 15);
+        final int redirectLimit = TeamKunPluginManager.getPlugin().getPluginConfig().getInt("redirectLimit", 15);
 
         try
         {
@@ -226,29 +130,6 @@ public class URLUtils
             e.printStackTrace();
             return new Pair<>(false, "");
 
-        }
-    }
-
-    public static int fetch(String urlString, String method)
-    {
-        try
-        {
-            URL url = new URL(urlString);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(method);
-            if (url.getHost().endsWith("github.com") || url.getHost().equals("raw.githubusercontent.com"))
-                connection.setRequestProperty(
-                        "Authorization",
-                        "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
-                );
-            connection.setRequestProperty("User-Agent", "Mozilla/8.10; Safari/Chrome/Opera/Edge/KungleBot-Peyang; Mobile-Desktop");
-            connection.connect();
-            return connection.getResponseCode();
-
-        }
-        catch (Exception e)
-        {
-            return 500;
         }
     }
 }

@@ -2,11 +2,24 @@ package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.kunmc.lab.teamkunpluginmanager.commands.CommandMain;
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandAutoRemove;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandClean;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandFix;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandRegister;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandReload;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandResolve;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandStatus;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
@@ -19,7 +32,6 @@ import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
@@ -30,23 +42,45 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Getter
     private static TeamKunPluginManager plugin;
 
-    private FileConfiguration config;
+    private FileConfiguration pluginConfig;
     private TokenVault vault;
     private Say2Functional functional;
     @Setter
     private boolean enableBuildTree = true;
     private Session session;
     private PluginResolver resolver;
+    private CommandManager commandManager;
 
-    @Override
-    public void onEnable()
+    private static void setupDependencyTree(TeamKunPluginManager plugin)
     {
-        session = new Session();
-        saveDefaultConfig();
-        plugin = this;
-        config = getConfig();
-        functional = new Say2Functional(this);
-        resolver = new PluginResolver();
+        DependencyTree.initialize(plugin.getPluginConfig().getString("dependPath"));
+        DependencyTree.initializeTable();
+        KnownPlugins.initialization(plugin.getPluginConfig().getString("resolvePath"));
+
+        if (KnownPlugins.isLegacy())
+        {
+            plugin.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
+            KnownPlugins.migration();
+            new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
+        }
+
+        Runner.runLater(() -> {
+            DependencyTree.wipeAllPlugin();
+            plugin.getLogger().info("依存関係ツリーを構築中...");
+            DependencyTree.crawlAllPlugins();
+            plugin.getLogger().info("依存関係ツリーの構築完了");
+
+            //すべてのPLが読み終わった後にイベントリスナを登録
+            Bukkit.getPluginManager().registerEvents(
+                    new PluginEventListener(plugin),
+                    TeamKunPluginManager.plugin
+            );
+        }, 1L);
+    }
+
+    private static void setupResolver(TeamKunPluginManager plugin)
+    {
+        PluginResolver resolver = plugin.getResolver();
 
         GitHubURLResolver githubResolver = new GitHubURLResolver();
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
@@ -55,56 +89,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         resolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
         resolver.addResolver(githubResolver, "github", "gh");
 
-        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(this, githubResolver));
-
-        vault = new TokenVault();
-
-        Bukkit.getPluginCommand("kunpluginmanager").setExecutor(new CommandMain());
-        Bukkit.getPluginCommand("kunpluginmanager").setTabCompleter(new CommandMain());
-
-        DependencyTree.initialize(this.config.getString("dependPath"));
-        DependencyTree.initializeTable();
-        KnownPlugins.initialization(this.config.getString("resolvePath"));
-
-        if (KnownPlugins.isLegacy())
-        {
-            getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
-            KnownPlugins.migration();
-            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
-        }
-
-        new BukkitRunnable()
-        {
-
-            @Override
-            public void run()
-            {
-                DependencyTree.wipeAllPlugin();
-                getLogger().info("依存関係ツリーを構築中...");
-                DependencyTree.crawlAllPlugins();
-                getLogger().info("依存関係ツリーの構築完了");
-                //すべてのPLが読み終わった後にイベントリスナを登録
-                Bukkit.getPluginManager().registerEvents(
-                        new PluginEventListener(TeamKunPluginManager.this),
-                        TeamKunPluginManager.plugin
-                );
-            }
-        }.runTaskLater(this, 1L);
-
-        if (!new File(DATABASE_PATH).exists())
-            CommandUpdate.onCommand(Bukkit.getConsoleSender(), null);
-
-        String tokenEnv = System.getenv("TOKEN");
-
-        if (tokenEnv != null && !tokenEnv.isEmpty())
-        {
-            if (!vault.getToken().equals(tokenEnv))
-                vault.vault(tokenEnv);
-            return;
-        }
-
-        if (vault.getToken().equals(""))
-            vault.vault("");
+        resolver.addOnNotFoundResolver(new BruteforceGitHubResolver(plugin, githubResolver));
     }
 
     @Override
@@ -120,4 +105,56 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         return !vault.getToken().isEmpty();
     }
+
+    public static void registerCommands(CommandManager commandManager)
+    {
+        commandManager.registerCommand("autoremove", new CommandAutoRemove());
+        commandManager.registerCommand("clean", new CommandClean());
+        commandManager.registerCommand("fix", new CommandFix());
+        commandManager.registerCommand("info", new CommandInfo());
+        commandManager.registerCommand("install", new CommandInstall(), "add", "i");
+        commandManager.registerCommand("register", new CommandRegister(), "login");
+        commandManager.registerCommand("reload", new CommandReload());
+        commandManager.registerCommand("resolve", new CommandResolve());
+        commandManager.registerCommand("status", new CommandStatus());
+        commandManager.registerCommand("uninstall", new CommandUninstall(), "remove", "rm");
+        commandManager.registerCommand("update", new CommandUpdate());
+    }
+
+    @Override
+    public void onEnable()
+    {
+        session = new Session();
+        saveDefaultConfig();
+        plugin = this;
+        pluginConfig = getConfig();
+        functional = new Say2Functional(this);
+        resolver = new PluginResolver();
+        commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+        new PluginLoader(); // Initialize plugin loader
+
+        registerCommands(commandManager);
+
+        setupResolver(this);
+
+        vault = new TokenVault();
+
+        setupDependencyTree(this);
+
+        if (!new File(DATABASE_PATH).exists())
+            new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
+
+        String tokenEnv = System.getenv("TOKEN");
+
+        if (tokenEnv != null && !tokenEnv.isEmpty())
+        {
+            if (!vault.getToken().equals(tokenEnv))
+                vault.vault(tokenEnv);
+            return;
+        }
+
+        if (vault.getToken().isEmpty())
+            vault.vault("");
+    }
+
 }

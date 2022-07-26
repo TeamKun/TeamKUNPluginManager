@@ -1,53 +1,78 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandReload
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CommandReload extends CommandBase
 {
-    public static void onCommand(CommandSender sender, String[] args)
+    @Override
+    public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        if (!sender.hasPermission("kpm.reload"))
-        {
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
+        if (indicateArgsLengthInvalid(terminal, args, 1, 1))
             return;
-        }
-
-        if (args.length < 1)
-        {
-            sender.sendMessage(ChatColor.RED + "E: 引数が不足しています！");
-            sender.sendMessage(ChatColor.RED + "使用法: /kpm reload <Plugin>");
-            return;
-        }
 
         Plugin plugin;
 
         if ((plugin = Bukkit.getPluginManager().getPlugin(args[0])) == null)
         {
-            sender.sendMessage(ChatColor.RED + "E: プラグイン " + args[0] + " は存在しません。");
+            terminal.error("E: プラグイン %s は存在しません。", args[0]);
             return;
         }
 
         if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            terminal.error("TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                PluginUtil.reload(plugin);
-                sender.sendMessage(ChatColor.GREEN + "S: " + args[0] + " を正常に再読み込みしました。");
-                TeamKunPluginManager.getPlugin().getSession().unlock();
-            }
-        }.runTaskAsynchronously(TeamKunPluginManager.getPlugin());
+        Runner.runAsync(() -> {
+            terminal.info("プラグイン %s を再読み込み中...", args[0]);
+            PluginLoader.getInstance().reloadPlugin(plugin);
+            terminal.success("プラグイン %s を正常に再読み込み中しました。", args[0]);
+            TeamKunPluginManager.getPlugin().getSession().unlock();
+        });
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        if (args.length == 1)
+            return Arrays.stream(Bukkit.getPluginManager().getPlugins())
+                    .map(Plugin::getName)
+                    .collect(Collectors.toList());
+        return null;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.reload";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("インストールされているプラグインを再読み込みします。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[]{
+                required("pluginName", "string")
+        };
     }
 }

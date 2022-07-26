@@ -278,7 +278,7 @@ public class DependencyTree
             e.printStackTrace();
         }
 
-        return plugin.size() != 0;
+        return !plugin.isEmpty();
     }
 
     public static void fix()

@@ -1,37 +1,63 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CommandFix
+import java.util.List;
+
+public class CommandFix extends CommandBase
 {
-    public static void onCommand(CommandSender sender, String[] args)
+    @Override
+    public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        if (!sender.hasPermission("kpm.fix"))
-        {
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
-            return;
-        }
-
         if (!TeamKunPluginManager.getPlugin().getSession().lock())
         {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
+            terminal.error("TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
+        terminal.info("依存関係ツリーを読み込み中...");
         if (!DependencyTree.isErrors())
         {
-            sender.sendMessage(ChatColor.RED + "E: エラーは検出されませんでした。");
+            terminal.error("エラーは検出されませんでした。");
             TeamKunPluginManager.getPlugin().getSession().unlock();
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "エラーを解決しています...");
+        terminal.info(ChatColor.GREEN + "問題を修復しています...");
         DependencyTree.fix();
-        sender.sendMessage(ChatColor.GREEN + "S: エラーの解決に成功しました。");
+        terminal.success("問題の修復に成功しました。");
         TeamKunPluginManager.getPlugin().getSession().unlock();
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        return null;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.fix";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("エラーを修復します。" + ChatColor.YELLOW + "エラーメッセージが表示された場合のみ実行してください。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[0];
     }
 }
