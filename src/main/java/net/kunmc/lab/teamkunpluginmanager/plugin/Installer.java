@@ -9,6 +9,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
@@ -103,7 +104,7 @@ public class Installer
         terminal.writeLine(ChatColor.LIGHT_PURPLE + "プラグインを削除中...");
 
         //プラグインをアンロード
-        PluginUtil.unload(plugin);
+        PluginLoader.getInstance().unloadPlugin(plugin);
 
         //非同期実行
         Runner.runLaterAsync(() -> {
@@ -362,7 +363,7 @@ public class Installer
             ));
 
             //バージョンの低いプラグインをアンインストール。
-            PluginUtil.unload(plugin);
+            PluginLoader.getInstance().unloadPlugin(plugin);
 
             Runner.runLater(() -> {
                 //削除する場合は削除
@@ -516,7 +517,7 @@ public class Installer
 
         //依存関係が1つでも読まれた場合はかかった時間を表示
         if (!dependFirst)
-            terminal.writeLine(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, BigDecimal.ROUND_DOWN) + "秒で取得しました。");
+            terminal.writeLine(ChatColor.DARK_GREEN.toString() + new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(startTime))).divide(new BigDecimal("1000")).setScale(2, RoundingMode.DOWN) + "秒で取得しました。");
 
         //結果を表示しないモードで依存関係エラーが発生した場合はreturn
         if (!terminal.isPlayer() && !failedResolve.isEmpty())
@@ -555,7 +556,7 @@ public class Installer
                             delete(terminal, new File("plugins/" + f.getFileName()));
 
                         //プラグインをアンロード
-                        PluginUtil.unload(plugin);
+                        PluginLoader.getInstance().unloadPlugin(plugin);
 
                         Runner.runLaterAsync(() -> {
                             File file = PluginUtil.getFile(plugin);
@@ -564,8 +565,7 @@ public class Installer
                         }, 20L);
                     }
 
-                    //依存関係をロード
-                    PluginUtil.load(f.getFileName().substring(0, f.getFileName().length() - 4));
+                    PluginLoader.getInstance().loadPlugin(new File("plugins", f.getFileName()).toPath());
                 }
                 catch (Exception e) //例外が発生した場合
                 {
