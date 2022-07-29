@@ -8,19 +8,26 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.AlreadyInstalledPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
 @AllArgsConstructor
 public class DebugSignalHandler implements InstallerSignalHandler
 {
+    private static final int MAX_INDENT = 5;
+
     private final Terminal terminal;
 
     private static <T extends InstallerSignal> void handleInputSignals(T signal, Terminal terminal)
@@ -139,8 +146,27 @@ public class DebugSignalHandler implements InstallerSignalHandler
         else if (Byte.class.isAssignableFrom(clazz) || byte.class.isAssignableFrom(clazz))
             return prefix + ChatColor.DARK_PURPLE + "B";
         else if (Map.Entry.class.isAssignableFrom(clazz))
-            return prefix + getTypePrefix(clazz.getGenericSuperclass()) + " => " +
-                    getTypePrefix(clazz.getGenericInterfaces()[0]);
+        {
+            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
+            return prefix + getTypePrefix(entry.getKey()) + " => " + getTypePrefix(entry.getValue());
+        }
+        else if (Collection.class.isAssignableFrom(clazz))
+        {
+            Type type = clazz.getGenericSuperclass();
+            if (type instanceof ParameterizedType)
+            {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                if (typeArguments.length == 1)
+                    return prefix + getTypePrefix(typeArguments[0]) + "[]";
+            }
+
+            return prefix + ChatColor.DARK_GRAY + "Collection[?]";
+        }
+        else if (clazz.isEnum())
+            return prefix + ChatColor.DARK_PURPLE + "E";
+        else if (clazz.isPrimitive())
+            return prefix + ChatColor.GRAY + clazz.getSimpleName();
         else
             return prefix + "L" + clazz.getName() + ";: ";
     }
@@ -150,8 +176,9 @@ public class DebugSignalHandler implements InstallerSignalHandler
     {
         if (!isCompatible(value))
         {
+
             printField(field.getName(), value, terminal, indent, false);
-            varDump(value, terminal, indent + 1, false);
+            varDump(value, terminal, indent + 1, false, Modifier.STATIC | Modifier.FINAL);
             return;
         }
 
@@ -176,11 +203,17 @@ public class DebugSignalHandler implements InstallerSignalHandler
         }
     }
 
-    private static void varDump(Object o, Terminal terminal, int indent, boolean printFailedMessage)
+    private static void varDump(Object o, Terminal terminal, int indent, boolean printFailedMessage, int... ignoreModifiers)
     {
+        if (indent > MAX_INDENT)
+            return;
+
         Field[] fields = o.getClass().getDeclaredFields();
         for (Field field : fields)
         {
+            if (ArrayUtils.contains(ignoreModifiers, field.getModifiers()))
+                continue;
+
             field.setAccessible(true);
 
             try
@@ -223,7 +256,8 @@ public class DebugSignalHandler implements InstallerSignalHandler
     @Override
     public <T extends InstallerSignal> void handleSignal(@NotNull InstallProgress<?> installProgress, @NotNull T signal)
     {
-        printSignal(signal, terminal);
+        if (!(signal instanceof DownloadProgressSignal))
+            printSignal(signal, terminal);
 
         handleInputSignals(signal, terminal);
     }
