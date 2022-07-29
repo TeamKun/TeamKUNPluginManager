@@ -119,7 +119,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
                         .submit(new DependsCollectArgument(pluginDescription));
 
         if (!dependsComputeOrderResult.isSuccess())
-            return handlePhaseError(pluginDescriptionResult);
+            return handlePhaseError(dependsComputeOrderResult);
 
         dependenciesLoadOrder = ((DependsComputeOrderResult) dependsComputeOrderResult).getOrder();
         // endregion
