@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DependsCollectCache
 {
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
 
     @NotNull
     private final File cacheFile;
