@@ -57,7 +57,7 @@ public class DependsCollectCache
 
     public boolean isErrors()
     {
-        return enumeratedDependencies.containsValue(null);
+        return !enumeratedDependencies.containsValue(null);
     }
 
     public void onCollect(@NotNull String dependencyName, DependencyElement dependencyElement)
