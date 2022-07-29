@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, DescriptionLoadResult>
 {
@@ -24,6 +25,8 @@ public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, 
     @Override
     public @NotNull DescriptionLoadResult runPhase(@NotNull DescriptionLoadArgument arguments)
     {
+        Path pluginFile = arguments.getPluginFile();
+
         this.postSignal(new LoadPluginDescriptionSignal(arguments.getPluginFile()));
 
         PluginDescriptionFile pluginYml;
@@ -37,13 +40,13 @@ public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, 
         {
             if (e.getMessage().equals("This file isn't plugin."))
                 return new DescriptionLoadResult(false, this.phaseState,
-                        DescriptionLoadErrorCause.NOT_A_PLUGIN, null
+                        DescriptionLoadErrorCause.NOT_A_PLUGIN, pluginFile, null
                 );
             else
             {
                 e.printStackTrace();
                 return new DescriptionLoadResult(false, this.phaseState,
-                        DescriptionLoadErrorCause.INVALID_DESCRIPTION, null
+                        DescriptionLoadErrorCause.INVALID_DESCRIPTION, pluginFile, null
                 );
             }
         }
@@ -51,10 +54,10 @@ public class DescriptionLoadPhase extends InstallPhase<DescriptionLoadArgument, 
         {
             e.printStackTrace();
             return new DescriptionLoadResult(false, this.phaseState,
-                    DescriptionLoadErrorCause.IO_EXCEPTION, null
+                    DescriptionLoadErrorCause.IO_EXCEPTION, pluginFile, null
             );
         }
 
-        return new DescriptionLoadResult(true, this.phaseState, null, pluginYml);
+        return new DescriptionLoadResult(true, this.phaseState, null, pluginFile, pluginYml);
     }
 }

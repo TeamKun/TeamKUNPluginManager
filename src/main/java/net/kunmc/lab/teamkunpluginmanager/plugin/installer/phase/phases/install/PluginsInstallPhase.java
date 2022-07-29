@@ -90,7 +90,7 @@ public class PluginsInstallPhase extends InstallPhase<PluginsInstallArgument, Pl
         Plugin target;
         try
         {
-            target = Bukkit.getPluginManager().loadPlugin(path.toFile());
+            target = Bukkit.getPluginManager().loadPlugin(targetPath.toFile());
             assert target != null;
             this.postSignal(new PluginLoadedSignal(target));
 

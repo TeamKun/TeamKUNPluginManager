@@ -6,12 +6,15 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallPhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
@@ -25,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
 {
@@ -37,6 +42,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
     @SuppressWarnings("rawtypes")
     public InstallResult<InstallPhases> execute(@NotNull String query)
     {
+        Path pluginFilePath;
         PluginDescriptionFile pluginDescription;
         String pluginName;
         // region Do plugin resolve, download and description load.
@@ -50,7 +56,10 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         if (!pluginDescriptionResult.isSuccess())
             return handlePhaseError(pluginDescriptionResult);
 
-        pluginDescription = ((DescriptionLoadResult) pluginDescriptionResult).getDescription();
+        DescriptionLoadResult descriptionLoadResult = (DescriptionLoadResult) pluginDescriptionResult;
+
+        pluginFilePath = descriptionLoadResult.getPluginFile();
+        pluginDescription = descriptionLoadResult.getDescription();
         assert pluginDescription != null; // Not null because isSuccess() is true.
 
         pluginName = pluginDescription.getName();
@@ -102,12 +111,25 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         else
             this.progress.addInstalled(pluginDescription);
 
+        List<DependencyElement> dependenciesLoadOrder;
         // region Do collect dependencies, compute dependencies load order and install them.
-        PhaseResult pluginsInstallResult =
+        PhaseResult dependsComputeOrderResult =
                 this.submitter(InstallPhases.COLLECTING_DEPENDENCIES, new DependsCollectPhase(progress, signalHandler))
                         .then(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
-                        .then(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))
                         .submit(new DependsCollectArgument(pluginDescription));
+
+        if (!dependsComputeOrderResult.isSuccess())
+            return handlePhaseError(pluginDescriptionResult);
+
+        dependenciesLoadOrder = ((DependsComputeOrderResult) dependsComputeOrderResult).getOrder();
+        // endregion
+
+        // region Install plugins.
+
+        PhaseResult pluginsInstallResult =
+                this.submitter(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))
+                        .submit(new PluginsInstallArgument(
+                                pluginFilePath, pluginDescription, dependenciesLoadOrder));
 
         if (!pluginsInstallResult.isSuccess())
             return handlePhaseError(pluginDescriptionResult);
