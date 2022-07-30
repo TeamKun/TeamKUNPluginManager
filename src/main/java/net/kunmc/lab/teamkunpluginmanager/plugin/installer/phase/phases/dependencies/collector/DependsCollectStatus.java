@@ -10,9 +10,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +18,11 @@ import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
-public class DependsCollectCache
+public class DependsCollectStatus
 {
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
-
-    @NotNull
-    private final File cacheFile;
     @NotNull
     private final String installId;
     @NotNull
@@ -38,13 +32,11 @@ public class DependsCollectCache
     @NotNull
     private String pluginName;
 
-    public DependsCollectCache(InstallProgress<?> progress)
+    public DependsCollectStatus(InstallProgress<?> progress)
     {
         this.installId = progress.getInstallActionID();
         this.enumeratedDependencies = new HashMap<>();
         this.pluginName = "undefined-" + this.installId;
-
-        this.cacheFile = progress.getInstallTempDir().resolve(this.installId + ".kpmcache").toFile();
     }
 
     public void addDependency(@NotNull String dependencyName)
@@ -83,19 +75,5 @@ public class DependsCollectCache
                 .filter(entry -> entry.getValue() == null)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
-    }
-
-    public boolean save()
-    {
-        try (FileWriter fos = new FileWriter(this.cacheFile))
-        {
-            fos.write(gson.toJson(this));
-            return true;
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
     }
 }

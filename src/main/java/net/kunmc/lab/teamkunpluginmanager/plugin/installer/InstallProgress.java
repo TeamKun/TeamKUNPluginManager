@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectCache;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -53,7 +53,7 @@ public class InstallProgress<P extends Enum<P>>
 
     private final String installActionID;
     private final InstallerSignalHandler signalHandler;
-    private final DependsCollectCache dependsCollectCache;
+    private final DependsCollectStatus dependsCollectStatus;
 
     private InstallProgress(@NotNull InstallerSignalHandler signalHandler, @Nullable String id) throws IOException, SecurityException
     {
@@ -76,7 +76,7 @@ public class InstallProgress<P extends Enum<P>>
                 this.getInstallActionID()
         );
 
-        this.dependsCollectCache = new DependsCollectCache(this);
+        this.dependsCollectStatus = new DependsCollectStatus(this);
 
         PROGRESS_CACHES.put(this.getInstallActionID(), this);
     }

@@ -9,7 +9,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependen
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyNameMismatchSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependencyResolveFailedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCacheSaveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsCollectFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.signals.DependsEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadArgument;
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
 public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
     private final InstallerSignalHandler signalHandler;
-    private final DependsCollectCache cache;
+    private final DependsCollectStatus status;
 
     private DependsCollectState phaseState;
 
@@ -46,7 +45,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
         super(progress, signalHandler);
 
         this.signalHandler = signalHandler;
-        this.cache = progress.getDependsCollectCache();
+        this.status = progress.getDependsCollectStatus();
 
         this.phaseState = DependsCollectState.INITIALIZED;
     }
@@ -55,7 +54,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
     public @NotNull DependsCollectResult runPhase(@NotNull DependsCollectArgument arguments)
     {
         PluginDescriptionFile pluginDescription = arguments.getPluginDescription();
-        this.cache.setPluginName(pluginDescription.getName());
+        this.status.setPluginName(pluginDescription.getName());
         String pluginName = pluginDescription.getName();
 
         // Enumerate dependencies
@@ -66,7 +65,7 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         this.postSignal(dependsSignal);
 
-        dependsSignal.getDependencies().forEach(this.cache::addDependency);
+        dependsSignal.getDependencies().forEach(this.status::addDependency);
 
         HashMap<String, ResolveResult> resolvedResults;
         // region Resolve dependencies
@@ -107,11 +106,8 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
                     Path pluginPath = downloadResults.get(actualName).getPath();
 
                     assert pluginPath != null;
-                    this.cache.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath, entry.getValue()));
+                    this.status.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath, entry.getValue()));
                 });
-
-        if (!this.cache.save())
-            this.postSignal(new DependsCacheSaveFailedSignal());
 
         //------------------------
         // Collect dependency's dependencies
@@ -124,16 +120,16 @@ public class DependsCollectPhase extends InstallPhase<DependsCollectArgument, De
 
         // endregion
 
-        boolean success = this.cache.isErrors();
+        boolean success = this.status.isErrors();
         DependsCollectErrorCause errorCause = success ? null: DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED;
 
-        List<String> collectFailedDependencies = this.cache.getCollectFailedDependencies();
+        List<String> collectFailedDependencies = this.status.getCollectFailedDependencies();
         if (!success)
             this.postSignal(new DependsCollectFailedSignal(collectFailedDependencies));
 
         return new DependsCollectResult(
                 success, this.phaseState, errorCause,
-                pluginName, this.cache.getCollectedDependencies(), collectFailedDependencies
+                pluginName, this.status.getCollectedDependencies(), collectFailedDependencies
         );
     }
 
