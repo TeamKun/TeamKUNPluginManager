@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
@@ -64,22 +62,23 @@ public class DebugSignalHandler implements InstallerSignalHandler
         terminal.writeLine("====================");
     }
 
-    private static void printField(String fieldName, Object o, Terminal terminal, int indent, boolean noValue)
+    private static void printField(String fieldName, Object o, Terminal terminal, int indent, boolean noValue, boolean noName)
     {
         String typePrefix = getTypePrefix(o);
 
         String indentStr = StringUtils.repeat("  ", indent);
 
+        String prefix = indentStr + ChatColor.YELLOW + (noName ? "     ": fieldName + " ==> ") + typePrefix;
+
         if (noValue)
-            terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " + typePrefix);
+            terminal.writeLine(prefix);
         else if (o instanceof Map.Entry)
         {
             Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-            terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " +
-                    typePrefix + " " + entry.getKey() + ": " + entry.getValue());
+            terminal.writeLine(prefix + entry.getKey() + ": " + entry.getValue());
         }
         else
-            terminal.writeLine(indentStr + ChatColor.YELLOW + fieldName + " ==> " + typePrefix + o);
+            terminal.writeLine(prefix + o);
     }
 
     private static void printString(String fieldName, String value, Terminal terminal, int indent)
@@ -96,19 +95,19 @@ public class DebugSignalHandler implements InstallerSignalHandler
         Class<?> clazz = o.getClass();
 
         return clazz.isPrimitive() ||
-                clazz.isAssignableFrom(String.class) ||
-                clazz.isAssignableFrom(Integer.class) ||
-                clazz.isAssignableFrom(Boolean.class) ||
-                clazz.isAssignableFrom(Double.class) ||
-                clazz.isAssignableFrom(Float.class) ||
-                clazz.isAssignableFrom(Long.class) ||
-                clazz.isAssignableFrom(Short.class) ||
-                clazz.isAssignableFrom(Byte.class) ||
-                clazz.isAssignableFrom(Character.class) ||
+                String.class.isAssignableFrom(clazz) ||
+                Integer.class.isAssignableFrom(clazz) ||
+                Boolean.class.isAssignableFrom(clazz) ||
+                Double.class.isAssignableFrom(clazz) ||
+                Float.class.isAssignableFrom(clazz) ||
+                Long.class.isAssignableFrom(clazz) ||
+                Short.class.isAssignableFrom(clazz) ||
+                Byte.class.isAssignableFrom(clazz) ||
+                Character.class.isAssignableFrom(clazz) ||
                 clazz.isArray() ||
                 clazz.isEnum() ||
-                clazz.isAssignableFrom(Map.class) ||
-                clazz.isAssignableFrom(Collection.class);
+                Map.class.isAssignableFrom(clazz) ||
+                Collection.class.isAssignableFrom(clazz);
     }
 
     private static String getTypePrefix(Object o)
@@ -145,24 +144,6 @@ public class DebugSignalHandler implements InstallerSignalHandler
             return prefix + ChatColor.DARK_RED + "S";
         else if (Byte.class.isAssignableFrom(clazz) || byte.class.isAssignableFrom(clazz))
             return prefix + ChatColor.DARK_PURPLE + "B";
-        else if (Map.Entry.class.isAssignableFrom(clazz))
-        {
-            Map.Entry<?, ?> entry = (Map.Entry<?, ?>) o;
-            return prefix + getTypePrefix(entry.getKey()) + " => " + getTypePrefix(entry.getValue());
-        }
-        else if (Collection.class.isAssignableFrom(clazz))
-        {
-            Type type = clazz.getGenericSuperclass();
-            if (type instanceof ParameterizedType)
-            {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                if (typeArguments.length == 1)
-                    return prefix + getTypePrefix(typeArguments[0]) + "[]";
-            }
-
-            return prefix + ChatColor.DARK_GRAY + "Collection[?]";
-        }
         else if (clazz.isEnum())
             return prefix + ChatColor.DARK_PURPLE + "E";
         else if (clazz.isPrimitive())
@@ -171,19 +152,19 @@ public class DebugSignalHandler implements InstallerSignalHandler
             return prefix + "L" + clazz.getName() + ";: ";
     }
 
-    private static void varDumpRecursive(Field field, Object value, Terminal terminal, int indent)
+    private static void varDumpRecursive(Field field, Object value, Terminal terminal, int indent, boolean noName)
             throws IllegalAccessException
     {
         if (!isCompatible(value))
         {
 
-            printField(field.getName(), value, terminal, indent, false);
+            printField(field.getName(), value, terminal, indent, false, noName);
             varDump(value, terminal, indent + 1, false, Modifier.STATIC | Modifier.FINAL);
             return;
         }
 
         printField(field.getName(), value, terminal, indent,
-                value != null && value.getClass().isArray() || value instanceof Collection<?> || value instanceof Map
+                value != null && value.getClass().isArray() || value instanceof Collection<?> || value instanceof Map, noName
         );
 
         if (value != null)
@@ -192,14 +173,14 @@ public class DebugSignalHandler implements InstallerSignalHandler
                 for (int i = 0; i < Array.getLength(value); i++)
                 {
                     Object element = Array.get(value, i);
-                    varDumpRecursive(field, element, terminal, indent + 1);
+                    varDumpRecursive(field, element, terminal, indent + 1, true);
                 }
             else if (value instanceof Collection<?>)
                 for (Object element : (Collection<?>) value)
-                    varDumpRecursive(field, element, terminal, indent + 1);
+                    varDumpRecursive(field, element, terminal, indent + 1, true);
             else if (value instanceof Map)
                 for (Map.Entry<?, ?> entry : ((Map<?, ?>) value).entrySet())
-                    varDumpRecursive(field, entry, terminal, indent + 1);
+                    varDumpRecursive(field, entry, terminal, indent + 1, true);
         }
     }
 
@@ -223,7 +204,7 @@ public class DebugSignalHandler implements InstallerSignalHandler
                 if (o.equals(value))
                     printString(field.getName(), ChatColor.RED + "Singleton", terminal, indent);
 
-                varDumpRecursive(field, value, terminal, indent);
+                varDumpRecursive(field, value, terminal, indent, false);
             }
             catch (IllegalAccessException e)
             {
