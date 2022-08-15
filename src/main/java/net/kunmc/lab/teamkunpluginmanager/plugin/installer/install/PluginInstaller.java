@@ -106,10 +106,8 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
             this.removeOldPlugin(sameServerPlugin);
         // endregion
 
-        if (replacePlugin)
-            this.progress.addUpgraded(pluginDescription);
-        else
-            this.progress.addInstalled(pluginDescription);
+        this.progress.addPending(pluginDescription.getName());
+
 
         List<DependencyElement> dependenciesLoadOrder;
         // region Do collect dependencies, compute dependencies load order and install them.
@@ -135,6 +133,10 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
             return handlePhaseError(pluginDescriptionResult);
         // endregion
 
+        if (replacePlugin)
+            this.progress.addUpgraded(pluginDescription);
+        else
+            this.progress.addInstalled(pluginDescription);
 
         return this.success();
     }
