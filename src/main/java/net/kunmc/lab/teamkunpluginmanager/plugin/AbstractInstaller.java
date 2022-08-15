@@ -7,11 +7,11 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.GeneralPhaseErrorCause;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.InstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseSubmitter;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskSubmitter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -49,27 +49,27 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
 
     public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
             @NotNull T reason,
-            @NotNull S phaseStatus)
+            @NotNull S taskStatus)
     {  // TODO: Implement debug mode
-        return new InstallFailedInstallResult<>(this.progress, reason, phaseStatus);
+        return new InstallFailedInstallResult<>(this.progress, reason, taskStatus);
     }
 
     @NotNull
     @SuppressWarnings("rawtypes")
-    protected InstallResult<P> handlePhaseError(@NotNull PhaseResult result)
+    protected InstallResult<P> handleTaskError(@NotNull TaskResult result)
     {
         if (result.getErrorCause() != null)
-            return this.error(result.getErrorCause(), result.getPhase());
+            return this.error(result.getErrorCause(), result.getTask());
         else
-            return this.error(GeneralPhaseErrorCause.ILLEGAL_INTERNAL_STATE, result.getPhase());
+            return this.error(GeneralTaskErrorCause.ILLEGAL_INTERNAL_STATE, result.getTask());
     }
 
     @NotNull
-    protected <A extends PhaseArgument, R extends PhaseResult<?, ?>, PP extends InstallPhase<A, R>>
-    PhaseSubmitter<A, P, ? extends AbstractInstaller<E, P>, A, R, PP>
-    submitter(@NotNull P phaseState, @NotNull PP phase)
+    protected <A extends TaskArgument, R extends TaskResult<?, ?>, TT extends InstallTask<A, R>>
+    TaskSubmitter<A, P, ? extends AbstractInstaller<E, P>, A, R, TT>
+    submitter(@NotNull P taskState, @NotNull TT task)
     {
-        return new PhaseSubmitter<>(phaseState, this, phase);
+        return new TaskSubmitter<>(taskState, this, task);
     }
 
     protected boolean isPluginIgnored(@NotNull String pluginName)

@@ -2,9 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install;
 
 public enum InstallErrorCause
 {
-    // Phases
-    PHASE_EXCEPTION_OCCURRED,
-    PHASE_FAILED,
+    // Tasks
+    TASK_EXCEPTION_OCCURRED,
+    TASK_FAILED,
 
     // Environment errors
     PLUGIN_IGNORED,

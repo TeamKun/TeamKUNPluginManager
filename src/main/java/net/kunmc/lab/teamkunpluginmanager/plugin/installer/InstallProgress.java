@@ -3,8 +3,8 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectStatus;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class InstallProgress<P extends Enum<P>>
+public class InstallProgress<T extends Enum<T>>
 {
     private static final HashMap<String, InstallProgress<?>> PROGRESS_CACHES;
     private static final Path CACHE_DIRECTORY;
 
     @Setter
-    private P phase;
+    private T currentTask;
 
     private final List<String> upgraded;
     private final List<String> installed;
@@ -64,7 +64,7 @@ public class InstallProgress<P extends Enum<P>>
         this.removed = new ArrayList<>();
         this.pending = new ArrayList<>();
 
-        this.phase = null;
+        this.currentTask = null;
 
         if (id == null)
             this.installActionID = UUID.randomUUID().toString().substring(0, 8);

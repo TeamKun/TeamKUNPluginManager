@@ -11,19 +11,19 @@ public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S 
     @NotNull
     private final T reason;
     @Nullable
-    private final S phaseStatus;
+    private final S taskStatus;
 
-    public InstallFailedInstallResult(@NotNull InstallProgress<P> progress, @NotNull T reason, @NotNull S phaseStatus)
+    public InstallFailedInstallResult(@NotNull InstallProgress<P> progress, @NotNull T reason, @NotNull S taskStatus)
     {
         super(false, progress);
         this.reason = reason;
-        this.phaseStatus = phaseStatus;
+        this.taskStatus = taskStatus;
     }
 
     public InstallFailedInstallResult(InstallProgress<P> progress, @NotNull T reason)
     {
         super(false, progress);
         this.reason = reason;
-        this.phaseStatus = null;
+        this.taskStatus = null;
     }
 }

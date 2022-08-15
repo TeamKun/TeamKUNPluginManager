@@ -1,0 +1,40 @@
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+@Value
+@EqualsAndHashCode(callSuper = true)
+public class DependsCollectResult extends TaskResult<DependsCollectState, DependsCollectErrorCause>
+{
+    @NotNull
+    String targetPlugin;
+
+    @NotNull
+    List<DependencyElement> collectedPlugins;
+
+    @NotNull
+    List<String> collectFailedPlugins;
+
+    public DependsCollectResult(boolean success, @NotNull DependsCollectState taskState,
+                                @Nullable DependsCollectErrorCause errorCause, @NotNull String targetPlugin,
+                                @NotNull List<DependencyElement> collectedPlugins,
+                                @NotNull List<String> collectFailedPlugins)
+    {
+        super(success, taskState, errorCause);
+        this.targetPlugin = targetPlugin;
+        this.collectedPlugins = collectedPlugins;
+        this.collectFailedPlugins = collectFailedPlugins;
+    }
+
+    public boolean hasErrors()
+    {
+        return !collectFailedPlugins.isEmpty();
+    }
+}

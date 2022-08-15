@@ -6,7 +6,7 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.InstallErrorCause;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.InstallPhases;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.InstallTasks;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.PluginInstaller;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -31,16 +31,16 @@ public class CommandInstallDebug extends CommandBase
             {
                 PluginInstaller installer = new PluginInstaller(new DebugSignalHandler(terminal));
 
-                InstallResult<InstallPhases> installResult = installer.execute(query);
+                InstallResult<InstallTasks> installResult = installer.execute(query);
 
                 if (installResult instanceof InstallFailedInstallResult)
                 {
-                    InstallFailedInstallResult<InstallPhases, InstallErrorCause, ?> failedInstallResult =
-                            (InstallFailedInstallResult<InstallPhases, InstallErrorCause, ?>) installResult;
+                    InstallFailedInstallResult<InstallTasks, InstallErrorCause, ?> failedInstallResult =
+                            (InstallFailedInstallResult<InstallTasks, InstallErrorCause, ?>) installResult;
 
                     terminal.error("Install has failed for " +
                             failedInstallResult.getReason() + " in " + failedInstallResult.getProgress() + " of " +
-                            failedInstallResult.getPhaseStatus());
+                            failedInstallResult.getTaskStatus());
                 }
 
                 terminal.success("Install succeed: ");

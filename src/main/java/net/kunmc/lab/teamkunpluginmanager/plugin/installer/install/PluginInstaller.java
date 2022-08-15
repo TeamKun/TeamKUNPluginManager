@@ -5,20 +5,20 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.PhaseResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.DependencyElement;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.collector.DependsCollectPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.dependencies.computer.DependsComputeOrderResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.description.DescriptionLoadResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.download.DownloadPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.install.PluginsInstallPhase;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolveArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.phase.phases.resolve.PluginResolvePhase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.PluginsInstallArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.PluginsInstallTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallPhases>
+public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallTasks>
 {
     public PluginInstaller(@NotNull InstallerSignalHandler signalHandler) throws IOException
     {
@@ -40,21 +40,21 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
     @Override
     @SuppressWarnings("rawtypes")
-    public InstallResult<InstallPhases> execute(@NotNull String query)
+    public InstallResult<InstallTasks> execute(@NotNull String query)
     {
         Path pluginFilePath;
         PluginDescriptionFile pluginDescription;
         String pluginName;
         // region Do plugin resolve, download and description load.
 
-        PhaseResult pluginDescriptionResult =
-                this.submitter(InstallPhases.RESOLVING_QUERY, new PluginResolvePhase(progress, signalHandler))
-                        .then(InstallPhases.DOWNLOADING, new DownloadPhase(progress, signalHandler))
-                        .then(InstallPhases.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadPhase(progress, signalHandler))
+        TaskResult pluginDescriptionResult =
+                this.submitter(InstallTasks.RESOLVING_QUERY, new PluginResolveTask(progress, signalHandler))
+                        .then(InstallTasks.DOWNLOADING, new DownloadTask(progress, signalHandler))
+                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(progress, signalHandler))
                         .submit(new PluginResolveArgument(query));
 
         if (!pluginDescriptionResult.isSuccess())
-            return handlePhaseError(pluginDescriptionResult);
+            return handleTaskError(pluginDescriptionResult);
 
         DescriptionLoadResult descriptionLoadResult = (DescriptionLoadResult) pluginDescriptionResult;
 
@@ -68,7 +68,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         boolean replacePlugin = false;
         // region Do assertions.
 
-        this.progress.setPhase(InstallPhases.CHECKING_ENVIRONMENT);
+        this.progress.setCurrentTask(InstallTasks.CHECKING_ENVIRONMENT);
 
         // region Check if plugin is ignored.
         if (this.isPluginIgnored(pluginName))
@@ -111,26 +111,26 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         List<DependencyElement> dependenciesLoadOrder;
         // region Do collect dependencies, compute dependencies load order and install them.
-        PhaseResult dependsComputeOrderResult =
-                this.submitter(InstallPhases.COLLECTING_DEPENDENCIES, new DependsCollectPhase(progress, signalHandler))
-                        .then(InstallPhases.COMPUTING_LOAD_ORDER, new DependsComputeOrderPhase(progress, signalHandler))
+        TaskResult dependsComputeOrderResult =
+                this.submitter(InstallTasks.COLLECTING_DEPENDENCIES, new DependsCollectTask(progress, signalHandler))
+                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(progress, signalHandler))
                         .submit(new DependsCollectArgument(pluginDescription));
 
         if (!dependsComputeOrderResult.isSuccess())
-            return handlePhaseError(dependsComputeOrderResult);
+            return handleTaskError(dependsComputeOrderResult);
 
         dependenciesLoadOrder = ((DependsComputeOrderResult) dependsComputeOrderResult).getOrder();
         // endregion
 
         // region Install plugins.
 
-        PhaseResult pluginsInstallResult =
-                this.submitter(InstallPhases.INSTALLING_PLUGINS, new PluginsInstallPhase(progress, signalHandler))
+        TaskResult pluginsInstallResult =
+                this.submitter(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
                         .submit(new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, dependenciesLoadOrder));
 
         if (!pluginsInstallResult.isSuccess())
-            return handlePhaseError(pluginDescriptionResult);
+            return handleTaskError(pluginDescriptionResult);
         // endregion
 
         if (replacePlugin)
@@ -143,7 +143,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
     private void removeOldPlugin(Plugin plugin)
     {
-        this.progress.setPhase(InstallPhases.REMOVING_OLD_PLUGIN);
+        this.progress.setCurrentTask(InstallTasks.REMOVING_OLD_PLUGIN);
 
         File oldPluginFile = PluginUtil.getFile(plugin);
 
