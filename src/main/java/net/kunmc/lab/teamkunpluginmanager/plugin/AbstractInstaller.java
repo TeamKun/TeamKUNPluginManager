@@ -59,9 +59,9 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
     protected InstallResult<P> handleTaskError(@NotNull TaskResult result)
     {
         if (result.getErrorCause() != null)
-            return this.error(result.getErrorCause(), result.getTask());
+            return this.error(result.getErrorCause(), result.getState());
         else
-            return this.error(GeneralTaskErrorCause.ILLEGAL_INTERNAL_STATE, result.getTask());
+            return this.error(GeneralTaskErrorCause.ILLEGAL_INTERNAL_STATE, result.getState());
     }
 
     @NotNull

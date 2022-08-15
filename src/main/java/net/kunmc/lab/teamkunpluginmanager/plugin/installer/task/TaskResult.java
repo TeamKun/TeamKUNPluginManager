@@ -7,12 +7,12 @@ import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 @Getter
-public abstract class TaskResult<R extends Enum<?>, C extends Enum<?>>
+public abstract class TaskResult<S extends Enum<?>, EC extends Enum<?>>
 {
     private final boolean success;
     @NotNull
-    private final R task;
+    private final S state;
 
     @Nullable
-    private final C errorCause;
+    private final EC errorCause;
 }
