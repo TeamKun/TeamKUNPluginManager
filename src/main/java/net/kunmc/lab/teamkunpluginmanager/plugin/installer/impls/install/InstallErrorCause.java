@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer.install;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install;
 
 public enum InstallErrorCause
 {
