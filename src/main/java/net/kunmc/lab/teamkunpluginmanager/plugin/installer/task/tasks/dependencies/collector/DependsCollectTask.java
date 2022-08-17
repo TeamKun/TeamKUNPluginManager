@@ -120,7 +120,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
         // endregion
 
-        boolean success = this.status.isErrors();
+        boolean success = !this.status.isErrors();
         DependsCollectErrorCause errorCause = success ? null: DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED;
 
         List<String> collectFailedDependencies = this.status.getCollectFailedDependencies();

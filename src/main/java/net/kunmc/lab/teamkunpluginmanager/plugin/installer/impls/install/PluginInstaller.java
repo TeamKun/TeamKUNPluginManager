@@ -10,10 +10,13 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.PluginsInstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.PluginsInstallTask;
@@ -50,8 +53,20 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         TaskResult pluginDescriptionResult =
                 this.submitter(InstallTasks.RESOLVING_QUERY, new PluginResolveTask(progress, signalHandler))
                         .then(InstallTasks.DOWNLOADING, new DownloadTask(progress, signalHandler))
+                        .bridgeArgument(result -> {
+                            if (result.getResolveResult() == null)
+                                throw new IllegalArgumentException("Plugin Resolving must be successful");
+
+                            return new DownloadArgument(result.getResolveResult().getDownloadUrl());
+                        })
                         .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(progress, signalHandler))
-                        .submit(new PluginResolveArgument(query));
+                        .bridgeArgument(result -> {
+                            if (result.getPath() == null)
+                                throw new IllegalArgumentException("Plugin Description Loading must be successful");
+
+                            return new DescriptionLoadArgument(result.getPath());
+                        })
+                        .submitAll(new PluginResolveArgument(query));
 
         if (!pluginDescriptionResult.isSuccess())
             return handleTaskError(pluginDescriptionResult);
@@ -114,7 +129,8 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         TaskResult dependsComputeOrderResult =
                 this.submitter(InstallTasks.COLLECTING_DEPENDENCIES, new DependsCollectTask(progress, signalHandler))
                         .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(progress, signalHandler))
-                        .submit(new DependsCollectArgument(pluginDescription));
+                        .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
+                        .submitAll(new DependsCollectArgument(pluginDescription));
 
         if (!dependsComputeOrderResult.isSuccess())
             return handleTaskError(dependsComputeOrderResult);
@@ -126,7 +142,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
         TaskResult pluginsInstallResult =
                 this.submitter(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
-                        .submit(new PluginsInstallArgument(
+                        .submitAll(new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, dependenciesLoadOrder));
 
         if (!pluginsInstallResult.isSuccess())

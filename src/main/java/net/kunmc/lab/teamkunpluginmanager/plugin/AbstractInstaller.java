@@ -10,8 +10,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandle
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskChain;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskSubmitter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -66,10 +66,10 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
 
     @NotNull
     protected <A extends TaskArgument, R extends TaskResult<?, ?>, TT extends InstallTask<A, R>>
-    TaskSubmitter<A, P, ? extends AbstractInstaller<E, P>, A, R, TT>
+    TaskChain<A, P, R, R, TT>
     submitter(@NotNull P taskState, @NotNull TT task)
     {
-        return new TaskSubmitter<>(taskState, this, task);
+        return new TaskChain<>(task, taskState, this);
     }
 
     protected boolean isPluginIgnored(@NotNull String pluginName)
