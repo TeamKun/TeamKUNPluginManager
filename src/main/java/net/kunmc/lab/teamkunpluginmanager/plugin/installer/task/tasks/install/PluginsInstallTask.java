@@ -5,7 +5,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginLoadedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginInstallingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginLoadSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnEnableRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
@@ -72,8 +73,9 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
     @Nullable
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription)
     {
-        this.state = PluginsInstallState.RELOCATING_PLUGIN;
+        this.postSignal(new PluginInstallingSignal(path, pluginDescription));
 
+        this.state = PluginsInstallState.PLUGIN_RELOCATING;
 
         // Relocate plugin
         String fileName = pluginDescription.getName() + "-" + pluginDescription.getVersion() + ".jar";
@@ -84,21 +86,23 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         if (mayError != null)
             return mayError;
 
-        // Load plugin
-        this.state = PluginsInstallState.LOADING_PLUGIN;
-
         Plugin target;
         try
         {
+            // Load plugin
+            this.state = PluginsInstallState.PLUGIN_LOADING;
+            this.postSignal(new PluginLoadSignal.Pre(path, pluginDescription));
             target = Bukkit.getPluginManager().loadPlugin(targetPath.toFile());
             assert target != null;
-            this.postSignal(new PluginLoadedSignal(target));
+            this.postSignal(new PluginLoadSignal.Post(path, pluginDescription, target));
 
             this.progress.addInstalled(target.getDescription());
 
-            this.postSignal(new PluginOnLoadRunningSignal(target));
-            this.state = PluginsInstallState.RUNNING_ONLOAD;
+            // Run Plugin#onLoad
+            this.state = PluginsInstallState.ONLOAD_RUNNING;
+            this.postSignal(new PluginOnLoadRunningSignal.Pre(target));
             target.onLoad();
+            this.postSignal(new PluginOnLoadRunningSignal.Post(target));
 
         }
         catch (InvalidDescriptionException e)
@@ -118,9 +122,10 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
 
         // Enable plugin
-        this.state = PluginsInstallState.RUNNING_ONENABLE;
-        this.postSignal(new PluginOnEnableRunningSignal(target));
+        this.state = PluginsInstallState.PLUGIN_ENABLING;
+        this.postSignal(new PluginOnEnableRunningSignal.Pre(target));
         Bukkit.getPluginManager().enablePlugin(target);
+        this.postSignal(new PluginOnEnableRunningSignal.Post(target));
 
         return null;  // Success
     }

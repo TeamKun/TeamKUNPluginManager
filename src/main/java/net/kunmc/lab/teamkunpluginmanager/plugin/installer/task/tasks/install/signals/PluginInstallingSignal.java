@@ -2,12 +2,16 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.s
 
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
+
 @Value
-public class PluginLoadedSignal implements InstallerSignal
+public class PluginInstallingSignal implements InstallerSignal
 {
     @NotNull
-    Plugin plugin;
+    Path path;
+    @NotNull
+    PluginDescriptionFile pluginDescription;
 }
