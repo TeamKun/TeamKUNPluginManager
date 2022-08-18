@@ -224,7 +224,7 @@ public class CommandsPatcher
         this.patchCommand(plugin, true);
     }
 
-    public void unPatchCommand(@NotNull Plugin plugin)
+    public void unPatchCommand(@NotNull Plugin plugin, boolean updatePlayer)
     {
         Map<String, Command> commandMap = this.getKnownCommands();
 
@@ -261,6 +261,12 @@ public class CommandsPatcher
 
         this.syncCommandsCraftBukkit();
 
-        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+        if (updatePlayer)
+            Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+    }
+
+    public void unPatchCommand(@NotNull Plugin plugin)
+    {
+        this.unPatchCommand(plugin, true);
     }
 }

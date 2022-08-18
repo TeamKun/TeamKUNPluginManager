@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.command.SubCommandWith;
 import net.kunmc.lab.teamkunpluginmanager.commands.debug.CommandInstallDebug;
+import net.kunmc.lab.teamkunpluginmanager.commands.debug.CommandUninstallDebug;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +20,7 @@ public class CommandDebug extends SubCommandWith
     {
         COMMANDS = new HashMap<>();
         COMMANDS.put("installDebug", new CommandInstallDebug());
+        COMMANDS.put("uninstallDebug", new CommandUninstallDebug());
     }
 
     @Override
