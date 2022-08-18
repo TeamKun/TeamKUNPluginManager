@@ -16,6 +16,7 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,10 +32,12 @@ import java.util.List;
 public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, PluginsInstallResult>
 {
     private static final Path PLUGIN_DIR;
+    private static final PluginManager PLUGIN_MANAGER;
 
     static
     {
         PLUGIN_DIR = TeamKunPluginManager.getPlugin().getDataFolder().toPath().getParent();
+        PLUGIN_MANAGER = Bukkit.getPluginManager();
     }
 
     private PluginsInstallState state;
@@ -92,7 +95,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             // Load plugin
             this.state = PluginsInstallState.PLUGIN_LOADING;
             this.postSignal(new PluginLoadSignal.Pre(path, pluginDescription));
-            target = Bukkit.getPluginManager().loadPlugin(targetPath.toFile());
+            target = PLUGIN_MANAGER.loadPlugin(targetPath.toFile());
             assert target != null;
             this.postSignal(new PluginLoadSignal.Post(path, pluginDescription, target));
 
@@ -124,7 +127,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         // Enable plugin
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginOnEnableRunningSignal.Pre(target));
-        Bukkit.getPluginManager().enablePlugin(target);
+        PLUGIN_MANAGER.enablePlugin(target);
         this.postSignal(new PluginOnEnableRunningSignal.Post(target));
 
         return null;  // Success
