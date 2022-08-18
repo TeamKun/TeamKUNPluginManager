@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install;
 
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
@@ -10,8 +11,10 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.si
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnEnableRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -27,17 +30,20 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, PluginsInstallResult>
 {
     private static final Path PLUGIN_DIR;
     private static final PluginManager PLUGIN_MANAGER;
+    private static final CommandsPatcher COMMANDS_PATCHER;
 
     static
     {
         PLUGIN_DIR = TeamKunPluginManager.getPlugin().getDataFolder().toPath().getParent();
         PLUGIN_MANAGER = Bukkit.getPluginManager();
+        COMMANDS_PATCHER = new CommandsPatcher();
     }
 
     private PluginsInstallState state;
@@ -49,32 +55,53 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         this.state = PluginsInstallState.INITIALIZED;
     }
 
+    private static void patchPluginCommands(List<Plugin> targets)
+    {
+        targets.forEach(plugin -> COMMANDS_PATCHER.patchCommand(plugin, false));
+
+        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+    }
+
     @Override
     public @NotNull PluginsInstallResult runTask(@NotNull PluginsInstallArgument arguments)
     {
         List<DependencyElement> dependencies = arguments.getDependencies();
 
-        // Install dependencies
-        for (DependencyElement dependency : dependencies)
+        List<Plugin> installedPlugins = new ArrayList<>();
+
+        // For commands patch
+        try
         {
-            PluginDescriptionFile pluginDescription = dependency.getPluginDescription();
-            Path path = dependency.getPluginPath();
+            // Install dependencies
+            for (DependencyElement dependency : dependencies)
+            {
+                PluginDescriptionFile pluginDescription = dependency.getPluginDescription();
+                Path path = dependency.getPluginPath();
 
-            PluginsInstallResult result = this.installOne(path, pluginDescription);
-            if (result != null)
+                PluginsInstallResult result = this.installOne(path, pluginDescription, installedPlugins);
+                if (result != null)  // installOne returns null if installation is failed
+                    return result;
+            }
+
+            // Install plugin after dependencies installed
+            PluginsInstallResult result =
+                    this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(), installedPlugins);
+            if (result != null)  // installOne returns null if installation is failed
                 return result;
+            else
+                return new PluginsInstallResult(true, this.state, null);
         }
-
-        // Install plugin after dependencies installed
-        PluginsInstallResult result = this.installOne(arguments.getPluginPath(), arguments.getPluginDescription());
-        if (result != null)
-            return result;
-        else
-            return new PluginsInstallResult(true, this.state, null);
+        finally
+        {
+            Runner.runLater(() -> {
+                patchPluginCommands(installedPlugins);
+            }, 1L);
+        }
     }
 
     @Nullable
-    private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription)
+    private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
+                                            @NotNull List<Plugin> installedPlugins)
     {
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
 
@@ -129,6 +156,8 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         this.postSignal(new PluginOnEnableRunningSignal.Pre(target));
         PLUGIN_MANAGER.enablePlugin(target);
         this.postSignal(new PluginOnEnableRunningSignal.Post(target));
+
+        installedPlugins.add(target);
 
         return null;  // Success
     }

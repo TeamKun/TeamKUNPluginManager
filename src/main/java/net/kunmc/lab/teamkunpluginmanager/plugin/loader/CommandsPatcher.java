@@ -201,7 +201,7 @@ public class CommandsPatcher
         iBrigadierCommandDispatcher.getRoot().removeCommand(command);
     }
 
-    public void patchCommand(@NotNull Plugin plugin)
+    public void patchCommand(@NotNull Plugin plugin, boolean updatePlayer)
     {
         Map<String, Command> commandMap = this.getKnownCommands();
 
@@ -215,7 +215,13 @@ public class CommandsPatcher
 
         this.syncCommandsCraftBukkit();
 
-        Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+        if (updatePlayer)
+            Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
+    }
+
+    public void patchCommand(@NotNull Plugin plugin)
+    {
+        this.patchCommand(plugin, true);
     }
 
     public void unPatchCommand(@NotNull Plugin plugin)
