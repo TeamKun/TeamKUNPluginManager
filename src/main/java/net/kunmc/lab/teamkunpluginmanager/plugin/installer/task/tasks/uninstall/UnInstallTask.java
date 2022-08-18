@@ -83,6 +83,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
     }
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public @NotNull UnInstallResult runTask(@NotNull UnInstallArgument arguments)
     {
         List<Plugin> orderedUninstallTargets = arguments.getPlugins();
