@@ -1,6 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall;
 
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
@@ -8,6 +10,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -20,6 +23,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
@@ -98,6 +102,22 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
                 errors.put(errorCause, description);
         }
 
+        Runner.runLaterAsync(() -> {
+            orderedUninstallTargets.forEach(plugin -> {
+                File pluginFile = PluginUtil.getFile(plugin);
+                if (pluginFile.exists())
+                    pluginFile.delete();
+
+                DependencyTree.wipePlugin(plugin);
+            });
+        }, 20L);
+
+        orderedUninstallTargets.stream()
+                .map(Plugin::getDescription)
+                .forEach(UnInstallTask.this.progress::addRemoved);
+
+        System.gc();
+
         Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
 
         boolean success = errors.isEmpty();
@@ -175,8 +195,6 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
                     plugin.getName());
             return false;
         }
-
-        System.gc();
 
         return true;
     }
