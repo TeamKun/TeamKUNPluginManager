@@ -1,19 +1,24 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals;
 
-import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
-@Data
-public class DownloadStartingSignal implements InstallerSignal
+@Getter
+@Setter
+public class DownloadStartingSignal extends DownloadSignal
 {
-    @NotNull
-    String downloadId;
-
     @NotNull
     private Path downloadPath;
     @NotNull
     private String url;
+
+    public DownloadStartingSignal(@NotNull String downloadId, @NotNull Path downloadPath, @NotNull String url)
+    {
+        super(downloadId);
+        this.downloadPath = downloadPath;
+        this.url = url;
+    }
 }
