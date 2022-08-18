@@ -6,12 +6,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 @Data
-public class PluginOnEnableRunningSignal implements InstallerSignal
+public class PluginEnablingSignal implements InstallerSignal
 {
     @NotNull
     private final Plugin plugin;
 
-    public static class Pre extends PluginOnEnableRunningSignal
+    public static class Pre extends PluginEnablingSignal
     {
         public Pre(@NotNull Plugin plugin)
         {
@@ -19,7 +19,7 @@ public class PluginOnEnableRunningSignal implements InstallerSignal
         }
     }
 
-    public static class Post extends PluginOnEnableRunningSignal
+    public static class Post extends PluginEnablingSignal
     {
         public Post(@NotNull Plugin plugin)
         {

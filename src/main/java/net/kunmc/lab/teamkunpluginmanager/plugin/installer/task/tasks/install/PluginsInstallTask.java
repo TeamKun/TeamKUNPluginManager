@@ -6,9 +6,9 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginEnablingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginInstallingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginLoadSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnEnableRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
@@ -153,9 +153,9 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         // Enable plugin
         this.state = PluginsInstallState.PLUGIN_ENABLING;
-        this.postSignal(new PluginOnEnableRunningSignal.Pre(target));
+        this.postSignal(new PluginEnablingSignal.Pre(target));
         PLUGIN_MANAGER.enablePlugin(target);
-        this.postSignal(new PluginOnEnableRunningSignal.Post(target));
+        this.postSignal(new PluginEnablingSignal.Post(target));
 
         installedPlugins.add(target);
 
