@@ -4,7 +4,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.signals.DependsLoadOrderComputedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -53,9 +52,7 @@ public class DependsComputeOrderTask extends InstallTask<DependsComputeOrderArgu
     public @NotNull DependsComputeOrderResult runTask(@NotNull DependsComputeOrderArgument arguments)
     {
         this.state = DependsComputeOrderState.CREATING_DEPENDENCY_MAP;
-        this.postSignal(new DependsLoadOrderComputingSignal(
-                Collections.unmodifiableList(arguments.getCollectedDependencies())
-        ));
+        this.postSignal(new DependsLoadOrderComputingSignal.Pre(arguments.getCollectedDependencies()));
 
         List<DependencyElement> plugins = new ArrayList<>(arguments.getCollectedDependencies());
 
@@ -174,8 +171,8 @@ public class DependsComputeOrderTask extends InstallTask<DependsComputeOrderArgu
         result.addAll(last);
 
 
-        DependsLoadOrderComputedSignal dependsLoadOrderComputedSignal =
-                new DependsLoadOrderComputedSignal(result);
+        DependsLoadOrderComputingSignal.Post dependsLoadOrderComputedSignal =
+                new DependsLoadOrderComputingSignal.Post(result);
 
         this.postSignal(dependsLoadOrderComputedSignal);
 
