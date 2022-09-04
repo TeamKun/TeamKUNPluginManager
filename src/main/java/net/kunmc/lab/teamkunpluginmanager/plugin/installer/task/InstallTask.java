@@ -16,7 +16,7 @@ public abstract class InstallTask<A extends TaskArgument, R extends TaskResult<?
 
     public abstract @NotNull R runTask(@NotNull A arguments);
 
-    public void postSignal(@NotNull InstallerSignal signal)
+    protected void postSignal(@NotNull InstallerSignal signal)
     {
         this.signalHandler.handleSignal(this.progress, signal);
     }
