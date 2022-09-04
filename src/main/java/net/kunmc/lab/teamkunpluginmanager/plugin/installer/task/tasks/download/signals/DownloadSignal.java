@@ -5,7 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import org.jetbrains.annotations.NotNull;
 
 @Data
-public class DownloadSignal implements InstallerSignal
+public abstract class DownloadSignal implements InstallerSignal
 {
     @NotNull
     private final String downloadId;
