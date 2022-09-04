@@ -9,16 +9,32 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+/**
+ * 依存関係の解決結果を表します。
+ */
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class DependsCollectResult extends TaskResult<DependsCollectState, DependsCollectErrorCause>
 {
+    /**
+     * 依存関係解決対象のプラグインです。
+     */
     @NotNull
     String targetPlugin;
 
+    /**
+     * 依存関係の要素のリストです。解決に失敗した場合は空のリストです。
+     *
+     * @see #isSuccess()
+     */
     @NotNull
     List<DependencyElement> collectedPlugins;
 
+    /**
+     * 解決に失敗した依存関係の要素のリストです。解決に成功した場合は空のリストです。
+     *
+     * @see #isSuccess()
+     */
     @NotNull
     List<String> collectFailedPlugins;
 

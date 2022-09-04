@@ -9,13 +9,22 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
+/**
+ * ダウンロードの引数です。
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class DownloadArgument extends TaskArgument
 {
+    /**
+     * ダウンロードするURLです。
+     */
     @NotNull
     String url;
 
+    /**
+     * ダウンロード先のパスです。
+     */
     @Nullable
     Path path;
 

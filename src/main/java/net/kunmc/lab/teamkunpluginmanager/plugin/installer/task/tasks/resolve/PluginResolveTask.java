@@ -15,6 +15,9 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * プラグインの解決を行うタスクです。
+ */
 public class PluginResolveTask extends InstallTask<PluginResolveArgument, PluginResolveResult>
 {
     private static final PluginResolver PLUGIN_RESOLVER;
@@ -61,7 +64,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
         String query = arguments.getQuery();
 
         this.taskState = PluginResolveState.PRE_RESOLVING;
-        this.postSignal(new PluginResolvingSignal(query, PLUGIN_RESOLVER));
+        this.postSignal(new PluginResolvingSignal(PLUGIN_RESOLVER, query));
 
         ResolveResult queryResolveResult = PLUGIN_RESOLVER.resolve(query);
 

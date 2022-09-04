@@ -5,12 +5,21 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * プラグインの無効化の前後にスローされるシグナルです。
+ */
 @Data
 public class PluginDisablingSignal implements InstallerSignal
 {
+    /**
+     * 無効化されるプラグインです。
+     */
     @NotNull
     private final Plugin plugin;
 
+    /**
+     * 無効化の前にスローされるシグナルです。
+     */
     public static class Pre extends PluginDisablingSignal
     {
         public Pre(@NotNull Plugin plugin)
@@ -19,6 +28,9 @@ public class PluginDisablingSignal implements InstallerSignal
         }
     }
 
+    /**
+     * 無効化の後にスローされるシグナルです。
+     */
     public static class Post extends PluginDisablingSignal
     {
         public Post(@NotNull Plugin plugin)

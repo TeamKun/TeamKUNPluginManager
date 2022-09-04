@@ -2,6 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task;
 
 import lombok.Getter;
 
+/**
+ * タスクの引数を表します。
+ */
 public abstract class TaskArgument
 {
     @Getter

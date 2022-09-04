@@ -8,6 +8,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
+/**
+ * タスクを連続して実行するために使用される便利なユーティリティです。
+ * 内部でインストーラの状態を変更しながら、タスクをステップバイステップで実行していきます。
+ * また、前のタスクの結果を次のタスク用の引数に加工するメソッドをサポートします。
+ *
+ * @param <TA> タスクの引数の型
+ * @param <IS> 設定するインストーラの状態
+ * @param <R>  タスクの結果の型
+ * @param <PR> 親の{@link TaskChain} の結果の方
+ * @param <T>  タスクの型
+ */
 public class TaskChain<
         TA extends TaskArgument,
         IS extends Enum<IS>,
@@ -34,6 +45,14 @@ public class TaskChain<
     @Nullable
     private Function<PR, TA> argumentBuilder;
 
+    /**
+     * {@link TaskChain} を生成します。
+     *
+     * @param task           タスク
+     * @param installerState 設定するインストーラの状態
+     * @param first          最初の{@link TaskChain}
+     * @param installer      インストーラ
+     */
     public TaskChain(@NotNull T task, @NotNull IS installerState, @Nullable TaskChain<?, IS, ?, ?, ?> first,
                      @NotNull AbstractInstaller<?, IS> installer)
     {
@@ -43,12 +62,28 @@ public class TaskChain<
         this.installer = installer;
     }
 
+    /**
+     * {@link TaskChain} を生成します。
+     *
+     * @param task           タスク
+     * @param installerState 設定するインストーラの状態
+     * @param installer      インストーラ
+     */
     public TaskChain(@NotNull T task, @NotNull IS installerState, @NotNull AbstractInstaller<?, IS> installer)
     {
         this(task, installerState, null, installer);
         this.first = this;
     }
 
+    /**
+     * タスクをつなげます。
+     *
+     * @param installerState 設定するインストーラの状態
+     * @param nextTask       次のタスク
+     * @param <NTA>          次のタスクの引数の型
+     * @param <NTR>          次のタスクの結果の型
+     * @return 次の{@link TaskChain}
+     */
     public <NTA extends TaskArgument, NTR extends TaskResult<?, ?>> TaskChain<NTA, IS, NTR, R, ?> then(@NotNull IS installerState,
                                                                                                        @NotNull InstallTask<NTA, NTR> nextTask)
     {
@@ -57,12 +92,24 @@ public class TaskChain<
         return nextChain;
     }
 
+    /**
+     * 前のタスクの {@link TaskResult} を引数にして、次のタスクの引数を生成する関数を設定します。
+     *
+     * @param argumentBuilder 前のタスクの {@link TaskResult} を引数にして、次のタスクの引数を生成する関数
+     * @return この{@link TaskChain}
+     */
     public TaskChain<TA, IS, R, PR, T> bridgeArgument(@NotNull Function<PR, TA> argumentBuilder)
     {
         this.argumentBuilder = argumentBuilder;
         return this;
     }
 
+    /**
+     * このタスクから登録されたタスクを実行していきます。
+     *
+     * @param argument タスクの引数
+     * @return タスクの結果
+     */
     public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskArgument argument)
     {
         try
@@ -81,6 +128,12 @@ public class TaskChain<
         }
     }
 
+    /**
+     * このタスクから登録されたタスクを実行していきます。
+     *
+     * @param taskResult 前のタスクの結果
+     * @return タスクの結果
+     */
     public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskResult<?, ?> taskResult)
     {
         if (this.argumentBuilder == null)
@@ -102,6 +155,12 @@ public class TaskChain<
         }
     }
 
+    /**
+     * 最初のタスクから登録されたタスクを実行していきます。
+     *
+     * @param argument タスクの引数
+     * @return タスクの結果
+     */
     public @NotNull TaskResult<?, ?> submitAll(@NotNull TaskArgument argument)
     {
         if (this.first == null)

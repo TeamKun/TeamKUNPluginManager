@@ -34,6 +34,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * プラグインをアンインストールするタスクです。
+ */
 public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResult>
 {
     private static final PluginManager PLUGIN_MANAGER;

@@ -9,17 +9,29 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
+/**
+ * 依存関係 系のタスクで使用される、概念的な依存関係を表すクラスです。
+ */
 @Value
 @AllArgsConstructor
 public class DependencyElement
 {
+    /**
+     * 依存関係の名前です。
+     */
     @Expose
     @NotNull
     String pluginName;
+    /**
+     * 依存関係プラグインがあるのパスです。
+     */
     @Expose
     @NotNull
     Path pluginPath;
 
+    /**
+     * 依存関係のプラグイン情報ファイルです。
+     */
     @NotNull
     PluginDescriptionFile pluginDescription;
 

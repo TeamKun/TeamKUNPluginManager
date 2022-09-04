@@ -6,12 +6,21 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
+/**
+ * ダウンロードの開始中であることを示すシグナルです。
+ */
 @Getter
 @Setter
 public class DownloadStartingSignal extends DownloadSignal
 {
+    /**
+     * ダウンロード先のパスです。
+     */
     @NotNull
     private Path downloadPath;
+    /**
+     * ダウンロードを行うURLです。
+     */
     @NotNull
     private String url;
 

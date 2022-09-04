@@ -5,8 +5,14 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * プラグインのインストール結果を表すクラスです。
+ */
 public class PluginsInstallResult extends TaskResult<PluginsInstallState, PluginsInstallErrorCause>
 {
+    /**
+     * インストールに失敗した場合、そのプラグインの名前が格納されます。
+     */
     @Getter
     @Nullable
     private final String failedPluginName;

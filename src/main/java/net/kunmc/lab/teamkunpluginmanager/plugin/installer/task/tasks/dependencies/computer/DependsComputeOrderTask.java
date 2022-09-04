@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is inspired by the class {@link org.bukkit.plugin.SimplePluginManager#loadPlugins(File, List)}
+ * 依存関係の読み込み順序を計算するタスクです。
+ * This class is inspired by the class. {@link org.bukkit.plugin.SimplePluginManager#loadPlugins(File, List)}
+ *
+ * @see org.bukkit.plugin.SimplePluginManager#loadPlugins(File, List)
  */
 public class DependsComputeOrderTask extends InstallTask<DependsComputeOrderArgument, DependsComputeOrderResult>
 {

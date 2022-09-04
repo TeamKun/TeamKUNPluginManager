@@ -7,10 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
+/**
+ * プラグイン情報ファイルを読み込むときに発生するシグナルです。
+ */
 @Data
 @AllArgsConstructor
 public class LoadPluginDescriptionSignal implements InstallerSignal
 {
+    /**
+     * プラグイン情報ファイルのパスです。
+     * これを変更すると、読み込まれるプラグインを変更できます。
+     */
     @NotNull
     private Path pluginFile;
 }

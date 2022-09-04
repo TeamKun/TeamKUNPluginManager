@@ -33,6 +33,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * 依存関係解決タスクです。
+ * このタスクは、以下のシグナルをスローします：
+ * <ul>
+ *     <li>{@link DependsEnumeratedSignal}</li>
+ *     <li>{@link PluginResolveTask} からスローされる可能性のあるシグナル</li>
+ *     <li>{@link DownloadTask} からスローされる可能性のあるシグナル</li>
+ *     <li>{@link DependencyLoadDescriptionFailedSignal}</li>
+ *     <li>{@link DependencyNameMismatchSignal}</li>
+ *     <li>{@link DependencyDownloadFailedSignal}</li>
+ *     <li>{@link DependencyResolveFailedSignal}</li>
+ *     <li>{@link DependencyCollectDependencysDependsFailedSignal}</li>
+ *     <li>{@link DependsCollectFailedSignal}</li>
+ * </ul>
+ */
 public class DependsCollectTask extends InstallTask<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
     private final InstallerSignalHandler signalHandler;

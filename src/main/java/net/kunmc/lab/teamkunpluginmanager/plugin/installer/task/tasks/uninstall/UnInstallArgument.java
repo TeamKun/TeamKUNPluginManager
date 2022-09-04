@@ -7,9 +7,15 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
+/**
+ * プラグインのアンインストールを行うタスクの引数です。
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class UnInstallArgument extends TaskArgument
 {
+    /**
+     * アンインストールされるプラグインです。
+     */
     List<Plugin> plugins;
 }

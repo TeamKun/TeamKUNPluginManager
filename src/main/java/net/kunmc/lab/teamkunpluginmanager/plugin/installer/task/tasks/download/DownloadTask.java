@@ -16,6 +16,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.UUID;
 
+/**
+ * ファイルをダウンロードするタスクです。
+ * プラグイン以外のファイルにも使用できます。
+ */
 public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 {
     private final String randomDownloadID;

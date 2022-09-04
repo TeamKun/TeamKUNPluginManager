@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * プラグイン情報ファイルの読み込みを行うタスクです。
+ */
 public class DescriptionLoadTask extends InstallTask<DescriptionLoadArgument, DescriptionLoadResult>
 {
     private DescriptionLoadState taskState;

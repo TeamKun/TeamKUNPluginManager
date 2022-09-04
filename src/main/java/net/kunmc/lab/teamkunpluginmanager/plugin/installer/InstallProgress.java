@@ -19,6 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * インストールの進捗状況を管理するクラスです。
+ *
+ * @param <T> インストーラの状態の型
+ */
 @Getter
 public class InstallProgress<T extends Enum<T>>
 {
@@ -27,13 +32,26 @@ public class InstallProgress<T extends Enum<T>>
     @Getter(AccessLevel.NONE)
     private static final Path CACHE_DIRECTORY;
 
-    @Setter
-    private T currentTask;
-
+    /**
+     * アップグレードされたプラグインの名前です。
+     */
     private final List<String> upgraded;
+    /**
+     * 新規にインストールされたプラグインの名前です。
+     */
     private final List<String> installed;
+    /**
+     * 削除されたプラグインの名前です。
+     */
     private final List<String> removed;
+    /**
+     * 保留中としてマークされたプラグインの名前です。
+     */
     private final List<String> pending;
+    /**
+     * インストールに使用される仮ディレクトリです。
+     */
+    private final Path installTempDir;
 
     static
     {
@@ -52,11 +70,23 @@ public class InstallProgress<T extends Enum<T>>
             }
     }
 
-    private final Path installTempDir;
-
+    /**
+     * インストールに割り当てられた一意のIDです。
+     */
     private final String installActionID;
+    /**
+     * {@link InstallerSignal} を受け取るためのリスナーです。
+     */
     private final InstallerSignalHandler signalHandler;
+    /**
+     * 依存関係の解決の状態を表します。
+     */
     private final DependsCollectStatus dependsCollectStatus;
+    /**
+     * 実行中のタスクを表します。
+     */
+    @Setter
+    private T currentTask;
 
     private InstallProgress(@NotNull InstallerSignalHandler signalHandler, @Nullable String id) throws IOException, SecurityException
     {
@@ -84,6 +114,16 @@ public class InstallProgress<T extends Enum<T>>
         PROGRESS_CACHES.put(this.getInstallActionID(), this);
     }
 
+    /**
+     * このインスタンスを取得します。
+     *
+     * @param signalHandler インストールに使用する {@link InstallerSignalHandler}
+     * @param id            インストールに割り当てる一意のID
+     * @param <P>           インストールの進捗状況の型
+     * @return インスタンス
+     * @throws IOException       ディレクトリの作成に失敗した場合
+     * @throws SecurityException ディレクトリの作成に失敗した場合
+     */
     public static <P extends Enum<P>> InstallProgress<P> of(@NotNull InstallerSignalHandler signalHandler,
                                                             @Nullable String id) throws IOException, SecurityException
     {
@@ -101,6 +141,12 @@ public class InstallProgress<T extends Enum<T>>
         this.pending.remove(name);
     }
 
+    /**
+     * プラグインがアップグレードされたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#UPGRADE} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription アップグレードされたプラグインの {@link PluginDescriptionFile}
+     */
     public void addUpgraded(@NotNull PluginDescriptionFile pluginDescription)
     {
         this.removeFromAll(pluginDescription.getName());
@@ -112,6 +158,12 @@ public class InstallProgress<T extends Enum<T>>
         this.upgraded.add(pluginDescription.getName());
     }
 
+    /**
+     * プラグインが新規にインストールされたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#ADD} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription 新規にインストールされたプラグインの {@link PluginDescriptionFile}
+     */
     public void addInstalled(@NotNull PluginDescriptionFile pluginDescription)
     {
         this.removeFromAll(pluginDescription.getName());
@@ -125,6 +177,12 @@ public class InstallProgress<T extends Enum<T>>
         this.installed.add(pluginDescription.getName());
     }
 
+    /**
+     * プラグインが削除されたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#REMOVE} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription 削除されたプラグインの {@link PluginDescriptionFile}
+     */
     public void addRemoved(@NotNull PluginDescriptionFile pluginDescription)
     {
         this.removeFromAll(pluginDescription.getName());
@@ -136,6 +194,11 @@ public class InstallProgress<T extends Enum<T>>
         this.removed.add(pluginDescription.getName());
     }
 
+    /**
+     * プラグインが保留されたとしてマークします。
+     *
+     * @param pluginName 保留されたプラグインの名前
+     */
     public void addPending(@NotNull String pluginName)
     {
         this.removeFromAll(pluginName);
@@ -143,6 +206,9 @@ public class InstallProgress<T extends Enum<T>>
         this.pending.add(pluginName);
     }
 
+    /**
+     * インストールが完了したとしてマークし、インストールに使用された仮ディレクトリを削除します。
+     */
     public void finish()
     {
         try

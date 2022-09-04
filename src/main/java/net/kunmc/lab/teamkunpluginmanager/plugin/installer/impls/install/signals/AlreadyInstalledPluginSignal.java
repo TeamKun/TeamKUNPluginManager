@@ -5,9 +5,16 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * プラグインが既にインストールされていることを示すシグナルです。
+ * {@link AlreadyInstalledPluginSignal#setReplacePlugin(boolean)} を用いて、既存のプラグインを新規プラグインに置換するかどうかを設定できます。
+ */
 @Data
 public class AlreadyInstalledPluginSignal implements InstallerSignal
 {
+    /**
+     * インストールされたプラグインの種類
+     */
     @NotNull
     private final PluginDescriptionFile installedPlugin;
 
@@ -16,6 +23,12 @@ public class AlreadyInstalledPluginSignal implements InstallerSignal
 
     private boolean replacePlugin;
 
+    /**
+     * コンストラクタです。
+     *
+     * @param installedPlugin  既にインストールされているプラグインの {@link PluginDescriptionFile}
+     * @param installingPlugin インストールしようとしているプラグインの {@link PluginDescriptionFile}
+     */
     public AlreadyInstalledPluginSignal(@NotNull PluginDescriptionFile installedPlugin, @NotNull PluginDescriptionFile installingPlugin)
     {
         this.installedPlugin = installedPlugin;

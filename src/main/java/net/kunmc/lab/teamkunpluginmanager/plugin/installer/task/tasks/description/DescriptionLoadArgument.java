@@ -8,10 +8,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
+/**
+ * プラグイン情報ファイルを読み込む際に使用される引数を表します。
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class DescriptionLoadArgument extends TaskArgument
 {
+    /**
+     * プラグイン情報ファイルのパスです。
+     */
     @NotNull
     Path pluginFile;
 

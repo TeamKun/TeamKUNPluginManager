@@ -6,8 +6,14 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * プラグインの解決を行うタスクの結果です。
+ */
 public class PluginResolveResult extends TaskResult<PluginResolveState, PluginResolveErrorCause>
 {
+    /**
+     * 解決されたプラグインの解決結果です。
+     */
     @Getter
     @Nullable
     private final SuccessResult resolveResult;

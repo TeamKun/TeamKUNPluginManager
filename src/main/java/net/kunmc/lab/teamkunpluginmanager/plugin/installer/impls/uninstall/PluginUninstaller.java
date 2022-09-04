@@ -27,6 +27,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * プラグインをアンインストールするインストーラーの実装です。
+ * インストーラは主に以下の流れで動作します。
+ *
+ * <ol>
+ *     <li>{@link UnInstallTasks#SEARCHING_PLUGIN} - アンインストール対象のプラグインを検索する。</li>
+ *     <li>{@link UnInstallTasks#CHECKING_ENVIRONMENT} - 環境が適合しているかどうかをチェックする。</li>
+ *     <li>{@link UnInstallTasks#COMPUTING_UNINSTALL_ORDER} - アンインストールする順序を、依存関係を考慮して計算する。</li>
+ *     <li>{@link UnInstallTasks#UNINSTALLING_PLUGINS} - プラグインをアンインストールする。</li>
+ * </ol>
+ */
 public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, UnInstallTasks>
 {
     public PluginUninstaller(InstallerSignalHandler signalHandler) throws IOException

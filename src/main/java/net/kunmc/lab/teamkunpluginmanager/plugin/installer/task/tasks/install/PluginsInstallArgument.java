@@ -10,15 +10,27 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * プラグインのインストール時に渡される引数です。
+ */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class PluginsInstallArgument extends TaskArgument
 {
+    /**
+     * プラグインのファイルのパスです。
+     */
     @NotNull
     Path pluginPath;
+    /**
+     * プラグインのプラグイン情報ファイルです。
+     */
     @NotNull
     PluginDescriptionFile pluginDescription;
 
+    /**
+     * 依存関係の要素です。
+     */
     @NotNull
     List<DependencyElement> dependencies;
 }

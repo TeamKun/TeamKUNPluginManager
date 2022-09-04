@@ -7,6 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * アンインストールしようとしたプラグインが、他のプラグインの依存関係にあることを示すシグナルです。
+ * {@link PluginIsDependencySignal#setForceUninstall(boolean)} (boolean)} を用いて、強制的にアンインストールするかどうかを設定できます。
+ */
 @Data
 public class PluginIsDependencySignal implements InstallerSignal
 {
@@ -16,8 +20,8 @@ public class PluginIsDependencySignal implements InstallerSignal
     private final List<Plugin> dependedBy;
 
     /**
-     * Force uninstall plugin.
-     * If this turn to true, it will uninstall the plugin and all its dependencies.
+     * 強制的にアンインストールするかどうかを示すフラグです。
+     * このフラグが {@code true} の場合、このプラグインの依存関係にあるプラグインも一緒にアンインストールされます。
      */
     private boolean forceUninstall;
 

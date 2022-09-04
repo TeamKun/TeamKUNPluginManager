@@ -33,6 +33,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * プラグインをインストールするタスクです。
+ */
 public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, PluginsInstallResult>
 {
     private static final Path PLUGIN_DIR;

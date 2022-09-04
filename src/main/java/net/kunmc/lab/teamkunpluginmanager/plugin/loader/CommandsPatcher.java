@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * Bukkitのコマンドをラップするクラス。
+ * Bukkitのコマンドをパッチするクラスです。
  */
 public class CommandsPatcher
 {
@@ -154,6 +154,11 @@ public class CommandsPatcher
         }
     }
 
+    /**
+     * CommandMapを取得します。
+     *
+     * @return CommandMap
+     */
     public CommandMap getCommandMap()
     {
         try
@@ -166,11 +171,22 @@ public class CommandsPatcher
         }
     }
 
+    /**
+     * 知られているコマンドを取得します。
+     *
+     * @return 知られているコマンド
+     */
     public Map<String, Command> getKnownCommands()
     {
         return this.getCommandMap().getKnownCommands();
     }
 
+    /**
+     * コマンドをラップします。
+     *
+     * @param command ラップするコマンド
+     * @param alias   コマンドのエイリアス
+     */
     public void wrapCommand(Command command, String alias)
     {
         try
@@ -184,6 +200,9 @@ public class CommandsPatcher
         }
     }
 
+    /**
+     * CraftServerのsyncCommandsを呼び出す。
+     */
     public void syncCommandsCraftBukkit()
     {
         try
@@ -201,6 +220,12 @@ public class CommandsPatcher
         iBrigadierCommandDispatcher.getRoot().removeCommand(command);
     }
 
+    /**
+     * コマンドをパッチします。
+     *
+     * @param plugin       プラグイン
+     * @param updatePlayer プレイヤーにコマンドの変更を通知するか({@link Player#updateCommands()})
+     */
     public void patchCommand(@NotNull Plugin plugin, boolean updatePlayer)
     {
         Map<String, Command> commandMap = this.getKnownCommands();
@@ -219,11 +244,22 @@ public class CommandsPatcher
             Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
     }
 
+    /**
+     * コマンドをパッチします。
+     *
+     * @param plugin パッチするプラグイン
+     */
     public void patchCommand(@NotNull Plugin plugin)
     {
         this.patchCommand(plugin, true);
     }
 
+    /**
+     * コマンドをアンパッチします。
+     *
+     * @param plugin       アンパッチするプラグイン
+     * @param updatePlayer プレイヤーにコマンドの変更を通知するか({@link Player#updateCommands()})
+     */
     public void unPatchCommand(@NotNull Plugin plugin, boolean updatePlayer)
     {
         Map<String, Command> commandMap = this.getKnownCommands();
@@ -265,6 +301,11 @@ public class CommandsPatcher
             Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
     }
 
+    /**
+     * コマンドをアンパッチします。
+     *
+     * @param plugin プラグイン
+     */
     public void unPatchCommand(@NotNull Plugin plugin)
     {
         this.unPatchCommand(plugin, true);

@@ -34,6 +34,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * プラグインを新規にインストールするインストーラーの実装です。
+ * インストーラは主に以下の流れで動作します。
+ * <ol>
+ *     <li>クエリを解決する({@link InstallTasks#RESOLVING_QUERY})。</li>
+ *     <li>プラグインをダウンロードする({@link InstallTasks#DOWNLOADING})。</li>
+ *     <li>プラグイン情報ファイルを読み込む({@link InstallTasks#LOADING_PLUGIN_DESCRIPTION})。</li>
+ *     <li>環境が適合しているかどうかをチェックする({@link InstallTasks#CHECKING_ENVIRONMENT})。</li>
+ *     <li>依存関係を解決する({@link InstallTasks#COLLECTING_DEPENDENCIES})。</li>
+ *     <li>インストール順序を計算する({@link InstallTasks#COMPUTING_LOAD_ORDER})。</li>
+ *     <li>依存関係とプラグインをインストールする({@link InstallTasks#INSTALLING_PLUGINS})。</li>
+ * </ol>
+ */
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallTasks>
 {
     public PluginInstaller(@NotNull InstallerSignalHandler signalHandler) throws IOException

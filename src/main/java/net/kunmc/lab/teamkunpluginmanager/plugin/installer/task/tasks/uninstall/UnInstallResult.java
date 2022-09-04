@@ -9,11 +9,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * プラグインのアンインストールを行うタスクの結果です。
+ */
 public class UnInstallResult extends TaskResult<UnInstallState, UnInstallErrorCause>
 {
+    /**
+     * アンインストールされたプラグインのプラグイン情報ファイルです。
+     */
     @Getter
     @NotNull
     private final List<PluginDescriptionFile> uninstalledPlugins;
+    /**
+     * アンインストールに失敗した理由です。
+     */
     @Getter
     @NotNull
     private final Map<UnInstallErrorCause, PluginDescriptionFile> errors;
