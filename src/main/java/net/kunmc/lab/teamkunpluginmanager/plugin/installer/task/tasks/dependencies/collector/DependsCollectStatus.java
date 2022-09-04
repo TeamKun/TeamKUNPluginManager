@@ -1,7 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,9 +21,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DependsCollectStatus
 {
-    private static final Gson gson = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .create();
     /**
      * 割り当てられたインストールIDです。
      */
