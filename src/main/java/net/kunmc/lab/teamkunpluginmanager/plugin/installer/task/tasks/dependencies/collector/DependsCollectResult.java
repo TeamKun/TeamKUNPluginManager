@@ -38,19 +38,14 @@ public class DependsCollectResult extends TaskResult<DependsCollectState, Depend
     @NotNull
     List<String> collectFailedPlugins;
 
-    public DependsCollectResult(boolean success, @NotNull DependsCollectState taskState,
+    public DependsCollectResult(@NotNull DependsCollectState taskState,
                                 @Nullable DependsCollectErrorCause errorCause, @NotNull String targetPlugin,
                                 @NotNull List<DependencyElement> collectedPlugins,
                                 @NotNull List<String> collectFailedPlugins)
     {
-        super(success, taskState, errorCause);
+        super(!collectedPlugins.isEmpty(), taskState, errorCause);
         this.targetPlugin = targetPlugin;
         this.collectedPlugins = collectedPlugins;
         this.collectFailedPlugins = collectFailedPlugins;
-    }
-
-    public boolean hasErrors()
-    {
-        return !collectFailedPlugins.isEmpty();
     }
 }

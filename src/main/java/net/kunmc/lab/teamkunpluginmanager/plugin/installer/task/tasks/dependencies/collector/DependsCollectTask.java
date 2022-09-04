@@ -142,9 +142,8 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         if (!success)
             this.postSignal(new DependsCollectFailedSignal(collectFailedDependencies));
 
-        return new DependsCollectResult(
-                success, this.taskState, errorCause,
-                pluginName, this.status.getCollectedDependencies(), collectFailedDependencies
+        return new DependsCollectResult(this.taskState, errorCause, pluginName,
+                this.status.getCollectedDependencies(), collectFailedDependencies
         );
     }
 
