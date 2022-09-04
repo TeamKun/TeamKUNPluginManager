@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
@@ -21,7 +22,9 @@ import java.util.UUID;
 @Getter
 public class InstallProgress<T extends Enum<T>>
 {
+    @Getter(AccessLevel.NONE)
     private static final HashMap<String, InstallProgress<?>> PROGRESS_CACHES;
+    @Getter(AccessLevel.NONE)
     private static final Path CACHE_DIRECTORY;
 
     @Setter
