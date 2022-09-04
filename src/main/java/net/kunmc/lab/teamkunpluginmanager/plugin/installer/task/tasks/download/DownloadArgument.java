@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,14 +39,4 @@ public class DownloadArgument extends TaskArgument
         this.path = null;
     }
 
-    public DownloadArgument(@NotNull PluginResolveResult pluginResolveResult)
-    {
-        super(pluginResolveResult);
-
-        if (pluginResolveResult.getResolveResult() == null)
-            throw new IllegalArgumentException("Plugin Resolving must be successful");
-
-        this.url = pluginResolveResult.getResolveResult().getDownloadUrl();
-        this.path = null;
-    }
 }

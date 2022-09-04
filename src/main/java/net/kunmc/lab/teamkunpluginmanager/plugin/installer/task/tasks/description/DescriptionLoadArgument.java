@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.descripti
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -24,15 +23,5 @@ public class DescriptionLoadArgument extends TaskArgument
     public DescriptionLoadArgument(@NotNull Path pluginFile)
     {
         this.pluginFile = pluginFile;
-    }
-
-    public DescriptionLoadArgument(DownloadResult previousTaskResult)
-    {
-        super(previousTaskResult);
-
-        if (previousTaskResult.getPath() == null)
-            throw new IllegalArgumentException("DownloadResult.path is null");
-
-        this.pluginFile = previousTaskResult.getPath();
     }
 }

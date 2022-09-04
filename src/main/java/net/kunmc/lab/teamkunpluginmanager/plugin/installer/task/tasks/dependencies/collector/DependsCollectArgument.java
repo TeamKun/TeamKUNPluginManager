@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependenc
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadResult;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -31,19 +30,6 @@ public class DependsCollectArgument extends TaskArgument
      */
     @NotNull
     List<String> alreadyInstalledPlugins;
-
-    public DependsCollectArgument(@NotNull DescriptionLoadResult descriptionLoadResult)
-    {
-        super(descriptionLoadResult);
-
-        if (descriptionLoadResult.getDescription() == null)
-            throw new IllegalStateException("descriptionLoadResult.description is null");
-        this.pluginDescription = descriptionLoadResult.getDescription();
-
-        this.alreadyInstalledPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
-                .map(plugin -> plugin.getDescription().getName())
-                .collect(Collectors.toList());
-    }
 
     public DependsCollectArgument(@NotNull PluginDescriptionFile pluginDescription,
                                   @NotNull List<String> alreadyInstalledPlugins)
