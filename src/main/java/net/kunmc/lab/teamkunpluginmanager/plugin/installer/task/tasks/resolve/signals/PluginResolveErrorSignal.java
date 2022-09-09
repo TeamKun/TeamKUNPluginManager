@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.s
 import lombok.Data;
 import lombok.NonNull;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
 
 /**
  * プラグインの解決に失敗したことを示すシグナルです。

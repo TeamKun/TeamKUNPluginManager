@@ -1,8 +1,8 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.result;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.result;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result;
 
 import java.util.List;
 

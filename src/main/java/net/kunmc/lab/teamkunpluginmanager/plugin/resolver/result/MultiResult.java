@@ -1,7 +1,7 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.result;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
 
 /**
  * 解決結果が複数ある場合に返されるクラス。

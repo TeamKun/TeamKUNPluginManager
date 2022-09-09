@@ -1,14 +1,14 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.URLResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;

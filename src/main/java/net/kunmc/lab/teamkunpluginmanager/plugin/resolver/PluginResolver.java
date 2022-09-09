@@ -1,10 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver;
 
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.PipeResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.URLResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.PipeResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 
 import java.net.MalformedURLException;
 import java.net.URL;

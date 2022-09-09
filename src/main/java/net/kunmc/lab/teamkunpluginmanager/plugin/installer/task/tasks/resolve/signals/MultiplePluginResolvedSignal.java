@@ -2,8 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.s
 
 import lombok.Data;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +28,7 @@ public class MultiplePluginResolvedSignal implements InstallerSignal
 
     /**
      * <b>明示的に指定する</b>プラグインの解決結果です。
-     * これに{@link net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult}を格納すると、使用するプラグインを一意に特定できます.
+     * これに{@link SuccessResult}を格納すると、使用するプラグインを一意に特定できます.
      * {@code null} の場合は、自動的に選択されます。
      */
     @Nullable

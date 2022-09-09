@@ -1,8 +1,8 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.result;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
 
 /**
  * プラグイン解決結果のインタフェース

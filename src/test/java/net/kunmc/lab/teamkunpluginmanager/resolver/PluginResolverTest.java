@@ -1,13 +1,14 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver;
 
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubSuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.GitHubSuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.GitHubURLResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.OmittedGitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.SpigotMCResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import org.junit.Ignore;
 import org.junit.Test;
 

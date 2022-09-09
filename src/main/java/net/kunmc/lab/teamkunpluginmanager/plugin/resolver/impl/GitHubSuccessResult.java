@@ -1,9 +1,9 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
 import lombok.Getter;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MarketplaceResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MarketplaceResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

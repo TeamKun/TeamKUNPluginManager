@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.result;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result;
 
 /**
  * 紹介文付きのリソースの解決結果を格納。

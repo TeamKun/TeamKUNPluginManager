@@ -1,13 +1,13 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 
 public class KnownPluginsResolver implements BaseResolver
 {

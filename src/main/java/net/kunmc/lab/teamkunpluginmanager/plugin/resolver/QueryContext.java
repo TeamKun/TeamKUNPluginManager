@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver;
 
 import lombok.Builder;
 import lombok.Data;

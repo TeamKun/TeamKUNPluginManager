@@ -17,8 +17,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.D
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveTask;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.PluginDescriptionFile;

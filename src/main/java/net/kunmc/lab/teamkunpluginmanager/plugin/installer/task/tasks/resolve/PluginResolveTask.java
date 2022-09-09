@@ -7,11 +7,11 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.PluginResolvingSignal;
-import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

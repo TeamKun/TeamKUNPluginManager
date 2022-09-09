@@ -1,10 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
+package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
-import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
-import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.PipeResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.PipeResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 import org.apache.commons.lang.StringUtils;
 
 public class OmittedGitHubResolver implements BaseResolver

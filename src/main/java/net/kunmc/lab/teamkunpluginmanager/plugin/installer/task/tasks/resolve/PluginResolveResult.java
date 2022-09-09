@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve;
 
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
-import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
