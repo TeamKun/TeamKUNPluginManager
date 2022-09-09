@@ -29,7 +29,7 @@ public class CommandInstallDebug extends CommandBase
         Runner.runAsync(() -> {
             try
             {
-                PluginInstaller installer = new PluginInstaller(new DebugSignalHandler(terminal));
+                PluginInstaller installer = new PluginInstaller(DebugSignalHandler.toManager(terminal));
 
                 InstallResult<InstallTasks> installResult = installer.execute(query);
 

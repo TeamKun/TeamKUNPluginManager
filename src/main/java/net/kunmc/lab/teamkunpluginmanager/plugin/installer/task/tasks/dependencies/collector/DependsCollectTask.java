@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
@@ -19,6 +18,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.Pl
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -50,12 +50,12 @@ import java.util.stream.Collectors;
  */
 public class DependsCollectTask extends InstallTask<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
-    private final InstallerSignalHandler signalHandler;
+    private final SignalHandleManager signalHandler;
     private final DependsCollectStatus status;
 
     private DependsCollectState taskState;
 
-    public DependsCollectTask(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
+    public DependsCollectTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

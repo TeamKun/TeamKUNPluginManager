@@ -6,24 +6,24 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallR
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskChain;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
+public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>  // TODO: Eなんこれ?
 {
     @Getter
     protected final InstallProgress<P> progress;
-    protected final InstallerSignalHandler signalHandler;
+    protected final SignalHandleManager signalHandler;
 
-    public AbstractInstaller(InstallerSignalHandler signalHandler) throws IOException
+    public AbstractInstaller(SignalHandleManager signalHandler) throws IOException
     {
         this.progress = InstallProgress.of(signalHandler, null);
         this.signalHandler = signalHandler;

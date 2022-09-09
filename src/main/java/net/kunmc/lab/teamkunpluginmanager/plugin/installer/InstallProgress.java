@@ -6,6 +6,7 @@ import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectStatus;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -77,7 +78,7 @@ public class InstallProgress<T extends Enum<T>>
     /**
      * {@link InstallerSignal} を受け取るためのリスナーです。
      */
-    private final InstallerSignalHandler signalHandler;
+    private final SignalHandleManager signalHandler;
     /**
      * 依存関係の解決の状態を表します。
      */
@@ -88,7 +89,7 @@ public class InstallProgress<T extends Enum<T>>
     @Setter
     private T currentTask;
 
-    private InstallProgress(@NotNull InstallerSignalHandler signalHandler, @Nullable String id) throws IOException, SecurityException
+    private InstallProgress(@NotNull SignalHandleManager signalHandler, @Nullable String id) throws IOException, SecurityException
     {
         this.signalHandler = signalHandler;
 
@@ -117,14 +118,14 @@ public class InstallProgress<T extends Enum<T>>
     /**
      * このインスタンスを取得します。
      *
-     * @param signalHandler インストールに使用する {@link InstallerSignalHandler}
+     * @param signalHandler インストールに使用する {@link SignalHandleManager}
      * @param id            インストールに割り当てる一意のID
      * @param <P>           インストールの進捗状況の型
      * @return インスタンス
      * @throws IOException       ディレクトリの作成に失敗した場合
      * @throws SecurityException ディレクトリの作成に失敗した場合
      */
-    public static <P extends Enum<P>> InstallProgress<P> of(@NotNull InstallerSignalHandler signalHandler,
+    public static <P extends Enum<P>> InstallProgress<P> of(@NotNull SignalHandleManager signalHandler,
                                                             @Nullable String id) throws IOException, SecurityException
     {
         if (id == null)

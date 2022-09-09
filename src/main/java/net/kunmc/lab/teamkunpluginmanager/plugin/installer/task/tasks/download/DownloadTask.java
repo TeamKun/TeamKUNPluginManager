@@ -1,12 +1,12 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download;
 
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadStartingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadSucceedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.DownloadProgress;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
@@ -26,7 +26,7 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 
     private DownloadState taskState;
 
-    public DownloadTask(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
+    public DownloadTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

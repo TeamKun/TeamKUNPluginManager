@@ -6,10 +6,11 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -22,7 +23,7 @@ import java.util.Collection;
 import java.util.Map;
 
 @AllArgsConstructor
-public class DebugSignalHandler implements InstallerSignalHandler
+public class DebugSignalHandler
 {
     private static final int MAX_INDENT = 5;
 
@@ -234,8 +235,16 @@ public class DebugSignalHandler implements InstallerSignalHandler
         varDump(o, terminal, 0, false);
     }
 
-    @Override
-    public <T extends InstallerSignal> void handleSignal(@NotNull InstallProgress<?> installProgress, @NotNull T signal)
+    public static SignalHandleManager toManager(Terminal terminal)
+    {
+        SignalHandleManager signalHandleManager = new SignalHandleManager();
+        signalHandleManager.register(new DebugSignalHandler(terminal));
+
+        return signalHandleManager;
+    }
+
+    @SignalHandler
+    public void handleAll(@NotNull InstallProgress<?> installProgress, InstallerSignal signal)
     {
         if (!(signal instanceof DownloadProgressSignal))
             printSignal(signal, terminal);

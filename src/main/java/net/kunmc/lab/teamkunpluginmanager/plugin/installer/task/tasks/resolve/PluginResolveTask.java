@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve;
 
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
@@ -12,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +29,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
 
     private PluginResolveState taskState;
 
-    public PluginResolveTask(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
+    public PluginResolveTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

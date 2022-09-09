@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.SearchingPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
@@ -13,6 +12,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependenci
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.ReversedCollector;
 import org.bukkit.Bukkit;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, UnInstallTasks>
 {
-    public PluginUninstaller(InstallerSignalHandler signalHandler) throws IOException
+    public PluginUninstaller(SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
     }

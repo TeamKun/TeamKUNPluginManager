@@ -4,12 +4,12 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -78,7 +78,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
     private UnInstallState taskState;
 
-    public UnInstallTask(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
+    public UnInstallTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

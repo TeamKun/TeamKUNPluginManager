@@ -32,7 +32,7 @@ public class CommandUninstallDebug extends CommandBase
         Runner.runAsync(() -> {
             try
             {
-                PluginUninstaller installer = new PluginUninstaller(new DebugSignalHandler(terminal));
+                PluginUninstaller installer = new PluginUninstaller(DebugSignalHandler.toManager(terminal));
 
                 InstallResult<UnInstallTasks> installResult = installer.execute(query);
 

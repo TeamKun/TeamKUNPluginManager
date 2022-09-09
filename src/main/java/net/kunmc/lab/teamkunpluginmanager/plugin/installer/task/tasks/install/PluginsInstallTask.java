@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginEnablingSignal;
@@ -12,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.si
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull InstallProgress<?> progress, @NotNull InstallerSignalHandler signalHandler)
+    public PluginsInstallTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

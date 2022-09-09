@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task;
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,7 +24,7 @@ public abstract class InstallTask<A extends TaskArgument, R extends TaskResult<?
      * タスクからスローされるシグナルを受け取るハンドラーです。
      */
     @NotNull
-    private final InstallerSignalHandler signalHandler;
+    private final SignalHandleManager signalHandler;
 
     /**
      * タスクを実行します。

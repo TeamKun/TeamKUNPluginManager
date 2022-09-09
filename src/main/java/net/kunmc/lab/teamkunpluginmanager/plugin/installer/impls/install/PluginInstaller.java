@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
@@ -23,6 +22,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.Pl
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -49,7 +49,7 @@ import java.util.List;
  */
 public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallTasks>
 {
-    public PluginInstaller(@NotNull InstallerSignalHandler signalHandler) throws IOException
+    public PluginInstaller(@NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
     }
