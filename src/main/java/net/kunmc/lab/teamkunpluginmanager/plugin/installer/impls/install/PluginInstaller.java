@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectArgument;
@@ -56,7 +57,7 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
     @Override
     @SuppressWarnings("rawtypes")
-    public InstallResult<InstallTasks> execute(@NotNull String query)
+    public InstallResult<InstallTasks> execute(@NotNull String query) throws TaskFailedException
     {
         Path pluginFilePath;
         PluginDescriptionFile pluginDescription;
@@ -80,9 +81,6 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
                             return new DescriptionLoadArgument(result.getPath());
                         })
                         .submitAll(new PluginResolveArgument(query));
-
-        if (!pluginDescriptionResult.isSuccess())
-            return handleTaskError(pluginDescriptionResult);
 
         DescriptionLoadResult descriptionLoadResult = (DescriptionLoadResult) pluginDescriptionResult;
 
@@ -145,9 +143,6 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
                         .submitAll(new DependsCollectArgument(pluginDescription));
 
-        if (!dependsComputeOrderResult.isSuccess())
-            return handleTaskError(dependsComputeOrderResult);
-
         dependenciesLoadOrder = ((DependsComputeOrderResult) dependsComputeOrderResult).getOrder();
         // endregion
 
@@ -157,9 +152,6 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
                 this.submitter(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
                         .submitAll(new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, dependenciesLoadOrder));
-
-        if (!pluginsInstallResult.isSuccess())
-            return handleTaskError(pluginDescriptionResult);
         // endregion
 
         if (replacePlugin)

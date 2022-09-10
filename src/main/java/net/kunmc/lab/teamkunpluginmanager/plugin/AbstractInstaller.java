@@ -10,6 +10,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskError
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskChain;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +35,19 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         this.signalHandler.handleSignal(this.progress, signal);
     }
 
-    public abstract InstallResult<P> execute(@NotNull String query) throws IOException;
+    protected abstract InstallResult<P> execute(@NotNull String query) throws IOException, TaskFailedException;
+
+    public InstallResult<P> run(@NotNull String query) throws IOException
+    {
+        try
+        {
+            return this.execute(query);
+        }
+        catch (TaskFailedException e)
+        {
+            return this.handleTaskError(e.getResult());
+        }
+    }
 
     @NotNull
     protected InstallResult<P> success()
@@ -56,7 +69,7 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
 
     @NotNull
     @SuppressWarnings("rawtypes")
-    protected InstallResult<P> handleTaskError(@NotNull TaskResult result)
+    private InstallResult<P> handleTaskError(@NotNull TaskResult result)
     {
         if (result.getErrorCause() != null)
             return this.error(result.getErrorCause(), result.getState());

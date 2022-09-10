@@ -62,7 +62,7 @@ public class InstallManager
         PluginInstaller installer = new PluginInstaller(signalHandleManager);
         runningInstall = installer.getProgress();
 
-        installer.execute(query);
+        installer.run(query);
     }
 
     /**
@@ -80,6 +80,6 @@ public class InstallManager
         PluginUninstaller uninstaller = new PluginUninstaller(signalHandleManager);
         runningInstall = uninstaller.getProgress();
 
-        uninstaller.execute(query);
+        uninstaller.run(query);
     }
 }

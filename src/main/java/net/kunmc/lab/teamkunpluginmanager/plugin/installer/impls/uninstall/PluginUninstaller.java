@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.SearchingPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
@@ -46,7 +47,7 @@ public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, Un
     }
 
     @Override
-    public InstallResult<UnInstallTasks> execute(@NotNull String query)
+    public InstallResult<UnInstallTasks> execute(@NotNull String query) throws TaskFailedException
     {
         List<Plugin> plugins = new ArrayList<>();
         // region Search plugin
@@ -132,10 +133,6 @@ public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, Un
                             return new UnInstallArgument(orderedPlugins);
                         })
                         .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
-
-        if (!uninstallResult.isSuccess())
-            return this.handleTaskError(uninstallResult);
-
         // endregion
 
         return this.success();

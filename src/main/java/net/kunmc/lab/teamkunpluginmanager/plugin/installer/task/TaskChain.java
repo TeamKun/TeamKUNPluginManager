@@ -109,15 +109,19 @@ public class TaskChain<
      *
      * @param argument タスクの引数
      * @return タスクの結果
+     * @throws TaskFailedException タスクの実行に失敗した場合
      */
-    public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskArgument argument)
+    public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskArgument argument) throws TaskFailedException
     {
         try
         {
             this.installer.getProgress().setCurrentTask(this.installerState);
             R result = this.task.runTask((TA) argument);
 
-            if (result.isSuccess() && this.next != null)
+            if (!result.isSuccess())
+                throw new TaskFailedException(result);
+
+            if (this.next != null)
                 return this.next.submitFromThis(result);
             else
                 return result;
@@ -133,8 +137,9 @@ public class TaskChain<
      *
      * @param taskResult 前のタスクの結果
      * @return タスクの結果
+     * @throws TaskFailedException タスクの実行に失敗した場合
      */
-    public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskResult<?, ?> taskResult)
+    public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskResult<?, ?> taskResult) throws TaskFailedException
     {
         if (this.argumentBuilder == null)
             throw new IllegalStateException("No argument builder defined to build argument from parent result");
@@ -144,7 +149,10 @@ public class TaskChain<
             this.installer.getProgress().setCurrentTask(this.installerState);
             R result = this.task.runTask(this.argumentBuilder.apply((PR) taskResult));
 
-            if (result.isSuccess() && this.next != null)
+            if (!result.isSuccess())
+                throw new TaskFailedException(result);
+
+            if (this.next != null)
                 return this.next.submitFromThis(result);
             else
                 return result;
@@ -160,8 +168,10 @@ public class TaskChain<
      *
      * @param argument タスクの引数
      * @return タスクの結果
+     * @throws TaskFailedException   タスクの実行に失敗した場合
+     * @throws IllegalStateException タスクチェーンが設定されていない場合
      */
-    public @NotNull TaskResult<?, ?> submitAll(@NotNull TaskArgument argument)
+    public @NotNull TaskResult<?, ?> submitAll(@NotNull TaskArgument argument) throws TaskFailedException, IllegalStateException
     {
         if (this.first == null)
             throw new IllegalStateException("No task chain defined");
