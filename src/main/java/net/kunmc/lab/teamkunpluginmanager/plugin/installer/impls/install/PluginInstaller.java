@@ -7,11 +7,9 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadResult;
@@ -33,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * プラグインを新規にインストールするインストーラーの実装です。
@@ -135,23 +132,16 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
         this.progress.addPending(pluginDescription.getName());
 
 
-        List<DependencyElement> dependenciesLoadOrder;
         // region Do collect dependencies, compute dependencies load order and install them.
-        TaskResult dependsComputeOrderResult =
+        TaskResult installResult =
                 this.submitter(InstallTasks.COLLECTING_DEPENDENCIES, new DependsCollectTask(progress, signalHandler))
                         .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(progress, signalHandler))
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
+                        .then(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
+                        .bridgeArgument(result -> new PluginsInstallArgument(
+                                pluginFilePath, pluginDescription, result.getOrder()
+                        ))
                         .submitAll(new DependsCollectArgument(pluginDescription));
-
-        dependenciesLoadOrder = ((DependsComputeOrderResult) dependsComputeOrderResult).getOrder();
-        // endregion
-
-        // region Install plugins.
-
-        TaskResult pluginsInstallResult =
-                this.submitter(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
-                        .submitAll(new PluginsInstallArgument(
-                                pluginFilePath, pluginDescription, dependenciesLoadOrder));
         // endregion
 
         if (replacePlugin)
