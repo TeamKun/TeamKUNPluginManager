@@ -96,14 +96,16 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
                 signalValue = e;
             }
 
-            DownloadErrorSignal error = new DownloadErrorSignal(this.randomDownloadID, cause, signalValue);
+            DownloadErrorSignal error = new DownloadErrorSignal(this.randomDownloadID, url, cause, signalValue);
             this.postSignal(error);
 
             return new DownloadResult(false, this.taskState, url, path, -1, this.randomDownloadID, cause);
         }
         catch (Exception e)
         {
-            this.postSignal(new DownloadErrorSignal(this.randomDownloadID, DownloadErrorCause.UNKNOWN_ERROR, e));
+            this.postSignal(new DownloadErrorSignal(this.randomDownloadID, url,
+                    DownloadErrorCause.UNKNOWN_ERROR, e
+            ));
 
             return new DownloadResult(false, this.taskState, url, path, -1, this.randomDownloadID,
                     DownloadErrorCause.UNKNOWN_ERROR

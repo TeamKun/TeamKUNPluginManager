@@ -14,6 +14,12 @@ import org.jetbrains.annotations.Nullable;
 public class DownloadErrorSignal extends DownloadSignal
 {
     /**
+     * 失敗したURLです。
+     */
+    @NotNull
+    String url;
+
+    /**
      * 失敗した理由です。
      */
     @NotNull
@@ -27,9 +33,10 @@ public class DownloadErrorSignal extends DownloadSignal
     @Nullable
     Object value;
 
-    public DownloadErrorSignal(@NotNull String downloadId, @NotNull DownloadErrorCause cause, @Nullable Object value)
+    public DownloadErrorSignal(@NotNull String downloadId, @NotNull String url, @NotNull DownloadErrorCause cause, @Nullable Object value)
     {
         super(downloadId);
+        this.url = url;
         this.cause = cause;
         this.value = value;
     }
