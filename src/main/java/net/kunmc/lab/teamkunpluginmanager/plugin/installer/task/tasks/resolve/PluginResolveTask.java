@@ -44,6 +44,9 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
         MultiplePluginResolvedSignal signal = new MultiplePluginResolvedSignal(query, results);
         this.postSignal(signal);
 
+        if (signal.isCancel())
+            return null;
+
         if (signal.getSpecifiedResult() != null)
             return signal.getSpecifiedResult(); // Plugin actually resolved by SignalHandler.
 
@@ -83,6 +86,11 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
 
             MultiResult multiResult = (MultiResult) queryResolveResult;
             ResolveResult actualResolveResult = resolveMultipleResults(arguments.getQuery(), multiResult);
+
+            if (actualResolveResult == null)
+                return new PluginResolveResult(false, this.taskState,
+                        PluginResolveErrorCause.CANCELLED, null
+                );
 
             if (actualResolveResult instanceof ErrorResult)
             {

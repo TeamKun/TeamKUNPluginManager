@@ -33,4 +33,9 @@ public class MultiplePluginResolvedSignal implements InstallerSignal
      */
     @Nullable
     private ResolveResult specifiedResult;
+
+    /**
+     * インストールをキャンセルするかどうかを示すフラグです。
+     */
+    private boolean cancel;
 }

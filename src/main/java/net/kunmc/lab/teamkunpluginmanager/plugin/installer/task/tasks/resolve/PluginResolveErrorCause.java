@@ -14,5 +14,9 @@ public enum PluginResolveErrorCause
     /**
      * {@link ErrorResult} が サーバまたはプラグインリゾルバから返されたことを示します。
      */
-    GOT_ERROR_RESULT
+    GOT_ERROR_RESULT,
+    /**
+     * ユーザがキャンセルしたことを示します。
+     */
+    CANCELLED,
 }
