@@ -17,15 +17,15 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>  // TODO: Eなんこれ?
+public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
 {
     @Getter
-    protected final InstallProgress<P> progress;
+    protected final InstallProgress<P, AbstractInstaller<E, P>> progress;
     protected final SignalHandleManager signalHandler;
 
     public AbstractInstaller(SignalHandleManager signalHandler) throws IOException
     {
-        this.progress = InstallProgress.of(signalHandler, null);
+        this.progress = InstallProgress.of(this, signalHandler, null);
         this.signalHandler = signalHandler;
     }
 

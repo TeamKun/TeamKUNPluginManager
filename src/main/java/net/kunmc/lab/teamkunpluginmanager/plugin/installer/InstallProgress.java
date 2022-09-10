@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
@@ -26,12 +27,17 @@ import java.util.UUID;
  * @param <T> インストーラの状態の型
  */
 @Getter
-public class InstallProgress<T extends Enum<T>>
+public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, T>>
 {
     @Getter(AccessLevel.NONE)
-    private static final HashMap<String, InstallProgress<?>> PROGRESS_CACHES;
+    private static final HashMap<String, InstallProgress<?, ?>> PROGRESS_CACHES;
     @Getter(AccessLevel.NONE)
     private static final Path CACHE_DIRECTORY;
+
+    /**
+     * インストーラです。
+     */
+    private final I installer;
 
     /**
      * アップグレードされたプラグインの名前です。
@@ -89,8 +95,17 @@ public class InstallProgress<T extends Enum<T>>
     @Setter
     private T currentTask;
 
-    private InstallProgress(@NotNull SignalHandleManager signalHandler, @Nullable String id) throws IOException, SecurityException
+    /**
+     * インストールが終了したかどうかを表します。
+     */
+    private boolean finished;
+
+    private InstallProgress(@NotNull I installer,
+                            @NotNull SignalHandleManager signalHandler,
+                            @Nullable String id)
+            throws IOException, SecurityException
     {
+        this.installer = installer;
         this.signalHandler = signalHandler;
 
         this.upgraded = new ArrayList<>();
@@ -112,6 +127,8 @@ public class InstallProgress<T extends Enum<T>>
 
         this.dependsCollectStatus = new DependsCollectStatus(this);
 
+        this.finished = false;
+
         PROGRESS_CACHES.put(this.getInstallActionID(), this);
     }
 
@@ -125,13 +142,16 @@ public class InstallProgress<T extends Enum<T>>
      * @throws IOException       ディレクトリの作成に失敗した場合
      * @throws SecurityException ディレクトリの作成に失敗した場合
      */
-    public static <P extends Enum<P>> InstallProgress<P> of(@NotNull SignalHandleManager signalHandler,
-                                                            @Nullable String id) throws IOException, SecurityException
+    public static <P extends Enum<P>, PI extends AbstractInstaller<?, P>> InstallProgress<P, PI> of(
+            @NotNull PI installer,
+            @NotNull SignalHandleManager signalHandler,
+            @Nullable String id)
+            throws IOException, SecurityException
     {
         if (id == null)
-            return new InstallProgress<>(signalHandler, null);
+            return new InstallProgress<>(installer, signalHandler, null);
         else
-            return (InstallProgress<P>) PROGRESS_CACHES.get(id);
+            return (InstallProgress<P, PI>) PROGRESS_CACHES.get(id);
     }
 
     private void removeFromAll(@NotNull String name)
@@ -222,5 +242,7 @@ public class InstallProgress<T extends Enum<T>>
         }
 
         PROGRESS_CACHES.remove(this.getInstallActionID());
+
+        this.finished = true;
     }
 }

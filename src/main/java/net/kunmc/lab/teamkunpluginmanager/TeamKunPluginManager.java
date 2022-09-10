@@ -20,6 +20,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.BruteforceGitHubResolver;
@@ -50,6 +51,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private Session session;
     private PluginResolver resolver;
     private CommandManager commandManager;
+    private InstallManager installManager;
 
     private static void setupDependencyTree(TeamKunPluginManager plugin)
     {
@@ -131,6 +133,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         pluginConfig = getConfig();
         resolver = new PluginResolver();
         commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+        installManager = new InstallManager(this);
         new PluginLoader(); // Initialize plugin loader
 
         registerCommands(commandManager);

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class SignalHandleManager
 {
-    private final List<SignalHandlerList<? extends InstallerSignal>> handlerLists;
+    private final ArrayList<SignalHandlerList<? extends InstallerSignal>> handlerLists;
 
     public SignalHandleManager()
     {
@@ -26,7 +26,7 @@ public class SignalHandleManager
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void invokeHandler(@NotNull InstallProgress<?> installProgress, SignalHandlerList handler,
+    private static void invokeHandler(@NotNull InstallProgress<?, ?> installProgress, SignalHandlerList handler,
                                       InstallerSignal signal)
     {
         if (handler.isSignalType(signal.getClass()))
@@ -74,9 +74,21 @@ public class SignalHandleManager
      * @param installProgress インストールの進捗
      * @param signal          シグナル
      */
-    public void handleSignal(@NotNull InstallProgress<?> installProgress, InstallerSignal signal)
+    public void handleSignal(@NotNull InstallProgress<?, ?> installProgress, InstallerSignal signal)
     {
         for (SignalHandlerList<? extends InstallerSignal> handlerList : handlerLists)
             invokeHandler(installProgress, handlerList, signal);
+    }
+
+    /**
+     * このインスタンスをコピーします。
+     *
+     * @return コピーされたインスタンス
+     */
+    public SignalHandleManager copy()
+    {
+        SignalHandleManager manager = new SignalHandleManager();
+        manager.handlerLists.addAll(handlerLists);
+        return manager;
     }
 }
