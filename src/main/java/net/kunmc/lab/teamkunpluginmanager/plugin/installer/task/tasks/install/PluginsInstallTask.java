@@ -51,7 +51,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public PluginsInstallTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

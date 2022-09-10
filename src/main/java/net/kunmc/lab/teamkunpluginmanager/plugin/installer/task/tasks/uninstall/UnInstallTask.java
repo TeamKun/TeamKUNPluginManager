@@ -78,7 +78,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
     private UnInstallState taskState;
 
-    public UnInstallTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public UnInstallTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

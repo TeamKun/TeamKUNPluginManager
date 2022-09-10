@@ -29,7 +29,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
 
     private PluginResolveState taskState;
 
-    public PluginResolveTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public PluginResolveTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

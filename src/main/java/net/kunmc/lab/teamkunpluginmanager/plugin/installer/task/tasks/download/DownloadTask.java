@@ -26,7 +26,7 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 
     private DownloadState taskState;
 
-    public DownloadTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public DownloadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

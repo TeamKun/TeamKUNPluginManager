@@ -55,7 +55,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
     private DependsCollectState taskState;
 
-    public DependsCollectTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public DependsCollectTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

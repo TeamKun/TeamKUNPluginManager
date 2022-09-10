@@ -19,7 +19,7 @@ public class DescriptionLoadTask extends InstallTask<DescriptionLoadArgument, De
 {
     private DescriptionLoadState taskState;
 
-    public DescriptionLoadTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public DescriptionLoadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
         this.taskState = DescriptionLoadState.INITIALIZED;

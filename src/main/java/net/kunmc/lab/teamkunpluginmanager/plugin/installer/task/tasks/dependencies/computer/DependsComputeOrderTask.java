@@ -27,7 +27,7 @@ public class DependsComputeOrderTask extends InstallTask<DependsComputeOrderArgu
 {
     private DependsComputeOrderState state;
 
-    public DependsComputeOrderTask(@NotNull InstallProgress<?> progress, @NotNull SignalHandleManager signalHandler)
+    public DependsComputeOrderTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 

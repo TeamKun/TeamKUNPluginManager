@@ -19,7 +19,7 @@ public abstract class InstallTask<A extends TaskArgument, R extends TaskResult<?
      * インストールごとに生成される、インストール進捗状況です。
      */
     @NotNull
-    protected final InstallProgress<?> progress;
+    protected final InstallProgress<?, ?> progress;
     /**
      * タスクからスローされるシグナルを受け取るハンドラーです。
      */

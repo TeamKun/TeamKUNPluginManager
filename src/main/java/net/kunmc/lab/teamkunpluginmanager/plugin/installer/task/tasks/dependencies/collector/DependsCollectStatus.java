@@ -41,7 +41,7 @@ public class DependsCollectStatus
      *
      * @param progress InstallProgress
      */
-    public DependsCollectStatus(InstallProgress<?> progress)
+    public DependsCollectStatus(InstallProgress<?, ?> progress)
     {
         this.installId = progress.getInstallActionID();
         this.enumeratedDependencies = new HashMap<>();

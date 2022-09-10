@@ -26,9 +26,9 @@ public class InstallResult<P extends Enum<P>>
      * インストールの進捗状況です。
      */
     @Getter
-    private final InstallProgress<P> progress;
+    private final InstallProgress<P, ?> progress;
 
-    public InstallResult(boolean success, InstallProgress<P> progress)
+    public InstallResult(boolean success, InstallProgress<P, ?> progress)
     {
         progress.finish();
         this.success = success;

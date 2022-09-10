@@ -54,7 +54,7 @@ class SignalHandlerList<T extends InstallerSignal>
         }
     }
 
-    void onSignal(InstallProgress<?> installProgress, T signal)
+    void onSignal(InstallProgress<?, ?> installProgress, T signal)
     {
         synchronized (handlers)
         {
