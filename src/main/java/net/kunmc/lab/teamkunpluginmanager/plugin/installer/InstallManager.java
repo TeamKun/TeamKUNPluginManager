@@ -49,13 +49,15 @@ public class InstallManager
      * インストールを実行します。
      *
      * @param query インストールするプラグインのクエリ
-     * @throws IllegalStateException インストールが進行中の場合
+     * @throws IllegalStateException インストールが進行中の場合または GitHub にログインしていない場合
      * @throws IOException           予期しない例外が発生した場合
      */
     public void runInstall(@NotNull String query) throws IllegalStateException, IOException
     {
         if (isRunning())
             throw new IllegalStateException("他のインストールが実行中です。");
+        if (!this.pluginManager.isTokenAvailable())
+            throw new IllegalStateException("GitHubにログインしていません。");
 
         PluginInstaller installer = new PluginInstaller(signalHandleManager);
         runningInstall = installer.getProgress();
