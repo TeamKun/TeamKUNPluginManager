@@ -35,12 +35,13 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
         this.taskState = DownloadState.INITIALIZED;
     }
 
-    private void onDownload(DownloadProgress downloadProgress)
+    private void onDownload(DownloadProgress downloadProgress, String url)
     {
         this.taskState = DownloadState.DOWNLOADING;
 
         this.postSignal(new DownloadProgressSignal(
                 this.randomDownloadID,
+                url,
                 downloadProgress.getTotalSize(),
                 downloadProgress.getDownloaded(),
                 downloadProgress.getPercentage()
@@ -68,7 +69,7 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 
         try
         {
-            long size = Requests.downloadFile(RequestMethod.GET, url, path, this::onDownload);
+            long size = Requests.downloadFile(RequestMethod.GET, url, path, progress -> onDownload(progress, url));
 
             this.postSignal(new DownloadSucceedSignal(this.randomDownloadID, path, size));
 

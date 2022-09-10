@@ -12,6 +12,12 @@ import org.jetbrains.annotations.NotNull;
 public class DownloadProgressSignal extends DownloadSignal
 {
     /**
+     * ダウンロードしようとしているファイルのURLです。
+     */
+    @NotNull
+    String url;
+
+    /**
      * ダウンロードしようとしているファイルのサイズです。
      */
     long totalSize;
@@ -26,9 +32,10 @@ public class DownloadProgressSignal extends DownloadSignal
      */
     double percentage;
 
-    public DownloadProgressSignal(@NotNull String downloadId, long totalSize, long downloaded, double percentage)
+    public DownloadProgressSignal(@NotNull String downloadId, String url, long totalSize, long downloaded, double percentage)
     {
         super(downloadId);
+        this.url = url;
         this.totalSize = totalSize;
         this.downloaded = downloaded;
         this.percentage = percentage;
