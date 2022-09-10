@@ -14,6 +14,12 @@ import java.nio.file.Path;
 public class DownloadResult extends TaskResult<DownloadState, DownloadErrorCause>
 {
     /**
+     * ダウンロード元のURLです。
+     */
+    @NotNull
+    private final String url;
+
+    /**
      * ダウンロード先のファイルのパスです。
      */
     @Nullable
@@ -29,18 +35,19 @@ public class DownloadResult extends TaskResult<DownloadState, DownloadErrorCause
     @NotNull
     private final String downloadID;
 
-    public DownloadResult(boolean success, @NotNull DownloadState taskState, @Nullable Path path,
+    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @Nullable Path path,
                           long totalSize, @NotNull String downloadID, @Nullable DownloadErrorCause errorCause)
     {
         super(success, taskState, errorCause);
+        this.url = url;
         this.path = path;
         this.totalSize = totalSize;
         this.downloadID = downloadID;
     }
 
-    public DownloadResult(boolean success, @NotNull DownloadState taskState, @Nullable Path path, long totalSize,
+    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @Nullable Path path, long totalSize,
                           @NotNull String downloadID)
     {
-        this(success, taskState, path, totalSize, downloadID, null);
+        this(success, taskState, url, path, totalSize, downloadID, null);
     }
 }
