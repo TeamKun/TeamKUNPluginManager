@@ -1,12 +1,24 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals;
 
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * 依存関係のダウンロードに失敗したことを示すシグナルです。
  */
 public class DependencyDownloadFailedSignal extends DependencyCollectFailedSignalBase
 {
-    public DependencyDownloadFailedSignal(String failedDependency)
+    /**
+     * ダウンロード元のURLです。
+     */
+    @NotNull
+    @Getter
+    private final String url;
+
+    public DependencyDownloadFailedSignal(@NotNull String failedDependency, @NotNull String url)
     {
         super(failedDependency);
+
+        this.url = url;
     }
 }

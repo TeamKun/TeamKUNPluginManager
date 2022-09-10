@@ -231,7 +231,8 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
         downloadResults.entrySet().stream()
                 .filter(entry -> !entry.getValue().isSuccess())
-                .forEach(entry -> this.postSignal(new DependencyDownloadFailedSignal(entry.getKey())));
+                .forEach(entry -> this.postSignal(
+                        new DependencyDownloadFailedSignal(entry.getKey(), entry.getValue().getUrl())));
 
         return new HashMap<>(downloadResults);
     }
