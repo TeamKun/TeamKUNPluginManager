@@ -9,6 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependenci
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependencyNameMismatchSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependencyResolveFailedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependsCollectFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependsDownloadFinishedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependsEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadResult;
@@ -234,7 +235,11 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
                 .forEach(entry -> this.postSignal(
                         new DependencyDownloadFailedSignal(entry.getKey(), entry.getValue().getUrl())));
 
-        return new HashMap<>(downloadResults);
+        HashMap<String, DownloadResult> downloadResultsCopy = new HashMap<>(downloadResults);
+
+        this.postSignal(new DependsDownloadFinishedSignal((HashMap<String, DownloadResult>) downloadResults));
+
+        return new HashMap<>(downloadResultsCopy);
     }
 
     private PluginResolveResult passResolver(@NotNull String dependency)
