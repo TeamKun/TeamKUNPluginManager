@@ -2,10 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals.DependsDownloadFinishedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.signals.LoadPluginDescriptionSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.ChatColor;
@@ -19,11 +18,9 @@ public class DownloadingSignalHandler
     private String currentDownload;
 
     // Ignore DownloadStartingSignal
-    private long downloads;
     private long downloadTotalSize;
     private long downloadStarted;
     private Progressbar downloadProgressBar;
-    private boolean mainDescriptionLoaded;
 
     public DownloadingSignalHandler(Terminal terminal)
     {
@@ -33,7 +30,6 @@ public class DownloadingSignalHandler
     private void startDownloads(String id)
     {
         this.currentDownload = id;
-        this.downloads = 0;
         this.downloadTotalSize = 0;
         this.downloadStarted = System.currentTimeMillis();
         this.downloadProgressBar = terminal.createProgressbar("ダウンロード");
@@ -43,7 +39,7 @@ public class DownloadingSignalHandler
     private void addDownloadArtifact(String url, long size)
     {
         this.downloadTotalSize += size;
-        terminal.writeLine(ChatColor.GREEN + "取得:" + ++downloads + " " + url + " [" + PluginUtil.getFileSizeString(size) + "]");
+        terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + PluginUtil.getFileSizeString(size) + "]");
     }
 
     private void endDownloads()
@@ -73,38 +69,21 @@ public class DownloadingSignalHandler
             this.addDownloadArtifact(signal.getUrl(), signal.getTotalSize());
         }
 
-        if (!currentDownload.equals(signal.getDownloadId()))
-            this.addDownloadArtifact(signal.getUrl(), signal.getTotalSize());
-
         double percent = (double) signal.getDownloaded() / signal.getTotalSize();
         this.downloadProgressBar.setProgress((int) (percent * 100));  // max 100
     }
 
     @SignalHandler
-    public void onDownloadsEnd(LoadPluginDescriptionSignal signal)
-    {
-        // Typically, this signal is called after all downloads are finished.
-        // But, first time, this signal is called after one download to resolve dependencies.
-        // So, we need to handle first time only.
-
-        if (mainDescriptionLoaded)
-            return;
-
-        mainDescriptionLoaded = true;
-        this.endDownloads();
-    }
-
-    @SignalHandler
-    public void onDownloadsEnd(DependsDownloadFinishedSignal signal)
-    {
-        this.endDownloads();
-    }
-
-    @SignalHandler
     public void onDownloadFailed(DownloadErrorSignal signal)
     {
-        terminal.writeLine(String.format(ChatColor.RED + "失敗:%d %s: %s(%s)",
-                this.downloads, signal.getUrl(), signal.getCause(), signal.getValue()
+        terminal.writeLine(String.format(ChatColor.RED + "失敗 %s: %s(%s)",
+                signal.getUrl(), signal.getCause(), signal.getValue()
         ));
+    }
+
+    @SignalHandler
+    public void onDownloadFinished(DownloadSucceedSignal signal)
+    {
+        this.endDownloads();
     }
 }
