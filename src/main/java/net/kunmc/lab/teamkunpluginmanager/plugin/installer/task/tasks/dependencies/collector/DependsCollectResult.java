@@ -43,7 +43,7 @@ public class DependsCollectResult extends TaskResult<DependsCollectState, Depend
                                 @NotNull List<DependencyElement> collectedPlugins,
                                 @NotNull List<String> collectFailedPlugins)
     {
-        super(!collectedPlugins.isEmpty(), taskState, errorCause);
+        super(collectFailedPlugins.isEmpty(), taskState, errorCause);
         this.targetPlugin = targetPlugin;
         this.collectedPlugins = collectedPlugins;
         this.collectFailedPlugins = collectFailedPlugins;
