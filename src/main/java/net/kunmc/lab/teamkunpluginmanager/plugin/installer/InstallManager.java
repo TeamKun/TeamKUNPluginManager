@@ -73,7 +73,7 @@ public class InstallManager
         PluginInstaller installer;
         try
         {
-            installer = new PluginInstaller(signalHandleManager);
+            installer = new PluginInstaller(copiedHandleManager);
             runningInstall = installer.getProgress();
 
             installer.run(query);

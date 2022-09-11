@@ -60,7 +60,7 @@ class SignalHandlerList<T extends Signal>
             handlers.forEach(pair -> {
                 try
                 {
-                    pair.getRight().invoke(pair.getLeft(), installProgress, signal);
+                    pair.getRight().invoke(pair.getLeft(), signal);
                 }
                 catch (Exception e)
                 {
