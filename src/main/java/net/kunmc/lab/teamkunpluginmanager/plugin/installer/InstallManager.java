@@ -1,6 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.HeadSignalHandlers;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
@@ -48,16 +50,20 @@ public class InstallManager
     /**
      * インストールを実行します。
      *
-     * @param query インストールするプラグインのクエリ
+     * @param terminal ターミナル
+     * @param query    インストールするプラグインのクエリ
      * @throws IllegalStateException インストールが進行中の場合または GitHub にログインしていない場合
      * @throws IOException           予期しない例外が発生した場合
      */
-    public void runInstall(@NotNull String query) throws IllegalStateException, IOException
+    public void runInstall(@NotNull Terminal terminal, @NotNull String query) throws IllegalStateException, IOException
     {
         if (isRunning())
             throw new IllegalStateException("他のインストールが実行中です。");
         if (!this.pluginManager.isTokenAvailable())
             throw new IllegalStateException("GitHubにログインしていません。");
+
+        SignalHandleManager copiedHandleManager = signalHandleManager.copy();
+        HeadSignalHandlers.getInstallHandlers(terminal).forEach(copiedHandleManager::register);
 
         PluginInstaller installer = new PluginInstaller(signalHandleManager);
         runningInstall = installer.getProgress();
