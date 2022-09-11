@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.commands.signal;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.CheckEnvSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.InstallFinishedSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.ModifySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DependenciesSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DownloadingSignalHandler;
@@ -40,7 +41,8 @@ public class HeadSignalHandlers
     {
         return createHandlersList(
                 new CheckEnvSignalHandler(terminal),
-                new ModifySignalHandler(terminal)
+                new ModifySignalHandler(terminal),
+                new InstallFinishedSignalHandler(terminal)
         );
     }
 

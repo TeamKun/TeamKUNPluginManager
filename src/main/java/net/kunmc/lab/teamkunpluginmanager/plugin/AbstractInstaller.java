@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
@@ -52,19 +53,28 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
     @NotNull
     protected InstallResult<P> success()
     {
-        return new InstallResult<>(true, this.progress);
+        InstallResult<P> result = new InstallResult<>(true, this.progress);
+        this.postSignal(new InstallFinishedSignal(result));
+
+        return result;
     }
 
     public <T extends Enum<T>> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
     {  // TODO: Implement debug mode
-        return new InstallFailedInstallResult<>(this.progress, reason);
+        InstallFailedInstallResult<P, T, ?> result = new InstallFailedInstallResult<>(this.progress, reason);
+        this.postSignal(new InstallFinishedSignal(result));
+
+        return result;
     }
 
     public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
             @NotNull T reason,
             @NotNull S taskStatus)
     {  // TODO: Implement debug mode
-        return new InstallFailedInstallResult<>(this.progress, reason, taskStatus);
+        InstallFailedInstallResult<P, T, S> result = new InstallFailedInstallResult<>(this.progress, reason, taskStatus);
+        this.postSignal(new InstallFinishedSignal(result));
+
+        return result;
     }
 
     @NotNull
