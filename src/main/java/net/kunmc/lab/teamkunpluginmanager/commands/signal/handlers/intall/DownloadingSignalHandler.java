@@ -50,12 +50,15 @@ public class DownloadingSignalHandler
     {
         long elapsedMillis = System.currentTimeMillis() - this.downloadStarted;
         long elapsedSec = elapsedMillis / 1000;
+        if (elapsedSec == 0)
+            elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
         terminal.writeLine(
                 ChatColor.GREEN + PluginUtil.getFileSizeString(this.downloadTotalSize) + " を " +
                         ChatColor.YELLOW + elapsedSec + "秒" +
                         ChatColor.GREEN + "で取得しました (" +
-                        ChatColor.YELLOW + PluginUtil.getFileSizeString(bytesPerSec) + "/s)"
+                        ChatColor.YELLOW + PluginUtil.getFileSizeString(bytesPerSec) + "/s" +
+                        ChatColor.GREEN + ")"
         );
 
         this.currentDownload = null;
