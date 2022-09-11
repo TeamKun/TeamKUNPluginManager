@@ -53,6 +53,14 @@ public class InstallFinishedSignalHandler
         Enum<?> reason = result.getReason();
         Enum<?> taskStatus = result.getTaskStatus();
 
-        terminal.error("インストールは " + progress + " 時に " + reason + " により失敗しました(" + taskStatus + ")");
+
+        String errorMessage = "インストールは %s(%s) 時に %s により失敗しました。";
+
+        terminal.error(String.format(
+                errorMessage,
+                progress,
+                taskStatus,
+                reason
+        ));
     }
 }
