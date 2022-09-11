@@ -50,6 +50,7 @@ public class DependenciesSignalHandler
     public void onDependencyNameMismatch(DependencyNameMismatchSignal signal)
     {
         terminal.error("依存関係の整合性が確認できませんでした: " + signal.getFailedDependency());
+        terminal.info("他のバージョンのプラグインを使用することで解決できる可能性があります。");
     }
 
     @SignalHandler
