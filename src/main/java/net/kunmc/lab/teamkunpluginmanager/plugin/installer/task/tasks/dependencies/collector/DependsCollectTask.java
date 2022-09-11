@@ -107,7 +107,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         // Remove failed dependencies from load description results
         dependsDescriptions.entrySet().removeIf(entry -> entry.getValue() == null);
 
-        dependsDescriptions.entrySet().stream().parallel()
+        dependsDescriptions.entrySet().stream()
                 .filter(entry -> Objects.nonNull(entry.getValue()))
                 .filter(entry -> downloadResults.containsKey(entry.getKey()))
                 .forEach(entry -> {
