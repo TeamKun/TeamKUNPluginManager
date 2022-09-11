@@ -5,13 +5,13 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskChain;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         this.signalHandler = signalHandler;
     }
 
-    protected void postSignal(@NotNull InstallerSignal signal)
+    protected void postSignal(@NotNull Signal signal)
     {
         this.signalHandler.handleSignal(this.progress, signal);
     }

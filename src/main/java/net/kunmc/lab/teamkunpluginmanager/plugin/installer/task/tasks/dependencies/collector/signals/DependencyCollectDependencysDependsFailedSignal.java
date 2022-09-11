@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * 依存関係の依存関係を取得する際に失敗したことを示すシグナルです。
  */
 @Value
-public class DependencyCollectDependencysDependsFailedSignal implements InstallerSignal
+public class DependencyCollectDependencysDependsFailedSignal implements Signal
 {
     /**
      * 対象のプラグインの名前です。

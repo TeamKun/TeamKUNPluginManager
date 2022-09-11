@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * {@link AlreadyInstalledPluginSignal#setReplacePlugin(boolean)} を用いて、既存のプラグインを新規プラグインに置換するかどうかを設定できます。
  */
 @Data
-public class AlreadyInstalledPluginSignal implements InstallerSignal
+public class AlreadyInstalledPluginSignal implements Signal
 {
     /**
      * インストールされたプラグインの種類

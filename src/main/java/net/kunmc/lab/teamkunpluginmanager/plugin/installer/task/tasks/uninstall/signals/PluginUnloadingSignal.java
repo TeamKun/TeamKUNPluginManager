@@ -2,14 +2,14 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * プラグインのアンロードの前後にスローされるシグナルです。
  */
-public class PluginUnloadingSignal implements InstallerSignal
+public class PluginUnloadingSignal implements Signal
 {
     /**
      * アンロードの前にスローされるシグナルです。

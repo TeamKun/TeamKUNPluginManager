@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import java.nio.file.Path;
  * プラグインのインストール中であることを示すシグナルです。
  */
 @Value
-public class PluginInstallingSignal implements InstallerSignal
+public class PluginInstallingSignal implements Signal
 {
     /**
      * 対象のプラグインのパスです。

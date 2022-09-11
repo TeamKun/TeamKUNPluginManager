@@ -1,10 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * 複数のプラグインが解決されたことを示すシグナルです。
  */
 @Data
-public class MultiplePluginResolvedSignal implements InstallerSignal
+public class MultiplePluginResolvedSignal implements Signal
 {
     /**
      * 解決する際に使用されたクエリです。

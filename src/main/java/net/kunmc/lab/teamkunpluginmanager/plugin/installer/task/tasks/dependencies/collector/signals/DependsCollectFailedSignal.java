@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.signals;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * 注意：このシグナルは {@link DependencyCollectFailedSignalBase} とは違い個別には送信されず、依存関係の解決タスク終了後に一度送信されます。
  */
 @Value
-public class DependsCollectFailedSignal implements InstallerSignal
+public class DependsCollectFailedSignal implements Signal
 {
     /**
      * 取得に失敗した依存関係の名前です。

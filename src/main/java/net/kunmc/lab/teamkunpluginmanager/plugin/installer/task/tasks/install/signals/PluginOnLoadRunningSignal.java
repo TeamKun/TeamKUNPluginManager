@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * プラグインの {@link Plugin#onLoad()} の実行の前後にスローされるシグナルです。
  */
 @Data
-public class PluginOnLoadRunningSignal implements InstallerSignal
+public class PluginOnLoadRunningSignal implements Signal
 {
     /**
      * 対象のプラグインです。

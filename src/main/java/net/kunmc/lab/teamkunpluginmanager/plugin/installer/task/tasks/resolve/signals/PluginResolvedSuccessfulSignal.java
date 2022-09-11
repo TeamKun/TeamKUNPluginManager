@@ -1,15 +1,15 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * プラグインが正常に解決されたことを示すシグナルです。
  */
 @Data
-public class PluginResolvedSuccessfulSignal implements InstallerSignal
+public class PluginResolvedSuccessfulSignal implements Signal
 {
     /**
      * 解決する際に使用されたクエリです。

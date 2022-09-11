@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -10,7 +10,7 @@ import java.nio.file.Path;
  * プラグインを、ダウンロードの仮ディレクトリからプラグインディレクトリに移動する際に送信されるシグナルです。
  */
 @Data
-public class PluginRelocatingSignal implements InstallerSignal
+public class PluginRelocatingSignal implements Signal
 {
     /**
      * プラグインのパスです。

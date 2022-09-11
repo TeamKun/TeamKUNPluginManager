@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +34,7 @@ public abstract class InstallTask<A extends TaskArgument, R extends TaskResult<?
      */
     public abstract @NotNull R runTask(@NotNull A arguments);
 
-    protected void postSignal(@NotNull InstallerSignal signal)
+    protected void postSignal(@NotNull Signal signal)
     {
         this.signalHandler.handleSignal(this.progress, signal);
     }

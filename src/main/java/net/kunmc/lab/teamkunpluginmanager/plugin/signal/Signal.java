@@ -1,7 +1,7 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
+package net.kunmc.lab.teamkunpluginmanager.plugin.signal;
 
 /**
- * インストーラまたはタスクからスローされるシグナルです。
+ * インストーラやタスクなどからスローされるシグナルです。
  * シグナルは、主に次のことに使用されます：
  * <ul>
  *     <li>インストールの進捗状況のリアルタイム通知</li>
@@ -11,6 +11,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
  * <p>
  * このシグナルは、フロントエンドとバックエンドの隔離のために作成されました。
  */
-public interface InstallerSignal
+public interface Signal
 {
 }

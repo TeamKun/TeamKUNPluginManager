@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * {@link PluginIsDependencySignal#setForceUninstall(boolean)} (boolean)} を用いて、強制的にアンインストールするかどうかを設定できます。
  */
 @Data
-public class PluginIsDependencySignal implements InstallerSignal
+public class PluginIsDependencySignal implements Signal
 {
     @NotNull
     private final String pluginName;

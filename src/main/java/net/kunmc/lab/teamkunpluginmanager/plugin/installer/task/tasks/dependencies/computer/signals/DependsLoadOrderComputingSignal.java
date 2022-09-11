@@ -1,8 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.computer.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.List;
  * 依存関係の読み込み順序を計算する際に発生するシグナルを表します。
  */
 @Data
-public class DependsLoadOrderComputingSignal implements InstallerSignal
+public class DependsLoadOrderComputingSignal implements Signal
 {
     /**
      * 指定された依存関係のリストです。

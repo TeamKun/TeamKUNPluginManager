@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * このシグナルより先に {@link PluginOnLoadRunningSignal} が呼ばれます。
  */
 @Data
-public class PluginEnablingSignal implements InstallerSignal
+public class PluginEnablingSignal implements Signal
 {
     /**
      * 対象のプラグインです。

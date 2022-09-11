@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.descripti
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
  */
 @Data
 @AllArgsConstructor
-public class LoadPluginDescriptionSignal implements InstallerSignal
+public class LoadPluginDescriptionSignal implements Signal
 {
     /**
      * プラグイン情報ファイルのパスです。

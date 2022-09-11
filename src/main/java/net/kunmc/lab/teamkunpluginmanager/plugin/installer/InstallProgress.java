@@ -7,6 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectStatus;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -82,7 +83,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, T
      */
     private final String installActionID;
     /**
-     * {@link InstallerSignal} を受け取るためのリスナーです。
+     * {@link Signal} を受け取るためのリスナーです。
      */
     private final SignalHandleManager signalHandler;
     /**

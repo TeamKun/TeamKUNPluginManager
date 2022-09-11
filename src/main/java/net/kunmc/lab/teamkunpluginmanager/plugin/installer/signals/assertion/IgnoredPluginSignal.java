@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * {@link IgnoredPluginSignal#setCancelInstall(boolean)} を変更することで、インストールのキャンセルを設定できます。
  */
 @Data
-public class IgnoredPluginSignal implements InstallerSignal
+public class IgnoredPluginSignal implements Signal
 {
     @NotNull
     private final String pluginName;

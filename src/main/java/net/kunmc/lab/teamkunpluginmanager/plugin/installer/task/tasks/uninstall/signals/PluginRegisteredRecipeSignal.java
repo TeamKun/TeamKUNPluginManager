@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import java.util.Locale;
  * プラグインが登録したレシピについてのシグナルです。
  */
 @Data
-public class PluginRegisteredRecipeSignal implements InstallerSignal
+public class PluginRegisteredRecipeSignal implements Signal
 {
     /**
      * レシピを登録したプラグインです。

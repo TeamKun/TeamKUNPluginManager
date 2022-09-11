@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependenc
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Value
-public class DependsEnumeratedSignal implements InstallerSignal
+public class DependsEnumeratedSignal implements Signal
 {
     /**
      * 列挙された依存関係。

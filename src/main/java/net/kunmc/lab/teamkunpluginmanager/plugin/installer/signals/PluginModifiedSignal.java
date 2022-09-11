@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals;
 
 import lombok.Value;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * 新規にインストールされた場合、削除された場合、更新された場合にスローされます。
  */
 @Value
-public class PluginModifiedSignal implements InstallerSignal
+public class PluginModifiedSignal implements Signal
 {
     /**
      * 変更され他プラグインの情報です。

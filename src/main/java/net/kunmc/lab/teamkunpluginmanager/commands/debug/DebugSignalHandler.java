@@ -5,10 +5,10 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Question;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
 import org.apache.commons.lang.ArrayUtils;
@@ -29,7 +29,7 @@ public class DebugSignalHandler
 
     private final Terminal terminal;
 
-    private static <T extends InstallerSignal> void handleInputSignals(T signal, Terminal terminal)
+    private static <T extends Signal> void handleInputSignals(T signal, Terminal terminal)
     {
         try
         {
@@ -54,7 +54,7 @@ public class DebugSignalHandler
         }
     }
 
-    private static <T extends InstallerSignal> void printSignal(T signal, Terminal terminal)
+    private static <T extends Signal> void printSignal(T signal, Terminal terminal)
     {
         terminal.writeLine("====================");
         terminal.info("On Signal: " + signal.getClass().getSimpleName());
@@ -244,7 +244,7 @@ public class DebugSignalHandler
     }
 
     @SignalHandler
-    public void handleAll(@NotNull InstallProgress<?, ?> installProgress, InstallerSignal signal)
+    public void handleAll(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
     {
         if (!(signal instanceof DownloadProgressSignal))
             printSignal(signal, terminal);

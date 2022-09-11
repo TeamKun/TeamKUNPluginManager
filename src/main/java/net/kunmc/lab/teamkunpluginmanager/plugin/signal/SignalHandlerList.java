@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.signal;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class SignalHandlerList<T extends InstallerSignal>
+class SignalHandlerList<T extends Signal>
 {
     @NotNull
     private final Class<T> signalType;

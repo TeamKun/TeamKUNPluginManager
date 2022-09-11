@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals;
 
 import lombok.Data;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallerSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * プラグインの無効化の前後にスローされるシグナルです。
  */
 @Data
-public class PluginDisablingSignal implements InstallerSignal
+public class PluginDisablingSignal implements Signal
 {
     /**
      * 無効化されるプラグインです。
