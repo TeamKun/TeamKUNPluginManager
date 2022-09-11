@@ -52,23 +52,37 @@ public class InstallManager
      *
      * @param terminal ターミナル
      * @param query    インストールするプラグインのクエリ
-     * @throws IllegalStateException インストールが進行中の場合または GitHub にログインしていない場合
-     * @throws IOException           予期しない例外が発生した場合
      */
-    public void runInstall(@NotNull Terminal terminal, @NotNull String query) throws IllegalStateException, IOException
+    public void runInstall(@NotNull Terminal terminal, @NotNull String query)
     {
         if (isRunning())
-            throw new IllegalStateException("他のインストールが実行中です。");
+        {
+            terminal.error("他のインストーラが起動しています。");
+            return;
+        }
         if (!this.pluginManager.isTokenAvailable())
-            throw new IllegalStateException("GitHubにログインしていません。");
+        {
+            terminal.error("GitHub にログインされていません。");
+            terminal.info("/kpm register でログインしてください。");
+            return;
+        }
 
         SignalHandleManager copiedHandleManager = signalHandleManager.copy();
         HeadSignalHandlers.getInstallHandlers(terminal).forEach(copiedHandleManager::register);
 
-        PluginInstaller installer = new PluginInstaller(signalHandleManager);
-        runningInstall = installer.getProgress();
+        PluginInstaller installer;
+        try
+        {
+            installer = new PluginInstaller(signalHandleManager);
+            runningInstall = installer.getProgress();
 
-        installer.run(query);
+            installer.run(query);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            terminal.error("不明なエラーが発生しました。");
+        }
     }
 
     /**
