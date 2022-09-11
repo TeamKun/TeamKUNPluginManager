@@ -37,8 +37,8 @@ public class SignalHandleManager
     {
         return Arrays.stream(object.getClass().getMethods()).parallel()
                 .filter(method -> method.isAnnotationPresent(SignalHandler.class))
-                .filter(method -> method.getParameterCount() == 2)
-                .map(method -> method.getParameterTypes()[1])
+                .filter(method -> method.getParameterCount() == 1)
+                .map(method -> method.getParameterTypes()[0])
                 .filter(Signal.class::isAssignableFrom)
                 .map(clazz -> (Class<? extends Signal>) clazz)
                 .collect(Collectors.toList());

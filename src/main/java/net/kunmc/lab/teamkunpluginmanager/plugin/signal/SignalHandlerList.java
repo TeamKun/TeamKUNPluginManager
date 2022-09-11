@@ -40,8 +40,8 @@ class SignalHandlerList<T extends Signal>
             Arrays.stream(object.getClass().getMethods()).parallel()
                     .filter(method -> method.isAnnotationPresent(SignalHandler.class))
                     .filter(method -> !this.isBaked(method))
-                    .filter(method -> method.getParameterCount() == 2)
-                    .filter(method -> signalType.isAssignableFrom(method.getParameterTypes()[1]))
+                    .filter(method -> method.getParameterCount() == 1)
+                    .filter(method -> signalType.isAssignableFrom(method.getParameterTypes()[0]))
                     .forEach(method -> {
                         method.setAccessible(true);
 
