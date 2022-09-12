@@ -28,7 +28,7 @@ public class InstallFinishedSignalHandler
     private void onSuccess(InstallResult<?> result)
     {
         Utils.printInstallStatistics(terminal, result);
-        terminal.success("インストールが正常に完了しました。");
+        terminal.success("操作が正常に完了しました。");
     }
 
     private void onFail(InstallFailedInstallResult<?, ?, ?> result)
@@ -40,7 +40,7 @@ public class InstallFinishedSignalHandler
         Enum<?> taskStatus = result.getTaskStatus();
 
 
-        String errorMessage = "インストールは %s(%s) 時に %s により失敗しました。";
+        String errorMessage = "操作は %s(%s) 時に %s により失敗しました。";
 
         terminal.error(String.format(
                 errorMessage,
