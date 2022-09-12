@@ -5,13 +5,10 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallR
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
-import org.bukkit.ChatColor;
+import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 
 public class InstallFinishedSignalHandler
 {
-    private static final String statsFormat =
-            ChatColor.GREEN + "%d 追加 " + ChatColor.RED + "%d 削除 " + ChatColor.YELLOW + "%d 変更 " + ChatColor.GRAY + "%d 保留";
-
     private final Terminal terminal;
 
     public InstallFinishedSignalHandler(Terminal terminal)
@@ -28,26 +25,15 @@ public class InstallFinishedSignalHandler
             onSuccess(finished.getResult());
     }
 
-    private void printResultStatistics(InstallResult<?> result)
-    {
-        terminal.writeLine(String.format(
-                statsFormat,
-                result.getInstalledCount(),
-                result.getRemovedCount(),
-                result.getUpgradedCount(),
-                result.getPendingCount()
-        ));
-    }
-
     private void onSuccess(InstallResult<?> result)
     {
-        printResultStatistics(result);
+        Utils.printInstallStatistics(terminal, result);
         terminal.success("インストールが正常に完了しました。");
     }
 
     private void onFail(InstallFailedInstallResult<?, ?, ?> result)
     {
-        printResultStatistics(result);
+        Utils.printInstallStatistics(terminal, result);
 
         Enum<?> progress = result.getProgress().getCurrentTask();
         Enum<?> reason = result.getReason();
