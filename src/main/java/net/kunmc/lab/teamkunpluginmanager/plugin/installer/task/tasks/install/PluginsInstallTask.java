@@ -129,7 +129,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             assert target != null;
             this.postSignal(new PluginLoadSignal.Post(path, pluginDescription, target));
 
-            this.progress.addInstalled(target.getDescription());
+            this.progress.addPending(target.getName());
 
             // Run Plugin#onLoad
             this.state = PluginsInstallState.ONLOAD_RUNNING;
