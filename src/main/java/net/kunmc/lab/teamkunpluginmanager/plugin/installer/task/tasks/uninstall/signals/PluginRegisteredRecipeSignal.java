@@ -77,4 +77,23 @@ public class PluginRegisteredRecipeSignal implements Signal
             this.targetNamespaces = new String[]{plugin.getName().toLowerCase(Locale.ROOT)};
         }
     }
+
+    /**
+     * レシピを削除する前にスローされるシグナルです。
+     */
+    @Getter
+    public static class Removing extends PluginRegisteredRecipeSignal
+    {
+        /**
+         * 削除するレシピです。
+         */
+        @NotNull
+        private final Recipe recipe;
+
+        public Removing(@NotNull Plugin plugin, @NotNull Recipe recipe)
+        {
+            super(plugin);
+            this.recipe = recipe;
+        }
+    }
 }

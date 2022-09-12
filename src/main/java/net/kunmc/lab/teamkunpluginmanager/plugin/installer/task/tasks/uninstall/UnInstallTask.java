@@ -218,7 +218,10 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             Recipe recipe = recipeIterator.next();
 
             if (this.isRecipeRemoveTarget(plugin, targetNamespaces, recipe))
+            {
+                this.postSignal(new PluginRegisteredRecipeSignal.Removing(plugin, recipe));
                 recipeIterator.remove();
+            }
         }
     }
 
