@@ -18,6 +18,7 @@ import net.kunmc.lab.teamkunpluginmanager.utils.HashLib;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.apache.commons.io.FileUtils;
@@ -619,7 +620,7 @@ public class Installer
 
         return header +
                 "    " + pi("ファイル名", f.getName()) +
-                "    " + pi("ファイルサイズ", f.exists() ? PluginUtil.getFileSizeString(f.length()): ChatColor.RED + "N/A") +
+                "    " + pi("ファイルサイズ", f.exists() ? Utils.roundSizeUnit(f.length()): ChatColor.RED + "N/A") +
                 "    " + pi("SHA1", f.exists() ? HashLib.genSha1(f): ChatColor.RED + "N/A");
     }
 

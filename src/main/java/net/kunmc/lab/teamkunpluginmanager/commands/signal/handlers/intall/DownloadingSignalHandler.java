@@ -6,7 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.s
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import org.bukkit.ChatColor;
 
 /**
@@ -39,7 +39,7 @@ public class DownloadingSignalHandler
     private void addDownloadArtifact(String url, long size)
     {
         this.downloadTotalSize += size;
-        terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + PluginUtil.getFileSizeString(size) + "]");
+        terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + Utils.roundSizeUnit(size) + "]");
     }
 
     private void endDownloads()
@@ -50,10 +50,10 @@ public class DownloadingSignalHandler
             elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
         terminal.writeLine(
-                ChatColor.GREEN + PluginUtil.getFileSizeString(this.downloadTotalSize) + " を " +
+                ChatColor.GREEN + Utils.roundSizeUnit(this.downloadTotalSize) + " を " +
                         ChatColor.YELLOW + elapsedSec + "秒" +
                         ChatColor.GREEN + "で取得しました (" +
-                        ChatColor.YELLOW + PluginUtil.getFileSizeString(bytesPerSec) + "/s" +
+                        ChatColor.YELLOW + Utils.roundSizeUnit(bytesPerSec) + "/s" +
                         ChatColor.GREEN + ")"
         );
 

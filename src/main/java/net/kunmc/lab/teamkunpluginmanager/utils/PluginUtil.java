@@ -17,9 +17,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -104,31 +101,6 @@ public class PluginUtil  // TODO: Rewrite this class
         if (!(plugin.getClass().getClassLoader() instanceof PluginClassLoader))
             return false;
         return ((PluginClassLoader) plugin.getClass().getClassLoader()).getPlugin() != null;
-    }
-
-    private static final String[] fileUnits = {
-            "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
-    };
-
-    public static String getFileSizeString(long bytes)
-    {
-        String suffix = "B";
-
-        BigDecimal dec = new BigDecimal(String.valueOf(bytes));
-        BigDecimal base = new BigDecimal(1024);
-
-        for (String fileUnit : fileUnits)
-        {
-            if (dec.compareTo(base) < 0)
-            {
-                suffix = fileUnit;
-                dec = dec.divide(base, 3, RoundingMode.HALF_UP);
-            }
-            else
-                break;
-        }
-
-        return new DecimalFormat("#,###.##;#,###.##").format(dec) + suffix;
     }
 
     public static String loadToString(PluginLoadOrder order)

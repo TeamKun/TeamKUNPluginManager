@@ -7,6 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -127,7 +128,7 @@ public class CommandInfo extends CommandBase
         {
             terminal.writeLine("");
             terminal.writeLine(Messages.keyValue("ファイル名", file.getName()));
-            terminal.writeLine(Messages.keyValue("ダウンロードサイズ", PluginUtil.getFileSizeString(file.length())));
+            terminal.writeLine(Messages.keyValue("ダウンロードサイズ", Utils.roundSizeUnit(file.length())));
         }
 
         terminal.writeLine("");
