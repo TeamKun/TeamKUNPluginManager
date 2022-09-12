@@ -88,16 +88,24 @@ public class InstallManager
     /**
      * アンインストールを実行します。
      *
-     * @param query アンインストールするプラグインのクエリ
+     * @param terminal ターミナル
+     * @param query    アンインストールするプラグインのクエリ
      * @throws IllegalStateException インストールが進行中の場合
      * @throws IOException           予期しない例外が発生した場合
      */
-    public void runUninstall(@NotNull String query) throws IllegalStateException, IOException
+    public void runUninstall(@NotNull Terminal terminal, @NotNull String query) throws IllegalStateException, IOException
     {
         if (isRunning())
-            throw new IllegalStateException("他のインストールが実行中です。");
+        {
+            terminal.error("他のインストーラが起動しています。");
+            return;
+        }
 
-        PluginUninstaller uninstaller = new PluginUninstaller(signalHandleManager);
+        SignalHandleManager copiedHandleManager = signalHandleManager.copy();
+        HeadSignalHandlers.getUninstallHandlers(terminal).forEach(copiedHandleManager::register);
+
+
+        PluginUninstaller uninstaller = new PluginUninstaller(copiedHandleManager);
         runningInstall = uninstaller.getProgress();
 
         uninstaller.run(query);

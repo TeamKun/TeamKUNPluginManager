@@ -8,6 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.Depend
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DownloadingSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.ResolverSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallerSignalHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -61,6 +62,20 @@ public class HeadSignalHandlers
                 new CheckEnvSignalHandler(terminal),
                 new DependenciesSignalHandler(terminal),
                 new InstallerSignalHandler(terminal)
+        );
+    }
+
+    /**
+     * アンインストールに使用するハンドラを返します.
+     *
+     * @param terminal ターミナル
+     * @return アンインストールに使用するハンドラ
+     */
+    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal)
+    {
+        return createHandlersList(
+                getCommonHandlers(terminal),
+                new UninstallerSignalHandler(terminal)
         );
     }
 }

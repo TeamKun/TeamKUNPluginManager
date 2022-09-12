@@ -64,6 +64,7 @@ class SignalHandlerList<T extends Signal>
                 }
                 catch (Exception e)
                 {
+                    System.out.println("Target: " + pair.getRight().getDeclaringClass().getName() + "#" + pair.getRight().getName());
                     e.printStackTrace();
                 }
             });

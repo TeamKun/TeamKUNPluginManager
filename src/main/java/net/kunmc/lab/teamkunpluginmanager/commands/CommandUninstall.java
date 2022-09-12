@@ -4,7 +4,6 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -24,16 +23,11 @@ public class CommandUninstall extends CommandBase
         if (indicateArgsLengthInvalid(terminal, args, 1, 1))
             return;
 
-        if (!TeamKunPluginManager.getPlugin().getSession().lock())
-        {
-            terminal.error("TeamKunPluginManagerが多重起動しています。");
-            return;
-        }
+        String query = args[0];
 
-        Runner.runAsync(() -> {
-            Installer.unInstall(terminal, args[0], false);
-            TeamKunPluginManager.getPlugin().getSession().unlock();
-        });
+        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
+
+        Runner.runAsync(() -> kpmInstance.getInstallManager().runUninstall(terminal, query));
     }
 
     @Override
