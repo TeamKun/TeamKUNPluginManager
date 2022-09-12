@@ -96,9 +96,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
         finally
         {
-            Runner.runLater(() -> {
-                patchPluginCommands(installedPlugins);
-            }, 1L);
+            Runner.runLater(() -> patchPluginCommands(installedPlugins), 1L);
         }
     }
 
