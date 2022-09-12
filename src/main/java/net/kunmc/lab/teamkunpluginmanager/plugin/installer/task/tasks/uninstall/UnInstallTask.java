@@ -7,6 +7,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUninstallingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
@@ -133,6 +134,8 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
     private UnInstallErrorCause uninstallOnePlugin(@NotNull Plugin plugin)
     {
+        this.postSignal(new PluginUninstallingSignal(plugin));
+
         this.taskState = UnInstallState.RECIPES_UNREGISTERING;
         this.unregisterRecipes(plugin);
 
