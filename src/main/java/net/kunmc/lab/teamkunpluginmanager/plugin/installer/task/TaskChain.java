@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task;
 
 import lombok.AccessLevel;
 import lombok.Setter;
-import net.kunmc.lab.teamkunpluginmanager.plugin.AbstractInstaller;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

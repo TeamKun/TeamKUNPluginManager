@@ -1,10 +1,7 @@
-package net.kunmc.lab.teamkunpluginmanager.plugin;
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
