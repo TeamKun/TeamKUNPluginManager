@@ -10,6 +10,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUninstallErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUninstallingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.StartingGCSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
@@ -125,6 +126,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
                 .map(Plugin::getDescription)
                 .forEach(UnInstallTask.this.progress::addRemoved);
 
+        this.postSignal(new StartingGCSignal());
         System.gc();
 
         Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
