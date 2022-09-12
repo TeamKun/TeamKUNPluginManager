@@ -8,6 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallTasks;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -34,7 +35,7 @@ public class CommandUninstallDebug extends CommandBase
             {
                 PluginUninstaller installer = new PluginUninstaller(DebugSignalHandler.toManager(terminal));
 
-                InstallResult<UnInstallTasks> installResult = installer.execute(query);
+                InstallResult<UnInstallTasks> installResult = installer.execute(new UninstallArgument(query));
 
                 if (installResult instanceof InstallFailedInstallResult)
                 {

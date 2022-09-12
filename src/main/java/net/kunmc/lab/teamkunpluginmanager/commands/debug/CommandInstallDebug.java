@@ -5,6 +5,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallTasks;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
@@ -31,7 +32,7 @@ public class CommandInstallDebug extends CommandBase
             {
                 PluginInstaller installer = new PluginInstaller(DebugSignalHandler.toManager(terminal));
 
-                InstallResult<InstallTasks> installResult = installer.execute(query);
+                InstallResult<InstallTasks> installResult = installer.execute(new InstallArgument(query));
 
                 if (installResult instanceof InstallFailedInstallResult)
                 {
