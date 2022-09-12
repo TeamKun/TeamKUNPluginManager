@@ -48,6 +48,6 @@ public class InstallerSignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
         terminal.writeLine(ChatColor.GREEN +
-                PluginUtil.getPluginString(signal.getPlugin().getDescription()) + " のトリガを処理しています ...");
+                PluginUtil.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
     }
 }

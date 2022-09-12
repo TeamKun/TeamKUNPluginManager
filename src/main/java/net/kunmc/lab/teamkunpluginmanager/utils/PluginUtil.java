@@ -48,6 +48,11 @@ public class PluginUtil  // TODO: Rewrite this class
         return String.format("%s (%s)", description.getName(), description.getVersion());
     }
 
+    public static String getPluginString(Plugin plugin)
+    {
+        return getPluginString(plugin.getDescription());
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, Object> ms2Map(MemorySection ms)
     {
