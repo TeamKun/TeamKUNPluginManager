@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.InstallResult;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.InvalidDescriptionException;
@@ -17,11 +16,9 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -132,75 +129,6 @@ public class PluginUtil  // TODO: Rewrite this class
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    public static ArrayList<InstallResult> mathLoadOrder(ArrayList<InstallResult> files)
-    {
-        ArrayList<InstallResult> order = new ArrayList<>(); //読み込む順番
-        ArrayList<InstallResult> want = (ArrayList<InstallResult>) files.clone(); //処理待ち
-        files.stream().parallel()
-                .forEach(stringStringPair -> {
-                    if (!want.contains(stringStringPair)) //既に処理されていた(処理待ちになかった)場合は無視
-                        return;
-                    if (!stringStringPair.isSuccess())
-                        return;
-
-                    PluginDescriptionFile desc; //dependとか
-                    try
-                    {
-                        desc = loadDescription(new File("plugins/" + stringStringPair.getFileName())); //読み込み順番を取得
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        return;
-                    }
-
-                    desc.getDepend().stream().parallel()
-                            .forEach(pluginName -> {
-                                if (containValue(pluginName, want)) //dependに含まれていたものがインスコ対象ににあった
-                                {
-                                    order.add(getContainsEntry(pluginName, want)); //読み込み指示
-                                    want.remove(getContainsEntry(pluginName, want)); //後始末
-                                }
-                            });
-
-                    desc.getSoftDepend().stream().parallel()
-                            .forEach(pluginName -> {
-                                if (containValue(pluginName, want)) //softDependに含まれていたものがインスコ対象ににあった
-                                {
-                                    order.add(getContainsEntry(pluginName, want)); //読み込み指示
-                                    want.remove(getContainsEntry(pluginName, want)); //後始末
-                                }
-                            });
-                });
-
-        want.forEach(stringStringPair -> {
-            if (order.contains(stringStringPair.getFileName()))
-                return;
-            order.add(stringStringPair); //後回しプラグインの指示
-        });
-        return order;
-    }
-
-    private static InstallResult getContainsEntry(String contain, ArrayList<InstallResult> keys)
-    {
-        for (InstallResult p : keys)
-        {
-            if (p.getPluginName().equals(contain))
-                return p;
-        }
-        return null;
-    }
-
-    private static boolean containValue(String contain, ArrayList<InstallResult> keys)
-    {
-        AtomicBoolean ab = new AtomicBoolean(false);
-        keys.stream()
-                .filter(stringStringPair -> stringStringPair.getPluginName().equals(contain))
-                .forEach(stringStringPair -> ab.set(true));
-        return ab.get();
     }
 
     public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, IOException
