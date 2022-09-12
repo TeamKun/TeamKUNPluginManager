@@ -8,6 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.Depend
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DownloadingSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.ResolverSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.PluginIsDependencySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallReadySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallerSignalHandler;
 import org.jetbrains.annotations.NotNull;
@@ -77,6 +78,7 @@ public class HeadSignalHandlers
         return createHandlersList(
                 getCommonHandlers(terminal),
                 new UninstallerSignalHandler(terminal),
+                new PluginIsDependencySignalHandler(terminal),
                 new UninstallReadySignalHandler(terminal)
         );
     }
