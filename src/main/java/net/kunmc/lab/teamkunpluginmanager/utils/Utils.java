@@ -20,15 +20,20 @@ public class Utils
             "YB"
     };
 
+    public static void printInstallStatistics(Terminal terminal, int added, int removed, int changed, int pending)
+    {
+        terminal.writeLine(String.format(STATS_FORMAT, added, removed, changed, pending));
+    }
+
     public static void printInstallStatistics(Terminal terminal, InstallResult<?> result)
     {
-        terminal.writeLine(String.format(
-                STATS_FORMAT,
+        printInstallStatistics(
+                terminal,
                 result.getInstalledCount(),
                 result.getRemovedCount(),
                 result.getUpgradedCount(),
                 result.getPendingCount()
-        ));
+        );
     }
 
     public static String roundSizeUnit(long size)
