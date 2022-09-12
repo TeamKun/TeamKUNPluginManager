@@ -93,7 +93,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
             if (!dependencies.isEmpty())
             {
                 PluginIsDependencySignal pluginIsDependencySignal =
-                        new PluginIsDependencySignal(plugin.getName(), dependencies);
+                        new PluginIsDependencySignal(plugin, dependencies);
 
                 this.postSignal(pluginIsDependencySignal);
 

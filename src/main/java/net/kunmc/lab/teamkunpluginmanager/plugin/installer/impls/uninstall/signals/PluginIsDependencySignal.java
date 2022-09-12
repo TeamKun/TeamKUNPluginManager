@@ -15,7 +15,7 @@ import java.util.List;
 public class PluginIsDependencySignal implements Signal
 {
     @NotNull
-    private final String pluginName;
+    private final Plugin plugin;
     @NotNull
     private final List<Plugin> dependedBy;
 
@@ -25,9 +25,9 @@ public class PluginIsDependencySignal implements Signal
      */
     private boolean forceUninstall;
 
-    public PluginIsDependencySignal(@NotNull String pluginName, @NotNull List<Plugin> dependedBy)
+    public PluginIsDependencySignal(@NotNull Plugin plugin, @NotNull List<Plugin> dependedBy)
     {
-        this.pluginName = pluginName;
+        this.plugin = plugin;
         this.dependedBy = dependedBy;
         this.forceUninstall = false;
     }
