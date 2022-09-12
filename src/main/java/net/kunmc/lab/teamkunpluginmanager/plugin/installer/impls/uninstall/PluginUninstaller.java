@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.SearchingPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.UninstallReadySignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
@@ -96,6 +97,10 @@ public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, Un
         // endregion
 
         // endregion
+
+        UninstallReadySignal uninstallReadySignal = new UninstallReadySignal(plugins);
+        this.postSignal(uninstallReadySignal);
+        plugins = uninstallReadySignal.getPlugins();
 
         // region Uninstall plugin
 
