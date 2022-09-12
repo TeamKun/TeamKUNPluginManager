@@ -27,7 +27,7 @@ import java.util.UUID;
  * @param <T> インストーラの状態の型
  */
 @Getter
-public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, T>>
+public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?, T>>
 {
     @Getter(AccessLevel.NONE)
     private static final HashMap<String, InstallProgress<?, ?>> PROGRESS_CACHES;
@@ -142,7 +142,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, T
      * @throws IOException       ディレクトリの作成に失敗した場合
      * @throws SecurityException ディレクトリの作成に失敗した場合
      */
-    public static <P extends Enum<P>, PI extends AbstractInstaller<?, P>> InstallProgress<P, PI> of(
+    public static <P extends Enum<P>, PI extends AbstractInstaller<?, ?, P>> InstallProgress<P, PI> of(
             @NotNull PI installer,
             @NotNull SignalHandleManager signalHandler,
             @Nullable String id)

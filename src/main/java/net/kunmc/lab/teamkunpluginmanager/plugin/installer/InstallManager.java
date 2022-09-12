@@ -3,8 +3,10 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.HeadSignalHandlers;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,9 +53,9 @@ public class InstallManager
      * インストールを実行します。
      *
      * @param terminal ターミナル
-     * @param query    インストールするプラグインのクエリ
+     * @param argument インストールの引数
      */
-    public void runInstall(@NotNull Terminal terminal, @NotNull String query)
+    public void runInstall(@NotNull Terminal terminal, @NotNull InstallArgument argument)
     {
         if (isRunning())
         {
@@ -76,7 +78,7 @@ public class InstallManager
             installer = new PluginInstaller(copiedHandleManager);
             runningInstall = installer.getProgress();
 
-            installer.run(query);
+            installer.run(argument);
         }
         catch (IOException e)
         {
@@ -89,11 +91,11 @@ public class InstallManager
      * アンインストールを実行します。
      *
      * @param terminal ターミナル
-     * @param query    アンインストールするプラグインのクエリ
+     * @param argument アンインストールするプラグインのクエリ
      * @throws IllegalStateException インストールが進行中の場合
      * @throws IOException           予期しない例外が発生した場合
      */
-    public void runUninstall(@NotNull Terminal terminal, @NotNull String query) throws IllegalStateException, IOException
+    public void runUninstall(@NotNull Terminal terminal, @NotNull UninstallArgument argument) throws IllegalStateException, IOException
     {
         if (isRunning())
         {
@@ -108,6 +110,6 @@ public class InstallManager
         PluginUninstaller uninstaller = new PluginUninstaller(copiedHandleManager);
         runningInstall = uninstaller.getProgress();
 
-        uninstaller.run(query);
+        uninstaller.run(argument);
     }
 }

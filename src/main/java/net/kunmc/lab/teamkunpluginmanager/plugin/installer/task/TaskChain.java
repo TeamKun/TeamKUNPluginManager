@@ -33,7 +33,7 @@ public class TaskChain<
     private final IS installerState;
 
     @NotNull
-    private final AbstractInstaller<?, IS> installer;
+    private final AbstractInstaller<?, ?, IS> installer;
 
     @Nullable
     @Setter(AccessLevel.NONE)
@@ -54,7 +54,7 @@ public class TaskChain<
      * @param installer      インストーラ
      */
     public TaskChain(@NotNull T task, @NotNull IS installerState, @Nullable TaskChain<?, IS, ?, ?, ?> first,
-                     @NotNull AbstractInstaller<?, IS> installer)
+                     @NotNull AbstractInstaller<?, ?, IS> installer)
     {
         this.task = task;
         this.installerState = installerState;
@@ -69,7 +69,7 @@ public class TaskChain<
      * @param installerState 設定するインストーラの状態
      * @param installer      インストーラ
      */
-    public TaskChain(@NotNull T task, @NotNull IS installerState, @NotNull AbstractInstaller<?, IS> installer)
+    public TaskChain(@NotNull T task, @NotNull IS installerState, @NotNull AbstractInstaller<?, ?, IS> installer)
     {
         this(task, installerState, null, installer);
         this.first = this;

@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 
-public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
+public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E extends Enum<E>, P extends Enum<P>>
 {
     @Getter
-    protected final InstallProgress<P, AbstractInstaller<E, P>> progress;
+    protected final InstallProgress<P, AbstractInstaller<A, E, P>> progress;
     protected final SignalHandleManager signalHandler;
 
     public AbstractInstaller(SignalHandleManager signalHandler) throws IOException
@@ -33,13 +33,13 @@ public abstract class AbstractInstaller<E extends Enum<E>, P extends Enum<P>>
         this.signalHandler.handleSignal(this.progress, signal);
     }
 
-    protected abstract InstallResult<P> execute(@NotNull String query) throws IOException, TaskFailedException;
+    protected abstract InstallResult<P> execute(@NotNull A arguments) throws IOException, TaskFailedException;
 
-    public InstallResult<P> run(@NotNull String query) throws IOException
+    public InstallResult<P> run(@NotNull A arguments) throws IOException
     {
         try
         {
-            return this.execute(query);
+            return this.execute(arguments);
         }
         catch (TaskFailedException e)
         {

@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  *     <li>{@link UnInstallTasks#UNINSTALLING_PLUGINS} - プラグインをアンインストールする。</li>
  * </ol>
  */
-public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, UnInstallTasks>
+public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnInstallErrorCause, UnInstallTasks>
 {
     public PluginUninstaller(SignalHandleManager signalHandler) throws IOException
     {
@@ -48,17 +48,20 @@ public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, Un
     }
 
     @Override
-    public InstallResult<UnInstallTasks> execute(@NotNull String query) throws TaskFailedException
+    public InstallResult<UnInstallTasks> execute(@NotNull UninstallArgument argument) throws TaskFailedException
     {
         List<Plugin> plugins = new ArrayList<>();
         // region Search plugin
         this.progress.setCurrentTask(UnInstallTasks.SEARCHING_PLUGIN);
 
-        Plugin plugin = this.getPlugin(query);
-        if (plugin == null)
-            return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
+        for (String pluginName : argument.getPlugins())
+        {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+            if (plugin == null)
+                return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
 
-        plugins.add(plugin);
+            plugins.add(plugin);
+        }
 
 
         // endregion
@@ -67,31 +70,38 @@ public class PluginUninstaller extends AbstractInstaller<UnInstallErrorCause, Un
         this.progress.setCurrentTask(UnInstallTasks.CHECKING_ENVIRONMENT);
 
         // region Check is plugin marked as ignored
-        if (this.isPluginIgnored(plugin.getName()))
+        for (Plugin plugin : plugins)
         {
-            IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
-            this.postSignal(ignoredPluginSignal);
-            if (ignoredPluginSignal.isCancelInstall())
-                return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
+            if (this.isPluginIgnored(plugin.getName()))
+            {
+                IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
+                this.postSignal(ignoredPluginSignal);
+                if (ignoredPluginSignal.isCancelInstall())
+                    return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
+            }
         }
 
         // endregion
 
         // region Check plugin are depended by other plugins
 
-        List<Plugin> dependencies = this.getAllDependencies(plugin);
-
-        if (!dependencies.isEmpty())
+        for (Plugin plugin : plugins)
         {
-            PluginIsDependencySignal pluginIsDependencySignal =
-                    new PluginIsDependencySignal(plugin.getName(), dependencies);
+            List<Plugin> dependencies = this.getAllDependencies(plugin);
+            dependencies.removeAll(plugins);
 
-            this.postSignal(pluginIsDependencySignal);
+            if (!dependencies.isEmpty())
+            {
+                PluginIsDependencySignal pluginIsDependencySignal =
+                        new PluginIsDependencySignal(plugin.getName(), dependencies);
 
-            if (pluginIsDependencySignal.isForceUninstall())
-                plugins.addAll(dependencies);
-            else
-                return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);
+                this.postSignal(pluginIsDependencySignal);
+
+                if (pluginIsDependencySignal.isForceUninstall())
+                    plugins.addAll(dependencies);
+                else
+                    return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);
+            }
         }
 
         // endregion

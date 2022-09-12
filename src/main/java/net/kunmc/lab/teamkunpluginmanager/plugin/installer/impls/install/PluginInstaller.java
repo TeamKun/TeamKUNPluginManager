@@ -45,7 +45,7 @@ import java.nio.file.Path;
  *     <li>依存関係とプラグインをインストールする({@link InstallTasks#INSTALLING_PLUGINS})。</li>
  * </ol>
  */
-public class PluginInstaller extends AbstractInstaller<InstallErrorCause, InstallTasks>
+public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallErrorCause, InstallTasks>
 {
     public PluginInstaller(@NotNull SignalHandleManager signalHandler) throws IOException
     {
@@ -54,8 +54,10 @@ public class PluginInstaller extends AbstractInstaller<InstallErrorCause, Instal
 
     @Override
     @SuppressWarnings("rawtypes")
-    public InstallResult<InstallTasks> execute(@NotNull String query) throws TaskFailedException
+    public InstallResult<InstallTasks> execute(@NotNull InstallArgument argument) throws TaskFailedException
     {
+        String query = argument.getQuery();
+
         Path pluginFilePath;
         PluginDescriptionFile pluginDescription;
         String pluginName;

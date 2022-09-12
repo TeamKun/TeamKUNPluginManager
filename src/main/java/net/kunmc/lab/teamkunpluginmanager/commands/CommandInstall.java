@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,9 @@ public class CommandInstall extends CommandBase
 
         TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
-        Runner.runAsync(() -> kpmInstance.getInstallManager().runInstall(terminal, query));
+        Runner.runAsync(() ->
+                kpmInstance.getInstallManager().runInstall(terminal, new InstallArgument(query))
+        );
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,9 @@ public class CommandUninstall extends CommandBase
 
         TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
-        Runner.runAsync(() -> kpmInstance.getInstallManager().runUninstall(terminal, query));
+        Runner.runAsync(() ->
+                kpmInstance.getInstallManager().runUninstall(terminal, new UninstallArgument(query))
+        );
     }
 
     @Override
