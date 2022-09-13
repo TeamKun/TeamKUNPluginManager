@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -163,7 +164,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
         this.taskState = UnInstallState.REMOVING_FROM_BUKKIT;
         PLUGINS.remove(plugin);
-        LOOKUP_NAMES.remove(plugin.getName());
+        LOOKUP_NAMES.remove(plugin.getName().toLowerCase(Locale.ENGLISH));
 
         this.taskState = UnInstallState.CLASSES_UNLOADING;
         @SuppressWarnings("StringOperationCanBeSimplified")  // Backup Plugin name to unload classes
