@@ -113,15 +113,13 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             }
         }
 
-        Runner.runLaterAsync(() -> {
-            orderedUninstallTargets.forEach(plugin -> {
-                File pluginFile = PluginUtil.getFile(plugin);
-                if (pluginFile.exists())
-                    pluginFile.delete();
+        Runner.runLaterAsync(() -> orderedUninstallTargets.forEach(plugin -> {
+            File pluginFile = PluginUtil.getFile(plugin);
+            if (pluginFile.exists())
+                pluginFile.delete();
 
-                DependencyTree.wipePlugin(plugin);
-            });
-        }, 20L);
+            DependencyTree.wipePlugin(plugin);
+        }), 20L);
 
         orderedUninstallTargets.stream()
                 .map(Plugin::getDescription)
