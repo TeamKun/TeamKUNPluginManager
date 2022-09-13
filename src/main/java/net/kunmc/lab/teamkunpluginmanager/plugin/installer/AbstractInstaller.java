@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.InstallFinishedSignal;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.GeneralTaskErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskChain;
@@ -12,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.Signal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
     }
 
     public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
-            @NotNull T reason,
+            @Nullable T reason,
             @NotNull S taskStatus)
     {  // TODO: Implement debug mode
         InstallFailedInstallResult<P, T, S> result = new InstallFailedInstallResult<>(this.progress, reason, taskStatus);
@@ -81,7 +81,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         if (result.getErrorCause() != null)
             return this.error(result.getErrorCause(), result.getState());
         else
-            return this.error(GeneralTaskErrorCause.ILLEGAL_INTERNAL_STATE, result.getState());
+            return this.error(null, result.getState());
     }
 
     @NotNull

@@ -15,19 +15,19 @@ import org.jetbrains.annotations.Nullable;
 public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S extends Enum<S>>
         extends InstallResult<P>
 {
-    @NotNull
+    @Nullable
     private final T reason;
     @Nullable
     private final S taskStatus;
 
-    public InstallFailedInstallResult(@NotNull InstallProgress<P, ?> progress, @NotNull T reason, @NotNull S taskStatus)
+    public InstallFailedInstallResult(@NotNull InstallProgress<P, ?> progress, @Nullable T reason, @NotNull S taskStatus)
     {
         super(false, progress);
         this.reason = reason;
         this.taskStatus = taskStatus;
     }
 
-    public InstallFailedInstallResult(InstallProgress<P, ?> progress, @NotNull T reason)
+    public InstallFailedInstallResult(InstallProgress<P, ?> progress, @Nullable T reason)
     {
         super(false, progress);
         this.reason = reason;
