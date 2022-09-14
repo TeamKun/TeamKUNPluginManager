@@ -109,26 +109,38 @@ public class GitHubURLResolver implements URLResolver
         List<ResolveResult> results = new ArrayList<>();
 
         boolean isFound = false;
+        boolean isNoAssets = false;
         for (JsonElement jsonElement : jsonArray)
         {
             ResolveResult result = buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
 
             if (result instanceof ErrorResult)
             {
-                if (((ErrorResult) result).getCause() == ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
+                ErrorResult errorResult = (ErrorResult) result;
+                if (errorResult.getCause() == ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
                     isFound = true;
+                else if (errorResult.getCause() == ErrorResult.ErrorCause.ASSET_NOT_FOUND)
+                    isNoAssets = true;
                 continue;
             }
 
             results.add(result);
         }
 
-        if (results.isEmpty() && isFound)
-            return new ErrorResult(
-                    this,
-                    ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("指定されたバージョンが見つかりませんでした。"),
-                    ResolveResult.Source.GITHUB
-            );
+        if (results.isEmpty())
+            if (isFound)
+                return new ErrorResult(
+                        this,
+                        ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("指定されたバージョンが見つかりませんでした。"),
+                        ResolveResult.Source.GITHUB
+                );
+            else if (isNoAssets)
+                return new ErrorResult(
+                        this,
+                        ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+                        ResolveResult.Source.GITHUB
+                );
+
 
         return new MultiResult(this, results.toArray(new ResolveResult[0]));
     }
