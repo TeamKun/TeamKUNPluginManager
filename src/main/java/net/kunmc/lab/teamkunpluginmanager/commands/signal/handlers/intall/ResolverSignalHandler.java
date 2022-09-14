@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -48,17 +49,17 @@ public class ResolverSignalHandler
 
         AtomicLong index = new AtomicLong(0);
 
-        Map<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
+        LinkedHashMap<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
                 .filter(r -> r instanceof SuccessResult)
                 .map(r -> (SuccessResult) r)
-                .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r));
-        Map<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
+                .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
+        LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
                                 e.getKey(),
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
         keywordToTitle.put("a", "自動で最適なプラグインを選択する");
 
         try
