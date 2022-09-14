@@ -4,14 +4,13 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallErrorCause;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * アンインストールが完了したときのシグナルを処理するハンドラーです。
  */
-public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase<UnInstallTasks, net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallErrorCause>
+public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
     public UninstallFinishedSignalHandler(Terminal terminal)
     {
@@ -46,12 +45,13 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase<Un
     }
 
     @Override
-    protected void onFail(InstallFailedInstallResult<UnInstallTasks, net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallErrorCause, ?> result)
+    protected void onFail(InstallFailedInstallResult<?, ?, ?> result)
     {
-        if (this.handleGeneralErrors(result.getReason()))
+        if (result.getReason() instanceof net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallErrorCause &&
+                this.handleGeneralErrors((net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnInstallErrorCause) result.getReason()))
             return;
 
-        if (result.getTaskStatus() instanceof UnInstallErrorCause)
+        if (result.getReason() instanceof UnInstallErrorCause)
         {
             UnInstallErrorCause cause = (UnInstallErrorCause) result.getTaskStatus();
             if (cause == UnInstallErrorCause.SOME_UNINSTALL_FAILED)

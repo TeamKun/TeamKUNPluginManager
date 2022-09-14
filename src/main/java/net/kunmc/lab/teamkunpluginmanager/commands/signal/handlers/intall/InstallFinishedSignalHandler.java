@@ -5,7 +5,6 @@ import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.Instal
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallErrorCause;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallTasks;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector.DependsCollectErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.description.DescriptionLoadErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadErrorCause;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * インストールが完了したときのシグナルを処理するハンドラーです。
  */
-public class InstallFinishedSignalHandler extends InstallFinishedSignalBase<InstallTasks, InstallErrorCause>
+public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
     public InstallFinishedSignalHandler(Terminal terminal)
     {
@@ -130,23 +129,24 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase<Inst
     }
 
     @Override
-    protected void onFail(InstallFailedInstallResult<InstallTasks, InstallErrorCause, ?> result)
+    protected void onFail(InstallFailedInstallResult<?, ?, ?> result)
     {
-        if (this.handleGeneralErrors(result.getReason()))
+        if (result.getReason() instanceof InstallErrorCause &&
+                this.handleGeneralErrors((InstallErrorCause) result.getReason()))
             return;
 
-        Enum<?> taskStatus = result.getTaskStatus();
+        Enum<?> errorCause = result.getReason();
 
-        if (taskStatus instanceof PluginResolveErrorCause)
-            this.handlePluginResolveError((PluginResolveErrorCause) taskStatus);
-        else if (taskStatus instanceof DownloadErrorCause)
-            this.handleDownloadError((DownloadErrorCause) taskStatus);
-        else if (taskStatus instanceof DescriptionLoadErrorCause)
-            this.handleDescriptionLoadError((DescriptionLoadErrorCause) taskStatus);
-        else if (taskStatus instanceof DependsCollectErrorCause)
-            this.handleDependsCollectError((DependsCollectErrorCause) taskStatus);
-        else if (taskStatus instanceof PluginsInstallErrorCause)
-            this.handleInstallError((PluginsInstallErrorCause) taskStatus);
+        if (errorCause instanceof PluginResolveErrorCause)
+            this.handlePluginResolveError((PluginResolveErrorCause) errorCause);
+        else if (errorCause instanceof DownloadErrorCause)
+            this.handleDownloadError((DownloadErrorCause) errorCause);
+        else if (errorCause instanceof DescriptionLoadErrorCause)
+            this.handleDescriptionLoadError((DescriptionLoadErrorCause) errorCause);
+        else if (errorCause instanceof DependsCollectErrorCause)
+            this.handleDependsCollectError((DependsCollectErrorCause) errorCause);
+        else if (errorCause instanceof PluginsInstallErrorCause)
+            this.handleInstallError((PluginsInstallErrorCause) errorCause);
         else
             this.terminal.error("不明なエラーが発生しました。");
     }

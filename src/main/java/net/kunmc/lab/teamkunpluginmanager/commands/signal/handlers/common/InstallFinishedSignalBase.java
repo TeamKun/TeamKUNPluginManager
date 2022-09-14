@@ -13,7 +13,7 @@ import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
  * インストールが完了したときのシグナルを処理するハンドラーの基底クラスです。
  * デフォルトでは, インストール結果が表示された後に, {@link #onSuccess(InstallResult)} または {@link #onFail(InstallFailedInstallResult)} が呼び出されます.
  */
-public abstract class InstallFinishedSignalBase<P extends Enum<P>, T extends Enum<T>>
+public abstract class InstallFinishedSignalBase
 {
     protected final Terminal terminal;
     /**
@@ -38,15 +38,7 @@ public abstract class InstallFinishedSignalBase<P extends Enum<P>, T extends Enu
 
         if (finished.getResult() instanceof InstallFailedInstallResult)
         {
-            try
-            {
-                //noinspection unchecked
-                onFail((InstallFailedInstallResult<P, T, ?>) installResult);
-            }
-            catch (ClassCastException e)
-            {
-                onFailGeneral((InstallFailedInstallResult<?, ?, ?>) installResult);
-            }
+            onFail((InstallFailedInstallResult<?, ?, ?>) finished.getResult());
         }
         else
             onSuccess(installResult);
@@ -64,27 +56,6 @@ public abstract class InstallFinishedSignalBase<P extends Enum<P>, T extends Enu
      *
      * @param result インストールの結果
      */
-    protected abstract void onFail(InstallFailedInstallResult<P, T, ?> result);
+    protected abstract void onFail(InstallFailedInstallResult<?, ?, ?> result);
 
-    /**
-     * インストールが失敗し, かつ型変換に失敗したときに呼び出されます。
-     *
-     * @param result インストールの結果
-     */
-    protected void onFailGeneral(InstallFailedInstallResult<?, ?, ?> result)
-    {
-        Enum<?> progress = result.getProgress().getCurrentTask();
-        Enum<?> reason = result.getReason();
-        Enum<?> taskStatus = result.getTaskStatus();
-
-
-        String errorMessage = "操作は %s(%s) 時に %s により失敗しました。";
-
-        terminal.error(String.format(
-                errorMessage,
-                progress,
-                taskStatus,
-                reason
-        ));
-    }
 }
