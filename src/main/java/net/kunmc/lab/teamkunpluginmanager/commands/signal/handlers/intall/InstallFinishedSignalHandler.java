@@ -50,9 +50,10 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     {
         switch (cause)
         {
+            /* This cause is handled in PluginResolveSignalHandler
             case CANCELLED:
                 this.terminal.error("プラグイン解決がキャンセルされました。");
-                break;
+                break;*/
             case GOT_ERROR_RESULT:
                 this.terminal.error("プラグイン解決中にエラーが発生しました。");
                 break;
