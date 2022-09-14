@@ -39,7 +39,6 @@ public class ResolverSignalHandler
     public void onPluginResolveError(PluginResolveErrorSignal signal)
     {
         terminal.error(signal.getError().getCause().getMessage());
-        terminal.error("プラグインの解決に失敗しました。");
     }
 
     @SignalHandler
