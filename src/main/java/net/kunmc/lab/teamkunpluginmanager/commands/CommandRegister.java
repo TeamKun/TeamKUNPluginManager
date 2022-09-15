@@ -60,7 +60,7 @@ public class CommandRegister extends CommandBase
         terminal.info(ChatColor.LIGHT_PURPLE + "サーバと通信しています...");
 
         HTTPResponse response = Requests.request(RequestContext.builder()
-                .method(RequestMethod.GET)
+                .method(RequestMethod.POST)
                 .url(OAUTH_PREPARE_URL)
                 .build());
 
@@ -134,7 +134,7 @@ public class CommandRegister extends CommandBase
             }
 
             kpmInstance.getTokenStore().storeToken(response.get("access_token").getAsString());
-            terminal.success("S: トークンを正常に保管しました！");
+            terminal.success("トークンを正常に保管しました！");
             if (terminal.isPlayer())
                 terminal.clearNotification();
             kpmInstance.getSession().unlock();
