@@ -67,7 +67,7 @@ public class Requests
             headers.put("Accept", "application/vnd.github.v3+json");
 
             if (TeamKunPluginManager.getPlugin().isTokenAvailable())
-                headers.put("Authorization", "Token " + TeamKunPluginManager.getPlugin().getVault().getToken());
+                headers.put("Authorization", "Token " + TeamKunPluginManager.getPlugin().getTokenStore().getToken());
 
         }
         else if (host.equalsIgnoreCase("file.io"))

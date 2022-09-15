@@ -30,11 +30,13 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.KnownPluginsResol
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
+import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 
 @Getter
 public final class TeamKunPluginManager extends JavaPlugin
@@ -44,7 +46,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private static TeamKunPluginManager plugin;
 
     private FileConfiguration pluginConfig;
-    private TokenVault vault;
+    private TokenStore tokenStore;
 
     @Setter
     private boolean enableBuildTree = true;
@@ -105,7 +107,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     public boolean isTokenAvailable()
     {
-        return !vault.getToken().isEmpty();
+        return tokenStore.isTokenAvailable();
     }
 
     public static void registerCommands(CommandManager commandManager)
@@ -140,7 +142,25 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         setupResolver(this);
 
-        vault = new TokenVault();
+        tokenStore = new TokenStore(
+                this.getDataFolder().toPath().resolve("token.dat"),
+                this.getDataFolder().toPath().resolve("token_key.dat")
+        );
+        try
+        {
+            boolean tokenAvailable = tokenStore.loadToken();
+            if (!tokenAvailable)
+                if (tokenStore.migrateToken())
+                    tokenAvailable = true;
+
+            if (!tokenAvailable)
+                System.out.println("Tokenが見つかりませんでした。/kpm registerでTokenを登録してください。");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.out.println("トークンの読み込みに失敗しました。");
+        }
 
         setupDependencyTree(this);
 
@@ -150,14 +170,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         String tokenEnv = System.getenv("TOKEN");
 
         if (tokenEnv != null && !tokenEnv.isEmpty())
-        {
-            if (!vault.getToken().equals(tokenEnv))
-                vault.vault(tokenEnv);
-            return;
-        }
-
-        if (vault.getToken().isEmpty())
-            vault.vault("");
+            tokenStore.fromEnv();
     }
 
 }

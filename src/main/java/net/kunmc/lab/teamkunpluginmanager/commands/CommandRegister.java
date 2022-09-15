@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -132,7 +133,7 @@ public class CommandRegister extends CommandBase
                 throw new RuntimeException(); // For cancel bukkit task
             }
 
-            kpmInstance.getVault().vault(response.get("access_token").getAsString());
+            kpmInstance.getTokenStore().storeToken(response.get("access_token").getAsString());
             terminal.success("S: トークンを正常に保管しました！");
             if (terminal.isPlayer())
                 terminal.clearNotification();
@@ -160,7 +161,17 @@ public class CommandRegister extends CommandBase
 
         if (args.length == 1)
         {
-            kpmInstance.getVault().vault(args[0]);
+            try
+            {
+                kpmInstance.getTokenStore().storeToken(args[0]);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                terminal.error("トークンの保存に失敗しました。");
+                return;
+            }
+
             terminal.success("トークンを正常に保管しました！");
             kpmInstance.getSession().unlock();
             return;

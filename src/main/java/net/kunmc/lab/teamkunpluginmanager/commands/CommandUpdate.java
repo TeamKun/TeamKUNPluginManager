@@ -68,7 +68,7 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
                                 urlObj.getHost().equals("raw.githubusercontent.com")))
                             connection.setRequestProperty(
                                     "Authorization",
-                                    "token " + TeamKunPluginManager.getPlugin().getVault().getToken()
+                                    "token " + TeamKunPluginManager.getPlugin().getTokenStore().getToken()
                             );
                         connection.setRequestProperty(
                                 "User-Agent",
