@@ -6,7 +6,7 @@
 
     <groupId>net.kunmc.lab</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>3.0.0-pre2</version>
+    <version>3.0.0-pre3</version>
     <packaging>jar</packaging>
 
     <name>TeamKunPluginManager</name>
