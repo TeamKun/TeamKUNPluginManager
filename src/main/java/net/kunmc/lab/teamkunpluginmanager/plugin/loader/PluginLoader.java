@@ -96,7 +96,7 @@ public class PluginLoader
     }
 
     /**
-     * プラグインを読み込みます.
+     * プラグインを読み込みます。
      *
      * @param pluginPath プラグインのパス
      * @return プラグインの読み込み結果
@@ -146,6 +146,11 @@ public class PluginLoader
         return PluginLoadResult.OK;
     }
 
+    /**
+     * プラグインをアンロードします。
+     *
+     * @param plugin アンロードするプラグイン
+     */
     public void unloadPlugin(@NotNull Plugin plugin)
     {
         this.getPluginRecipes(plugin.getName())
@@ -268,6 +273,11 @@ public class PluginLoader
         return result;
     }
 
+    /**
+     * プラグインを再読み込みします。
+     *
+     * @param plugin 再読み込みするプラグイン
+     */
     public void reloadPlugin(Plugin plugin)
     {
         Path pluginPath = PluginUtil.getFile(plugin).toPath();

@@ -48,3 +48,12 @@ permissions:
     description: "エイリアス定義データベースを更新します。"
   kpm.help:
     description: "プラグインのヘルプを表示します。"
+
+  kpm.debug:
+    description: "プラグインのデバッグを行います。"
+    default: op
+    children:
+      kpm.debug.install:
+        description: "プラグインをインストールします。"
+        default: op
+

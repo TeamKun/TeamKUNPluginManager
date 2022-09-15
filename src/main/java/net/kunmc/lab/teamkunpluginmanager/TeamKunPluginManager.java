@@ -7,6 +7,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandAutoRemove;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandClean;
+import net.kunmc.lab.teamkunpluginmanager.commands.CommandDebug;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandFix;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
@@ -19,14 +20,15 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
 import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
 import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
-import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.BruteforceGitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.CurseBukkitResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.GitHubURLResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.KnownPluginsResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.OmittedGitHubResolver;
+import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -49,6 +51,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private Session session;
     private PluginResolver resolver;
     private CommandManager commandManager;
+    private InstallManager installManager;
 
     private static void setupDependencyTree(TeamKunPluginManager plugin)
     {
@@ -118,6 +121,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("status", new CommandStatus());
         commandManager.registerCommand("uninstall", new CommandUninstall(), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate());
+        commandManager.registerCommand("debug", new CommandDebug());
     }
 
     @Override
@@ -129,6 +133,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         pluginConfig = getConfig();
         resolver = new PluginResolver();
         commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+        installManager = new InstallManager(this);
         new PluginLoader(); // Initialize plugin loader
 
         registerCommands(commandManager);

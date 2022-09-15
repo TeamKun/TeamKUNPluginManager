@@ -9,7 +9,7 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
+import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -112,7 +112,7 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
 
 
                         terminal.writeLine(ChatColor.GREEN + "取得：" + num.incrementAndGet() +
-                                " " + url + " [" + PluginUtil.getFileSizeString(file.length()) + "]");
+                                " " + url + " [" + Utils.roundSizeUnit(file.length()) + "]");
                     }
                     catch (MalformedURLException e)
                     {
@@ -150,11 +150,11 @@ public class CommandUpdate extends CommandBase // TODO: Rewrite this
 
         terminal.writeLine(
                 ChatColor.LIGHT_PURPLE +
-                        PluginUtil.getFileSizeString(size.get()) +
+                        Utils.roundSizeUnit(size.get()) +
                         " を " +
                         seconds +
                         "秒 で取得しました (" +
-                        PluginUtil.getFileSizeString(size.get() / ((long) seconds == 0 ? 1: (long) seconds)) +
+                        Utils.roundSizeUnit(size.get() / ((long) seconds == 0 ? 1: (long) seconds)) +
                         "/s)"
         );
 
