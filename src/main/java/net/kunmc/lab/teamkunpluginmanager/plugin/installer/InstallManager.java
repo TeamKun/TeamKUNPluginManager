@@ -84,6 +84,8 @@ public class InstallManager
         {
             e.printStackTrace();
             terminal.error("不明なエラーが発生しました。");
+
+            runningInstall = null;
         }
     }
 
@@ -106,10 +108,19 @@ public class InstallManager
         SignalHandleManager copiedHandleManager = signalHandleManager.copy();
         HeadSignalHandlers.getUninstallHandlers(terminal).forEach(copiedHandleManager::register);
 
+        try
+        {
+            PluginUninstaller uninstaller = new PluginUninstaller(copiedHandleManager);
+            runningInstall = uninstaller.getProgress();
 
-        PluginUninstaller uninstaller = new PluginUninstaller(copiedHandleManager);
-        runningInstall = uninstaller.getProgress();
+            uninstaller.run(argument);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            terminal.error("不明なエラーが発生しました。");
 
-        uninstaller.run(argument);
+            runningInstall = null;
+        }
     }
 }
