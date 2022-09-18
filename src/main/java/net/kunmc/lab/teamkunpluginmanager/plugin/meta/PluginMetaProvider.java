@@ -19,6 +19,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * プラグインのメタデータを提供するクラスです。
+ */
 public class PluginMetaProvider implements Listener
 {
     private final HikariDataSource db;
@@ -71,46 +74,99 @@ public class PluginMetaProvider implements Listener
         return dependencyNodes;
     }
 
+    /**
+     * このクラスを破棄します。
+     */
     public void close()
     {
         db.close();
     }
 
+    /**
+     * プラグインが依存(depend)しているプラグインのリストを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存しているプラグインのリスト
+     */
     public List<String> getDependOn(@NotNull String pluginName)
     {
         return getListFromTable("depend", PluginUtil.normalizePluginName(pluginName), "name");
     }
 
+    /**
+     * プラグインが依存(soft_depend)しているプラグインのリストを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存しているプラグインのリスト
+     */
     public List<String> getSoftDependOn(@NotNull String pluginName)
     {
         return getListFromTable("soft_depend", PluginUtil.normalizePluginName(pluginName), "name");
     }
 
+    /**
+     * プラグインを依存(load_before)しているプラグインのリストを取得します。
+     * load_before は特殊な依存で, 依存しているプラグインを先に読み込むようにします。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存しているプラグインのリスト
+     */
     public List<String> getLoadBefore(@NotNull String pluginName)
     {
         return getListFromTable("load_before", PluginUtil.normalizePluginName(pluginName), "name");
     }
 
+    /**
+     * プラグインが依存(depend)されているプラグインのリストを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存されているプラグインのリスト
+     */
     public List<String> getDependedBy(@NotNull String pluginName)
     {
         return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "dependency");
     }
 
+    /**
+     * プラグインが依存(soft_depend)されているプラグインのリストを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存されているプラグインのリスト
+     */
     public List<String> getSoftDependedBy(@NotNull String pluginName)
     {
         return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "soft_dependency");
     }
 
+    /**
+     * プラグインが依存(load_before)されているプラグインのリストを取得します。
+     * load_before は特殊な依存で, 依存しているプラグインを先に読み込むようにします。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存されているプラグインのリスト
+     */
     public List<String> getLoadBeforeBy(@NotNull String pluginName)
     {
         return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "load_before");
     }
 
+    /**
+     * プラグインの作者を取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインの作者
+     */
     public List<String> getAuthors(@NotNull String pluginName)
     {
         return getListFromTable("plugin_author", PluginUtil.normalizePluginName(pluginName), "author");
     }
 
+    /**
+     * プラグインが誰によってインストールされたかを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインのインストール者
+     */
     public InstallOperator getInstalledBy(@NotNull String pluginName)
     {
         try (Connection con = this.db.getConnection())
@@ -131,6 +187,13 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * プラグインが依存関係かどうかを取得します。
+     * 依存関係としてマークされている場合, 自動削除等の機能の対象になります。
+     *
+     * @param pluginName プラグインの名前
+     * @return 依存関係かどうか
+     */
     public boolean isDependency(@NotNull String pluginName)
     {
         try (Connection con = this.db.getConnection())
@@ -151,22 +214,46 @@ public class PluginMetaProvider implements Listener
         }
     }
 
-    public boolean setDependencyFlag(@NotNull String pluginName, boolean isDependency)
+    /**
+     * プラグインが依存関係かどうかを設定します。
+     *
+     * @param pluginName   プラグインの名前
+     * @param isDependency 依存関係かどうか
+     */
+    public void setDependencyFlag(@NotNull String pluginName, boolean isDependency)
     {
         try (Connection con = this.db.getConnection())
         {
+            con.createStatement().execute("BEGIN TRANSACTION");
             PreparedStatement statement = con.prepareStatement("UPDATE meta SET is_dependency = ? WHERE name = ?");
             statement.setInt(1, isDependency ? 0: 1);
             statement.setString(2, PluginUtil.normalizePluginName(pluginName));
 
-            return statement.executeUpdate() > 0;
+            statement.executeUpdate();
+
+            con.createStatement().execute("COMMIT TRANSACTION");
         }
         catch (SQLException e)
         {
-            return false;
+            try (Connection connection = this.db.getConnection())
+            {
+                connection.createStatement().execute("ROLLBACK TRANSACTION");
+            }
+            catch (SQLException e1)
+            {
+                System.err.println("Failed to rollback transaction");
+                throw new RuntimeException(e1);
+            }
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * プラグインデータを保存します。
+     *
+     * @param plugin              プラグイン
+     * @param buildDependencyTree 依存関係ツリーを構築するかどうか
+     */
     public void savePluginData(@NotNull Plugin plugin, boolean buildDependencyTree)
     {
         PluginDescriptionFile description = plugin.getDescription();
@@ -249,6 +336,11 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * プラグインのメタデータを保存します。
+     *
+     * @param meta メタデータ
+     */
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
         try (Connection connection = this.db.getConnection())
@@ -282,6 +374,11 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * プラグインのメタデータを削除します。
+     *
+     * @param pluginName プラグインの名前
+     */
     public void removePluginMeta(@NotNull String pluginName)
     {
         try (Connection connection = this.db.getConnection())
@@ -311,6 +408,12 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * プラグインのデータを削除します。
+     *
+     * @param pluginName         プラグインの名前
+     * @param thinDependencyTree 依存関係ツリーを構築するかどうか
+     */
     public void removePluginData(@NotNull String pluginName, boolean thinDependencyTree)
     {
 
@@ -359,6 +462,11 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * 依存関係ツリーを保存します。
+     *
+     * @param dependencyNodes 依存関係ツリー
+     */
     public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
     {
         try (Connection connection = this.db.getConnection())
@@ -393,6 +501,11 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * 依存関係ツリーを構築します。
+     *
+     * @param plugin プラグイン
+     */
     public void buildDependencyTree(@NotNull Plugin plugin)
     {
         String pluginName = PluginUtil.normalizePluginName(plugin.getName());
@@ -406,6 +519,11 @@ public class PluginMetaProvider implements Listener
         this.saveDependencyTree(dependencyNodes);
     }
 
+    /**
+     * 依存関係ツリーを間引きします。
+     *
+     * @param pluginName プラグインの名前
+     */
     public void thinDependencyTree(@NotNull String pluginName)
     {
         try (Connection connection = this.db.getConnection())

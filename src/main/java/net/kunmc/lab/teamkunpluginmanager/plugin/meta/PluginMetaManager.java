@@ -17,8 +17,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * プラグインのメタデータを管理するクラスです。
+ */
 public class PluginMetaManager implements Listener
 {
+    /**
+     * メタデータを提供するプロバイダです。
+     */
     @Getter
     private final PluginMetaProvider provider;
     private final List<String> exceptedPluginModifications;
@@ -33,21 +39,34 @@ public class PluginMetaManager implements Listener
         Runner.runLater(() -> Bukkit.getPluginManager().registerEvents(this, plugin), 1L);
     }
 
+    /**
+     * プラグインの変更(変更や追加)を準備します。
+     * このメソッドを呼び出した後にプラグインを変更すると, 自動的なメタデータの更新が行われません。
+     *
+     * @param pluginName プラグインの名前
+     */
     public void preparePluginModify(@NotNull String pluginName)
     {
         this.exceptedPluginModifications.add(PluginUtil.normalizePluginName(pluginName));
     }
 
+    /**
+     * プラグインの変更(変更や追加)を準備します。
+     * このメソッドを呼び出した後にプラグインを変更すると, 自動的なメタデータの更新が行われません。
+     *
+     * @param plugin プラグイン
+     * @see #preparePluginModify(String)
+     */
     public void preparePluginModify(@NotNull Plugin plugin)
     {
-        this.exceptedPluginModifications.add(PluginUtil.normalizePluginName(plugin.getName()));
+        this.preparePluginModify(plugin.getName());
     }
 
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event)
     {
         Plugin plugin = event.getPlugin();
-        if (this.isNoAutoCreateMetadata(plugin))
+        if (this.checkNoAutoCreateMetadata(plugin))
             return;
 
         String pluginNameFull = PluginUtil.getPluginString(plugin);
@@ -66,7 +85,7 @@ public class PluginMetaManager implements Listener
     public void onDisable(PluginDisableEvent event)
     {
         Plugin plugin = event.getPlugin();
-        if (this.isNoAutoCreateMetadata(plugin))
+        if (this.checkNoAutoCreateMetadata(plugin))
             return;
 
         String normalized = PluginUtil.normalizePluginName(plugin.getName());
@@ -87,6 +106,14 @@ public class PluginMetaManager implements Listener
         this.provider.thinDependencyTree(pluginNameFull);
     }
 
+    /**
+     * プラグインがインストールされたときに呼び出します。
+     *
+     * @param plugin       インストールされたプラグイン
+     * @param operator     インストールした操作者
+     * @param resolveQuery インストール時に使用したプラグイン解決クエリ
+     * @param installedAt  インストールされた時刻
+     */
     public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, long installedAt)
     {
         this.provider.savePluginData(plugin, false);
@@ -106,18 +133,30 @@ public class PluginMetaManager implements Listener
         );
     }
 
+    /**
+     * プラグインがインストールされたときに呼び出します。
+     *
+     * @param plugin       インストールされたプラグイン
+     * @param operator     インストールした操作者
+     * @param resolveQuery インストール時に使用したプラグイン解決クエリ
+     */
     public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery)
     {
         onInstalled(plugin, operator, resolveQuery, System.currentTimeMillis());
     }
 
+    /**
+     * プラグインがアンインストールされたときに呼び出します。
+     *
+     * @param pluginName アンインストールされたプラグインの名前
+     */
     public void onUninstalled(@NotNull String pluginName)
     {
         this.provider.removePluginData(pluginName, false);
         this.provider.removePluginMeta(pluginName);
     }
 
-    private boolean isNoAutoCreateMetadata(Plugin plugin)
+    private boolean checkNoAutoCreateMetadata(Plugin plugin)
     {
         String normalized = PluginUtil.normalizePluginName(plugin.getName());
         if (this.exceptedPluginModifications.contains(normalized))
