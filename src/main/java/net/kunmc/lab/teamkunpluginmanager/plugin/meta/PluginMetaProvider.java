@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * プラグインのメタデータを提供するクラスです。
  */
+@SuppressWarnings("unused")
 public class PluginMetaProvider implements Listener
 {
     private final HikariDataSource db;
@@ -240,14 +241,48 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateResolveQuery(@NotNull String pluginName, @NotNull String query)
+    {
+        Connection con = null;
+        try
+        {
+            con = this.db.getConnection();
+            con.createStatement().execute("BEGIN TRANSACTION");
+            // Check if the plugin exists
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            statement.setString(1, pluginName);
+
+            if (!statement.executeQuery().next())
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                con.createStatement().execute("ROLLBACK TRANSACTION");
+                throw new IllegalArgumentException("Plugin does not exist");
             }
-            catch (SQLException e1)
+
+            statement = con.prepareStatement("UPDATE meta SET resolve_query = ? WHERE name = ?");
+            statement.setString(1, query);
+            statement.setString(2, pluginName);
+
+            statement.executeUpdate();
+
+            con.createStatement().execute("COMMIT TRANSACTION");
+        }
+        catch (SQLException e)
+        {
+            if (con != null)
             {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
             throw new RuntimeException(e);
         }
@@ -272,20 +307,18 @@ public class PluginMetaProvider implements Listener
         List<String> softDependencies = description.getSoftDepend();
         List<String> loadBefore = description.getLoadBefore();
 
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            // Lock
-
-            connection.createStatement().execute("BEGIN TRANSACTION");
-
+            con = this.db.getConnection();
             PreparedStatement statement =
-                    connection.prepareStatement("INSERT INTO plugin(name, version, load_timing) VALUES(?, ?, ?)");
+                    con.prepareStatement("INSERT INTO plugin(name, version, load_timing) VALUES(?, ?, ?)");
             statement.setString(1, name);
             statement.setString(2, version);
             statement.setString(3, loadTiming);
             statement.execute();
 
-            statement = connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
+            statement = con.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
             statement.setString(1, name);
 
             for (String author : authors)
@@ -294,7 +327,7 @@ public class PluginMetaProvider implements Listener
                 statement.execute();
             }
 
-            statement = connection.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
+            statement = con.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
             statement.setString(1, name);
 
             for (String dependency : dependencies)
@@ -303,7 +336,7 @@ public class PluginMetaProvider implements Listener
                 statement.execute();
             }
 
-            statement = connection.prepareStatement("INSERT INTO soft_depend(name, soft_dependency) VALUES(?, ?)");
+            statement = con.prepareStatement("INSERT INTO soft_depend(name, soft_dependency) VALUES(?, ?)");
             statement.setString(1, name);
 
             for (String softDependency : softDependencies)
@@ -312,7 +345,7 @@ public class PluginMetaProvider implements Listener
                 statement.execute();
             }
 
-            statement = connection.prepareStatement("INSERT INTO load_before(name, load_before) VALUES(?, ?)");
+            statement = con.prepareStatement("INSERT INTO load_before(name, load_before) VALUES(?, ?)");
             statement.setString(1, name);
 
             for (String load : loadBefore)
@@ -321,21 +354,24 @@ public class PluginMetaProvider implements Listener
                 statement.execute();
             }
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
 
             if (buildDependencyTree)
                 this.buildDependencyTree(plugin);
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
-            }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
             throw new RuntimeException(e);
         }
@@ -348,33 +384,38 @@ public class PluginMetaProvider implements Listener
      */
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            connection.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
 
             PreparedStatement statement =
-                    connection.prepareStatement("INSERT INTO meta(name, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?)");
+                    con.prepareStatement("INSERT INTO meta(name, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?)");
             statement.setString(1, meta.getName());
             statement.setLong(2, meta.getInstalledAt());
             statement.setString(3, meta.getInstalledBy().name());
             statement.setString(4, meta.getResolveQuery());
             statement.setInt(5, meta.isDependency() ? 1: 0);
 
-            statement.execute();
+            statement.executeUpdate();
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
-            }
+
             throw new RuntimeException(e);
         }
     }
@@ -386,29 +427,34 @@ public class PluginMetaProvider implements Listener
      */
     public void removePluginMeta(@NotNull String pluginName)
     {
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            connection.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
 
             PreparedStatement statement =
-                    connection.prepareStatement("DELETE FROM meta WHERE name = ?");
+                    con.prepareStatement("DELETE FROM meta WHERE name = ?");
             statement.setString(1, pluginName);
 
-            statement.execute();
+            statement.executeUpdate();
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
-            }
+
             throw new RuntimeException(e);
         }
     }
@@ -421,48 +467,52 @@ public class PluginMetaProvider implements Listener
      */
     public void removePluginData(@NotNull String pluginName, boolean thinDependencyTree)
     {
-
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            connection.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
 
             PreparedStatement statement =
-                    connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
+                    con.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
             statement.setString(1, pluginName);
             statement.execute();
 
-            statement = connection.prepareStatement("DELETE FROM depend WHERE name = ?");
+            statement = con.prepareStatement("DELETE FROM depend WHERE name = ?");
             statement.setString(1, pluginName);
             statement.execute();
 
-            statement = connection.prepareStatement("DELETE FROM soft_depend WHERE name = ?");
+            statement = con.prepareStatement("DELETE FROM soft_depend WHERE name = ?");
             statement.setString(1, pluginName);
             statement.execute();
 
-            statement = connection.prepareStatement("DELETE FROM load_before WHERE name = ?");
+            statement = con.prepareStatement("DELETE FROM load_before WHERE name = ?");
             statement.setString(1, pluginName);
             statement.execute();
 
-            statement = connection.prepareStatement("DELETE FROM plugin WHERE name = ?");
+            statement = con.prepareStatement("DELETE FROM plugin WHERE name = ?");
             statement.setString(1, pluginName);
             statement.execute();
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
 
             if (thinDependencyTree)
                 this.thinDependencyTree(pluginName);
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
-            }
+
             throw new RuntimeException(e);
         }
     }
@@ -474,12 +524,14 @@ public class PluginMetaProvider implements Listener
      */
     public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
     {
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+
+        try
         {
-            connection.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
 
             PreparedStatement statement =
-                    connection.prepareStatement("INSERT INTO dependency_tree(name, parent, depend_type) VALUES(?, ?, ?)");
+                    con.prepareStatement("INSERT INTO dependency_tree(name, parent, depend_type) VALUES(?, ?, ?)");
 
             for (DependencyNode node : dependencyNodes)
             {
@@ -489,19 +541,23 @@ public class PluginMetaProvider implements Listener
                 statement.execute();
             }
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
-            }
+
             throw new RuntimeException(e);
         }
     }
@@ -531,29 +587,34 @@ public class PluginMetaProvider implements Listener
      */
     public void thinDependencyTree(@NotNull String pluginName)
     {
-        try (Connection connection = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            connection.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
 
             PreparedStatement statement =
-                    connection.prepareStatement("DELETE FROM dependency_tree WHERE name = ? OR parent = ?");
+                    con.prepareStatement("DELETE FROM dependency_tree WHERE name = ? OR parent = ?");
             statement.setString(1, pluginName);
             statement.setString(2, pluginName);
             statement.execute();
 
-            connection.createStatement().execute("COMMIT TRANSACTION");
+            con.createStatement().execute("COMMIT");
         }
         catch (SQLException e)
         {
-            try (Connection connection = this.db.getConnection())
+            if (con != null)
             {
-                connection.createStatement().execute("ROLLBACK TRANSACTION");
+                try
+                {
+                    con.rollback();
+                }
+                catch (SQLException ex)
+                {
+                    System.err.println("Failed to rollback transaction");
+                    ex.printStackTrace();
+                }
             }
-            catch (SQLException e1)
-            {
-                System.err.println("Failed to rollback transaction");
-                throw new RuntimeException(e1);
-            }
+
             throw new RuntimeException(e);
         }
     }
