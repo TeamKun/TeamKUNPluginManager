@@ -1,26 +1,57 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 
 import lombok.Value;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+/**
+ * プラグインのメタ情報を表します。
+ */
 @Value
 public class PluginMeta
 {
+    /**
+     * プラグインの名前です。
+     */
     @NotNull
     String name;
+    /**
+     * プラグインのバージョンです。
+     */
     @NotNull
-    PluginDescriptionFile pluginYML;
+    String version;
 
+    /**
+     * プラグインのインストール者です。
+     */
     @NotNull
-    PluginInstaller pluginInstaller;
-    @NotNull
-    PluginType pluginType;
-
-    long installedIn;
-    boolean enable;
-
+    InstallOperator installedBy;
+    /**
+     * プラグインが依存関係であるかどうかを表します。
+     */
+    boolean isDependency;
+    /**
+     * プラグインのインストールに使用した解決クエリです。
+     */
     @Nullable
-    String resolver;
+    String resolveQuery;
+
+    /**
+     * プラグインがいつインストールされたかを表します。
+     */
+    long installedAt;
+
+    /**
+     * 依存しているプラグインのリストです。
+     */
+    @NotNull
+    List<DependencyNode> dependedBy;
+    /**
+     *
+     */
+    @NotNull
+    List<DependencyNode> dependsOn;
+
 }
