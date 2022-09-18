@@ -162,6 +162,17 @@ public class PluginMetaProvider implements Listener
     }
 
     /**
+     * プラグインの作者からプラグインのリストを取得します。
+     *
+     * @param author プラグインの作者
+     * @return プラグインのリスト
+     */
+    public List<String> getPluginsByAuthor(@NotNull String author)
+    {
+        return getListFromTable("plugin_author", author, "author", "name");
+    }
+
+    /**
      * プラグインが誰によってインストールされたかを取得します。
      *
      * @param pluginName プラグインの名前
@@ -622,14 +633,20 @@ public class PluginMetaProvider implements Listener
         return new HikariDataSource(config);
     }
 
-    @SuppressWarnings("SqlResolve")
     private List<String> getListFromTable(String tableName, String name, String field)
+    {
+        return this.getListFromTable(tableName, name, "name", field);
+    }
+
+    @SuppressWarnings("SqlResolve")
+    private List<String> getListFromTable(String tableName, String name, String queryField, String field)
     {
         List<String> depends = new ArrayList<>();
 
         try (Connection con = this.db.getConnection())
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM " + tableName + " WHERE name = ?");
+            PreparedStatement statement =
+                    con.prepareStatement("SELECT * FROM " + tableName + " WHERE " + queryField + " = ?");
             statement.setString(1, name);
 
             ResultSet resultSet = statement.executeQuery();
