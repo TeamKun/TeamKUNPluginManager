@@ -3,7 +3,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -44,15 +43,12 @@ public class PluginMetaProvider implements Listener
 
         for (String dependency : dependencies)
         {
-            dependency = PluginUtil.normalizePluginName(dependency);
             dependencyNodes.add(new DependencyNode(pluginName, dependency, DependType.HARD_DEPEND));
             processed.add(dependency);
         }
 
         for (String softDependency : softDependencies)
         {
-            softDependency = PluginUtil.normalizePluginName(softDependency);
-
             if (processed.contains(softDependency))
                 continue;
 
@@ -62,8 +58,6 @@ public class PluginMetaProvider implements Listener
 
         for (String load : loadBefore)
         {
-            load = PluginUtil.normalizePluginName(load);
-
             if (processed.contains(load))
                 continue;
 
@@ -90,7 +84,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getDependOn(@NotNull String pluginName)
     {
-        return getListFromTable("depend", PluginUtil.normalizePluginName(pluginName), "name");
+        return getListFromTable("depend", pluginName, "name");
     }
 
     /**
@@ -101,7 +95,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getSoftDependOn(@NotNull String pluginName)
     {
-        return getListFromTable("soft_depend", PluginUtil.normalizePluginName(pluginName), "name");
+        return getListFromTable("soft_depend", pluginName, "name");
     }
 
     /**
@@ -113,7 +107,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getLoadBefore(@NotNull String pluginName)
     {
-        return getListFromTable("load_before", PluginUtil.normalizePluginName(pluginName), "name");
+        return getListFromTable("load_before", pluginName, "name");
     }
 
     /**
@@ -124,7 +118,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getDependedBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "dependency");
+        return getListFromTable("dependency_tree", pluginName, "dependency");
     }
 
     /**
@@ -135,7 +129,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getSoftDependedBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "soft_dependency");
+        return getListFromTable("dependency_tree", pluginName, "soft_dependency");
     }
 
     /**
@@ -147,7 +141,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getLoadBeforeBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", PluginUtil.normalizePluginName(pluginName), "load_before");
+        return getListFromTable("dependency_tree", pluginName, "load_before");
     }
 
     /**
@@ -158,7 +152,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getAuthors(@NotNull String pluginName)
     {
-        return getListFromTable("plugin_author", PluginUtil.normalizePluginName(pluginName), "author");
+        return getListFromTable("plugin_author", pluginName, "author");
     }
 
     /**
@@ -183,7 +177,7 @@ public class PluginMetaProvider implements Listener
         try (Connection con = this.db.getConnection())
         {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -210,7 +204,7 @@ public class PluginMetaProvider implements Listener
         try (Connection con = this.db.getConnection())
         {
             PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
 
             ResultSet resultSet = statement.executeQuery();
 
@@ -238,7 +232,7 @@ public class PluginMetaProvider implements Listener
             con.createStatement().execute("BEGIN TRANSACTION");
             PreparedStatement statement = con.prepareStatement("UPDATE meta SET is_dependency = ? WHERE name = ?");
             statement.setInt(1, isDependency ? 0: 1);
-            statement.setString(2, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(2, pluginName);
 
             statement.executeUpdate();
 
@@ -434,23 +428,23 @@ public class PluginMetaProvider implements Listener
 
             PreparedStatement statement =
                     connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
             statement.execute();
 
             statement = connection.prepareStatement("DELETE FROM depend WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
             statement.execute();
 
             statement = connection.prepareStatement("DELETE FROM soft_depend WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
             statement.execute();
 
             statement = connection.prepareStatement("DELETE FROM load_before WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
             statement.execute();
 
             statement = connection.prepareStatement("DELETE FROM plugin WHERE name = ?");
-            statement.setString(1, PluginUtil.normalizePluginName(pluginName));
+            statement.setString(1, pluginName);
             statement.execute();
 
             connection.createStatement().execute("COMMIT TRANSACTION");
@@ -519,7 +513,7 @@ public class PluginMetaProvider implements Listener
      */
     public void buildDependencyTree(@NotNull Plugin plugin)
     {
-        String pluginName = PluginUtil.normalizePluginName(plugin.getName());
+        String pluginName = plugin.getName();
 
         List<String> dependencies = this.getDependOn(pluginName);
         List<String> softDependencies = this.getDependOn(pluginName);

@@ -47,7 +47,7 @@ public class PluginMetaManager implements Listener
      */
     public void preparePluginModify(@NotNull String pluginName)
     {
-        this.exceptedPluginModifications.add(PluginUtil.normalizePluginName(pluginName));
+        this.exceptedPluginModifications.add(pluginName);
     }
 
     /**
@@ -88,13 +88,6 @@ public class PluginMetaManager implements Listener
         if (this.checkNoAutoCreateMetadata(plugin))
             return;
 
-        String normalized = PluginUtil.normalizePluginName(plugin.getName());
-        if (this.exceptedPluginModifications.contains(normalized))
-        {
-            this.exceptedPluginModifications.remove(normalized);
-            return;
-        }
-
         String pluginNameFull = PluginUtil.getPluginString(plugin);
 
         System.out.println("プラグインの削除が検出されました: " + pluginNameFull);
@@ -121,7 +114,7 @@ public class PluginMetaManager implements Listener
         List<DependencyNode> dummy = Collections.emptyList();
         this.provider.savePluginMeta(
                 new PluginMeta(
-                        PluginUtil.normalizePluginName(plugin.getName()),
+                        plugin.getName(),
                         plugin.getDescription().getVersion(),
                         operator,
                         false, // Dummy value
@@ -158,10 +151,10 @@ public class PluginMetaManager implements Listener
 
     private boolean checkNoAutoCreateMetadata(Plugin plugin)
     {
-        String normalized = PluginUtil.normalizePluginName(plugin.getName());
-        if (this.exceptedPluginModifications.contains(normalized))
+        String pluginName = plugin.getName();
+        if (this.exceptedPluginModifications.contains(pluginName))
         {
-            this.exceptedPluginModifications.remove(normalized);
+            this.exceptedPluginModifications.remove(pluginName);
             return true;
         }
 
