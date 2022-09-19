@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 
 import lombok.Getter;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -66,7 +67,8 @@ public class PluginMetaManager implements Listener
     public void onPluginEnable(PluginEnableEvent event)
     {
         Plugin plugin = event.getPlugin();
-        if (this.checkNoAutoCreateMetadata(plugin))
+        if (plugin.getName().equals(TeamKunPluginManager.getPlugin().getName()) ||
+                this.checkNoAutoCreateMetadata(plugin))
             return;
 
         String pluginNameFull = PluginUtil.getPluginString(plugin);
@@ -85,7 +87,8 @@ public class PluginMetaManager implements Listener
     public void onDisable(PluginDisableEvent event)
     {
         Plugin plugin = event.getPlugin();
-        if (this.checkNoAutoCreateMetadata(plugin))
+        if (plugin.getName().equals(TeamKunPluginManager.getPlugin().getName()) ||
+                this.checkNoAutoCreateMetadata(plugin))
             return;
 
         String pluginNameFull = PluginUtil.getPluginString(plugin);
