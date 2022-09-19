@@ -228,6 +228,12 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * プラグインの解決クエリを更新します。
+     *
+     * @param pluginName プラグインの名前
+     * @param query      解決クエリ
+     */
     public void updateResolveQuery(@NotNull String pluginName, @NotNull String query)
     {
         Connection con = null;
@@ -676,6 +682,11 @@ public class PluginMetaProvider implements Listener
         }
     }
 
+    /**
+     * 使用されていないプラグインのリストを取得します。
+     *
+     * @return 使用されていないプラグインのリスト
+     */
     public List<String> getUnusedPlugins()
     {
         Connection con;
