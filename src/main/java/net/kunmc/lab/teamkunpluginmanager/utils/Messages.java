@@ -1,22 +1,16 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.ChatColor;
 
 import java.util.List;
 
 public class Messages
 {
-    public static String getErrorMessage()
-    {
-        if (!DependencyTree.isErrors())
-            return "";
-        return ChatColor.RED + "重大なエラーが検出されました。/kpm fix で修正を行ってください。";
-    }
 
     public static String getUnInstallableMessage()
     {
-        List<String> rmble = DependencyTree.unusedPlugins();
+        List<String> rmble = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getUnusedPlugins();
 
         if (rmble.isEmpty())
             return "";

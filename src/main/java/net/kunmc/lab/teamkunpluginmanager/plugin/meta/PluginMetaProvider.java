@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -17,6 +18,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * プラグインのメタデータを提供するクラスです。
@@ -37,38 +40,6 @@ public class PluginMetaProvider implements Listener
         Runner.runLater(() -> Bukkit.getPluginManager().registerEvents(this, plugin), 1L);
     }
 
-    private static List<DependencyNode> createDependencyNodes(String pluginName, List<String> dependencies, List<String> softDependencies, List<String> loadBefore)
-    {
-        List<DependencyNode> dependencyNodes = new ArrayList<>();
-        List<String> processed = new ArrayList<>();
-
-        for (String dependency : dependencies)
-        {
-            dependencyNodes.add(new DependencyNode(pluginName, dependency, DependType.HARD_DEPEND));
-            processed.add(dependency);
-        }
-
-        for (String softDependency : softDependencies)
-        {
-            if (processed.contains(softDependency))
-                continue;
-
-            dependencyNodes.add(new DependencyNode(pluginName, softDependency, DependType.SOFT_DEPEND));
-            processed.add(softDependency);
-        }
-
-        for (String load : loadBefore)
-        {
-            if (processed.contains(load))
-                continue;
-
-            dependencyNodes.add(new DependencyNode(pluginName, load, DependType.LOAD_BEFORE));
-            processed.add(load);
-        }
-
-        return dependencyNodes;
-    }
-
     /**
      * このクラスを破棄します。
      */
@@ -83,9 +54,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存しているプラグインのリスト
      */
-    public List<String> getDependOn(@NotNull String pluginName)
+    public List<DependencyNode> getDependOn(@NotNull String pluginName)
     {
-        return getListFromTable("depend", pluginName, "name");
+        return getDependDataFromTable("depend", pluginName, "dependency",
+                DependType.HARD_DEPEND, false
+        );
     }
 
     /**
@@ -94,9 +67,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存しているプラグインのリスト
      */
-    public List<String> getSoftDependOn(@NotNull String pluginName)
+    public List<DependencyNode> getSoftDependOn(@NotNull String pluginName)
     {
-        return getListFromTable("soft_depend", pluginName, "name");
+        return getDependDataFromTable("soft_depend", pluginName, "soft_depend",
+                DependType.SOFT_DEPEND, false
+        );
     }
 
     /**
@@ -106,9 +81,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存しているプラグインのリスト
      */
-    public List<String> getLoadBefore(@NotNull String pluginName)
+    public List<DependencyNode> getLoadBefore(@NotNull String pluginName)
     {
-        return getListFromTable("load_before", pluginName, "name");
+        return getDependDataFromTable("load_before", pluginName, "load_before",
+                DependType.LOAD_BEFORE, false
+        );
     }
 
     /**
@@ -117,9 +94,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存されているプラグインのリスト
      */
-    public List<String> getDependedBy(@NotNull String pluginName)
+    public List<DependencyNode> getDependedBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", pluginName, "dependency");
+        return getDependDataFromTable("dependency_tree", pluginName, "dependency",
+                DependType.HARD_DEPEND, true
+        );
     }
 
     /**
@@ -128,9 +107,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存されているプラグインのリスト
      */
-    public List<String> getSoftDependedBy(@NotNull String pluginName)
+    public List<DependencyNode> getSoftDependedBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", pluginName, "soft_dependency");
+        return getDependDataFromTable("dependency_tree", pluginName, "soft_dependency",
+                DependType.SOFT_DEPEND, true
+        );
     }
 
     /**
@@ -140,9 +121,11 @@ public class PluginMetaProvider implements Listener
      * @param pluginName プラグインの名前
      * @return 依存されているプラグインのリスト
      */
-    public List<String> getLoadBeforeBy(@NotNull String pluginName)
+    public List<DependencyNode> getLoadBeforeBy(@NotNull String pluginName)
     {
-        return getListFromTable("dependency_tree", pluginName, "load_before");
+        return getDependDataFromTable("dependency_tree", pluginName, "load_before",
+                DependType.LOAD_BEFORE, true
+        );
     }
 
     /**
@@ -153,7 +136,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getAuthors(@NotNull String pluginName)
     {
-        return getListFromTable("plugin_author", pluginName, "author");
+        return getListFromTable("plugin_author", pluginName, "name", "author");
     }
 
     /**
@@ -518,6 +501,71 @@ public class PluginMetaProvider implements Listener
     }
 
     /**
+     * プラグインのメタデータを取得します。
+     *
+     * @param pluginName          プラグインの名前
+     * @param includeDependencies 依存関係を含めるかどうか
+     * @return プラグインのメタデータ
+     */
+    public @Nullable PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies)
+    {
+        Connection con;
+        try
+        {
+            con = this.db.getConnection();
+
+            PreparedStatement statement =
+                    con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            statement.setString(1, pluginName);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next())
+                return null;
+
+            String name = resultSet.getString("name");
+            long installedAt = resultSet.getLong("installed_at");
+            InstallOperator installedBy = InstallOperator.valueOf(resultSet.getString("installed_by"));
+            String resolveQuery = resultSet.getString("resolve_query");
+            boolean isDependency = resultSet.getInt("is_dependency") == 1;
+
+            statement = con.prepareStatement("SELECT version FROM plugin WHERE name = ?");
+
+            statement.setString(1, pluginName);
+
+            resultSet = statement.executeQuery();
+
+            if (!resultSet.next())
+                return null;
+
+            String version = resultSet.getString("version");
+
+            List<DependencyNode> dependedBy = new ArrayList<>();
+            List<DependencyNode> dependsOn = new ArrayList<>();
+            if (includeDependencies)
+            {
+                dependedBy = this.getDependedBy(pluginName);
+                dependsOn = this.getDependOn(pluginName);
+            }
+
+            return new PluginMeta(
+                    name,
+                    version,
+                    installedBy,
+                    isDependency,
+                    resolveQuery,
+                    installedAt,
+                    dependedBy,
+                    dependsOn
+            );
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * 依存関係ツリーを保存します。
      *
      * @param dependencyNodes 依存関係ツリー
@@ -571,13 +619,23 @@ public class PluginMetaProvider implements Listener
     {
         String pluginName = plugin.getName();
 
-        List<String> dependencies = this.getDependOn(pluginName);
-        List<String> softDependencies = this.getDependOn(pluginName);
-        List<String> loadBefore = this.getLoadBeforeBy(pluginName);
+        List<DependencyNode> dependencies = this.getDependOn(pluginName);
+        List<DependencyNode> softDependencies = this.getDependOn(pluginName);
+        List<DependencyNode> loadBefore = this.getLoadBeforeBy(pluginName);
 
-        List<DependencyNode> dependencyNodes = createDependencyNodes(pluginName, dependencies, softDependencies, loadBefore);
+        softDependencies.removeIf(item -> dependencies.stream().parallel()
+                .map(DependencyNode::getDependsOn)
+                .anyMatch(item.getDependsOn()::equals));
 
-        this.saveDependencyTree(dependencyNodes);
+        loadBefore.removeIf(item -> Stream.concat(dependencies.stream(), softDependencies.stream())
+                .parallel()
+                .map(DependencyNode::getDependsOn)
+                .anyMatch(item.getDependsOn()::equals));
+
+        dependencies.addAll(softDependencies);
+        dependencies.addAll(loadBefore);
+
+        this.saveDependencyTree(dependencies);
     }
 
     /**
@@ -615,6 +673,37 @@ public class PluginMetaProvider implements Listener
                 }
             }
 
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getUnusedPlugins()
+    {
+        Connection con;
+        try
+        {
+            con = this.db.getConnection();
+
+            PreparedStatement statement =
+                    con.prepareStatement(
+                            "WITH RECURSIVE cte AS (" +
+                                    "SELECT name FROM plugin WHERE name NOT IN (SELECT parent FROM dependency_tree)" +
+                                    "UNION ALL " +
+                                    "SELECT dependency_tree.name FROM dependency_tree INNER JOIN cte ON dependency_tree.parent = cte.name" +
+                                    ")" +
+                                    "SELECT name FROM cte"
+                    );
+
+            ResultSet resultSet = statement.executeQuery();
+            List<String> unusedPlugins = new ArrayList<>();
+
+            while (resultSet.next())
+                unusedPlugins.add(resultSet.getString("name"));
+
+            return unusedPlugins;
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
         }
     }
@@ -688,9 +777,19 @@ public class PluginMetaProvider implements Listener
         return new HikariDataSource(config);
     }
 
-    private List<String> getListFromTable(String tableName, String name, String field)
+    private List<DependencyNode> getDependDataFromTable(String tableName, String name, String field, DependType type, boolean baseReversed)
     {
-        return this.getListFromTable(tableName, name, "name", field);
+        List<String> depString = this.getListFromTable(tableName, name, baseReversed ? field: "name", baseReversed ? "name": field);
+
+        if (baseReversed)
+            return depString.stream()
+                    .map(item -> new DependencyNode(item, name, type))
+                    .collect(Collectors.toList());
+        else
+            return depString.stream()
+                    .map(item -> new DependencyNode(name, item, type))
+                    .collect(Collectors.toList());
+
     }
 
     @SuppressWarnings("SqlResolve")

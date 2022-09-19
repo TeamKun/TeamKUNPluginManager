@@ -1,14 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
-import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandAutoRemove;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandClean;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandDebug;
-import net.kunmc.lab.teamkunpluginmanager.commands.CommandFix;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInfo;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandInstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandRegister;
@@ -17,11 +14,10 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandResolve;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandStatus;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
-import net.kunmc.lab.teamkunpluginmanager.plugin.PluginEventListener;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.CurseBukkitResolver;
@@ -37,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @Getter
 public final class TeamKunPluginManager extends JavaPlugin
@@ -48,38 +45,27 @@ public final class TeamKunPluginManager extends JavaPlugin
     private FileConfiguration pluginConfig;
     private TokenStore tokenStore;
 
-    @Setter
-    private boolean enableBuildTree = true;
     private Session session;
     private PluginResolver resolver;
     private CommandManager commandManager;
     private InstallManager installManager;
+    private PluginMetaManager pluginMetaManager;
 
-    private static void setupDependencyTree(TeamKunPluginManager plugin)
+    private void setupDependencyTree()
     {
-        DependencyTree.initialize(plugin.getPluginConfig().getString("dependPath"));
-        DependencyTree.initializeTable();
-        KnownPlugins.initialization(plugin.getPluginConfig().getString("resolvePath"));
+        this.pluginMetaManager = new PluginMetaManager(
+                this,
+                Paths.get(plugin.getDataFolder().toURI()).resolve("plugins.db")
+        );
+
+        KnownPlugins.initialization(this.getPluginConfig().getString("resolvePath"));
 
         if (KnownPlugins.isLegacy())
         {
-            plugin.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
+            this.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
             KnownPlugins.migration();
             new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
         }
-
-        Runner.runLater(() -> {
-            DependencyTree.wipeAllPlugin();
-            plugin.getLogger().info("依存関係ツリーを構築中...");
-            DependencyTree.crawlAllPlugins();
-            plugin.getLogger().info("依存関係ツリーの構築完了");
-
-            //すべてのPLが読み終わった後にイベントリスナを登録
-            Bukkit.getPluginManager().registerEvents(
-                    new PluginEventListener(plugin),
-                    TeamKunPluginManager.plugin
-            );
-        }, 1L);
     }
 
     private static void setupResolver(TeamKunPluginManager plugin)
@@ -99,8 +85,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onDisable()
     {
-        if (DependencyTree.dataSource != null)
-            DependencyTree.dataSource.close();
+        pluginMetaManager.getProvider().close();
         if (KnownPlugins.dataSource != null)
             KnownPlugins.dataSource.close();
     }
@@ -114,7 +99,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         commandManager.registerCommand("autoremove", new CommandAutoRemove());
         commandManager.registerCommand("clean", new CommandClean());
-        commandManager.registerCommand("fix", new CommandFix());
         commandManager.registerCommand("info", new CommandInfo());
         commandManager.registerCommand("install", new CommandInstall(), "add", "i");
         commandManager.registerCommand("register", new CommandRegister(), "login");
@@ -138,6 +122,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         installManager = new InstallManager(this);
         new PluginLoader(); // Initialize plugin loader
 
+        setupDependencyTree();
         registerCommands(commandManager);
 
         setupResolver(this);
@@ -161,8 +146,6 @@ public final class TeamKunPluginManager extends JavaPlugin
             e.printStackTrace();
             System.out.println("トークンの読み込みに失敗しました。");
         }
-
-        setupDependencyTree(this);
 
         if (!new File(DATABASE_PATH).exists())
             new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);

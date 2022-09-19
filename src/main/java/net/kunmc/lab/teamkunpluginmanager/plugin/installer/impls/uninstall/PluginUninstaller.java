@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall;
 
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.PluginIsDependencySignal;
@@ -14,6 +14,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependenci
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependencyNode;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.ReversedCollector;
@@ -171,13 +172,12 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
     {
         ArrayList<Plugin> plugins = new ArrayList<>();
 
-        DependencyTree.Info info = DependencyTree.getInfo(target.getName(), false);
-        if (info == null)
-            return new ArrayList<>();
+        List<DependencyNode> dependencies =
+                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getDependOn(target.getName());
 
-        for (DependencyTree.Info.Depend depend : info.rdepends)
+        for (DependencyNode depend : dependencies)
         {
-            Plugin dependPlugin = this.getPlugin(depend.depend);
+            Plugin dependPlugin = this.getPlugin(depend.getDependsOn());
             if (dependPlugin != null)
             {
                 plugins.add(dependPlugin);

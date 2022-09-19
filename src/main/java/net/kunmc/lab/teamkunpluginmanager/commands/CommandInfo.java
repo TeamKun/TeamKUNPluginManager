@@ -3,8 +3,8 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree.Info;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependType;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMeta;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
@@ -30,10 +30,10 @@ public class CommandInfo extends CommandBase
 {
     private static Component dependTree(String name, List<String> l)
     {
-        TextComponent content = Component.text(ChatColor.GREEN + name + ": ");
+        TextComponent content = Component.text(name + ": ");
 
         if (l.isEmpty())
-            return content.append(Component.text(ChatColor.DARK_GREEN + "なし")).asComponent();
+            return content.append(Component.text(ChatColor.GRAY + "なし")).asComponent();
 
         for (String depend : l)
         {
@@ -98,7 +98,9 @@ public class CommandInfo extends CommandBase
 
         terminal.info("依存関係ツリーを読み込み中...");
 
-        Info info = DependencyTree.getInfo(args[0], false);
+        PluginMeta meta = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getPluginMeta(
+                args[0], true
+        );
 
         terminal.info("情報を読み込み中...");
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(args[0]);
@@ -111,11 +113,15 @@ public class CommandInfo extends CommandBase
 
         File file = PluginUtil.getFile(plugin);
 
-        terminal.writeLine(Messages.keyValue("名前", info.name));
+        terminal.writeLine(Messages.keyValue("名前", meta.getName()));
         terminal.writeLine(Messages.keyValue("作成者", String.join(", ", plugin.getDescription().getAuthors())));
         terminal.writeLine(Messages.keyValue("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
         terminal.writeLine(Messages.keyValue("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
-        terminal.writeLine(Messages.keyValueYesNo("保護", TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().anyMatch(s -> s.equalsIgnoreCase(info.name))));
+        terminal.writeLine(Messages.keyValueYesNo(
+                "保護",
+                TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().parallel()
+                        .anyMatch(s -> s.equalsIgnoreCase(meta.getName()))
+        ));
 
         if (plugin.getDescription().getWebsite() != null)
             terminal.writeLine(Messages.keyValue("ウェブサイト", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
@@ -132,8 +138,26 @@ public class CommandInfo extends CommandBase
         }
 
         terminal.writeLine("");
-        terminal.write(dependTree("依存関係", plugin.getDescription().getDepend()));
-        terminal.write(dependTree("被依存関係", info.rdepends.stream().parallel().map(depend -> depend.depend).collect(Collectors.toList())));
+        terminal.write(dependTree("依存関係", meta.getDependsOn().stream()
+                .map(dep -> {
+                    if (dep.getDependType() == DependType.HARD_DEPEND)
+                        return ChatColor.DARK_GREEN + dep.getDependsOn();
+                    else if (dep.getDependType() == DependType.SOFT_DEPEND)
+                        return ChatColor.GREEN + dep.getDependsOn();
+                    else
+                        return ChatColor.RED + dep.getDependsOn();
+                })
+                .collect(Collectors.toList())));
+        terminal.write(dependTree("被依存関係", meta.getDependedBy().stream()
+                .map(dep -> {
+                    if (dep.getDependType() == DependType.HARD_DEPEND)
+                        return ChatColor.DARK_GREEN + dep.getPlugin();
+                    else if (dep.getDependType() == DependType.SOFT_DEPEND)
+                        return ChatColor.GREEN + dep.getPlugin();
+                    else
+                        return ChatColor.RED + dep.getPlugin();
+                })
+                .collect(Collectors.toList())));
 
         terminal.writeLine("");
         terminal.write(commandList(plugin.getDescription().getCommands()));

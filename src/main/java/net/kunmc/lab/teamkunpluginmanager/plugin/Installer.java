@@ -48,10 +48,6 @@ public class Installer
      */
     public static boolean clean(String name)
     {
-        //依存関係エラーが有った場合は安全を優先しreturn
-        if (DependencyTree.isErrors())
-            return false;
-
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
 
         if (PluginUtil.isPluginLoaded(name))

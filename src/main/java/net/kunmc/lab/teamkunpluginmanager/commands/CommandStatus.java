@@ -23,10 +23,6 @@ public class CommandStatus extends CommandBase
     {
         terminal.writeLine("===現在の状態===");
 
-        String statusError = Messages.getErrorMessage();
-
-        terminal.writeLine(ChatColor.GREEN + "ステータス: " +
-                (!statusError.isEmpty() ? ChatColor.RED + "エラー": ChatColor.DARK_GREEN + "正常"));
         terminal.writeLine(Messages.keyValue("プラグイン数", Bukkit.getPluginManager().getPlugins().length));
 
         File resolve = new File(
@@ -38,9 +34,6 @@ public class CommandStatus extends CommandBase
                     "最終アップデート",
                     new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(resolve.lastModified()))
             ));
-
-        if (!statusError.isEmpty())
-            terminal.writeLine(statusError);
 
         String autoRemovable = Messages.getUnInstallableMessage();
 

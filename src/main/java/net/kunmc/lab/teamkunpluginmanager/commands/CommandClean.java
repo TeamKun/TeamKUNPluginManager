@@ -6,7 +6,6 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.Installer;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kyori.adventure.text.TextComponent;
@@ -26,13 +25,6 @@ public class CommandClean extends CommandBase
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        if (DependencyTree.isErrors())
-        {
-            terminal.error("重大なエラーが検出されました。/kpm fix で修正を行ってください。");
-            terminal.info("エラーが検出されたため、システムが保護されました。");
-            return;
-        }
-
         TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
         if (!kpmInstance.getSession().lock())
