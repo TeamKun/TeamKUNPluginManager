@@ -11,6 +11,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.si
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.InstallOperator;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
@@ -81,18 +82,22 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
                 PluginDescriptionFile pluginDescription = dependency.getPluginDescription();
                 Path path = dependency.getPluginPath();
 
-                PluginsInstallResult result = this.installOne(path, pluginDescription, installedPlugins);
-                if (result != null)  // installOne returns null if installation is failed
+                PluginsInstallResult result = this.installOne(path, pluginDescription, installedPlugins, true);
+                if (!result.isSuccess())  // installOne returns null if installation is failed
                     return result;
             }
 
+            for (Plugin plugin : installedPlugins)
+                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().buildDependencyTree(plugin);
+
             // Install plugin after dependencies installed
-            PluginsInstallResult result =
-                    this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(), installedPlugins);
-            if (result != null)  // installOne returns null if installation is failed
-                return result;
-            else
-                return new PluginsInstallResult(true, this.state, null);
+
+            PluginsInstallResult result = this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(), installedPlugins, false);
+
+            if (result.isSuccess() && result.getInstalledPlugin() != null)
+                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().buildDependencyTree(result.getInstalledPlugin());
+
+            return result;
         }
         finally
         {
@@ -100,9 +105,9 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
     }
 
-    @Nullable
+    @NotNull
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
-                                            @NotNull List<Plugin> installedPlugins)
+                                            @NotNull List<Plugin> installedPlugins, boolean isDependency)
     {
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
 
@@ -153,6 +158,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
 
         // Enable plugin
+        TeamKunPluginManager.getPlugin().getPluginMetaManager().preparePluginModify(target);
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginEnablingSignal.Pre(target));
         PLUGIN_MANAGER.enablePlugin(target);
@@ -160,7 +166,13 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         installedPlugins.add(target);
 
-        return null;  // Success
+        TeamKunPluginManager.getPlugin().getPluginMetaManager().onInstalled(
+                target,
+                isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN,
+                null
+        );
+
+        return new PluginsInstallResult(true, this.state, null, null, target, installedPlugins);
     }
 
     @Nullable
