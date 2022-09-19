@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * プラグインのメタデータを提供するクラスです。
@@ -740,15 +739,6 @@ public class PluginMetaProvider implements Listener
         List<DependencyNode> dependencies = this.getDependOn(pluginName);
         List<DependencyNode> softDependencies = this.getDependOn(pluginName);
         List<DependencyNode> loadBefore = this.getLoadBeforeBy(pluginName);
-
-        softDependencies.removeIf(item -> dependencies.stream().parallel()
-                .map(DependencyNode::getDependsOn)
-                .anyMatch(item.getDependsOn()::equals));
-
-        loadBefore.removeIf(item -> Stream.concat(dependencies.stream(), softDependencies.stream())
-                .parallel()
-                .map(DependencyNode::getDependsOn)
-                .anyMatch(item.getDependsOn()::equals));
 
         dependencies.addAll(softDependencies);
         dependencies.addAll(loadBefore);
