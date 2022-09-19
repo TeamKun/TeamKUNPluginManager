@@ -97,7 +97,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getDependedBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("dependency_tree", pluginName, "dependency",
+        return getDependDataFromTable("depend", pluginName, "dependency",
                 DependType.HARD_DEPEND, true
         );
     }
@@ -110,7 +110,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getSoftDependedBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("dependency_tree", pluginName, "soft_dependency",
+        return getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
                 DependType.SOFT_DEPEND, true
         );
     }
@@ -124,7 +124,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getLoadBeforeBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("dependency_tree", pluginName, "load_before",
+        return getDependDataFromTable("load_before", pluginName, "load_before",
                 DependType.LOAD_BEFORE, true
         );
     }
