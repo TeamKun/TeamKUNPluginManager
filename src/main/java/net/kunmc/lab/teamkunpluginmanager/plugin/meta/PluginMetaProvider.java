@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -362,6 +363,27 @@ public class PluginMetaProvider implements Listener
                     ex.printStackTrace();
                 }
             }
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * プラグインのメタデータが存在しているかどうかを返します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインのメタデータが存在しているかどうか
+     */
+    public boolean isPluginMetaExists(@NotNull String pluginName)
+    {
+        try (Connection con = this.db.getConnection())
+        {
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            statement.setString(1, pluginName);
+
+            return statement.executeQuery().next();
+        }
+        catch (SQLException e)
+        {
             throw new RuntimeException(e);
         }
     }
@@ -715,6 +737,38 @@ public class PluginMetaProvider implements Listener
         catch (SQLException e)
         {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * すべてのプラグインのデータをクロールします。
+     */
+    public void crawlAll()
+    {
+        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+
+        for (Plugin plugin : plugins)
+        {
+            if (this.isPluginMetaExists(plugin.getName()))
+                continue;
+
+            this.savePluginData(plugin, false);
+
+            List<DependencyNode> dummy = Collections.emptyList();
+            this.savePluginMeta(
+                    new PluginMeta(
+                            plugin.getName(),
+                            plugin.getDescription().getVersion(),
+                            InstallOperator.SERVER_ADMIN,
+                            false, // Dummy value
+                            null,
+                            System.currentTimeMillis(),
+                            dummy,
+                            dummy
+                    )
+            );
+
+            this.buildDependencyTree(plugin);
         }
     }
 

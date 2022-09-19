@@ -58,6 +58,9 @@ public final class TeamKunPluginManager extends JavaPlugin
                 Paths.get(plugin.getDataFolder().toURI()).resolve("plugins.db")
         );
 
+        System.out.println("プラグインメタデータを取得中 ...");
+        this.pluginMetaManager.getProvider().crawlAll();
+
         KnownPlugins.initialization(this.getPluginConfig().getString("resolvePath"));
 
         if (KnownPlugins.isLegacy())
