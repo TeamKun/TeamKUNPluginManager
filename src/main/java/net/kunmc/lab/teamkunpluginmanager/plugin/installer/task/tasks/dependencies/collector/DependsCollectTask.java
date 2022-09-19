@@ -81,7 +81,9 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
         this.postSignal(dependsSignal);
 
-        dependsSignal.getDependencies().forEach(this.status::addDependency);
+        dependsSignal.getDependencies().stream().parallel()
+                .filter(dependency -> !arguments.getAlreadyInstalledPlugins().contains(dependency))
+                .forEach(this.status::addDependency);
 
         HashMap<String, ResolveResult> resolvedResults;
         // region Resolve dependencies
