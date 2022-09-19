@@ -910,9 +910,10 @@ public class PluginMetaProvider implements Listener
             );
 
             statement.execute("CREATE TABLE IF NOT EXISTS dependency_tree(" +
-                    "name TEXT NOT NULL PRIMARY KEY," +
+                    "name TEXT NOT NULL," +
                     "parent TEXT," +
-                    "depend_type NOT NULL" +
+                    "depend_type TEXT," +
+                    "PRIMARY KEY (name, parent)" +
                     ")"
             );
 
