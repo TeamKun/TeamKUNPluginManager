@@ -276,6 +276,21 @@ public class PluginMetaProvider implements Listener
             }
             throw new RuntimeException(e);
         }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -365,6 +380,21 @@ public class PluginMetaProvider implements Listener
             }
             throw new RuntimeException(e);
         }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -429,6 +459,21 @@ public class PluginMetaProvider implements Listener
 
             throw new RuntimeException(e);
         }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -467,6 +512,21 @@ public class PluginMetaProvider implements Listener
             }
 
             throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -525,6 +585,21 @@ public class PluginMetaProvider implements Listener
             }
 
             throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -636,6 +711,21 @@ public class PluginMetaProvider implements Listener
 
             throw new RuntimeException(e);
         }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
@@ -701,6 +791,21 @@ public class PluginMetaProvider implements Listener
             }
 
             throw new RuntimeException(e);
+        }
+        finally
+        {
+            if (con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch (SQLException e)
+                {
+                    System.err.println("Failed to close connection");
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
