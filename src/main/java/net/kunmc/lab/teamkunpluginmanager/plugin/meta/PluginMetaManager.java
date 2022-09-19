@@ -96,7 +96,7 @@ public class PluginMetaManager implements Listener
         this.onUninstalled(pluginNameFull);
 
         System.out.println("依存関係ツリーを構築しています ...");
-        this.provider.thinDependencyTree(pluginNameFull);
+        this.provider.deleteFromDependencyTree(pluginNameFull);
     }
 
     /**

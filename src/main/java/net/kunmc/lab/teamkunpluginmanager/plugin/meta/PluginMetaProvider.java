@@ -445,10 +445,10 @@ public class PluginMetaProvider implements Listener
     /**
      * プラグインのデータを削除します。
      *
-     * @param pluginName         プラグインの名前
-     * @param thinDependencyTree 依存関係ツリーを構築するかどうか
+     * @param pluginName          プラグインの名前
+     * @param buildDependencyTree 依存関係ツリーを構築するかどうか
      */
-    public void removePluginData(@NotNull String pluginName, boolean thinDependencyTree)
+    public void removePluginData(@NotNull String pluginName, boolean buildDependencyTree)
     {
         Connection con = null;
         try
@@ -478,8 +478,8 @@ public class PluginMetaProvider implements Listener
 
             con.commit();
 
-            if (thinDependencyTree)
-                this.thinDependencyTree(pluginName);
+            if (buildDependencyTree)
+                this.deleteFromDependencyTree(pluginName);
         }
         catch (SQLException e)
         {
@@ -643,7 +643,7 @@ public class PluginMetaProvider implements Listener
      *
      * @param pluginName プラグインの名前
      */
-    public void thinDependencyTree(@NotNull String pluginName)
+    public void deleteFromDependencyTree(@NotNull String pluginName)
     {
         Connection con = null;
         try
@@ -651,12 +651,11 @@ public class PluginMetaProvider implements Listener
             con = this.db.getConnection();
 
             PreparedStatement statement =
-                    con.prepareStatement("DELETE FROM dependency_tree WHERE name = ? OR parent = ?");
+                    con.prepareStatement("DELETE FROM dependency_tree WHERE name = ?");
             statement.setString(1, pluginName);
-            statement.setString(2, pluginName);
             statement.execute();
 
-            con.createStatement().execute("COMMIT");
+            con.commit();
         }
         catch (SQLException e)
         {
