@@ -755,6 +755,8 @@ public class PluginMetaProvider implements Listener
                     "depend_type NOT NULL" +
                     ")"
             );
+
+            con.commit();
         }
         catch (SQLException e)
         {
