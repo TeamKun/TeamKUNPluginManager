@@ -69,7 +69,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getSoftDependOn(@NotNull String pluginName)
     {
-        return getDependDataFromTable("soft_depend", pluginName, "soft_depend",
+        return getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
                 DependType.SOFT_DEPEND, false
         );
     }
@@ -737,7 +737,7 @@ public class PluginMetaProvider implements Listener
         String pluginName = plugin.getName();
 
         List<DependencyNode> dependencies = this.getDependOn(pluginName);
-        List<DependencyNode> softDependencies = this.getDependOn(pluginName);
+        List<DependencyNode> softDependencies = this.getSoftDependOn(pluginName);
         List<DependencyNode> loadBefore = this.getLoadBeforeBy(pluginName);
 
         dependencies.addAll(softDependencies);
