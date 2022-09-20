@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 
 import lombok.Value;
+import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,6 +23,11 @@ public class PluginMeta
      */
     @NotNull
     String version;
+    /**
+     * プラグインのロードタイミングです。
+     */
+    @NotNull
+    PluginLoadOrder loadTiming;
 
     /**
      * プラグインのインストール者です。
@@ -44,14 +50,13 @@ public class PluginMeta
     long installedAt;
 
     /**
-     * 依存しているプラグインのリストです。
+     * 依存されているプラグインのリストです。
      */
     @NotNull
     List<DependencyNode> dependedBy;
     /**
-     *
+     * 依存しているプラグインのリストです。
      */
     @NotNull
     List<DependencyNode> dependsOn;
-
 }

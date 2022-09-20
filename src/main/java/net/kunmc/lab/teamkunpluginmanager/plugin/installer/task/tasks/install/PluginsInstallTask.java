@@ -169,7 +169,8 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         TeamKunPluginManager.getPlugin().getPluginMetaManager().onInstalled(
                 target,
                 isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN,
-                null
+                null,
+                isDependency
         );
 
         return new PluginsInstallResult(true, this.state, null, null, target, installedPlugins);

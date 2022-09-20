@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -160,7 +160,7 @@ public class PluginMetaProvider implements Listener
     {
         try (Connection con = this.db.getConnection())
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             ResultSet resultSet = statement.executeQuery();
@@ -187,7 +187,7 @@ public class PluginMetaProvider implements Listener
     {
         try (Connection con = this.db.getConnection())
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             ResultSet resultSet = statement.executeQuery();
@@ -214,7 +214,7 @@ public class PluginMetaProvider implements Listener
         try (Connection con = this.db.getConnection())
         {
             con.createStatement().execute("BEGIN TRANSACTION");
-            PreparedStatement statement = con.prepareStatement("UPDATE meta SET is_dependency = ? WHERE name = ?");
+            PreparedStatement statement = con.prepareStatement("UPDATE plugin_meta SET is_dependency = ? WHERE name = ?");
             statement.setInt(1, isDependency ? 0: 1);
             statement.setString(2, pluginName);
 
@@ -242,7 +242,7 @@ public class PluginMetaProvider implements Listener
             con = this.db.getConnection();
             con.createStatement().execute("BEGIN TRANSACTION");
             // Check if the plugin exists
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             if (!statement.executeQuery().next())
@@ -251,7 +251,7 @@ public class PluginMetaProvider implements Listener
                 throw new IllegalArgumentException("Plugin does not exist");
             }
 
-            statement = con.prepareStatement("UPDATE meta SET resolve_query = ? WHERE name = ?");
+            statement = con.prepareStatement("UPDATE plugin_meta SET resolve_query = ? WHERE name = ?");
             statement.setString(1, query);
             statement.setString(2, pluginName);
 
@@ -292,13 +292,7 @@ public class PluginMetaProvider implements Listener
         }
     }
 
-    /**
-     * プラグインデータを保存します。
-     *
-     * @param plugin              プラグイン
-     * @param buildDependencyTree 依存関係ツリーを構築するかどうか
-     */
-    public void savePluginData(@NotNull Plugin plugin, boolean buildDependencyTree)
+    private void savePluginRelationalData(Connection connection, Plugin plugin) throws SQLException
     {
         PluginDescriptionFile description = plugin.getDescription();
 
@@ -311,89 +305,43 @@ public class PluginMetaProvider implements Listener
         List<String> softDependencies = description.getSoftDepend();
         List<String> loadBefore = description.getLoadBefore();
 
-        Connection con = null;
-        try
+        PreparedStatement statement =
+                connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String author : authors)
         {
-            con = this.db.getConnection();
-            PreparedStatement statement =
-                    con.prepareStatement("INSERT INTO plugin(name, version, load_timing) VALUES(?, ?, ?)");
-            statement.setString(1, name);
-            statement.setString(2, version);
-            statement.setString(3, loadTiming);
+            statement.setString(2, author);
             statement.execute();
-
-            statement = con.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
-            statement.setString(1, name);
-
-            for (String author : authors)
-            {
-                statement.setString(2, author);
-                statement.execute();
-            }
-
-            statement = con.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
-            statement.setString(1, name);
-
-            for (String dependency : dependencies)
-            {
-                statement.setString(2, dependency);
-                statement.execute();
-            }
-
-            statement = con.prepareStatement("INSERT INTO soft_depend(name, soft_dependency) VALUES(?, ?)");
-            statement.setString(1, name);
-
-            for (String softDependency : softDependencies)
-            {
-                statement.setString(2, softDependency);
-                statement.execute();
-            }
-
-            statement = con.prepareStatement("INSERT INTO load_before(name, load_before) VALUES(?, ?)");
-            statement.setString(1, name);
-
-            for (String load : loadBefore)
-            {
-                statement.setString(2, load);
-                statement.execute();
-            }
-
-            con.commit();
-
-            if (buildDependencyTree)
-                this.buildDependencyTree(plugin);
         }
-        catch (SQLException e)
+
+        statement = connection.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String dependency : dependencies)
         {
-            if (con != null)
-            {
-                try
-                {
-                    con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
-            }
-            throw new RuntimeException(e);
+            statement.setString(2, dependency);
+            statement.execute();
         }
-        finally
+
+        statement = connection.prepareStatement("INSERT INTO soft_depend(name, soft_dependency) VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String softDependency : softDependencies)
         {
-            if (con != null)
-            {
-                try
-                {
-                    con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
-            }
+            statement.setString(2, softDependency);
+            statement.execute();
         }
+
+        statement = connection.prepareStatement("INSERT INTO load_before(name, load_before) VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String load : loadBefore)
+        {
+            statement.setString(2, load);
+            statement.execute();
+        }
+
     }
 
     /**
@@ -406,7 +354,7 @@ public class PluginMetaProvider implements Listener
     {
         try (Connection con = this.db.getConnection())
         {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             return statement.executeQuery().next();
@@ -420,24 +368,41 @@ public class PluginMetaProvider implements Listener
     /**
      * プラグインのメタデータを保存します。
      *
-     * @param meta メタデータ
+     * @param plugin       プラグイン
+     * @param installedBy  プラグインのインストール者
+     * @param installedAt  プラグインのインストール日時
+     * @param resolveQuery プラグインの解決クエリ
+     * @param isDependency プラグインが依存関係かどうか
      */
-    public void savePluginMeta(@NotNull PluginMeta meta)
+    public void savePluginMeta(@NotNull Plugin plugin,
+                               @NotNull InstallOperator installedBy,
+                               long installedAt,
+                               @Nullable String resolveQuery,
+                               boolean isDependency)
+
     {
+
         Connection con = null;
         try
         {
             con = this.db.getConnection();
 
             PreparedStatement statement =
-                    con.prepareStatement("INSERT INTO meta(name, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?)");
-            statement.setString(1, meta.getName());
-            statement.setLong(2, meta.getInstalledAt());
-            statement.setString(3, meta.getInstalledBy().name());
-            statement.setString(4, meta.getResolveQuery());
-            statement.setInt(5, meta.isDependency() ? 1: 0);
+                    con.prepareStatement("INSERT INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)");
+
+            PluginDescriptionFile description = plugin.getDescription();
+
+            statement.setString(1, description.getName());
+            statement.setString(2, description.getVersion());
+            statement.setString(3, description.getLoad().name());
+            statement.setLong(4, installedAt);
+            statement.setString(5, installedBy.name());
+            statement.setString(6, resolveQuery);
+            statement.setInt(7, isDependency ? 1: 0);
 
             statement.executeUpdate();
+
+            this.savePluginRelationalData(con, plugin);
 
             con.commit();
         }
@@ -487,11 +452,14 @@ public class PluginMetaProvider implements Listener
         {
             con = this.db.getConnection();
 
+            this.removePluginRelationalData(con, pluginName);
+
             PreparedStatement statement =
-                    con.prepareStatement("DELETE FROM meta WHERE name = ?");
+                    con.prepareStatement("DELETE FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             statement.executeUpdate();
+
 
             con.commit();
         }
@@ -529,77 +497,28 @@ public class PluginMetaProvider implements Listener
         }
     }
 
-    /**
-     * プラグインのデータを削除します。
-     *
-     * @param pluginName          プラグインの名前
-     * @param buildDependencyTree 依存関係ツリーを構築するかどうか
-     */
-    public void removePluginData(@NotNull String pluginName, boolean buildDependencyTree)
+    private void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
+        PreparedStatement statement =
+                connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
+        statement.setString(1, pluginName);
+        statement.execute();
 
-            PreparedStatement statement =
-                    con.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
+        statement = connection.prepareStatement("DELETE FROM depend WHERE name = ?");
+        statement.setString(1, pluginName);
+        statement.execute();
 
-            statement = con.prepareStatement("DELETE FROM depend WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
+        statement = connection.prepareStatement("DELETE FROM soft_depend WHERE name = ?");
+        statement.setString(1, pluginName);
+        statement.execute();
 
-            statement = con.prepareStatement("DELETE FROM soft_depend WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
+        statement = connection.prepareStatement("DELETE FROM load_before WHERE name = ?");
+        statement.setString(1, pluginName);
+        statement.execute();
 
-            statement = con.prepareStatement("DELETE FROM load_before WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
-
-            statement = con.prepareStatement("DELETE FROM plugin WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
-
-            con.commit();
-
-            if (buildDependencyTree)
-                this.deleteFromDependencyTree(pluginName);
-        }
-        catch (SQLException e)
-        {
-            if (con != null)
-            {
-                try
-                {
-                    con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
-            }
-
-            throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                try
-                {
-                    con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
-            }
-        }
+        statement = connection.prepareStatement("DELETE FROM plugin_meta WHERE name = ?");
+        statement.setString(1, pluginName);
+        statement.execute();
     }
 
     /**
@@ -617,7 +536,7 @@ public class PluginMetaProvider implements Listener
             con = this.db.getConnection();
 
             PreparedStatement statement =
-                    con.prepareStatement("SELECT * FROM meta WHERE name = ?");
+                    con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             ResultSet resultSet = statement.executeQuery();
@@ -626,21 +545,12 @@ public class PluginMetaProvider implements Listener
                 return null;
 
             String name = resultSet.getString("name");
+            String version = resultSet.getString("version");
+            PluginLoadOrder loadTiming = PluginLoadOrder.valueOf(resultSet.getString("load_timing"));
             long installedAt = resultSet.getLong("installed_at");
             InstallOperator installedBy = InstallOperator.valueOf(resultSet.getString("installed_by"));
             String resolveQuery = resultSet.getString("resolve_query");
             boolean isDependency = resultSet.getInt("is_dependency") == 1;
-
-            statement = con.prepareStatement("SELECT version FROM plugin WHERE name = ?");
-
-            statement.setString(1, pluginName);
-
-            resultSet = statement.executeQuery();
-
-            if (!resultSet.next())
-                return null;
-
-            String version = resultSet.getString("version");
 
             List<DependencyNode> dependedBy = new ArrayList<>();
             List<DependencyNode> dependsOn = new ArrayList<>();
@@ -653,6 +563,7 @@ public class PluginMetaProvider implements Listener
             return new PluginMeta(
                     name,
                     version,
+                    loadTiming,
                     installedBy,
                     isDependency,
                     resolveQuery,
@@ -814,7 +725,7 @@ public class PluginMetaProvider implements Listener
             PreparedStatement statement =
                     con.prepareStatement(
                             "WITH RECURSIVE cte AS (" +
-                                    "SELECT name FROM plugin WHERE name NOT IN (SELECT parent FROM dependency_tree)" +
+                                    "SELECT name FROM plugin_meta WHERE name NOT IN (SELECT parent FROM dependency_tree)" +
                                     "UNION ALL " +
                                     "SELECT dependency_tree.name FROM dependency_tree INNER JOIN cte ON dependency_tree.parent = cte.name" +
                                     ")" +
@@ -862,20 +773,12 @@ public class PluginMetaProvider implements Listener
             if (this.isPluginMetaExists(plugin.getName()))
                 continue;
 
-            this.savePluginData(plugin, false);
-
-            List<DependencyNode> dummy = Collections.emptyList();
             this.savePluginMeta(
-                    new PluginMeta(
-                            plugin.getName(),
-                            plugin.getDescription().getVersion(),
-                            InstallOperator.SERVER_ADMIN,
-                            false, // Dummy value
-                            null,
-                            System.currentTimeMillis(),
-                            dummy,
-                            dummy
-                    )
+                    plugin,
+                    InstallOperator.SERVER_ADMIN,
+                    System.currentTimeMillis(),
+                    null,
+                    false
             );
 
             this.buildDependencyTree(plugin);
@@ -887,24 +790,21 @@ public class PluginMetaProvider implements Listener
         try (Connection con = this.db.getConnection())
         {
             Statement statement = con.createStatement();
-            statement.execute("CREATE TABLE IF NOT EXISTS plugin(" +
-                    "name TEXT NOT NULL PRIMARY KEY, " +
-                    "version TEXT NOT NULL," +
-                    "load_timing TEXT NOT NULL" +
-                    ")"
-            );
-            statement.execute("CREATE TABLE IF NOT EXISTS plugin_author(" +
-                    "name TEXT NOT NULL UNIQUE," +
-                    "author TEXT NOT NULL" +
-                    ")"
-            );
 
-            statement.execute("CREATE TABLE IF NOT EXISTS meta(" +
-                    "name TEXT NOT NULL PRIMARY KEY, " +
+            statement.execute("CREATE TABLE IF NOT EXISTS plugin_meta(" +
+                    "name TEXT NOT NULL PRIMARY KEY," +
+                    "version TEXT NOT NULL," +
+                    "load_timing TEXT NOT NULL," +
                     "installed_at INTEGER NOT NULL," +
                     "installed_by TEXT NOT NULL," +
                     "resolve_query TEXT," +
                     "is_dependency INTEGER(1) NOT NULL" +
+                    ")"
+            );
+
+            statement.execute("CREATE TABLE IF NOT EXISTS plugin_author(" +
+                    "name TEXT NOT NULL UNIQUE," +
+                    "author TEXT NOT NULL" +
                     ")"
             );
 

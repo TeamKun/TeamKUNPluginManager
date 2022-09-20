@@ -76,7 +76,7 @@ public class PluginMetaManager implements Listener
         System.out.println("プラグインの追加が検出されました: " + pluginNameFull);
 
         System.out.println("プラグインのメタデータを作成してします ...");
-        this.onInstalled(plugin, InstallOperator.SERVER_ADMIN, null);
+        this.onInstalled(plugin, InstallOperator.SERVER_ADMIN, null, false);
 
         System.out.println("依存関係ツリーを構築しています ...");
         this.provider.buildDependencyTree(plugin);
@@ -110,22 +110,15 @@ public class PluginMetaManager implements Listener
      * @param resolveQuery インストール時に使用したプラグイン解決クエリ
      * @param installedAt  インストールされた時刻
      */
-    public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, long installedAt)
+    public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, long installedAt, boolean isDependency)
     {
-        this.provider.savePluginData(plugin, false);
-
         List<DependencyNode> dummy = Collections.emptyList();
         this.provider.savePluginMeta(
-                new PluginMeta(
-                        plugin.getName(),
-                        plugin.getDescription().getVersion(),
-                        operator,
-                        false, // Dummy value
-                        resolveQuery,
-                        installedAt,
-                        dummy,
-                        dummy
-                )
+                plugin,
+                operator,
+                installedAt,
+                resolveQuery,
+                isDependency
         );
     }
 
@@ -136,9 +129,9 @@ public class PluginMetaManager implements Listener
      * @param operator     インストールした操作者
      * @param resolveQuery インストール時に使用したプラグイン解決クエリ
      */
-    public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery)
+    public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, boolean isDependency)
     {
-        onInstalled(plugin, operator, resolveQuery, System.currentTimeMillis());
+        onInstalled(plugin, operator, resolveQuery, System.currentTimeMillis(), isDependency);
     }
 
     /**
@@ -148,7 +141,6 @@ public class PluginMetaManager implements Listener
      */
     public void onUninstalled(@NotNull String pluginName)
     {
-        this.provider.removePluginData(pluginName, false);
         this.provider.removePluginMeta(pluginName);
     }
 
