@@ -725,7 +725,7 @@ public class PluginMetaProvider implements Listener
             PreparedStatement statement =
                     con.prepareStatement(
                             "WITH RECURSIVE cte AS (" +
-                                    "SELECT name FROM plugin_meta WHERE name NOT IN (SELECT parent FROM dependency_tree)" +
+                                    "SELECT name FROM plugin_meta WHERE name NOT IN (SELECT parent FROM dependency_tree) AND is_dependency = 1 " +
                                     "UNION ALL " +
                                     "SELECT dependency_tree.name FROM dependency_tree INNER JOIN cte ON dependency_tree.parent = cte.name" +
                                     ")" +
