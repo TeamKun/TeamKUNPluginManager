@@ -746,30 +746,6 @@ public class PluginMetaProvider implements Listener
         }
     }
 
-    /**
-     * すべてのプラグインのデータをクロールします。
-     */
-    public void crawlAll()
-    {
-        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-
-        for (Plugin plugin : plugins)
-        {
-            if (this.isPluginMetaExists(plugin.getName()))
-                continue;
-
-            this.savePluginMeta(
-                    plugin,
-                    InstallOperator.SERVER_ADMIN,
-                    System.currentTimeMillis(),
-                    null,
-                    false
-            );
-
-            this.buildDependencyTree(plugin);
-        }
-    }
-
     private void initializeTables()
     {
         try (Connection con = this.db.getConnection())
