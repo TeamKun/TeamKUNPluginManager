@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -112,7 +111,6 @@ public class PluginMetaManager implements Listener
      */
     public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, long installedAt, boolean isDependency)
     {
-        List<DependencyNode> dummy = Collections.emptyList();
         this.provider.savePluginMeta(
                 plugin,
                 operator,

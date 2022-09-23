@@ -238,7 +238,7 @@ public class PluginMetaProvider implements Listener
                 e1.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -298,7 +298,7 @@ public class PluginMetaProvider implements Listener
                 ex.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -384,7 +384,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -442,7 +442,7 @@ public class PluginMetaProvider implements Listener
                 ex.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -494,7 +494,7 @@ public class PluginMetaProvider implements Listener
                 ex.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -585,7 +585,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -627,7 +627,7 @@ public class PluginMetaProvider implements Listener
                 ex.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -695,7 +695,7 @@ public class PluginMetaProvider implements Listener
                 ex.printStackTrace();
             }
 
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         finally
         {
@@ -742,7 +742,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -821,7 +821,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -872,7 +872,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
         return depends;
