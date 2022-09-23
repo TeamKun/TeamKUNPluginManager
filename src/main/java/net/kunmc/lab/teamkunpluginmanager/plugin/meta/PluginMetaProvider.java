@@ -367,6 +367,54 @@ public class PluginMetaProvider implements Listener
 
     }
 
+    private static List<String> getStringDependsOn(List<DependencyNode> nodes, DependType type)
+    {
+        return nodes.stream().parallel()
+                .filter(node -> node.getDependType() == type)
+                .map(DependencyNode::getDependsOn)
+                .collect(Collectors.toList());
+    }
+
+    private static void deleteAndSaveDepends(Connection connection, String tableName, String fieldName, String name,
+                                             List<String> depends) throws SQLException
+    {
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE name = ?");
+        statement.setString(1, name);
+        statement.executeUpdate();
+
+        statement = connection.prepareStatement("INSERT INTO " + tableName + "(name, " + fieldName + ") VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String depend : depends)
+        {
+            statement.setString(2, depend);
+            statement.executeUpdate();
+        }
+    }
+
+    private void savePluginRelationalData(Connection connection, PluginMeta meta) throws SQLException
+    {
+        String name = meta.getName();
+        String version = meta.getVersion();
+        // TODO: List<String> authors = meta.getAuthors();
+        String loadTiming = meta.getLoadTiming().name();
+
+        List<DependencyNode> dependsOn = meta.getDependsOn();
+        List<String> dependencies = getStringDependsOn(dependsOn, DependType.HARD_DEPEND);
+        List<String> softDependencies = getStringDependsOn(dependsOn, DependType.SOFT_DEPEND);
+        List<String> loadBefore = getStringDependsOn(dependsOn, DependType.LOAD_BEFORE);
+
+        deleteAndSaveDepends(connection, "depend", "dependency", name, dependencies);
+        deleteAndSaveDepends(connection, "soft_depend", "soft_dependency", name, softDependencies);
+        deleteAndSaveDepends(connection, "load_before", "load_before", name, loadBefore);
+
+        PreparedStatement statement = connection.prepareStatement("UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?");
+        statement.setString(1, version);
+        statement.setString(2, loadTiming);
+        statement.setString(3, name);
+        statement.executeUpdate();
+    }
+
     /**
      * プラグインのメタデータが存在しているかどうかを返します。
      *
@@ -426,6 +474,59 @@ public class PluginMetaProvider implements Listener
             statement.executeUpdate();
 
             this.savePluginRelationalData(con, plugin);
+
+            con.commit();
+        }
+        catch (SQLException e)
+        {
+            try
+            {
+                if (con != null)
+                    con.rollback();
+            }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
+            }
+
+            throw new IllegalStateException(e);
+        }
+        finally
+        {
+            try
+            {
+                if (con != null)
+                    con.close();
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void savePluginMeta(@NotNull PluginMeta meta)
+    {
+        Connection con = null;
+        try
+        {
+            con = this.db.getConnection();
+
+            PreparedStatement statement =
+                    con.prepareStatement("INSERT OR REPLACE INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(1, meta.getName());
+            statement.setString(2, meta.getVersion());
+            statement.setString(3, meta.getLoadTiming().name());
+            statement.setLong(4, meta.getInstalledAt());
+            statement.setString(5, meta.getInstalledBy().name());
+            statement.setString(6, meta.getResolveQuery());
+            statement.setInt(7, meta.isDependency() ? 1: 0);
+
+            statement.executeUpdate();
+
+            this.savePluginRelationalData(con, meta);
 
             con.commit();
         }
@@ -569,6 +670,12 @@ public class PluginMetaProvider implements Listener
             {
                 dependedBy = this.getDependedBy(pluginName);
                 dependsOn = this.getDependOn(pluginName);
+
+                dependedBy.addAll(this.getSoftDependedBy(pluginName));
+                dependsOn.addAll(this.getSoftDependOn(pluginName));
+
+                dependedBy.addAll(this.getLoadBeforeBy(pluginName));
+                dependsOn.addAll(this.getLoadBefore(pluginName));
             }
 
             return new PluginMeta(
