@@ -59,7 +59,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         );
 
         System.out.println("プラグインメタデータを取得中 ...");
-        this.pluginMetaManager.getProvider().crawlAll();
+        this.pluginMetaManager.crawlAll();
 
         KnownPlugins.initialization(this.getPluginConfig().getString("resolvePath"));
 

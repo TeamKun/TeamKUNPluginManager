@@ -133,6 +133,30 @@ public class PluginMetaManager implements Listener
     }
 
     /**
+     * すべてのプラグインのデータをクロールします。
+     */
+    public void crawlAll()
+    {
+        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+
+        for (Plugin plugin : plugins)
+        {
+            if (this.provider.isPluginMetaExists(plugin.getName()))
+                continue;
+
+            this.provider.savePluginMeta(
+                    plugin,
+                    InstallOperator.SERVER_ADMIN,
+                    System.currentTimeMillis(),
+                    null,
+                    false
+            );
+
+            this.provider.buildDependencyTree(plugin);
+        }
+    }
+
+    /**
      * プラグインがアンインストールされたときに呼び出します。
      *
      * @param pluginName アンインストールされたプラグインの名前
