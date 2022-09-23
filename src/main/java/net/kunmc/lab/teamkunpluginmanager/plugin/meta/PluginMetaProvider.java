@@ -199,6 +199,7 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
             return false;
         }
     }
@@ -211,20 +212,46 @@ public class PluginMetaProvider implements Listener
      */
     public void setDependencyFlag(@NotNull String pluginName, boolean isDependency)
     {
-        try (Connection con = this.db.getConnection())
+        Connection con = null;
+        try
         {
-            con.createStatement().execute("BEGIN TRANSACTION");
+            con = this.db.getConnection();
             PreparedStatement statement = con.prepareStatement("UPDATE plugin_meta SET is_dependency = ? WHERE name = ?");
-            statement.setInt(1, isDependency ? 0: 1);
+            statement.setInt(1, isDependency ? 1: 0);
             statement.setString(2, pluginName);
 
             statement.executeUpdate();
 
-            con.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
+
         }
         catch (SQLException e)
         {
+            try
+            {
+                if (con != null)
+                    con.rollback();
+            }
+            catch (SQLException e1)
+            {
+                System.out.println("Failed to rollback");
+                e1.printStackTrace();
+            }
+
             throw new RuntimeException(e);
+        }
+        finally
+        {
+            try
+            {
+                if (con != null)
+                    con.close();
+            }
+            catch (SQLException e)
+            {
+                System.out.println("Failed to close connection");
+                e.printStackTrace();
+            }
         }
     }
 
@@ -240,14 +267,13 @@ public class PluginMetaProvider implements Listener
         try
         {
             con = this.db.getConnection();
-            con.createStatement().execute("BEGIN TRANSACTION");
             // Check if the plugin exists
             PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
 
             if (!statement.executeQuery().next())
             {
-                con.createStatement().execute("ROLLBACK TRANSACTION");
+                con.rollback();
                 throw new IllegalArgumentException("Plugin does not exist");
             }
 
@@ -257,37 +283,34 @@ public class PluginMetaProvider implements Listener
 
             statement.executeUpdate();
 
-            con.createStatement().execute("COMMIT TRANSACTION");
+            con.commit();
         }
         catch (SQLException e)
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
             }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
+            }
+
             throw new RuntimeException(e);
         }
         finally
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
             }
         }
     }
@@ -408,34 +431,30 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
+            }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
             }
 
             throw new RuntimeException(e);
         }
         finally
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
             }
         }
     }
@@ -460,39 +479,34 @@ public class PluginMetaProvider implements Listener
 
             statement.executeUpdate();
 
-
             con.commit();
         }
         catch (SQLException e)
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
+            }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
             }
 
             throw new RuntimeException(e);
         }
         finally
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
             }
         }
     }
@@ -528,13 +542,10 @@ public class PluginMetaProvider implements Listener
      * @param includeDependencies 依存関係を含めるかどうか
      * @return プラグインのメタデータ
      */
-    public @Nullable PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies)
+    public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies)
     {
-        Connection con;
-        try
+        try (Connection con = this.db.getConnection())
         {
-            con = this.db.getConnection();
-
             PreparedStatement statement =
                     con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
             statement.setString(1, pluginName);
@@ -542,7 +553,7 @@ public class PluginMetaProvider implements Listener
             ResultSet resultSet = statement.executeQuery();
 
             if (!resultSet.next())
-                return null;
+                throw new IllegalArgumentException("Plugin " + pluginName + " is not exists");
 
             String name = resultSet.getString("name");
             String version = resultSet.getString("version");
@@ -586,7 +597,6 @@ public class PluginMetaProvider implements Listener
     public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
     {
         Connection con = null;
-
         try
         {
             con = this.db.getConnection();
@@ -606,34 +616,30 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
+            }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
             }
 
             throw new RuntimeException(e);
         }
         finally
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
             }
         }
     }
@@ -678,34 +684,31 @@ public class PluginMetaProvider implements Listener
         }
         catch (SQLException e)
         {
-            if (con != null)
+            try
             {
-                try
-                {
+                if (con != null)
                     con.rollback();
-                }
-                catch (SQLException ex)
-                {
-                    System.err.println("Failed to rollback transaction");
-                    ex.printStackTrace();
-                }
+            }
+            catch (SQLException ex)
+            {
+                System.err.println("Failed to rollback transaction");
+                ex.printStackTrace();
             }
 
             throw new RuntimeException(e);
         }
         finally
         {
-            if (con != null)
+            try
             {
-                try
-                {
+
+                if (con != null)
                     con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("Failed to close connection");
+                e.printStackTrace();
             }
         }
     }
@@ -717,11 +720,8 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getUnusedPlugins()
     {
-        Connection con = null;
-        try
+        try (Connection con = this.db.getConnection())
         {
-            con = this.db.getConnection();
-
             PreparedStatement statement =
                     con.prepareStatement(
                             "WITH RECURSIVE cte AS (" +
@@ -743,21 +743,6 @@ public class PluginMetaProvider implements Listener
         catch (SQLException e)
         {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            if (con != null)
-            {
-                try
-                {
-                    con.close();
-                }
-                catch (SQLException e)
-                {
-                    System.err.println("Failed to close connection");
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
