@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class CommandMarkAsDependencyCommand extends CommandBase
+public class CommandMarkAsDependency extends CommandBase
 {
     private final PluginMetaProvider provider;
 
@@ -52,9 +52,14 @@ public class CommandMarkAsDependencyCommand extends CommandBase
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        return Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
-                .map(Plugin::getName)
-                .collect(Collectors.toList());
+        if (args.length == 1)
+            return Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                    .map(Plugin::getName)
+                    .collect(Collectors.toList());
+        else if (args.length == 2)
+            return Arrays.asList("true", "false");
+
+        return null;
     }
 
     @Override
