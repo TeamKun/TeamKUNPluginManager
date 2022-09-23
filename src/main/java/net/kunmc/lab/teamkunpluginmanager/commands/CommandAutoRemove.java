@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -11,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,12 +22,6 @@ public class CommandAutoRemove extends CommandBase
     { // TODO: Separate frontend and backend
         if (checkPermission(sender, terminal, "kpm.autoremove"))
             sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
-
-        if (!TeamKunPluginManager.getPlugin().getSession().lock())
-        {
-            sender.sendMessage(ChatColor.RED + "E: TeamKunPluginManagerが多重起動しています。");
-            return;
-        }
 
         AtomicInteger removed = new AtomicInteger();
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
@@ -43,23 +37,13 @@ public class CommandAutoRemove extends CommandBase
             return;
         }
 
-        try
-        {
-            TeamKunPluginManager.getPlugin().getInstallManager().runUninstall(
-                    terminal,
-                    new UninstallArgument(removables.toArray(new String[0]))
-            );
-        }
-        catch (IOException e)
-        {
-            sender.sendMessage(ChatColor.RED + "E: プラグインの削除に失敗しました。");
-            sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
-            sender.sendMessage(ChatColor.GREEN + "S: 操作が正常に完了しました。");
-            TeamKunPluginManager.getPlugin().getSession().unlock();
-            return;
-        }
+        Runner.runAsync(() ->
+                TeamKunPluginManager.getPlugin().getInstallManager().runUninstall(
+                        terminal,
+                        new UninstallArgument(removables.toArray(new String[0]))
+                )
+        );
 
-        TeamKunPluginManager.getPlugin().getSession().unlock();
     }
 
     @Override
