@@ -758,8 +758,16 @@ public class PluginMetaProvider implements Listener
      */
     public void buildDependencyTree(@NotNull Plugin plugin)
     {
-        String pluginName = plugin.getName();
+        this.buildDependencyTree(plugin.getName());
+    }
 
+    /**
+     * 依存関係ツリーを構築します。
+     *
+     * @param pluginName プラグイン
+     */
+    public void buildDependencyTree(@NotNull String pluginName)
+    {
         List<DependencyNode> dependencies = this.getDependOn(pluginName);
         List<DependencyNode> softDependencies = this.getSoftDependOn(pluginName);
         List<DependencyNode> loadBefore = this.getLoadBeforeBy(pluginName);
@@ -831,12 +839,20 @@ public class PluginMetaProvider implements Listener
         {
             PreparedStatement statement =
                     con.prepareStatement(
-                            "WITH RECURSIVE cte AS (" +
-                                    "SELECT name FROM plugin_meta WHERE name NOT IN (SELECT parent FROM dependency_tree) AND is_dependency = 1 " +
-                                    "UNION ALL " +
-                                    "SELECT dependency_tree.name FROM dependency_tree INNER JOIN cte ON dependency_tree.parent = cte.name" +
+                            // Source: dependency_tree
+                            // Recursive:
+                            //   1. Select plugins that plugin_meta.is_dependency = 1 and is no plugin depends on it.
+                            //   2. Select plugins that step 1's plugins depends on and plugin_meta.is_dependency = 1.
+
+                            "WITH RECURSIVE unused_plugins(name) AS (" +
+                                    "SELECT name FROM plugin_meta WHERE is_dependency = 1 AND name NOT IN (" +
+                                    "SELECT parent FROM dependency_tree" +
                                     ")" +
-                                    "SELECT name FROM cte"
+                                    "UNION ALL " +
+                                    "SELECT dependency_tree.name FROM dependency_tree, unused_plugins WHERE 0 = 1 AND dependency_tree.parent = unused_plugins.name " +
+                                    "AND dependency_tree.name IN(SELECT name FROM plugin_meta WHERE is_dependency = 1)" +
+                                    ")" +
+                                    "SELECT name FROM unused_plugins"
                     );
 
             ResultSet resultSet = statement.executeQuery();

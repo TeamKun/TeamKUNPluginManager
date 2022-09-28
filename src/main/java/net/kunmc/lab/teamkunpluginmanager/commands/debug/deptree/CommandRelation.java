@@ -98,6 +98,10 @@ public class CommandRelation extends CommandBase
 
             provider.savePluginMeta(meta);
         }
+
+        provider.deleteFromDependencyTree(pluginName);
+        provider.deleteFromDependencyTree(targetPluginName);
+        provider.buildDependencyTree(pluginName);
     }
 
     @Override
