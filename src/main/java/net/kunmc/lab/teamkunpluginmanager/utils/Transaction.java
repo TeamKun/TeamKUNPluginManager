@@ -141,7 +141,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setString(int index, @Nullable String value)
+    public Transaction set(int index, @Nullable String value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -165,7 +165,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setInteger(int index, int value)
+    public Transaction set(int index, int value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -188,7 +188,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setBoolean(int index, boolean value)
+    public Transaction set(int index, boolean value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -211,7 +211,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setLong(int index, long value)
+    public Transaction set(int index, long value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -234,7 +234,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setDouble(int index, double value)
+    public Transaction set(int index, double value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -257,7 +257,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setFloat(int index, float value)
+    public Transaction set(int index, float value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -280,7 +280,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setByte(int index, byte value)
+    public Transaction set(int index, byte value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -303,7 +303,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setShort(int index, short value)
+    public Transaction set(int index, short value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -326,7 +326,7 @@ public class Transaction
      * @param value 値
      * @return トランザクション
      */
-    public Transaction setBytes(int index, byte[] value)
+    public Transaction set(int index, byte[] value)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");

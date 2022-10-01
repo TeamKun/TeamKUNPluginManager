@@ -214,8 +214,8 @@ public class PluginMetaProvider implements Listener
     public void setDependencyFlag(@NotNull String pluginName, boolean isDependency)
     {
         Transaction.create(this.db, "UPDATE plugin_meta SET is_dependency = ? WHERE name = ?")
-                .setInteger(1, isDependency ? 1: 0)
-                .setString(2, pluginName)
+                .set(1, isDependency ? 1: 0)
+                .set(2, pluginName)
                 .executeUpdate();
 
     }
@@ -229,14 +229,14 @@ public class PluginMetaProvider implements Listener
     public void updateResolveQuery(@NotNull String pluginName, @NotNull String query)
     {
         Transaction transaction = Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
-                .setString(1, pluginName);
+                .set(1, pluginName);
 
         if (!transaction.isExists())
             return;
 
         transaction.renew("UPDATE plugin_meta SET resolve_query = ? WHERE name = ?")
-                .setString(1, query)
-                .setString(2, pluginName)
+                .set(1, query)
+                .set(2, pluginName)
                 .executeUpdate();
     }
 
@@ -305,11 +305,11 @@ public class PluginMetaProvider implements Listener
 
         Transaction transaction =
                 Transaction.create(connection, "INSERT INTO plugin_author(name, author) VALUES(?, ?)")
-                        .setString(1, name);
+                        .set(1, name);
 
         for (String author : authors)
         {
-            transaction.setString(2, author);
+            transaction.set(2, author);
             transaction.executeUpdate(false);
         }
 
@@ -318,9 +318,9 @@ public class PluginMetaProvider implements Listener
         MetaSQLUtil.deleteAndSaveDepends(connection, "load_before", "load_before", name, loadBefore);
 
         Transaction.create(connection, "UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?")
-                .setString(1, version)
-                .setString(2, loadTiming)
-                .setString(3, name)
+                .set(1, version)
+                .set(2, loadTiming)
+                .set(3, name)
                 .executeUpdate();
     }
 
@@ -333,7 +333,7 @@ public class PluginMetaProvider implements Listener
     public boolean isPluginMetaExists(@NotNull String pluginName)
     {
         return Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
-                .setString(1, pluginName)
+                .set(1, pluginName)
                 .isExists();
     }
 
@@ -359,13 +359,13 @@ public class PluginMetaProvider implements Listener
                         this.db,
                         "INSERT INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
                 )
-                .setString(1, description.getName())
-                .setString(2, description.getVersion())
-                .setString(3, description.getLoad().name())
-                .setLong(4, installedAt)
-                .setString(5, installedBy.name())
-                .setString(6, resolveQuery)
-                .setInteger(7, isDependency ? 1: 0)
+                .set(1, description.getName())
+                .set(2, description.getVersion())
+                .set(3, description.getLoad().name())
+                .set(4, installedAt)
+                .set(5, installedBy.name())
+                .set(6, resolveQuery)
+                .set(7, isDependency ? 1: 0)
                 .beforeCommit(tr -> this.savePluginRelationalData(tr.getConnection(), plugin))
                 .executeUpdate();
     }
@@ -376,13 +376,13 @@ public class PluginMetaProvider implements Listener
                         this.db,
                         "INSERT OR REPLACE INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
                 )
-                .setString(1, meta.getName())
-                .setString(2, meta.getVersion())
-                .setString(3, meta.getLoadTiming().name())
-                .setLong(4, meta.getInstalledAt())
-                .setString(5, meta.getInstalledBy().name())
-                .setString(6, meta.getResolveQuery())
-                .setInteger(7, meta.isDependency() ? 1: 0)
+                .set(1, meta.getName())
+                .set(2, meta.getVersion())
+                .set(3, meta.getLoadTiming().name())
+                .set(4, meta.getInstalledAt())
+                .set(5, meta.getInstalledBy().name())
+                .set(6, meta.getResolveQuery())
+                .set(7, meta.isDependency() ? 1: 0)
                 .beforeCommit(tr -> this.savePluginRelationalData(tr.getConnection(), meta))
                 .executeUpdate();
     }
@@ -395,7 +395,7 @@ public class PluginMetaProvider implements Listener
     public void removePluginMeta(@NotNull String pluginName)
     {
         Transaction.create(this.db, "DELETE FROM plugin_meta WHERE name = ?")
-                .setString(1, pluginName)
+                .set(1, pluginName)
                 .executeUpdate();
     }
 
@@ -514,9 +514,9 @@ public class PluginMetaProvider implements Listener
         for (DependencyNode node : dependencyNodes)
         {
             transaction
-                    .setString(1, node.getPlugin())
-                    .setString(2, node.getDependsOn())
-                    .setString(3, node.getDependType().name())
+                    .set(1, node.getPlugin())
+                    .set(2, node.getDependsOn())
+                    .set(3, node.getDependType().name())
                     .executeUpdate(false);
         }
 
@@ -558,7 +558,7 @@ public class PluginMetaProvider implements Listener
     public void deleteFromDependencyTree(@NotNull String pluginName)
     {
         Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
-                .setString(1, pluginName)
+                .set(1, pluginName)
                 .executeUpdate();
     }
 
