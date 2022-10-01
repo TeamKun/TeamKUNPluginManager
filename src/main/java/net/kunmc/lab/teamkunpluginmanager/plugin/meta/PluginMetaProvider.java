@@ -375,6 +375,7 @@ public class PluginMetaProvider implements Listener
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("SqlResolve")
     private static void deleteAndSaveDepends(Connection connection, String tableName, String fieldName, String name,
                                              List<String> depends) throws SQLException
     {
@@ -396,19 +397,28 @@ public class PluginMetaProvider implements Listener
     {
         String name = meta.getName();
         String version = meta.getVersion();
-        // TODO: List<String> authors = meta.getAuthors();
         String loadTiming = meta.getLoadTiming().name();
-
+        List<String> authors = meta.getAuthors();
         List<DependencyNode> dependsOn = meta.getDependsOn();
         List<String> dependencies = getStringDependsOn(dependsOn, DependType.HARD_DEPEND);
         List<String> softDependencies = getStringDependsOn(dependsOn, DependType.SOFT_DEPEND);
         List<String> loadBefore = getStringDependsOn(dependsOn, DependType.LOAD_BEFORE);
 
+        PreparedStatement statement =
+                connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
+        statement.setString(1, name);
+
+        for (String author : authors)
+        {
+            statement.setString(2, author);
+            statement.execute();
+        }
+
         deleteAndSaveDepends(connection, "depend", "dependency", name, dependencies);
         deleteAndSaveDepends(connection, "soft_depend", "soft_dependency", name, softDependencies);
         deleteAndSaveDepends(connection, "load_before", "load_before", name, loadBefore);
 
-        PreparedStatement statement = connection.prepareStatement("UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?");
+        statement = connection.prepareStatement("UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?");
         statement.setString(1, version);
         statement.setString(2, loadTiming);
         statement.setString(3, name);
@@ -643,7 +653,7 @@ public class PluginMetaProvider implements Listener
      * @param includeDependencies 依存関係を含めるかどうか
      * @return プラグインのメタデータ
      */
-    public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies)
+    public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies, boolean includeAuthors)
     {
         try (Connection con = this.db.getConnection())
         {
@@ -678,6 +688,10 @@ public class PluginMetaProvider implements Listener
                 dependsOn.addAll(this.getLoadBefore(pluginName));
             }
 
+            List<String> authors = new ArrayList<>();
+            if (includeAuthors)
+                authors = this.getAuthors(pluginName);
+
             return new PluginMeta(
                     name,
                     version,
@@ -686,6 +700,7 @@ public class PluginMetaProvider implements Listener
                     isDependency,
                     resolveQuery,
                     installedAt,
+                    authors,
                     dependedBy,
                     dependsOn
             );
@@ -694,6 +709,17 @@ public class PluginMetaProvider implements Listener
         {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * プラグインのメタデータを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインのメタデータ
+     */
+    public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName)
+    {
+        return this.getPluginMeta(pluginName, true, true);
     }
 
     /**

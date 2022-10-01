@@ -102,7 +102,7 @@ public class CommandInfo extends CommandBase
         }
 
         PluginMeta meta = provider.getPluginMeta(
-                args[0], true
+                args[0], true, true
         );
 
         terminal.info("情報を読み込み中...");
@@ -117,7 +117,7 @@ public class CommandInfo extends CommandBase
         File file = PluginUtil.getFile(plugin);
 
         terminal.writeLine(Messages.keyValue("名前", meta.getName()));
-        terminal.writeLine(Messages.keyValue("作成者", String.join(", ", plugin.getDescription().getAuthors())));
+        terminal.writeLine(Messages.keyValue("作成者", String.join(", ", meta.getAuthors())));
         terminal.writeLine(Messages.keyValue("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
         terminal.writeLine(Messages.keyValue("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
         terminal.writeLine(Messages.keyValueYesNo(

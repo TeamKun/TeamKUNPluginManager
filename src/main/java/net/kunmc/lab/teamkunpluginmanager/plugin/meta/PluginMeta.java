@@ -48,6 +48,11 @@ public class PluginMeta
      * プラグインがいつインストールされたかを表します。
      */
     long installedAt;
+    /**
+     * プラグインの作者のリストです。
+     */
+    @NotNull
+    List<String> authors;
 
     /**
      * 依存されているプラグインのリストです。

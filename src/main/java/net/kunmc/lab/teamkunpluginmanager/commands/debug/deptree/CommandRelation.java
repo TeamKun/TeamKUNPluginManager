@@ -40,7 +40,7 @@ public class CommandRelation extends CommandBase
 
         if (args.length < 2)
         {
-            List<DependencyNode> dependencies = provider.getPluginMeta(pluginName, false).getDependsOn();
+            List<DependencyNode> dependencies = provider.getPluginMeta(pluginName, false, false).getDependsOn();
             terminal.success("Plugin " + pluginName + " depends on " +
                     dependencies.stream()
                             .map(DependencyNode::getDependsOn)
@@ -56,7 +56,7 @@ public class CommandRelation extends CommandBase
             return;
         }
 
-        PluginMeta meta = provider.getPluginMeta(pluginName, true);
+        PluginMeta meta = provider.getPluginMeta(pluginName, true, false);
         if (args.length < 3)
         {
             List<DependencyNode> dependencies = meta.getDependsOn();

@@ -36,7 +36,7 @@ public class CommandMarkAsDependency extends CommandBase
 
         if (args.length < 2)
         {
-            boolean isDependency = provider.getPluginMeta(pluginName, false).isDependency();
+            boolean isDependency = provider.getPluginMeta(pluginName, false, false).isDependency();
             terminal.success("Plugin " + pluginName + " is " + (isDependency ? "dependency": "not dependency"));
 
             return;
