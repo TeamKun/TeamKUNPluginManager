@@ -829,44 +829,112 @@ public class PluginMetaProvider implements Listener
     }
 
     /**
-     * 使用されていないプラグインのリストを取得します。
+     * 使われていない依存関係のリストを取得します。
+     * <p>
+     * (プラグインが依存関係であるかどうかは、plugin_meta.is_dependencyを使用して確認できます)
+     * 関係はdependency_treeテーブルに格納されています。
+     * </p>
+     *
+     * <p>
+     * 例：サーバにインストールされているプラグイン：
+     * PluginAは依存関係
+     * PluginBは依存関係
+     * PluginCは依存関係ではない
+     * </p>
+     *
+     * <p>
+     * 例1：
+     * <ul>
+     *     <li>PluginAはPluginBに依存している</li>
+     *     <li>PluginBとPluginCの間には依存関係はない</li>
+     * </ul>
+     * この場合、このメソッドはPluginAとPluginBを返します。
+     * なぜなら、PluginBはPluginAによって使用されていますが、PluginAはどのプラグインにも使用されていないからです。
+     * </p>
+     *
+     * <p>
+     * 例2：
+     * <ul>
+     *     <li>PluginCはPluginAに依存している</li>
+     *     <li>PluginAはPluginBに依存している</li>
+     * </ul>
+     * この場合、このメソッドはどのプラグインも返しません。
+     * なぜなら、PluginAはPluginCによって使用されていますが、PluginCは依存関係ではなく、サーバがこのプラグインを使用しているためです。
+     * </p>
      *
      * @return 使用されていないプラグインのリスト
      */
     public List<String> getUnusedPlugins()
     {
+        List<String> unusedPlugins = new ArrayList<>();
+
         try (Connection con = this.db.getConnection())
         {
-            PreparedStatement statement =
-                    con.prepareStatement(
-                            // Source: dependency_tree
-                            // Recursive:
-                            //   1. Select plugins that plugin_meta.is_dependency = 1 and is no plugin depends on it.
-                            //   2. Select plugins that step 1's plugins depends on and plugin_meta.is_dependency = 1.
-
-                            "WITH RECURSIVE unused_plugins(name) AS (" +
-                                    "SELECT name FROM plugin_meta WHERE is_dependency = 1 AND name NOT IN (" +
-                                    "SELECT parent FROM dependency_tree" +
-                                    ")" +
-                                    "UNION ALL " +
-                                    "SELECT dependency_tree.name FROM dependency_tree, unused_plugins WHERE 0 = 1 AND dependency_tree.parent = unused_plugins.name " +
-                                    "AND dependency_tree.name IN(SELECT name FROM plugin_meta WHERE is_dependency = 1)" +
-                                    ")" +
-                                    "SELECT name FROM unused_plugins"
-                    );
-
-            ResultSet resultSet = statement.executeQuery();
-            List<String> unusedPlugins = new ArrayList<>();
+            Statement statement = con.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT name FROM plugin_meta WHERE is_dependency = 1");
 
             while (resultSet.next())
-                unusedPlugins.add(resultSet.getString("name"));
-
-            return unusedPlugins;
+            {
+                String name = resultSet.getString("name");
+                int checkUnused = this.isUnusedRecursive(con, name, 0);
+                if (checkUnused == 0) // 0 = unused
+                    unusedPlugins.add(name);
+            }
         }
         catch (SQLException e)
         {
             throw new IllegalStateException(e);
         }
+
+        return unusedPlugins;
+    }
+
+    // -1: Error
+    // 0: Unused
+    // 1: Used
+    private int isUnusedRecursive(Connection con, @NotNull String pluginName, int depth) throws SQLException
+    {
+        if (depth > 10)
+            return -1;
+
+        PreparedStatement statement = con.prepareStatement("SELECT name, parent FROM dependency_tree WHERE parent = ?");
+        PreparedStatement checkIsDependency =
+                con.prepareStatement("SELECT COUNT(name) FROM plugin_meta WHERE name = ? AND is_dependency = 1");
+        statement.setString(1, pluginName);
+        ResultSet resultSet = statement.executeQuery();
+
+        if (isNotDependencyInternal(con, checkIsDependency, pluginName))
+            return 0;
+
+        while (resultSet.next())
+        {
+            String name = resultSet.getString("name");
+            String parent = resultSet.getString("parent");
+
+            if (isNotDependencyInternal(con, checkIsDependency, name))
+                return 1;
+
+            int checkUnused = this.isUnusedRecursive(con, name, depth + 1);
+            if (checkUnused == 1)
+                return 1;
+        }
+
+        return 0;
+    }
+
+    private boolean isNotDependencyInternal(Connection con, PreparedStatement stmt, String target) throws SQLException
+    {
+        stmt.setString(1, target);
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next())
+        {
+            int count = resultSet.getInt(1);
+            resultSet.close();
+            return count == 0;
+        }
+
+        resultSet.close();
+        return false;
     }
 
     private void initializeTables()
