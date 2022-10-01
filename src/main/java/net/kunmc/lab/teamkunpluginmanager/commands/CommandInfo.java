@@ -5,6 +5,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependType;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMeta;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaProvider;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
@@ -90,15 +91,17 @@ public class CommandInfo extends CommandBase
         if (indicateArgsLengthInvalid(terminal, args, 1, 1))
             return;
 
-        if (!PluginUtil.isPluginLoaded(args[0]))
+        terminal.info("依存関係ツリーを読み込み中...");
+
+        PluginMetaProvider provider = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider();
+
+        if (provider.isPluginMetaExists(args[0]))
         {
             terminal.error("プラグインが見つかりませんでした。");
             return;
         }
 
-        terminal.info("依存関係ツリーを読み込み中...");
-
-        PluginMeta meta = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getPluginMeta(
+        PluginMeta meta = provider.getPluginMeta(
                 args[0], true
         );
 
