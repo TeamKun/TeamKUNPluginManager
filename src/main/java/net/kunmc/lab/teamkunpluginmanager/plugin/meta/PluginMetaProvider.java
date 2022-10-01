@@ -3,6 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -136,7 +137,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getAuthors(@NotNull String pluginName)
     {
-        return getListFromTable("plugin_author", pluginName, "name", "author");
+        return MetaSQLUtil.getListFromTable(this.db, "plugin_author", pluginName, "name", "author");
     }
 
     /**
@@ -147,7 +148,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<String> getPluginsByAuthor(@NotNull String author)
     {
-        return getListFromTable("plugin_author", author, "author", "name");
+        return MetaSQLUtil.getListFromTable(this.db, "plugin_author", author, "author", "name");
     }
 
     /**
@@ -212,47 +213,11 @@ public class PluginMetaProvider implements Listener
      */
     public void setDependencyFlag(@NotNull String pluginName, boolean isDependency)
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-            PreparedStatement statement = con.prepareStatement("UPDATE plugin_meta SET is_dependency = ? WHERE name = ?");
-            statement.setInt(1, isDependency ? 1: 0);
-            statement.setString(2, pluginName);
+        Transaction.create(this.db, "UPDATE plugin_meta SET is_dependency = ? WHERE name = ?")
+                .setInteger(1, isDependency ? 1: 0)
+                .setString(2, pluginName)
+                .executeUpdate();
 
-            statement.executeUpdate();
-
-            con.commit();
-
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException e1)
-            {
-                System.out.println("Failed to rollback");
-                e1.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.out.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
     }
 
     /**
@@ -263,56 +228,16 @@ public class PluginMetaProvider implements Listener
      */
     public void updateResolveQuery(@NotNull String pluginName, @NotNull String query)
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-            // Check if the plugin exists
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
-            statement.setString(1, pluginName);
+        Transaction transaction = Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
+                .setString(1, pluginName);
 
-            if (!statement.executeQuery().next())
-            {
-                con.rollback();
-                throw new IllegalArgumentException("Plugin does not exist");
-            }
+        if (!transaction.isExists())
+            return;
 
-            statement = con.prepareStatement("UPDATE plugin_meta SET resolve_query = ? WHERE name = ?");
-            statement.setString(1, query);
-            statement.setString(2, pluginName);
-
-            statement.executeUpdate();
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        transaction.renew("UPDATE plugin_meta SET resolve_query = ? WHERE name = ?")
+                .setString(1, query)
+                .setString(2, pluginName)
+                .executeUpdate();
     }
 
     private void savePluginRelationalData(Connection connection, Plugin plugin) throws SQLException
@@ -367,32 +292,6 @@ public class PluginMetaProvider implements Listener
 
     }
 
-    private static List<String> getStringDependsOn(List<DependencyNode> nodes, DependType type)
-    {
-        return nodes.stream().parallel()
-                .filter(node -> node.getDependType() == type)
-                .map(DependencyNode::getDependsOn)
-                .collect(Collectors.toList());
-    }
-
-    @SuppressWarnings("SqlResolve")
-    private static void deleteAndSaveDepends(Connection connection, String tableName, String fieldName, String name,
-                                             List<String> depends) throws SQLException
-    {
-        PreparedStatement statement = connection.prepareStatement("DELETE FROM " + tableName + " WHERE name = ?");
-        statement.setString(1, name);
-        statement.executeUpdate();
-
-        statement = connection.prepareStatement("INSERT INTO " + tableName + "(name, " + fieldName + ") VALUES(?, ?)");
-        statement.setString(1, name);
-
-        for (String depend : depends)
-        {
-            statement.setString(2, depend);
-            statement.executeUpdate();
-        }
-    }
-
     private void savePluginRelationalData(Connection connection, PluginMeta meta) throws SQLException
     {
         String name = meta.getName();
@@ -400,29 +299,29 @@ public class PluginMetaProvider implements Listener
         String loadTiming = meta.getLoadTiming().name();
         List<String> authors = meta.getAuthors();
         List<DependencyNode> dependsOn = meta.getDependsOn();
-        List<String> dependencies = getStringDependsOn(dependsOn, DependType.HARD_DEPEND);
-        List<String> softDependencies = getStringDependsOn(dependsOn, DependType.SOFT_DEPEND);
-        List<String> loadBefore = getStringDependsOn(dependsOn, DependType.LOAD_BEFORE);
+        List<String> dependencies = MetaSQLUtil.getStringDependsOn(dependsOn, DependType.HARD_DEPEND);
+        List<String> softDependencies = MetaSQLUtil.getStringDependsOn(dependsOn, DependType.SOFT_DEPEND);
+        List<String> loadBefore = MetaSQLUtil.getStringDependsOn(dependsOn, DependType.LOAD_BEFORE);
 
-        PreparedStatement statement =
-                connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
-        statement.setString(1, name);
+        Transaction transaction =
+                Transaction.create(connection, "INSERT INTO plugin_author(name, author) VALUES(?, ?)")
+                        .setString(1, name);
 
         for (String author : authors)
         {
-            statement.setString(2, author);
-            statement.execute();
+            transaction.setString(2, author);
+            transaction.executeUpdate(false);
         }
 
-        deleteAndSaveDepends(connection, "depend", "dependency", name, dependencies);
-        deleteAndSaveDepends(connection, "soft_depend", "soft_dependency", name, softDependencies);
-        deleteAndSaveDepends(connection, "load_before", "load_before", name, loadBefore);
+        MetaSQLUtil.deleteAndSaveDepends(connection, "depend", "dependency", name, dependencies);
+        MetaSQLUtil.deleteAndSaveDepends(connection, "soft_depend", "soft_dependency", name, softDependencies);
+        MetaSQLUtil.deleteAndSaveDepends(connection, "load_before", "load_before", name, loadBefore);
 
-        statement = connection.prepareStatement("UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?");
-        statement.setString(1, version);
-        statement.setString(2, loadTiming);
-        statement.setString(3, name);
-        statement.executeUpdate();
+        Transaction.create(connection, "UPDATE plugin_meta SET version = ?, load_timing = ? WHERE name = ?")
+                .setString(1, version)
+                .setString(2, loadTiming)
+                .setString(3, name)
+                .executeUpdate();
     }
 
     /**
@@ -433,17 +332,9 @@ public class PluginMetaProvider implements Listener
      */
     public boolean isPluginMetaExists(@NotNull String pluginName)
     {
-        try (Connection con = this.db.getConnection())
-        {
-            PreparedStatement statement = con.prepareStatement("SELECT * FROM plugin_meta WHERE name = ?");
-            statement.setString(1, pluginName);
-
-            return statement.executeQuery().next();
-        }
-        catch (SQLException e)
-        {
-            throw new IllegalStateException(e);
-        }
+        return Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
+                .setString(1, pluginName)
+                .isExists();
     }
 
     /**
@@ -463,111 +354,37 @@ public class PluginMetaProvider implements Listener
 
     {
 
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-
-            PreparedStatement statement =
-                    con.prepareStatement("INSERT INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)");
-
-            PluginDescriptionFile description = plugin.getDescription();
-
-            statement.setString(1, description.getName());
-            statement.setString(2, description.getVersion());
-            statement.setString(3, description.getLoad().name());
-            statement.setLong(4, installedAt);
-            statement.setString(5, installedBy.name());
-            statement.setString(6, resolveQuery);
-            statement.setInt(7, isDependency ? 1: 0);
-
-            statement.executeUpdate();
-
-            this.savePluginRelationalData(con, plugin);
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        PluginDescriptionFile description = plugin.getDescription();
+        Transaction.create(
+                        this.db,
+                        "INSERT INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
+                )
+                .setString(1, description.getName())
+                .setString(2, description.getVersion())
+                .setString(3, description.getLoad().name())
+                .setLong(4, installedAt)
+                .setString(5, installedBy.name())
+                .setString(6, resolveQuery)
+                .setInteger(7, isDependency ? 1: 0)
+                .beforeCommit(tr -> this.savePluginRelationalData(tr.getConnection(), plugin))
+                .executeUpdate();
     }
 
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-
-            PreparedStatement statement =
-                    con.prepareStatement("INSERT OR REPLACE INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)");
-            statement.setString(1, meta.getName());
-            statement.setString(2, meta.getVersion());
-            statement.setString(3, meta.getLoadTiming().name());
-            statement.setLong(4, meta.getInstalledAt());
-            statement.setString(5, meta.getInstalledBy().name());
-            statement.setString(6, meta.getResolveQuery());
-            statement.setInt(7, meta.isDependency() ? 1: 0);
-
-            statement.executeUpdate();
-
-            this.savePluginRelationalData(con, meta);
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        Transaction.create(
+                        this.db,
+                        "INSERT OR REPLACE INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
+                )
+                .setString(1, meta.getName())
+                .setString(2, meta.getVersion())
+                .setString(3, meta.getLoadTiming().name())
+                .setLong(4, meta.getInstalledAt())
+                .setString(5, meta.getInstalledBy().name())
+                .setString(6, meta.getResolveQuery())
+                .setInteger(7, meta.isDependency() ? 1: 0)
+                .beforeCommit(tr -> this.savePluginRelationalData(tr.getConnection(), meta))
+                .executeUpdate();
     }
 
     /**
@@ -577,49 +394,9 @@ public class PluginMetaProvider implements Listener
      */
     public void removePluginMeta(@NotNull String pluginName)
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-
-            this.removePluginRelationalData(con, pluginName);
-
-            PreparedStatement statement =
-                    con.prepareStatement("DELETE FROM plugin_meta WHERE name = ?");
-            statement.setString(1, pluginName);
-
-            statement.executeUpdate();
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        Transaction.create(this.db, "DELETE FROM plugin_meta WHERE name = ?")
+                .setString(1, pluginName)
+                .executeUpdate();
     }
 
     private void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
@@ -729,52 +506,21 @@ public class PluginMetaProvider implements Listener
      */
     public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
     {
-        Connection con = null;
-        try
+        Transaction transaction = Transaction.create(
+                this.db,
+                "INSERT INTO dependency_tree(name, parent, depend_type) VALUES(?, ?, ?)"
+        );
+
+        for (DependencyNode node : dependencyNodes)
         {
-            con = this.db.getConnection();
-
-            PreparedStatement statement =
-                    con.prepareStatement("INSERT INTO dependency_tree(name, parent, depend_type) VALUES(?, ?, ?)");
-
-            for (DependencyNode node : dependencyNodes)
-            {
-                statement.setString(1, node.getPlugin());
-                statement.setString(2, node.getDependsOn());
-                statement.setString(3, node.getDependType().name());
-                statement.execute();
-            }
-
-            con.commit();
+            transaction
+                    .setString(1, node.getPlugin())
+                    .setString(2, node.getDependsOn())
+                    .setString(3, node.getDependType().name())
+                    .executeUpdate(false);
         }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
 
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        transaction.finishManually();
     }
 
     /**
@@ -811,47 +557,9 @@ public class PluginMetaProvider implements Listener
      */
     public void deleteFromDependencyTree(@NotNull String pluginName)
     {
-        Connection con = null;
-        try
-        {
-            con = this.db.getConnection();
-
-            PreparedStatement statement =
-                    con.prepareStatement("DELETE FROM dependency_tree WHERE name = ?");
-            statement.setString(1, pluginName);
-            statement.execute();
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            try
-            {
-                if (con != null)
-                    con.rollback();
-            }
-            catch (SQLException ex)
-            {
-                System.err.println("Failed to rollback transaction");
-                ex.printStackTrace();
-            }
-
-            throw new IllegalStateException(e);
-        }
-        finally
-        {
-            try
-            {
-
-                if (con != null)
-                    con.close();
-            }
-            catch (SQLException e)
-            {
-                System.err.println("Failed to close connection");
-                e.printStackTrace();
-            }
-        }
+        Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
+                .setString(1, pluginName)
+                .executeUpdate();
     }
 
     /**
@@ -965,57 +673,51 @@ public class PluginMetaProvider implements Listener
 
     private void initializeTables()
     {
-        try (Connection con = this.db.getConnection())
-        {
-            Statement statement = con.createStatement();
+        Transaction.create(this.db)
+                .doTransaction((tr) -> {
+                    Statement statement = tr.getConnection().createStatement();
 
-            statement.execute("CREATE TABLE IF NOT EXISTS plugin_meta(" +
-                    "name TEXT NOT NULL PRIMARY KEY," +
-                    "version TEXT NOT NULL," +
-                    "load_timing TEXT NOT NULL," +
-                    "installed_at INTEGER NOT NULL," +
-                    "installed_by TEXT NOT NULL," +
-                    "resolve_query TEXT," +
-                    "is_dependency INTEGER(1) NOT NULL" +
-                    ")"
-            );
+                    statement.execute("CREATE TABLE IF NOT EXISTS plugin_meta(" +
+                            "name TEXT NOT NULL PRIMARY KEY," +
+                            "version TEXT NOT NULL," +
+                            "load_timing TEXT NOT NULL," +
+                            "installed_at INTEGER NOT NULL," +
+                            "installed_by TEXT NOT NULL," +
+                            "resolve_query TEXT," +
+                            "is_dependency INTEGER(1) NOT NULL" +
+                            ")"
+                    );
 
-            statement.execute("CREATE TABLE IF NOT EXISTS plugin_author(" +
-                    "name TEXT NOT NULL UNIQUE," +
-                    "author TEXT NOT NULL" +
-                    ")"
-            );
+                    statement.execute("CREATE TABLE IF NOT EXISTS plugin_author(" +
+                            "name TEXT NOT NULL UNIQUE," +
+                            "author TEXT NOT NULL" +
+                            ")"
+                    );
 
-            statement.execute("CREATE TABLE IF NOT EXISTS depend(" +
-                    "name TEXT NOT NULL," +
-                    "dependency TEXT" +
-                    ")"
-            );
-            statement.execute("CREATE TABLE IF NOT EXISTS soft_depend(" +
-                    "name TEXT NOT NULL," +
-                    "soft_dependency TEXT" +
-                    ")"
-            );
-            statement.execute("CREATE TABLE IF NOT EXISTS load_before(" +
-                    "name TEXT NOT NULL," +
-                    "load_before TEXT" +
-                    ")"
-            );
+                    statement.execute("CREATE TABLE IF NOT EXISTS depend(" +
+                            "name TEXT NOT NULL," +
+                            "dependency TEXT" +
+                            ")"
+                    );
+                    statement.execute("CREATE TABLE IF NOT EXISTS soft_depend(" +
+                            "name TEXT NOT NULL," +
+                            "soft_dependency TEXT" +
+                            ")"
+                    );
+                    statement.execute("CREATE TABLE IF NOT EXISTS load_before(" +
+                            "name TEXT NOT NULL," +
+                            "load_before TEXT" +
+                            ")"
+                    );
 
-            statement.execute("CREATE TABLE IF NOT EXISTS dependency_tree(" +
-                    "name TEXT NOT NULL," +
-                    "parent TEXT," +
-                    "depend_type TEXT," +
-                    "PRIMARY KEY (name, parent)" +
-                    ")"
-            );
-
-            con.commit();
-        }
-        catch (SQLException e)
-        {
-            throw new IllegalStateException(e);
-        }
+                    statement.execute("CREATE TABLE IF NOT EXISTS dependency_tree(" +
+                            "name TEXT NOT NULL," +
+                            "parent TEXT," +
+                            "depend_type TEXT," +
+                            "PRIMARY KEY (name, parent)" +
+                            ")"
+                    );
+                });
     }
 
     private HikariDataSource createConnection(@NotNull Path databasePath)
@@ -1034,7 +736,7 @@ public class PluginMetaProvider implements Listener
 
     private List<DependencyNode> getDependDataFromTable(String tableName, String name, String field, DependType type, boolean baseReversed)
     {
-        List<String> depString = this.getListFromTable(tableName, name, baseReversed ? field: "name", baseReversed ? "name": field);
+        List<String> depString = MetaSQLUtil.getListFromTable(this.db, tableName, name, baseReversed ? field: "name", baseReversed ? "name": field);
 
         if (baseReversed)
             return depString.stream()
@@ -1046,29 +748,4 @@ public class PluginMetaProvider implements Listener
                     .collect(Collectors.toList());
 
     }
-
-    @SuppressWarnings("SqlResolve")
-    private List<String> getListFromTable(String tableName, String name, String queryField, String field)
-    {
-        List<String> depends = new ArrayList<>();
-
-        try (Connection con = this.db.getConnection())
-        {
-            PreparedStatement statement =
-                    con.prepareStatement("SELECT * FROM " + tableName + " WHERE " + queryField + " = ?");
-            statement.setString(1, name);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next())
-                depends.add(resultSet.getString(field));
-        }
-        catch (SQLException e)
-        {
-            throw new IllegalStateException(e);
-        }
-
-        return depends;
-    }
-
 }
