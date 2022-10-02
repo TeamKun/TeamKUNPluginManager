@@ -563,6 +563,17 @@ public class Transaction
         {
             throw new IllegalStateException(e);
         }
+        finally
+        {
+            try
+            {
+                this.connection.close();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

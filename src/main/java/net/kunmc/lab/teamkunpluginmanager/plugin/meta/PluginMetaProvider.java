@@ -321,7 +321,7 @@ public class PluginMetaProvider implements Listener
                 .set(1, version)
                 .set(2, loadTiming)
                 .set(3, name)
-                .executeUpdate();
+                .executeUpdate(false);
     }
 
     /**
