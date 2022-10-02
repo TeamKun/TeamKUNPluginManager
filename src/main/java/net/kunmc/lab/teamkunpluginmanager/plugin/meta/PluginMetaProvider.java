@@ -396,6 +396,7 @@ public class PluginMetaProvider implements Listener
     {
         Transaction.create(this.db, "DELETE FROM plugin_meta WHERE name = ?")
                 .set(1, pluginName)
+                .beforeCommit(tr -> this.removePluginRelationalData(tr.getConnection(), pluginName))
                 .executeUpdate();
     }
 
