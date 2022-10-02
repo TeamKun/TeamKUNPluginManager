@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependType;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.InstallOperator;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMeta;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaProvider;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
@@ -22,7 +23,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -85,6 +88,28 @@ public class CommandInfo extends CommandBase
         return component;
     }
 
+    private static String epochToString(long epoch)
+    {
+        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(epoch));
+    }
+
+    private static String getInstalledByString(InstallOperator operator)
+    {
+        switch (operator)
+        {
+            case SERVER_ADMIN:
+                return ChatColor.GREEN + "サーバー管理者";
+            case KPM_PLUGIN_UPDATER:
+                return ChatColor.AQUA + "KPMプラグインアップデーター";
+            case KPM_DEPENDENCY_RESOLVER:
+                return ChatColor.DARK_AQUA + "KPM依存関係解決機能";
+            case OTHER:
+                return ChatColor.RED + "その他";
+            default:
+                return ChatColor.GRAY + "不明";
+        }
+    }
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -140,6 +165,15 @@ public class CommandInfo extends CommandBase
             terminal.writeLine(Messages.keyValue("ファイル名", file.getName()));
             terminal.writeLine(Messages.keyValue("ダウンロードサイズ", Utils.roundSizeUnit(file.length())));
         }
+
+        terminal.writeLine("");
+        terminal.writeLine(Messages.keyValue(
+                "インストール者",
+                getInstalledByString(meta.getInstalledBy())
+        ));
+        terminal.writeLine(Messages.keyValueYesNo("依存関係?", meta.isDependency()));
+        terminal.writeLine(Messages.keyValue("インストール日時", epochToString(meta.getInstalledAt())));
+
 
         terminal.writeLine("");
         terminal.write(dependTree("依存関係", meta.getDependsOn().stream()
