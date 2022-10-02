@@ -75,7 +75,7 @@ public class PluginMetaManager implements Listener
         System.out.println("プラグインの追加が検出されました: " + pluginNameFull);
 
         System.out.println("プラグインのメタデータを作成してします ...");
-        this.onInstalled(plugin, InstallOperator.SERVER_ADMIN, null, false);
+        this.onInstalled(plugin, InstallOperator.UNKNOWN, null, false);
 
         System.out.println("依存関係ツリーを構築しています ...");
         this.provider.buildDependencyTree(plugin);
@@ -146,7 +146,7 @@ public class PluginMetaManager implements Listener
 
             this.provider.savePluginMeta(
                     plugin,
-                    InstallOperator.SERVER_ADMIN,
+                    InstallOperator.UNKNOWN,
                     System.currentTimeMillis(),
                     null,
                     false

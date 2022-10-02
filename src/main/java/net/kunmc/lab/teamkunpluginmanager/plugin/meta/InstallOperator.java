@@ -20,5 +20,9 @@ public enum InstallOperator
     /**
      * その他の方法でインストールされたことを表します。
      */
-    OTHER
+    OTHER,
+    /**
+     * 未知の方法でインストールされたことを表します。
+     */
+    UNKNOWN
 }
