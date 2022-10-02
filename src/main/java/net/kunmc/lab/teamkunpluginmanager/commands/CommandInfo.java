@@ -95,17 +95,7 @@ public class CommandInfo extends CommandBase
 
         PluginMetaProvider provider = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider();
 
-        if (!provider.isPluginMetaExists(args[0]))
-        {
-            terminal.error("プラグインが見つかりませんでした。");
-            return;
-        }
 
-        PluginMeta meta = provider.getPluginMeta(
-                args[0], true, true
-        );
-
-        terminal.info("情報を読み込み中...");
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(args[0]);
 
         if (plugin == null)
@@ -114,6 +104,17 @@ public class CommandInfo extends CommandBase
             return;
         }
 
+        if (!provider.isPluginMetaExists(plugin.getName()))
+        {
+            terminal.error("プラグインが見つかりませんでした。");
+            return;
+        }
+
+        PluginMeta meta = provider.getPluginMeta(
+                plugin.getName(), true, true
+        );
+
+        terminal.info("情報を読み込み中...");
         File file = PluginUtil.getFile(plugin);
 
         terminal.writeLine(Messages.keyValue("名前", meta.getName()));
