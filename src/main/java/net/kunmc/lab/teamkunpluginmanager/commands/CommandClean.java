@@ -63,7 +63,7 @@ public class CommandClean extends CommandBase
         terminal.writeLine(ChatColor.AQUA + String.join(", ", removable));
 
         String[] finalRemovable = removable;
-        Runner.run(() -> {
+        Runner.runAsync(() -> {
             QuestionResult result = terminal.getInput().
                     showQuestion("本当に続行しますか?", QuestionAttribute.YES, QuestionAttribute.CANCELLABLE)
                     .waitAndGetResult();
