@@ -124,7 +124,12 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
                     Path pluginPath = downloadResults.get(actualName).getPath();
 
                     assert pluginPath != null;
-                    this.status.onCollect(exceptedName, new DependencyElement(exceptedName, pluginPath, entry.getValue()));
+                    this.status.onCollect(
+                            exceptedName,
+                            new DependencyElement(exceptedName, pluginPath,
+                                    entry.getValue(), exceptedName
+                            )
+                    );
                 });
 
         //------------------------

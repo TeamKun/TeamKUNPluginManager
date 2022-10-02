@@ -123,7 +123,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                     String name = descriptionFile.getName();
                     Path path = PluginUtil.getFile(pl).toPath();
 
-                    return new DependencyElement(name, path, descriptionFile);
+                    return new DependencyElement(name, path, descriptionFile, null);
                 })
                 .collect(Collectors.toList());
 

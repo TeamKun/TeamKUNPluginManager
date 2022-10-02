@@ -82,7 +82,10 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
                 PluginDescriptionFile pluginDescription = dependency.getPluginDescription();
                 Path path = dependency.getPluginPath();
 
-                PluginsInstallResult result = this.installOne(path, pluginDescription, installedPlugins, true);
+                PluginsInstallResult result =
+                        this.installOne(path, pluginDescription, dependency.getQuery(),
+                                installedPlugins, true
+                        );
                 if (!result.isSuccess())  // installOne returns null if installation is failed
                     return result;
             }
@@ -92,7 +95,10 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
             // Install plugin after dependencies installed
 
-            PluginsInstallResult result = this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(), installedPlugins, false);
+            PluginsInstallResult result =
+                    this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(),
+                            arguments.getQuery(), installedPlugins, false
+                    );
 
             if (result.isSuccess() && result.getInstalledPlugin() != null)
                 TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().buildDependencyTree(result.getInstalledPlugin());
@@ -107,7 +113,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     @NotNull
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
-                                            @NotNull List<Plugin> installedPlugins, boolean isDependency)
+                                            @Nullable String query, @NotNull List<Plugin> installedPlugins, boolean isDependency)
     {
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
 
@@ -169,7 +175,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         TeamKunPluginManager.getPlugin().getPluginMetaManager().onInstalled(
                 target,
                 isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN,
-                null,
+                query,
                 isDependency
         );
 

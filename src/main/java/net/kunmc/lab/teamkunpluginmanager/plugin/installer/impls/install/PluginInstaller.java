@@ -141,7 +141,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
                         .then(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
                         .bridgeArgument(result -> new PluginsInstallArgument(
-                                pluginFilePath, pluginDescription, result.getOrder()
+                                pluginFilePath, pluginDescription, query, result.getOrder()
                         ))
                         .submitAll(new DependsCollectArgument(pluginDescription));
         // endregion

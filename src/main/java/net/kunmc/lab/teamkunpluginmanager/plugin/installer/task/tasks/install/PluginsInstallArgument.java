@@ -6,6 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -27,6 +28,11 @@ public class PluginsInstallArgument extends TaskArgument
      */
     @NotNull
     PluginDescriptionFile pluginDescription;
+    /**
+     * プラグインの解決に使用したクエリです。
+     */
+    @Nullable
+    String query;
 
     /**
      * 依存関係の要素です。

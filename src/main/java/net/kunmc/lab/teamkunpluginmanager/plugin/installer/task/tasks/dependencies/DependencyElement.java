@@ -1,11 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies;
 
-import com.google.gson.annotations.Expose;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -19,13 +19,11 @@ public class DependencyElement
     /**
      * 依存関係の名前です。
      */
-    @Expose
     @NotNull
     String pluginName;
     /**
      * 依存関係プラグインがあるのパスです。
      */
-    @Expose
     @NotNull
     Path pluginPath;
 
@@ -35,10 +33,17 @@ public class DependencyElement
     @NotNull
     PluginDescriptionFile pluginDescription;
 
-    public DependencyElement(@NotNull String pluginName, @NotNull Path pluginPath)
+    /**
+     * 依存関係の解決に使用したクエリです。
+     */
+    @Nullable
+    String query;
+
+    public DependencyElement(@NotNull String pluginName, @NotNull Path pluginPath, @NotNull String query)
     {
         this.pluginName = pluginName;
         this.pluginPath = pluginPath;
+        this.query = query;
 
         try
         {
