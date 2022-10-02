@@ -2,7 +2,6 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.DependencyTree;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
@@ -102,8 +101,11 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
         for (Plugin plugin : orderedUninstallTargets)
         {
+            TeamKunPluginManager.getPlugin().getPluginMetaManager().preparePluginModify(plugin.getName());
+
             PluginDescriptionFile description = plugin.getDescription();
             UnInstallErrorCause errorCause = uninstallOnePlugin(plugin);
+
             if (errorCause == UnInstallErrorCause.INTERNAL_UNINSTALL_OK)
                 uninstalledPlugins.add(description);
             else
@@ -118,7 +120,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             if (pluginFile.exists())
                 pluginFile.delete();
 
-            DependencyTree.wipePlugin(plugin);
+            TeamKunPluginManager.getPlugin().getPluginMetaManager().onUninstalled(plugin.getName());
         }), 20L);
 
         orderedUninstallTargets.stream()
