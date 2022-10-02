@@ -95,7 +95,7 @@ public class CommandInfo extends CommandBase
 
         PluginMetaProvider provider = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider();
 
-        if (provider.isPluginMetaExists(args[0]))
+        if (!provider.isPluginMetaExists(args[0]))
         {
             terminal.error("プラグインが見つかりませんでした。");
             return;
