@@ -22,7 +22,7 @@ public class DownloadResult extends TaskResult<DownloadState, DownloadErrorCause
     /**
      * ダウンロード先のファイルのパスです。
      */
-    @Nullable
+    @NotNull
     private final Path path;
     /**
      * ダウンロードしたファイルのサイズです。
@@ -35,7 +35,7 @@ public class DownloadResult extends TaskResult<DownloadState, DownloadErrorCause
     @NotNull
     private final String downloadID;
 
-    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @Nullable Path path,
+    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @NotNull Path path,
                           long totalSize, @NotNull String downloadID, @Nullable DownloadErrorCause errorCause)
     {
         super(success, taskState, errorCause);
@@ -45,7 +45,7 @@ public class DownloadResult extends TaskResult<DownloadState, DownloadErrorCause
         this.downloadID = downloadID;
     }
 
-    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @Nullable Path path, long totalSize,
+    public DownloadResult(boolean success, @NotNull DownloadState taskState, @NotNull String url, @NotNull Path path, long totalSize,
                           @NotNull String downloadID)
     {
         this(success, taskState, url, path, totalSize, downloadID, null);
