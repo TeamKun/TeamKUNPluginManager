@@ -1,15 +1,24 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * DBのトランザクションを簡単に行うためのクラスです。
@@ -104,6 +113,26 @@ public class Transaction
     public static Transaction create(@NotNull HikariDataSource dataSource)
     {
         return create(dataSource, null);
+    }
+
+    /**
+     * SQLIte データソースを作成します。
+     *
+     * @param databasePath データベースのパス
+     * @return データソース
+     */
+    public static HikariDataSource createDataSource(@NotNull Path databasePath)
+    {
+        HikariConfig config = new HikariConfig();
+
+        config.setDriverClassName("org.sqlite.JDBC");
+        config.setJdbcUrl("jdbc:sqlite:" + databasePath);
+
+        config.setMaximumPoolSize(20);
+        config.setLeakDetectionThreshold(300000);
+        config.setAutoCommit(false);
+
+        return new HikariDataSource(config);
     }
 
     /**
@@ -431,20 +460,33 @@ public class Transaction
     /**
      * クエリ系SQL文を実行します。
      *
-     * @param resultRun 結果を処理する関数
+     * @param <T> 戻り値の型
      */
-    public void executeQuery(QueryResultConsumer resultRun)
+    public <T> QueryResult<T> executeQuery()
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
-        this.doTransaction((con) -> {
+        try
+        {
             ResultSet resultSet = this.preparedStatement.executeQuery();
 
-            resultRun.accept(resultSet);
+            return new QueryResult<>(resultSet);
+        }
+        catch (SQLException e)
+        {
+            try
+            {
+                this.connection.rollback();
+                this.connection.close();
+            }
+            catch (SQLException e1)
+            {
+                throw new IllegalStateException(e1);
+            }
 
-            resultSet.close();
-        });
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
@@ -576,6 +618,12 @@ public class Transaction
         }
     }
 
+    public void close() throws Exception
+    {
+        if (!this.connection.isClosed())
+            this.connection.close();
+    }
+
     /**
      * クエリ更新系SQL文を実行した時に、結果を処理する関数です。
      */
@@ -593,4 +641,152 @@ public class Transaction
     {
         void run(Transaction transaction) throws SQLException;
     }
+
+    private static class QueryResultSpliterator implements Spliterator<ResultRow>
+    {
+        private final ResultSet result;
+        private final boolean closeConnectionOnException;
+
+        public QueryResultSpliterator(ResultSet result, boolean closeConnectionOnException)
+        {
+            this.result = result;
+            this.closeConnectionOnException = closeConnectionOnException;
+        }
+
+        @Override
+        public boolean tryAdvance(Consumer<? super ResultRow> action)
+        {
+            try
+            {
+                if (this.result.next())
+                {
+                    action.accept(new ResultRow(this.result, this.closeConnectionOnException));
+                    return true;
+                }
+                else
+                    return false;
+            }
+            catch (SQLException e)
+            {
+                if (this.closeConnectionOnException)
+                {
+                    try
+                    {
+                        this.result.getStatement().getConnection().close();
+                    }
+                    catch (SQLException e1)
+                    {
+                        e1.printStackTrace();
+                    }
+                }
+                throw new IllegalStateException(e);
+            }
+        }
+
+        @Override
+        public Spliterator<ResultRow> trySplit()
+        {
+            return null;
+        }
+
+        @Override
+        public long estimateSize()
+        {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public int characteristics()
+        {
+            return ORDERED;
+        }
+    }
+
+    /**
+     * クエリの実行結果を表すクラスです。
+     */
+    @AllArgsConstructor
+    public class QueryResult<T>
+    {
+        private final ResultSet result;
+
+        /**
+         * ResultSetをそのまま取得します。
+         *
+         * @return ResultSet
+         */
+        public ResultSet getResult()
+        {
+            return this.result;
+        }
+
+        /**
+         * この結果を解放します。
+         */
+        public void close() throws SQLException
+        {
+            this.result.close();
+            Transaction.this.connection.close();
+        }
+
+        /**
+         * Listに変換します。
+         *
+         * @param resultMapper マッピング関数
+         * @param max          最大件数
+         * @return 変換されたList
+         */
+        public ArrayList<T> mapToList(Function<ResultSet, T> resultMapper, long max)
+        {
+            ArrayList<T> list = new ArrayList<>();
+
+            try
+            {
+                while (this.result.next() && !(max == -1 || list.size() >= max))
+                    list.add(resultMapper.apply(this.result));
+            }
+            catch (SQLException e)
+            {
+                throw new IllegalStateException(e);
+            }
+
+            return list;
+        }
+
+        /**
+         * Listに変換します。
+         *
+         * @param resultMapper マッピング関数
+         * @return 変換されたList
+         */
+        public ArrayList<T> mapToList(Function<ResultSet, T> resultMapper)
+        {
+            return mapToList(resultMapper, -1);
+        }
+
+        /**
+         * Streamに変換します。
+         *
+         * @return 変換されたStream
+         */
+        public Stream<ResultRow> stream(boolean closeConnectionOnException)
+        {
+            return StreamSupport.stream(
+                    new QueryResultSpliterator(this.result, closeConnectionOnException),
+                    false
+            );
+        }
+
+        /**
+         * Streamに変換します。
+         *
+         * @return 変換されたStream
+         */
+        public Stream<ResultRow> stream()
+        {
+            return this.stream(true);
+        }
+    }
+
+
 }
