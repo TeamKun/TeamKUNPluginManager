@@ -60,25 +60,23 @@ public class TokenStore
         }
     }
 
-    private byte[] getkey(Path keyPath) throws IOException
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void setPermission(Path path)
     {
-        if (Files.exists(keyPath))
-            return Files.readAllBytes(keyPath);
-
         try
         {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
-            SecretKey key = keyGenerator.generateKey();
-            byte[] keyBytes = key.getEncoded();
-            Files.write(keyPath, keyBytes);
-            Files.setPosixFilePermissions(keyPath, PosixFilePermissions.fromString("rw-------"));
-
-            return keyBytes;
+            if (System.getProperty("os.name").toLowerCase().contains("win"))
+            {
+                File f = path.toFile();
+                f.setReadable(true, false);
+                f.setWritable(true, false);
+            }
+            else
+                Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-------"));
         }
-        catch (NoSuchAlgorithmException e)
+        catch (IOException e)
         {
-            throw new IllegalStateException("Failed to generate key.", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -119,6 +117,29 @@ public class TokenStore
         }
     }
 
+    private byte[] getkey(Path keyPath) throws IOException
+    {
+        if (Files.exists(keyPath))
+            return Files.readAllBytes(keyPath);
+
+        try
+        {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+            keyGenerator.init(256);
+            SecretKey key = keyGenerator.generateKey();
+            byte[] keyBytes = key.getEncoded();
+            Files.write(keyPath, keyBytes);
+
+            setPermission(keyPath);
+
+            return keyBytes;
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new IllegalStateException("Failed to generate key.", e);
+        }
+    }
+
     public void storeToken(String token) throws IOException
     {
         byte[] tokenBytes = encryptToken(token);
@@ -131,7 +152,8 @@ public class TokenStore
         );
 
         Files.write(tokenPath, tokenString.getBytes());
-        Files.setPosixFilePermissions(tokenPath, PosixFilePermissions.fromString("rw-------"));
+
+        setPermission(tokenPath);
 
         this.tokenCache = token;
     }
