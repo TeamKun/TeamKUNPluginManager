@@ -141,7 +141,7 @@ public class Transaction
      * @param newQuery 新しいSQL文
      * @return トランザクション
      */
-    public Transaction renew(@Language("sql") @NotNull String newQuery)
+    public Transaction renew(@Language("sql") @Nullable String newQuery)
     {
         return create(this, newQuery);
     }
