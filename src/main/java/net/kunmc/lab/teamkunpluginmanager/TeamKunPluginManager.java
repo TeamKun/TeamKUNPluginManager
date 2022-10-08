@@ -154,10 +154,11 @@ public final class TeamKunPluginManager extends JavaPlugin
         installManager = new InstallManager(this);
         new PluginLoader(); // Initialize plugin loader
 
-        registerCommands(commandManager);
         setupResolver(this);
         setupToken();
         setupDependencyTree();
+
+        registerCommands(commandManager);
     }
 
 }

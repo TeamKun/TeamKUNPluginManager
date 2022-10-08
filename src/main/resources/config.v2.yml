@@ -19,6 +19,7 @@ redirectLimit: 15
 config:
   - name: TeamKun HUB
     url: "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
+    auth: true
 # 保護
 ignore:
   - bStats                #削除しないでください

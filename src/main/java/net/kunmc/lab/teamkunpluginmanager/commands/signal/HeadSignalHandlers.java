@@ -2,9 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.commands.signal;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.CheckEnvSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.DownloadingSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.ModifySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DependenciesSignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.DownloadingSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.InstallFinishedSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall.ResolverSignalHandler;
@@ -12,6 +12,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.Plu
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallFinishedSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallReadySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall.UninstallerSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.update.UpdateAliasesSignalHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class HeadSignalHandlers
     {
         return createHandlersList(
                 new CheckEnvSignalHandler(terminal),
+                new DownloadingSignalHandler(terminal),
                 new ModifySignalHandler(terminal)
         );
     }
@@ -82,6 +84,14 @@ public class HeadSignalHandlers
                 new PluginIsDependencySignalHandler(terminal),
                 new UninstallReadySignalHandler(terminal),
                 new UninstallFinishedSignalHandler(terminal)
+        );
+    }
+
+    public static List<Object> getUpdateHandlers(@NotNull Terminal terminal)
+    {
+        return createHandlersList(
+                getCommonHandlers(terminal),
+                new UpdateAliasesSignalHandler(terminal)
         );
     }
 }

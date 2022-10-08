@@ -594,9 +594,10 @@ public class Transaction
     /**
      * DBにレコードが存在するかどうかを確認します。
      *
+     * @param closeConnection 終了時にコネクションを閉じるかどうか
      * @return 存在するかどうか
      */
-    public boolean isExists()
+    public boolean isExists(boolean closeConnection)
     {
         if (!checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
@@ -619,13 +620,24 @@ public class Transaction
         {
             try
             {
-                this.connection.close();
+                if (closeConnection)
+                    this.connection.close();
             }
             catch (SQLException e)
             {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * DBにレコードが存在するかどうかを確認します。
+     *
+     * @return 存在するかどうか
+     */
+    public boolean isExists()
+    {
+        return isExists(true);
     }
 
     public void close() throws Exception

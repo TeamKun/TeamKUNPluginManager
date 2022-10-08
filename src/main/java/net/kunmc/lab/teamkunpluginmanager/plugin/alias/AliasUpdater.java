@@ -25,10 +25,6 @@ public class AliasUpdater
 
     private void createCheckTable(String sourceName)
     {
-        if (!this.transaction.renew("SELECT name FROM source WHERE name = ?")
-                .isExists())
-            return;
-
         this.transaction.renew("CREATE TABLE v_exists_alias AS SELECT name FROM alias WHERE source_id = ?")
                 .set(1, sourceName)
                 .executeUpdate(false);

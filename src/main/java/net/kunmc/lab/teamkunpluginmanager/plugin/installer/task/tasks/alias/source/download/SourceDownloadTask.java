@@ -88,7 +88,7 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
             return null;
         }
 
-        return null;
+        return url;
     }
 
     private HashMap<String, Pair<URL, Path>> downloadSources(HashMap<String, URL> remotes)

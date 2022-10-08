@@ -7,6 +7,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.Install
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update.AliasUpdater;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -114,6 +116,33 @@ public class InstallManager
             runningInstall = uninstaller.getProgress();
 
             uninstaller.run(argument);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            terminal.error("不明なエラーが発生しました。");
+
+            runningInstall = null;
+        }
+    }
+
+    public void runUpdate(@NotNull Terminal terminal, @NotNull UpdateArgument argument)
+    {
+        if (isRunning())
+        {
+            terminal.error("他のインストーラが起動しています。");
+            return;
+        }
+
+        SignalHandleManager copiedHandleManager = signalHandleManager.copy();
+        HeadSignalHandlers.getUpdateHandlers(terminal).forEach(copiedHandleManager::register);
+
+        try
+        {
+            AliasUpdater updater = new AliasUpdater(copiedHandleManager);
+            runningInstall = updater.getProgress();
+
+            updater.run(argument);
         }
         catch (Exception e)
         {
