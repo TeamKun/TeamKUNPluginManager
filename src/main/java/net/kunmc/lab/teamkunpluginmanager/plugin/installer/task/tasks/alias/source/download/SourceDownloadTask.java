@@ -1,0 +1,121 @@
+package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.alias.source.download;
+
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.alias.source.download.signals.MalformedURLSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.alias.source.download.signals.SourceDownloadFailedSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.alias.source.download.signals.UnsupportedProtocolSignal;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadResult;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.download.DownloadTask;
+import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
+import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
+import org.jetbrains.annotations.NotNull;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.HashMap;
+
+/**
+ * ソースファイルのダウンロードを行うタスクです。
+ */
+public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, SourceDownloadResult>
+{
+    private final SignalHandleManager signalHandler;
+    private SourceDownloadState status;
+
+    public SourceDownloadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    {
+        super(progress, signalHandler);
+
+        this.signalHandler = signalHandler;
+        this.status = SourceDownloadState.INITIALIZED;
+    }
+
+    private static boolean isProtocolSupported(String protocolName)
+    {
+        return protocolName.equalsIgnoreCase("http") || protocolName.equalsIgnoreCase("https");
+    }
+
+    @Override
+    public @NotNull SourceDownloadResult runTask(@NotNull SourceDownloadArgument arguments)
+    {
+        this.status = SourceDownloadState.ANALYZING_URLS;
+        HashMap<String, URL> remotes = this.buildURLs(arguments.getRemotes());
+
+        this.status = SourceDownloadState.DOWNLOADING_SOURCES;
+        HashMap<String, Pair<URL, Path>> downloadSources = this.downloadSources(remotes);
+
+        if (downloadSources.isEmpty())
+            return new SourceDownloadResult(false, this.status, SourceDownloadErrorCause.ALL_DOWNLOAD_FAILED);
+
+        return new SourceDownloadResult(true, this.status, downloadSources);
+    }
+
+    private HashMap<String, URL> buildURLs(HashMap<String, String> sources)
+    {
+        HashMap<String, URL> result = new HashMap<>();
+
+        for (String remoteName : sources.keySet())
+        {
+            String remoteURL = sources.get(remoteName);
+
+            URL url;
+            if ((url = this.buildURL(remoteName, remoteURL)) != null)
+                result.put(remoteName, url);
+        }
+
+        return result;
+    }
+
+    private URL buildURL(String fallbackName, String urlString)
+    {
+        URL url;
+        try
+        {
+            url = new URL(urlString);
+        }
+        catch (MalformedURLException e)
+        {
+            this.postSignal(new MalformedURLSignal(fallbackName, urlString));
+            return null;
+        }
+
+        if (!isProtocolSupported(url.getProtocol()))
+        {
+            this.postSignal(new UnsupportedProtocolSignal(fallbackName, url));
+            return null;
+        }
+
+        return null;
+    }
+
+    private HashMap<String, Pair<URL, Path>> downloadSources(HashMap<String, URL> remotes)
+    {
+        HashMap<String, Pair<URL, Path>> result = new HashMap<>();
+
+        for (String remoteName : remotes.keySet())
+        {
+            URL remoteURL = remotes.get(remoteName);
+
+            Path path;
+            if ((path = this.downloadSource(remoteName, remoteURL)) != null)
+                result.put(remoteName, new Pair<>(remoteURL, path));
+        }
+
+        return result;
+    }
+
+    private Path downloadSource(String remoteName, URL remoteURL)
+    {
+        DownloadResult result = new DownloadTask(this.progress, this.signalHandler)
+                .runTask(new DownloadArgument(remoteURL.toString()));
+        boolean success = result.isSuccess();
+
+        if (!success)
+            this.postSignal(new SourceDownloadFailedSignal(remoteName, result));
+
+        return success ? result.getPath(): null;
+    }
+}

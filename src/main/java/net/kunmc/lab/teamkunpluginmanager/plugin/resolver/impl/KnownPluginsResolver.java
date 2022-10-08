@@ -1,8 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPluginEntry;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.alias.Alias;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
@@ -19,14 +19,14 @@ public class KnownPluginsResolver implements BaseResolver
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        KnownPluginEntry entry = KnownPlugins.getKnown(query.getQuery());
+        Alias alias = TeamKunPluginManager.getPlugin().getAliasProvider().getAlias(query.getQuery());
 
-        if (entry == null)
+        if (alias == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
 
         try
         {
-            ResolveResult detailedResult = resolver.resolve(entry.getUrl());
+            ResolveResult detailedResult = resolver.resolve(alias.getName());
             if (detailedResult instanceof SuccessResult)
                 return new SuccessResult(this, ((SuccessResult) detailedResult).getDownloadUrl(), ResolveResult.Source.LOCAL_KNOWN);
             else
@@ -36,7 +36,7 @@ public class KnownPluginsResolver implements BaseResolver
         {
         }
 
-        return new SuccessResult(this, entry.getUrl(), null, null, ResolveResult.Source.LOCAL_KNOWN);
+        return new SuccessResult(this, alias.getName(), null, null, ResolveResult.Source.LOCAL_KNOWN);
     }
 
     @Override

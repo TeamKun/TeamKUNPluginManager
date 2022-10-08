@@ -554,14 +554,16 @@ public class Transaction
 
             throw new IllegalStateException(e);
         }
-
-        try
+        finally
         {
-            this.connection.close();
-        }
-        catch (SQLException e)
-        {
-            throw new IllegalStateException(e);
+            try
+            {
+                this.connection.close();
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -573,11 +575,19 @@ public class Transaction
         try
         {
             this.connection.rollback();
-            this.connection.close();
         }
         catch (SQLException e1)
         {
             throw new IllegalStateException(e1);
+        }
+
+        try
+        {
+            this.connection.close();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -622,15 +632,6 @@ public class Transaction
     {
         if (!this.connection.isClosed())
             this.connection.close();
-    }
-
-    /**
-     * クエリ更新系SQL文を実行した時に、結果を処理する関数です。
-     */
-    @FunctionalInterface
-    public interface QueryResultConsumer
-    {
-        void accept(ResultSet result) throws SQLException;
     }
 
     /**

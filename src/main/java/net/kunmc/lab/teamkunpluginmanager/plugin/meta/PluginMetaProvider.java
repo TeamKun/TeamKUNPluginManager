@@ -1,6 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.meta;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
@@ -32,7 +31,7 @@ public class PluginMetaProvider implements Listener
 
     public PluginMetaProvider(@NotNull Plugin plugin, @NotNull Path databasePath)
     {
-        this.db = createConnection(databasePath);
+        this.db = Transaction.createDataSource(databasePath);
 
         this.initializeTables();
 
@@ -719,20 +718,6 @@ public class PluginMetaProvider implements Listener
                             ")"
                     );
                 });
-    }
-
-    private HikariDataSource createConnection(@NotNull Path databasePath)
-    {
-        HikariConfig config = new HikariConfig();
-
-        config.setDriverClassName("org.sqlite.JDBC");
-        config.setJdbcUrl("jdbc:sqlite:" + databasePath);
-
-        config.setMaximumPoolSize(20);
-        config.setLeakDetectionThreshold(300000);
-        config.setAutoCommit(false);
-
-        return new HikariDataSource(config);
     }
 
     private List<DependencyNode> getDependDataFromTable(String tableName, String name, String field, DependType type, boolean baseReversed)

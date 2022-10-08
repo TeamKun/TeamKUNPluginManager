@@ -14,7 +14,7 @@ import net.kunmc.lab.teamkunpluginmanager.commands.CommandResolve;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandStatus;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUninstall;
 import net.kunmc.lab.teamkunpluginmanager.commands.CommandUpdate;
-import net.kunmc.lab.teamkunpluginmanager.plugin.KnownPlugins;
+import net.kunmc.lab.teamkunpluginmanager.plugin.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaManager;
@@ -31,14 +31,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Getter
 public final class TeamKunPluginManager extends JavaPlugin
 {
-    public static final String DATABASE_PATH = "plugins/TeamKunPluginManager/database/";
     @Getter
     private static TeamKunPluginManager plugin;
 
@@ -50,6 +50,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private CommandManager commandManager;
     private InstallManager installManager;
     private PluginMetaManager pluginMetaManager;
+    private AliasProvider aliasProvider;
 
     private void setupDependencyTree()
     {
@@ -61,14 +62,13 @@ public final class TeamKunPluginManager extends JavaPlugin
         System.out.println("プラグインメタデータを取得中 ...");
         this.pluginMetaManager.crawlAll();
 
-        KnownPlugins.initialization(this.getPluginConfig().getString("resolvePath"));
+        Path aliasFile = Paths.get(plugin.getDataFolder().toURI()).resolve("aliases.db");
+        boolean isFirstTime = !Files.exists(aliasFile);
 
-        if (KnownPlugins.isLegacy())
-        {
-            this.getLogger().warning("プラグイン定義ファイルの形式が古いです。更新しています...");
-            KnownPlugins.migration();
+        this.aliasProvider = new AliasProvider(aliasFile);
+
+        if (isFirstTime && isTokenAvailable()) // Do update
             new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
-        }
     }
 
     private static void setupResolver(TeamKunPluginManager plugin)
@@ -88,9 +88,8 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onDisable()
     {
-        pluginMetaManager.getProvider().close();
-        if (KnownPlugins.dataSource != null)
-            KnownPlugins.dataSource.close();
+        this.pluginMetaManager.getProvider().close();
+        this.aliasProvider.close();
     }
 
     public boolean isTokenAvailable()
@@ -113,23 +112,8 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("debug", new CommandDebug());
     }
 
-    @Override
-    public void onEnable()
+    private void setupToken()
     {
-        session = new Session();
-        saveDefaultConfig();
-        plugin = this;
-        pluginConfig = getConfig();
-        resolver = new PluginResolver();
-        commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
-        installManager = new InstallManager(this);
-        new PluginLoader(); // Initialize plugin loader
-
-        setupDependencyTree();
-        registerCommands(commandManager);
-
-        setupResolver(this);
-
         tokenStore = new TokenStore(
                 this.getDataFolder().toPath().resolve("token.dat"),
                 this.getDataFolder().toPath().resolve("token_key.dat")
@@ -150,13 +134,30 @@ public final class TeamKunPluginManager extends JavaPlugin
             System.out.println("トークンの読み込みに失敗しました。");
         }
 
-        if (!new File(DATABASE_PATH).exists())
-            new CommandUpdate().onCommand(Bukkit.getConsoleSender(), Terminals.ofConsole(), new String[0]);
 
         String tokenEnv = System.getenv("TOKEN");
 
         if (tokenEnv != null && !tokenEnv.isEmpty())
             tokenStore.fromEnv();
+
+    }
+
+    @Override
+    public void onEnable()
+    {
+        session = new Session();
+        saveDefaultConfig();
+        plugin = this;
+        pluginConfig = getConfig();
+        resolver = new PluginResolver();
+        commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
+        installManager = new InstallManager(this);
+        new PluginLoader(); // Initialize plugin loader
+
+        registerCommands(commandManager);
+        setupResolver(this);
+        setupToken();
+        setupDependencyTree();
     }
 
 }

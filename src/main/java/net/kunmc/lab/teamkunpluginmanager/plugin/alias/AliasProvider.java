@@ -1,6 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.alias;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.utils.ResultRow;
 import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +15,7 @@ import java.sql.Statement;
  */
 public class AliasProvider
 {
+    @Getter(AccessLevel.PACKAGE)
     private final HikariDataSource db;
 
     public AliasProvider(@NotNull Path path)
@@ -47,40 +50,9 @@ public class AliasProvider
         this.db.close();
     }
 
-    public void addAlias(@NotNull String name, @NotNull String alias, @NotNull String sourceId)
+    public AliasUpdater createUpdater(@NotNull String sourceName, @NotNull String sourceURL)
     {
-        Transaction.create(this.db, "INSERT INTO alias(name, alias, source_id) VALUES(?, ?, ?)")
-                .set(1, name)
-                .set(2, alias)
-                .set(3, sourceId)
-                .executeUpdate(true);
-    }
-
-    public void addSource(@NotNull String name, @NotNull String source, @NotNull AliasSource.SourceType type)
-    {
-
-        if (hasSource(name))
-            throw new IllegalArgumentException("The source already exists.");
-
-        Transaction.create(this.db, "INSERT INTO source(name, source, type) VALUES(?, ?, ?)")
-                .set(1, name)
-                .set(2, source)
-                .set(3, type.name())
-                .executeUpdate(true);
-    }
-
-    public void removeAlias(@NotNull String name)
-    {
-        Transaction.create(this.db, "DELETE FROM alias WHERE name = ?")
-                .set(1, name)
-                .executeUpdate();
-    }
-
-    public void removeSource(String id)
-    {
-        Transaction.create(this.db, "DELETE FROM source WHERE name = ?")
-                .set(1, id)
-                .executeUpdate();
+        return new AliasUpdater(sourceName, sourceURL, this);
     }
 
     public boolean hasAlias(@NotNull String name)
