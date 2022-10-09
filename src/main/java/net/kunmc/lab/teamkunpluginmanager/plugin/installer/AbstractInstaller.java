@@ -56,6 +56,17 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         return result;
     }
 
+    @NotNull
+    protected InstallResult<P> success(InstallResult<P> customResult)
+    {
+        if (!customResult.isSuccess())
+            throw new IllegalArgumentException("customResult must be success.");
+
+        this.postSignal(new InstallFinishedSignal(customResult));
+
+        return customResult;
+    }
+
     public <T extends Enum<T>> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
     {  // TODO: Implement debug mode
         InstallFailedInstallResult<P, T, ?> result = new InstallFailedInstallResult<>(this.progress, reason);

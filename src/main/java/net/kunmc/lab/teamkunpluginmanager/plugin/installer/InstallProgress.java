@@ -166,16 +166,18 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
      * プラグインがアップグレードされたとしてマークします。
      * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#UPGRADE} の {@link PluginModifiedSignal} をスローします。
      *
-     * @param pluginDescription アップグレードされたプラグインの {@link PluginDescriptionFile}
+     * @param pluginDescription  アップグレードされたプラグインの {@link PluginDescriptionFile}
+     * @param postModifiedSignal {@link PluginModifiedSignal} をスローするかどうか
      */
-    public void addUpgraded(@NotNull PluginDescriptionFile pluginDescription)
+    public void addUpgraded(@NotNull PluginDescriptionFile pluginDescription, boolean postModifiedSignal)
     {
         this.removeFromAll(pluginDescription.getName());
 
-        this.signalHandler.handleSignal(
-                this,
-                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.UPGRADE)
-        );
+        if (postModifiedSignal)
+            this.signalHandler.handleSignal(
+                    this,
+                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.UPGRADE)
+            );
         this.upgraded.add(pluginDescription.getName());
     }
 
@@ -183,18 +185,18 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
      * プラグインが新規にインストールされたとしてマークします。
      * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#ADD} の {@link PluginModifiedSignal} をスローします。
      *
-     * @param pluginDescription 新規にインストールされたプラグインの {@link PluginDescriptionFile}
+     * @param pluginDescription  新規にインストールされたプラグインの {@link PluginDescriptionFile}
+     * @param postModifiedSignal {@link PluginModifiedSignal} をスローするかどうか
      */
-    public void addInstalled(@NotNull PluginDescriptionFile pluginDescription)
+    public void addInstalled(@NotNull PluginDescriptionFile pluginDescription, boolean postModifiedSignal)
     {
         this.removeFromAll(pluginDescription.getName());
 
-        this.signalHandler.handleSignal(
-                this,
-                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.ADD)
-        );
-
-
+        if (postModifiedSignal)
+            this.signalHandler.handleSignal(
+                    this,
+                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.ADD)
+            );
         this.installed.add(pluginDescription.getName());
     }
 
@@ -202,17 +204,55 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
      * プラグインが削除されたとしてマークします。
      * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#REMOVE} の {@link PluginModifiedSignal} をスローします。
      *
-     * @param pluginDescription 削除されたプラグインの {@link PluginDescriptionFile}
+     * @param pluginDescription  削除されたプラグインの {@link PluginDescriptionFile}
+     * @param postModifiedSignal {@link PluginModifiedSignal} をスローするかどうか
      */
-    public void addRemoved(@NotNull PluginDescriptionFile pluginDescription)
+    public void addRemoved(@NotNull PluginDescriptionFile pluginDescription, boolean postModifiedSignal)
     {
         this.removeFromAll(pluginDescription.getName());
 
-        this.signalHandler.handleSignal(
-                this,
-                new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.REMOVE)
-        );
+        if (postModifiedSignal)
+            this.signalHandler.handleSignal(
+                    this,
+                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.REMOVE)
+            );
         this.removed.add(pluginDescription.getName());
+    }
+
+    /**
+     * プラグインがアップグレードされたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#UPGRADE} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription アップグレードされたプラグインの {@link PluginDescriptionFile}
+     * @see #addUpgraded(PluginDescriptionFile, boolean)
+     */
+    public void addUpgraded(@NotNull PluginDescriptionFile pluginDescription)
+    {
+        this.addUpgraded(pluginDescription, true);
+    }
+
+    /**
+     * プラグインが新規にインストールされたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#ADD} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription 新規にインストールされたプラグインの {@link PluginDescriptionFile}
+     * @see #addInstalled(PluginDescriptionFile, boolean)
+     */
+    public void addInstalled(@NotNull PluginDescriptionFile pluginDescription)
+    {
+        this.addInstalled(pluginDescription, true);
+    }
+
+    /**
+     * プラグインが削除されたとしてマークします。
+     * {@link PluginModifiedSignal#getModifyType()} が {@link PluginModifiedSignal.ModifyType#REMOVE} の {@link PluginModifiedSignal} をスローします。
+     *
+     * @param pluginDescription 削除されたプラグインの {@link PluginDescriptionFile}
+     * @see #addRemoved(PluginDescriptionFile, boolean)
+     */
+    public void addRemoved(@NotNull PluginDescriptionFile pluginDescription)
+    {
+        this.addRemoved(pluginDescription, true);
     }
 
     /**

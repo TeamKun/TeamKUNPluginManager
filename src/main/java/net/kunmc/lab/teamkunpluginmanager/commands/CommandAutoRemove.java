@@ -4,46 +4,24 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
-import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
-import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.AutoRemoveArgument;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandAutoRemove extends CommandBase
 {
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
-    { // TODO: Separate frontend and backend
-        if (checkPermission(sender, terminal, "kpm.autoremove"))
-            sender.sendMessage(ChatColor.RED + "E: 権限がありません！");
-
-        AtomicInteger removed = new AtomicInteger();
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "依存関係ツリーを読み込み中...");
-
-        List<String> removables = TeamKunPluginManager.getPlugin().getPluginMetaManager()
-                .getProvider().getUnusedPlugins();
-        if (removables.isEmpty())
-        {
-            sender.sendMessage(ChatColor.RED + "E: 削除可能なプラグインはありません。");
-            sender.sendMessage(Messages.getStatusMessage(0, removed.get(), 0));
-            sender.sendMessage(ChatColor.GREEN + "S: 操作が正常に完了しました。");
-            TeamKunPluginManager.getPlugin().getSession().unlock();
-            return;
-        }
+    {
+        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
 
         Runner.runAsync(() ->
-                TeamKunPluginManager.getPlugin().getInstallManager().runUninstall(
-                        terminal,
-                        new UninstallArgument(removables.toArray(new String[0]))
-                )
+                kpmInstance.getInstallManager().runAutoRemove(terminal, new AutoRemoveArgument())
         );
-
     }
 
     @Override

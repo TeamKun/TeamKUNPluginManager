@@ -1,6 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.commands.signal;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.autoremove.AutoRemoveFinishedSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.autoremove.AutoRemoveReadySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.CheckEnvSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.DownloadingSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.ModifySignalHandler;
@@ -92,6 +94,17 @@ public class HeadSignalHandlers
         return createHandlersList(
                 getCommonHandlers(terminal),
                 new UpdateAliasesSignalHandler(terminal)
+        );
+    }
+
+    public static List<Object> getAutoRemoveHandlers(@NotNull Terminal terminal)
+    {
+        return createHandlersList(
+                getCommonHandlers(terminal),
+                new UninstallerSignalHandler(terminal),
+                new AutoRemoveFinishedSignalHandler(terminal),
+                new UninstallFinishedSignalHandler(terminal),
+                new AutoRemoveReadySignalHandler(terminal)
         );
     }
 }

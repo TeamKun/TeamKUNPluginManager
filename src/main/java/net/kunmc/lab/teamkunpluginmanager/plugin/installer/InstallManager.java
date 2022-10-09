@@ -3,6 +3,8 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.HeadSignalHandlers;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.AutoRemoveArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.PluginAutoRemover;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
@@ -99,7 +101,7 @@ public class InstallManager
      * @throws IllegalStateException インストールが進行中の場合
      * @throws IOException           予期しない例外が発生した場合
      */
-    public void runUninstall(@NotNull Terminal terminal, @NotNull UninstallArgument argument) throws IllegalStateException, IOException
+    public void runUninstall(@NotNull Terminal terminal, @NotNull UninstallArgument argument) throws IllegalStateException
     {
         if (isRunning())
         {
@@ -143,6 +145,40 @@ public class InstallManager
             runningInstall = updater.getProgress();
 
             updater.run(argument);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            terminal.error("不明なエラーが発生しました。");
+
+            runningInstall = null;
+        }
+    }
+
+    /**
+     * プラグインの自動削除を実行します。
+     *
+     * @param terminal ターミナル
+     * @param argument 自動削除の引数
+     */
+    public void runAutoRemove(@NotNull Terminal terminal, @NotNull AutoRemoveArgument argument)
+    {
+        if (isRunning())
+        {
+            terminal.error("他のインストーラが起動しています。");
+            return;
+        }
+
+        SignalHandleManager copiedHandleManager = signalHandleManager.copy();
+        HeadSignalHandlers.getAutoRemoveHandlers(terminal).forEach(copiedHandleManager::register);
+
+        try
+        {
+            PluginAutoRemover remover = new PluginAutoRemover(copiedHandleManager);
+            runningInstall = remover.getProgress();
+
+            remover.run(argument);
+
         }
         catch (Exception e)
         {
