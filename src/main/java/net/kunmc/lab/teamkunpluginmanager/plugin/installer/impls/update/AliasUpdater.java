@@ -20,7 +20,8 @@ import java.util.HashMap;
  * エイリアスのアップデートは主に以下の流れで動作します。
  *
  * <ol>
- *     <li>{@link UpdateTasks#} - エイリアスのアップデート対象のプラグインを検索する。</li>
+ *     <li>{@link UpdateTasks#DOWNLOADING_SOURCES} - ソースファイルをダウンロードする。</li>
+ *     <li>{@link UpdateTasks#UPDATING_ALIASES} - エイリアスのアップデートを行う。</li>
  * </ol>
  */
 public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorCause, UpdateTasks>
