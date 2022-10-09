@@ -1,8 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common;
 
-import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
-import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.commands.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandler;
@@ -30,19 +29,7 @@ public class CheckEnvSignalHandler
 
         terminal.writeLine(ChatColor.DARK_RED + "W: 強制的なインストールは予期しない問題を引き起こす可能性があります。");
 
-        try
-        {
-            QuestionResult result = terminal.getInput().showYNQuestion("続行しますか?")
-                    .waitAndGetResult();
-
-            boolean continueInstall = result.test(QuestionAttribute.YES);
-
-            signal.setCancelInstall(!continueInstall);
-        }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-        }
+        signal.setCancelInstall(!SignalHandlingUtils.askContinue(terminal));
     }
 
     private void printKeyValue(String key, String value)
@@ -66,18 +53,6 @@ public class CheckEnvSignalHandler
         terminal.writeLine(ChatColor.BLUE + "== インストールしようとしているプラグイン ==");
         printPluginInfo(signal.getInstallingPlugin());
 
-        try
-        {
-            QuestionResult result = terminal.getInput().showYNQuestion("続行しますか?")
-                    .waitAndGetResult();
-
-            boolean continueInstall = result.test(QuestionAttribute.YES);
-
-            signal.setReplacePlugin(continueInstall);
-        }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-        }
+        signal.setReplacePlugin(SignalHandlingUtils.askContinue(terminal));
     }
 }
