@@ -23,7 +23,7 @@ public class UninstallReadySignalHandler
 
     private void printUninstallInfo(List<Plugin> uninstallTargets)
     {
-        terminal.writeLine(ChatColor.GREEN + "以下のパッケージは「" + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
+        terminal.writeLine(ChatColor.GREEN + "以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
         terminal.writeLine("  " + uninstallTargets.stream()
                 .map(Plugin::getName)
                 .sorted()
