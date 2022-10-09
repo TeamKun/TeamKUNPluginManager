@@ -268,6 +268,42 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
     }
 
     /**
+     * アップグレードされたとしてマークします。
+     *
+     * @param targetName アップグレードされた物の名前または識別子
+     */
+    public void addUpgraded(@NotNull String targetName)
+    {
+        this.removeFromAll(targetName);
+
+        this.upgraded.add(targetName);
+    }
+
+    /**
+     * 新規にインストールされたとしてマークします。
+     *
+     * @param targetName 新規にインストールされた物の名前または識別子
+     */
+    public void addInstalled(@NotNull String targetName)
+    {
+        this.removeFromAll(targetName);
+
+        this.installed.add(targetName);
+    }
+
+    /**
+     * 削除されたとしてマークします。
+     *
+     * @param targetName 削除された物の名前または識別子
+     */
+    public void addRemoved(@NotNull String targetName)
+    {
+        this.removeFromAll(targetName);
+
+        this.removed.add(targetName);
+    }
+
+    /**
      * インストールが完了したとしてマークし、インストールに使用された仮ディレクトリを削除します。
      */
     public void finish()

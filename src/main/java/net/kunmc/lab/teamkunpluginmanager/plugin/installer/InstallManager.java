@@ -5,6 +5,8 @@ import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.HeadSignalHandlers;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.AutoRemoveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.PluginAutoRemover;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.clean.CleanArgument;
+import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.clean.GarbageCleaner;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
@@ -179,6 +181,40 @@ public class InstallManager
 
             remover.run(argument);
 
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            terminal.error("不明なエラーが発生しました。");
+
+            runningInstall = null;
+        }
+    }
+
+    /**
+     * 不要データ(ガベージ)の削除を実行します。
+     *
+     * @param terminal ターミナル
+     * @param argument 不要データ削除の引数
+     * @throws IllegalStateException インストールが進行中の場合
+     */
+    public void runGarbageClean(@NotNull Terminal terminal, @NotNull CleanArgument argument) throws IllegalStateException
+    {
+        if (isRunning())
+        {
+            terminal.error("他のインストーラが起動しています。");
+            return;
+        }
+
+        SignalHandleManager copiedHandleManager = signalHandleManager.copy();
+        HeadSignalHandlers.getGarbageCleanHandlers(terminal).forEach(copiedHandleManager::register);
+
+        try
+        {
+            GarbageCleaner collector = new GarbageCleaner(copiedHandleManager);
+            runningInstall = collector.getProgress();
+
+            collector.run(argument);
         }
         catch (Exception e)
         {
