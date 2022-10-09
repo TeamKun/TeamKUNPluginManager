@@ -151,7 +151,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                         .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
         // endregion
 
-        return this.success();
+        return new PluginUninstallSucceedResult(this.progress, uninstallResult);
     }
 
     private Plugin getPlugin(String query)
