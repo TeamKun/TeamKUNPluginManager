@@ -137,7 +137,6 @@ public class CommandRegister extends CommandBase
             terminal.success("トークンを正常に保管しました！");
             if (terminal.isPlayer())
                 terminal.clearNotification();
-            kpmInstance.getSession().unlock();
             successFlag.set(true);
 
             throw new RuntimeException(); // For cancel bukkit task
@@ -150,12 +149,6 @@ public class CommandRegister extends CommandBase
         if (args.length < 1 && sender instanceof BlockCommandSender)
         {
             terminal.error("コマンドブロックから実行するには第一引数が必須です。");
-            return;
-        }
-
-        if (!kpmInstance.getSession().lock())
-        {
-            terminal.error("TeamKunPluginManagerが多重起動しています。");
             return;
         }
 
@@ -173,7 +166,6 @@ public class CommandRegister extends CommandBase
             }
 
             terminal.success("トークンを正常に保管しました！");
-            kpmInstance.getSession().unlock();
             return;
         }
 
@@ -187,7 +179,6 @@ public class CommandRegister extends CommandBase
             else if (result.test(QuestionAttribute.YES))
                 performAction(terminal);
 
-            kpmInstance.getSession().unlock();
         }, (e, b) -> {
         });
     }

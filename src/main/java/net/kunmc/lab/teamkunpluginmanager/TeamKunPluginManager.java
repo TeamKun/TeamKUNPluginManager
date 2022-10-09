@@ -25,7 +25,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.GitHubURLResolver
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.KnownPluginsResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.SpigotMCResolver;
-import net.kunmc.lab.teamkunpluginmanager.utils.Session;
 import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -45,7 +44,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     private FileConfiguration pluginConfig;
     private TokenStore tokenStore;
 
-    private Session session;
     private PluginResolver resolver;
     private CommandManager commandManager;
     private InstallManager installManager;
@@ -145,7 +143,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onEnable()
     {
-        session = new Session();
         saveDefaultConfig();
         plugin = this;
         pluginConfig = getConfig();
