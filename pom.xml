@@ -7,7 +7,11 @@
     <groupId>net.kunmc.lab</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
     <version>3.0.0-pre5</version>
-    <packaging>jar</packaging>
+    <modules>
+        <module>KPMDaemon</module>
+        <module>KPMPlugin</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>TeamKunPluginManager</name>
 
