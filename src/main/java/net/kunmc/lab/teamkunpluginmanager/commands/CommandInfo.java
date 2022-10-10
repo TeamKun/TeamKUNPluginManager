@@ -9,7 +9,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependType;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.InstallOperator;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMeta;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaProvider;
-import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -57,25 +56,25 @@ public class CommandInfo extends CommandBase
     @SuppressWarnings("unchecked")
     private static Component commandHover(String name, Map<String, Object> command)
     {
-        Component component = Component.text(Messages.keyValue("コマンド名", name + "\n\n"));
+        Component component = Component.text(keyValue("コマンド名", name + "\n\n"));
 
         if (command.containsKey("aliases"))
         {
             if (command.get("aliases") instanceof String)
-                component = component.append(Component.text(Messages.keyValue("エイリアス", "/" + command.get("aliases"))));
+                component = component.append(Component.text(keyValue("エイリアス", "/" + command.get("aliases"))));
             else if (command.get("aliases") instanceof List)
-                component = component.append(Component.text(Messages.keyValue(
+                component = component.append(Component.text(keyValue(
                         "エイリアス",
                         "/" + String.join(", /", (List<String>) command.get("aliases"))
                 ) + "\n"));
         }
 
         if (command.containsKey("usage"))
-            component = component.append(Component.text(Messages.keyValue("使用法", command.get("usage")) + "\n"));
+            component = component.append(Component.text(keyValue("使用法", command.get("usage")) + "\n"));
         if (command.containsKey("description"))
-            component = component.append(Component.text(Messages.keyValue("概要", command.get("description")) + "\n"));
+            component = component.append(Component.text(keyValue("概要", command.get("description")) + "\n"));
         if (command.containsKey("permission"))
-            component = component.append(Component.text(Messages.keyValue("権限", command.get("permission")) + "\n"));
+            component = component.append(Component.text(keyValue("権限", command.get("permission")) + "\n"));
         return component;
     }
 
@@ -115,6 +114,50 @@ public class CommandInfo extends CommandBase
         }
     }
 
+    private static String keyValue(String property, String value)
+    {
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + ChatColor.DARK_GREEN + value;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
+    {
+        if (args.length == 1)
+            return Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                    .map(Plugin::getName).collect(Collectors.toList());
+        return null;
+    }
+
+    @Override
+    public @Nullable String getPermission()
+    {
+        return "kpm.info";
+    }
+
+    @Override
+    public TextComponent getHelpOneLine()
+    {
+        return of("インストールされているプラグインの詳細を表示します。");
+    }
+
+    @Override
+    public String[] getArguments()
+    {
+        return new String[]{
+                required("pluginName", "string")
+        };
+    }
+
+    private static String keyValueYesNo(String property, boolean a)
+    {
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + (a ? ChatColor.DARK_GREEN + "はい": ChatColor.RED + "いいえ");
+    }
+
+    private static String keyValue(String property, Object obj)
+    {
+        return ChatColor.GREEN + property + ChatColor.WHITE + ": " + obj.toString();
+    }
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -145,37 +188,37 @@ public class CommandInfo extends CommandBase
         terminal.info("情報を読み込み中...");
         File file = PluginUtil.getFile(plugin);
 
-        terminal.writeLine(Messages.keyValue("名前", meta.getName()));
-        terminal.writeLine(Messages.keyValue("作成者", String.join(", ", meta.getAuthors())));
-        terminal.writeLine(Messages.keyValue("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
-        terminal.writeLine(Messages.keyValue("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
-        terminal.writeLine(Messages.keyValueYesNo(
+        terminal.writeLine(keyValue("名前", meta.getName()));
+        terminal.writeLine(keyValue("作成者", String.join(", ", meta.getAuthors())));
+        terminal.writeLine(keyValue("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
+        terminal.writeLine(keyValue("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
+        terminal.writeLine(keyValueYesNo(
                 "保護",
                 TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().parallel()
                         .anyMatch(s -> s.equalsIgnoreCase(meta.getName()))
         ));
 
         if (plugin.getDescription().getWebsite() != null)
-            terminal.writeLine(Messages.keyValue("ウェブサイト", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
+            terminal.writeLine(keyValue("ウェブサイト", ChatColor.UNDERLINE + plugin.getDescription().getWebsite()));
         if (plugin.getDescription().getPrefix() != null)
-            terminal.writeLine(Messages.keyValue("ログ接頭辞", plugin.getDescription().getPrefix()));
+            terminal.writeLine(keyValue("ログ接頭辞", plugin.getDescription().getPrefix()));
         if (plugin.getDescription().getDescription() != null)
-            terminal.writeLine(Messages.keyValue("概要", plugin.getDescription().getDescription()));
+            terminal.writeLine(keyValue("概要", plugin.getDescription().getDescription()));
 
         if (file != null)
         {
             terminal.writeLine("");
-            terminal.writeLine(Messages.keyValue("ファイル名", file.getName()));
-            terminal.writeLine(Messages.keyValue("ダウンロードサイズ", Utils.roundSizeUnit(file.length())));
+            terminal.writeLine(keyValue("ファイル名", file.getName()));
+            terminal.writeLine(keyValue("ダウンロードサイズ", Utils.roundSizeUnit(file.length())));
         }
 
         terminal.writeLine("");
-        terminal.writeLine(Messages.keyValue(
+        terminal.writeLine(keyValue(
                 "インストール者",
                 getInstalledByString(meta.getInstalledBy())
         ));
-        terminal.writeLine(Messages.keyValueYesNo("依存関係?", meta.isDependency()));
-        terminal.writeLine(Messages.keyValue("インストール日時", epochToString(meta.getInstalledAt())));
+        terminal.writeLine(keyValueYesNo("依存関係?", meta.isDependency()));
+        terminal.writeLine(keyValue("インストール日時", epochToString(meta.getInstalledAt())));
 
 
         terminal.writeLine("");
@@ -202,34 +245,5 @@ public class CommandInfo extends CommandBase
 
         terminal.writeLine("");
         terminal.write(commandList(plugin.getDescription().getCommands()));
-    }
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
-    {
-        if (args.length == 1)
-            return Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
-                    .map(Plugin::getName).collect(Collectors.toList());
-        return null;
-    }
-
-    @Override
-    public @Nullable String getPermission()
-    {
-        return "kpm.info";
-    }
-
-    @Override
-    public TextComponent getHelpOneLine()
-    {
-        return of("インストールされているプラグインの詳細を表示します。");
-    }
-
-    @Override
-    public String[] getArguments()
-    {
-        return new String[]{
-                required("pluginName", "string")
-        };
     }
 }
