@@ -47,7 +47,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     static
     {
-        PLUGIN_DIR = KPMDaemon.getInstance().getDataFolderPath();
+        PLUGIN_DIR = KPMDaemon.getInstance().getEnvs().getDataDirPath().getParent();
         PLUGIN_MANAGER = Bukkit.getPluginManager();
         COMMANDS_PATCHER = new CommandsPatcher();
     }

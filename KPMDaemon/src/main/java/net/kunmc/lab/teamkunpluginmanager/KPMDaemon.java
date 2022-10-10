@@ -17,7 +17,6 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -38,20 +37,16 @@ public class KPMDaemon
     @NotNull
     private static KPMDaemon INSTANCE;
 
-    @NotNull
-    private final Plugin plugin;
-
     /**
-     * ログを出力するためのロガーです。
+     * KPMの環境です。
+     */
+    @NotNull
+    private final KPMEnvironment envs;
+    /**
+     * KPMのロガーです。
      */
     @NotNull
     private final Logger logger;
-
-    /**
-     * データフォルダのパスです。
-     */
-    @NotNull
-    private final Path dataFolderPath;
 
     /**
      * プラグインのメタデータを管理するクラスです。
@@ -78,11 +73,6 @@ public class KPMDaemon
      */
     @NotNull
     private final AliasProvider aliasProvider;
-    /**
-     * エイリアスのソースです。
-     */
-    @NotNull
-    private final HashMap<String, String> sources;
 
     /**
      * プラグインをロード/アンロードするためのクラスです。
@@ -94,29 +84,18 @@ public class KPMDaemon
         INSTANCE = this;
     }
 
-    public KPMDaemon(
-            @NotNull Plugin plugin,
-            @NotNull Logger logger,
-            @NotNull Path dataFolderPath,
-            @NotNull Path databasePath,
-            @NotNull Path tokenPath,
-            @NotNull Path tokenKeyPath,
-            @NotNull Path aliasPath,
-            @NotNull List<String> organizationNames,
-            @NotNull HashMap<String, String> sources)
+    public KPMDaemon(@NotNull KPMEnvironment env)
     {
-        this.plugin = plugin;
-        this.logger = logger;
-        this.dataFolderPath = dataFolderPath;
-        this.pluginMetaManager = new PluginMetaManager(plugin, databasePath);
-        this.tokenStore = new TokenStore(tokenPath, tokenKeyPath);
+        this.envs = env;
+        this.logger = env.getLogger();
+        this.pluginMetaManager = new PluginMetaManager(env.getPlugin(), env.getMetadataDBPath());
+        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
-        this.aliasProvider = new AliasProvider(aliasPath);
+        this.aliasProvider = new AliasProvider(env.getAliasesDBPath());
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
-        this.sources = sources;
 
-        this.setupDaemon(dataFolderPath, organizationNames);
+        this.setupDaemon(env.getDataDirPath(), env.getOrganizations());
     }
 
     /**
@@ -142,14 +121,14 @@ public class KPMDaemon
         Runner.runAsync(() -> {
             this.getInstallManager().runUpdate(
                     Terminals.ofConsole(),
-                    new UpdateArgument(this.sources)
+                    new UpdateArgument((HashMap<String, String>) this.envs.getSources())
             );
         });
     }
 
     private void setupDependencyTree(Path dataFolder)
     {
-        logger.info("Loading plugin meta data ...");
+        this.logger.info("Loading plugin meta data ...");
         this.pluginMetaManager.crawlAll();
 
         Path aliasFile = dataFolder.resolve("aliases.db");
@@ -206,6 +185,6 @@ public class KPMDaemon
 
     public String getVersion()
     {
-        return this.plugin.getDescription().getVersion();
+        return this.getEnvs().getPlugin().getDescription().getVersion();
     }
 }

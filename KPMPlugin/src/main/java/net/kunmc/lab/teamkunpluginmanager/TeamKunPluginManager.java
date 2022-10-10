@@ -79,17 +79,15 @@ public final class TeamKunPluginManager extends JavaPlugin
         Path dataDir = this.getDataFolder().toPath();
 
         this.daemon = new KPMDaemon(
-                this,
-                this.getSLF4JLogger(),
-                dataDir,
-                dataDir.resolve("plugins.db"),
-                dataDir.resolve("token.dat"),
-                dataDir.resolve("token_key.dat"),
-                dataDir.resolve("aliases.db"),
-                this.getPluginConfig().getStringList("githubName"),
-                this.setupSources()
+                KPMEnvironment.builder(plugin)
+                        .tokenPath(dataDir.resolve("token.dat"))
+                        .tokenKeyPath(dataDir.resolve("token_key.dat"))
+                        .metadataDBPath(dataDir.resolve("plugins.db"))
+                        .aliasesDBPath(dataDir.resolve("aliases.db"))
+                        .organizations(this.getPluginConfig().getStringList("githubName"))
+                        .sources(this.setupSources())
+                        .build()
         );
-
 
         registerCommands(this.daemon, commandManager);
     }

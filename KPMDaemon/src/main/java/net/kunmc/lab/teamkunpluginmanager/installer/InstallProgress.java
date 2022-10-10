@@ -67,7 +67,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
     {
         DAEMON = KPMDaemon.getInstance();
         PROGRESS_CACHES = new HashMap<>();
-        CACHE_DIRECTORY = DAEMON.getDataFolderPath();
+        CACHE_DIRECTORY = DAEMON.getEnvs().getDataDirPath().resolve(".caches");
 
         if (!Files.exists(CACHE_DIRECTORY))
             try

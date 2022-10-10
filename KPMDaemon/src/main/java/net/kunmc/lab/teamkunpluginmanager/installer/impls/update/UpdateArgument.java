@@ -18,5 +18,5 @@ public class UpdateArgument extends AbstractInstallerArgument
     /**
      * エイリアスのソースのURLです。
      */
-    HashMap<String, String> remotes;
+    HashMap<String, String> remotes;  // TODO: Migrate to Map<String, String> remotes;
 }

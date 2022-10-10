@@ -105,8 +105,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
 
     protected boolean isPluginIgnored(@NotNull String pluginName)
     {
-        // TODO: include to abstract
-        return KPMDaemon.getInstance().getPlugin().getConfig().getStringList("ignore").stream()
+        return KPMDaemon.getInstance().getEnvs().getExcludes().stream()
                 .parallel()
                 .anyMatch(s -> s.equalsIgnoreCase(pluginName));
     }

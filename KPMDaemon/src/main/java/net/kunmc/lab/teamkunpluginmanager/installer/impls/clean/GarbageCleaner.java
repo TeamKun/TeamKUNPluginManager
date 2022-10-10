@@ -36,7 +36,7 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
 
     static
     {
-        PLUGIN_DIR = KPMDaemon.getInstance().getDataFolderPath().getParent();
+        PLUGIN_DIR = KPMDaemon.getInstance().getEnvs().getDataDirPath().getParent();
     }
 
     public GarbageCleaner(SignalHandleManager signalHandler) throws IOException
@@ -48,7 +48,7 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
     public InstallResult<CleanTasks> execute(@NotNull CleanArgument argument) throws TaskFailedException
     {
         List<String> excludeDataNames = argument.getExcludeDataNames();
-        excludeDataNames.addAll(KPMDaemon.getInstance().getPlugin().getConfig().getStringList("ignore")); // TODO: fix on next commit
+        excludeDataNames.addAll(KPMDaemon.getInstance().getEnvs().getExcludes());
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
                 .map(Plugin::getName)
                 .collect(Collectors.toList());
