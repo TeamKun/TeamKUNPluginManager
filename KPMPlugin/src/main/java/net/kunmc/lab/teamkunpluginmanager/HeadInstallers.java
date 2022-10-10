@@ -161,7 +161,7 @@ public class HeadInstallers
         GarbageCleaner garbageCleaner;
         try
         {
-            garbageCleaner = new GarbageCleaner(handleManager);
+            garbageCleaner = new GarbageCleaner(this.daemon, handleManager);
         }
         catch (IOException e)
         {

@@ -27,12 +27,9 @@ import java.util.Map;
  */
 public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorCause, UpdateTasks>
 {
-    private final KPMDaemon daemon;
-
     public AliasUpdater(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
-        super(signalHandler);
-        this.daemon = daemon;
+        super(daemon, signalHandler);
     }
 
     @Override

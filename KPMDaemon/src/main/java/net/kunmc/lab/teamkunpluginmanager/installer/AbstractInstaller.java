@@ -18,14 +18,17 @@ import java.io.IOException;
 
 public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E extends Enum<E>, P extends Enum<P>>
 {
+    protected final KPMDaemon daemon;
     @Getter
     protected final InstallProgress<P, AbstractInstaller<A, E, P>> progress;
     protected final SignalHandleManager signalHandler;
 
-    public AbstractInstaller(SignalHandleManager signalHandler) throws IOException
+    public AbstractInstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
-        this.progress = InstallProgress.of(this, signalHandler, null);
+        this.daemon = daemon;
         this.signalHandler = signalHandler;
+
+        this.progress = InstallProgress.of(this, signalHandler, null);
     }
 
     protected void postSignal(@NotNull Signal signal)

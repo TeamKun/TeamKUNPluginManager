@@ -30,12 +30,9 @@ import java.util.stream.Collectors;
  */
 public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, AutoRemoveErrorCause, AutoRemoveTasks>
 {
-    private final KPMDaemon daemon;
-
     public PluginAutoRemover(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
-        super(signalHandler);
-        this.daemon = daemon;
+        super(daemon, signalHandler);
     }
 
     @Override

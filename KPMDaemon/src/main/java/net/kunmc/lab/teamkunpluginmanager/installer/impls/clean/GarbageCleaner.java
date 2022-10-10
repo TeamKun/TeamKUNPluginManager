@@ -39,9 +39,9 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
         PLUGIN_DIR = KPMDaemon.getInstance().getEnvs().getDataDirPath().getParent();
     }
 
-    public GarbageCleaner(SignalHandleManager signalHandler) throws IOException
+    public GarbageCleaner(KPMDaemon daemon, SignalHandleManager signalHandler) throws IOException
     {
-        super(signalHandler);
+        super(daemon, signalHandler);
     }
 
     @Override

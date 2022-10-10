@@ -47,12 +47,9 @@ import java.nio.file.Path;
  */
 public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallErrorCause, InstallTasks>
 {
-    private final KPMDaemon daemon;
-
     public PluginInstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
-        super(signalHandler);
-        this.daemon = daemon;
+        super(daemon, signalHandler);
     }
 
     @Override
