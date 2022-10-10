@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.clean.CleanArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -16,13 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 public class CommandClean extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final TeamKunPluginManager plugin;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
         Runner.runAsync(() ->
-                this.daemon.getInstallManager().runGarbageClean(terminal, new CleanArgument())
+                this.plugin.getHeadInstallers().runGarbageClean(terminal, new CleanArgument())
         );
     }
 

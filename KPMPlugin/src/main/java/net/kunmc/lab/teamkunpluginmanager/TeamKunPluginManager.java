@@ -32,18 +32,20 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     private KPMDaemon daemon;
 
-    public static void registerCommands(KPMDaemon daemon, CommandManager commandManager)
+    private HeadInstallers headInstallers;
+
+    public void registerCommands(CommandManager commandManager)
     {
-        commandManager.registerCommand("autoremove", new CommandAutoRemove(daemon));
-        commandManager.registerCommand("clean", new CommandClean(daemon));
-        commandManager.registerCommand("info", new CommandInfo(daemon));
-        commandManager.registerCommand("install", new CommandInstall(daemon), "add", "i");
-        commandManager.registerCommand("register", new CommandRegister(daemon), "login");
-        commandManager.registerCommand("reload", new CommandReload(daemon));
-        commandManager.registerCommand("resolve", new CommandResolve(daemon));
-        commandManager.registerCommand("status", new CommandStatus(daemon));
-        commandManager.registerCommand("uninstall", new CommandUninstall(daemon), "remove", "rm");
-        commandManager.registerCommand("update", new CommandUpdate(daemon));
+        commandManager.registerCommand("autoremove", new CommandAutoRemove(this));
+        commandManager.registerCommand("clean", new CommandClean(this));
+        commandManager.registerCommand("info", new CommandInfo(this.daemon));
+        commandManager.registerCommand("install", new CommandInstall(this), "add", "i");
+        commandManager.registerCommand("register", new CommandRegister(this.daemon), "login");
+        commandManager.registerCommand("reload", new CommandReload(this.daemon));
+        commandManager.registerCommand("resolve", new CommandResolve(this.daemon));
+        commandManager.registerCommand("status", new CommandStatus(this.daemon));
+        commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");
+        commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
         commandManager.registerCommand("debug", new CommandDebug());
     }
 
@@ -89,7 +91,9 @@ public final class TeamKunPluginManager extends JavaPlugin
                         .build()
         );
 
-        registerCommands(this.daemon, commandManager);
+        this.headInstallers = new HeadInstallers(this.daemon);
+
+        registerCommands(commandManager);
     }
 
 }

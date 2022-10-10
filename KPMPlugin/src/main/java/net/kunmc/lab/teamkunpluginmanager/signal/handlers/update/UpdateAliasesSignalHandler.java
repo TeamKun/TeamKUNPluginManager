@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.update;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.update;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.update.signals.UpdateFinishedSignal;

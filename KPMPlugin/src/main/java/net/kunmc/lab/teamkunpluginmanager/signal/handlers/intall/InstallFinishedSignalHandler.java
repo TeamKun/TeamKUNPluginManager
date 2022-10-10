@@ -1,7 +1,6 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.InstallErrorCause;
@@ -10,6 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.description.Descr
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.DownloadErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.PluginsInstallErrorCause;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.signal.handlers.common.InstallFinishedSignalBase;
 import org.jetbrains.annotations.Nullable;
 
 /**

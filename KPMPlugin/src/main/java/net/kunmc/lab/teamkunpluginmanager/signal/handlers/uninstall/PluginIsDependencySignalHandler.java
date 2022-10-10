@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;

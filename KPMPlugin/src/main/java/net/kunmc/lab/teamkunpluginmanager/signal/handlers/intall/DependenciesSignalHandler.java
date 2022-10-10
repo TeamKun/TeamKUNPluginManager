@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;

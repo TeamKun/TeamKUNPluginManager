@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.PluginModifiedSignal;

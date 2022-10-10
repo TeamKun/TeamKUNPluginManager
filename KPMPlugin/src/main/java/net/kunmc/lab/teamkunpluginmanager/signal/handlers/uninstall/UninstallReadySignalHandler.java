@@ -1,9 +1,9 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.uninstall.signals.UninstallReadySignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;

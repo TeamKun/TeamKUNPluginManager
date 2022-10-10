@@ -5,25 +5,28 @@ import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.update.UpdateArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
 public class CommandUpdate extends CommandBase
 {
+    private final TeamKunPluginManager plugin;
     private final KPMDaemon daemon;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
         Runner.runAsync(() ->
-                this.daemon.getInstallManager().runUpdate(terminal, new UpdateArgument(
-                        this.daemon.getSources()
+                this.plugin.getHeadInstallers().runUpdate(terminal, new UpdateArgument(
+                        (HashMap<String, String>) this.daemon.getEnvs().getSources()
                 ))
         );
     }

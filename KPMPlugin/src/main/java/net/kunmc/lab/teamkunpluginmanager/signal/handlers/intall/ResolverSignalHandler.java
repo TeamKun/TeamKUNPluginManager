@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.intall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;

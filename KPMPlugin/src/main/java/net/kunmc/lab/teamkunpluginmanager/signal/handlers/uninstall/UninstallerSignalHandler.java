@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals.PluginDisablingSignal;

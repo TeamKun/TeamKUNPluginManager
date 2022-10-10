@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.InstallArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -16,7 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CommandInstall extends CommandBase
 {
-    private final KPMDaemon daemon;
+
+    private final TeamKunPluginManager plugin;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -27,7 +28,7 @@ public class CommandInstall extends CommandBase
         String query = args[0];
 
         Runner.runAsync(() ->
-                this.daemon.getInstallManager().runInstall(terminal, new InstallArgument(query))
+                this.plugin.getHeadInstallers().runInstall(terminal, new InstallArgument(query))
         );
     }
 

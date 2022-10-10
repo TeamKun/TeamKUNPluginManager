@@ -1,10 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.clean;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.clean;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.GarbageCleanErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.signal.handlers.common.InstallFinishedSignalBase;
 
 public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
 {

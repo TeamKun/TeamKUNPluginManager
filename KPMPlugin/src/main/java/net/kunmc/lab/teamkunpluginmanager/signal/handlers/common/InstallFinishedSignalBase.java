@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.common;
 
 import lombok.AccessLevel;
 import lombok.Setter;

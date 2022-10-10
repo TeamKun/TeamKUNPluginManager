@@ -1,10 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.clean;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.clean;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.search.signals.GarbageSearchingSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandlingUtils;
 import org.bukkit.ChatColor;
 
 import java.util.stream.Collectors;

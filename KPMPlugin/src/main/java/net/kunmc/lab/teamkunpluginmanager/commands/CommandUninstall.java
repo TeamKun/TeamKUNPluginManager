@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.uninstall.UninstallArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommandUninstall extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final TeamKunPluginManager plugin;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -31,7 +31,7 @@ public class CommandUninstall extends CommandBase
         String query = args[0];
 
         Runner.runAsync(() ->
-                daemon.getInstallManager().runUninstall(terminal, new UninstallArgument(query))
+                this.plugin.getHeadInstallers().runUninstall(terminal, new UninstallArgument(query))
         );
     }
 

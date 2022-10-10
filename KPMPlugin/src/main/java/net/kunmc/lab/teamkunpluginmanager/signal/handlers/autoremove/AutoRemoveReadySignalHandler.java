@@ -1,9 +1,9 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.autoremove;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.autoremove;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.autoremove.signals.PluginEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import org.bukkit.ChatColor;
 

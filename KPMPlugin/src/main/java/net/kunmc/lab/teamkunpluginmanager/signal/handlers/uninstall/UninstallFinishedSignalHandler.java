@@ -1,10 +1,10 @@
-package net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.uninstall;
+package net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.commands.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.UnInstallErrorCause;
+import net.kunmc.lab.teamkunpluginmanager.signal.handlers.common.InstallFinishedSignalBase;
 import org.jetbrains.annotations.Nullable;
 
 /**

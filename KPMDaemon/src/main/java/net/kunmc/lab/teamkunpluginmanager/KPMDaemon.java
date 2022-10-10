@@ -2,11 +2,8 @@ package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
-import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallManager;
-import net.kunmc.lab.teamkunpluginmanager.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.teamkunpluginmanager.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
@@ -21,9 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -111,30 +106,15 @@ public class KPMDaemon
 
     public void setupDaemon(@NotNull Path dataFolder, @NotNull List<String> organizationNames)
     {
-        this.setupDependencyTree(dataFolder);
+        this.setupDependencyTree();
         this.setupPluginResolvers(organizationNames);
         this.setupToken();
     }
 
-    private void firstUpdate()
-    {
-        Runner.runAsync(() -> {
-            this.getInstallManager().runUpdate(
-                    Terminals.ofConsole(),
-                    new UpdateArgument((HashMap<String, String>) this.envs.getSources())
-            );
-        });
-    }
-
-    private void setupDependencyTree(Path dataFolder)
+    private void setupDependencyTree()
     {
         this.logger.info("Loading plugin meta data ...");
         this.pluginMetaManager.crawlAll();
-
-        Path aliasFile = dataFolder.resolve("aliases.db");
-        boolean isFirstTime = !Files.exists(aliasFile);
-        if (isFirstTime && this.tokenStore.isTokenAvailable())
-            this.firstUpdate();
     }
 
     private void setupPluginResolvers(List<String> organizationNames)
