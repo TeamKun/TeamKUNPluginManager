@@ -3,8 +3,8 @@ package net.kunmc.lab.teamkunpluginmanager.alias;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.kunmc.lab.teamkunpluginmanager.utils.ResultRow;
-import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
+import net.kunmc.lab.teamkunpluginmanager.utils.db.ResultRow;
+import net.kunmc.lab.teamkunpluginmanager.utils.db.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

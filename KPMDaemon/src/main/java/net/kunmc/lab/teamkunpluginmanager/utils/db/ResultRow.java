@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.utils;
+package net.kunmc.lab.teamkunpluginmanager.utils.db;
 
 import lombok.AllArgsConstructor;
 

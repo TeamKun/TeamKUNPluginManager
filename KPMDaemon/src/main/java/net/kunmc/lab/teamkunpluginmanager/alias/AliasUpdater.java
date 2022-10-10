@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.alias;
 
 import lombok.Getter;
-import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
+import net.kunmc.lab.teamkunpluginmanager.utils.db.Transaction;
 
 public class AliasUpdater
 {

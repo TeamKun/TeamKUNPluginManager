@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.utils.Transaction;
+import net.kunmc.lab.teamkunpluginmanager.utils.db.Transaction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
