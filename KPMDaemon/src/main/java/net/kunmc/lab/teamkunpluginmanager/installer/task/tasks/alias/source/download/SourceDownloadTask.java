@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ソースファイルのダウンロードを行うタスクです。
@@ -53,7 +54,7 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
         return new SourceDownloadResult(true, this.status, downloadSources);
     }
 
-    private HashMap<String, URL> buildURLs(HashMap<String, String> sources)
+    private HashMap<String, URL> buildURLs(Map<String, String> sources)
     {
         HashMap<String, URL> result = new HashMap<>();
 

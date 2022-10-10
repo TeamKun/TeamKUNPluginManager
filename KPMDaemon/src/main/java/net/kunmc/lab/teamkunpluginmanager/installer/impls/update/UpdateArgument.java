@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstallerArgument;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * エイリアスのアップデートの引数を格納するクラスです。
@@ -18,5 +18,5 @@ public class UpdateArgument extends AbstractInstallerArgument
     /**
      * エイリアスのソースのURLです。
      */
-    HashMap<String, String> remotes;  // TODO: Migrate to Map<String, String> remotes;
+    Map<String, String> remotes;
 }

@@ -14,7 +14,7 @@ import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * プラグインをエイリアスのアップデートするインストーラーの実装です。
@@ -38,7 +38,7 @@ public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorC
     @Override
     public InstallResult<UpdateTasks> execute(@NotNull UpdateArgument argument) throws TaskFailedException
     {
-        HashMap<String, String> remotes = argument.getRemotes();
+        Map<String, String> remotes = argument.getRemotes();
 
         UpdateAliasesResult result =
                 (UpdateAliasesResult) this.submitter(

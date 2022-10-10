@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class CommandUpdate extends CommandBase
     {
         Runner.runAsync(() ->
                 this.plugin.getHeadInstallers().runUpdate(terminal, new UpdateArgument(
-                        (HashMap<String, String>) this.daemon.getEnvs().getSources()
+                        this.daemon.getEnvs().getSources()
                 ))
         );
     }
