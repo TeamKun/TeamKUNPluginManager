@@ -89,7 +89,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
     }
 
     @NotNull
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private InstallResult<P> handleTaskError(@NotNull TaskResult result)
     {
         if (result.getErrorCause() != null)
