@@ -1,8 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
-import lombok.AllArgsConstructor;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.alias.Alias;
+import net.kunmc.lab.teamkunpluginmanager.plugin.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
@@ -10,16 +10,23 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.SuccessResult;
+import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class KnownPluginsResolver implements BaseResolver
 {
     private final PluginResolver resolver;
+    private final AliasProvider aliasProvider;
+
+    public KnownPluginsResolver(@NotNull KPMDaemon daemon)
+    {
+        this.resolver = daemon.getPluginResolver();
+        this.aliasProvider = daemon.getAliasProvider();
+    }
 
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        Alias alias = TeamKunPluginManager.getPlugin().getAliasProvider().getAlias(query.getQuery());
+        Alias alias = this.aliasProvider.getAlias(query.getQuery());
 
         if (alias == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);

@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,13 @@ import java.util.function.Consumer;
 
 public class Requests
 {
+    private static final KPMDaemon DAEMON;
+
+    static
+    {
+        DAEMON = KPMDaemon.getInstance();
+    }
+
     @Getter
     @Setter
     private static int REDIRECT_LIMIT = 15;
@@ -66,8 +74,11 @@ public class Requests
         {
             headers.put("Accept", "application/vnd.github.v3+json");
 
-            if (TeamKunPluginManager.getPlugin().isTokenAvailable())
-                headers.put("Authorization", "Token " + TeamKunPluginManager.getPlugin().getTokenStore().getToken());
+            if (DAEMON.getTokenStore().isTokenAvailable())
+                headers.put(
+                        "Authorization",
+                        "Token " + DAEMON.getTokenStore().getToken()
+                );
 
         }
         else if (host.equalsIgnoreCase("file.io"))

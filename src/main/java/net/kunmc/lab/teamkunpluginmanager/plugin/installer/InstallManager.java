@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.commands.signal.HeadSignalHandlers;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.AutoRemoveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.PluginAutoRemover;
@@ -14,6 +14,7 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.Unins
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update.AliasUpdater;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
+import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,14 +24,16 @@ import java.io.IOException;
  */
 public class InstallManager
 {
-    private final TeamKunPluginManager pluginManager;
+    private final KPMDaemon daemon;
+    private final TokenStore tokenStore;
     private final SignalHandleManager signalHandleManager;
 
     private InstallProgress<?, ?> runningInstall;
 
-    public InstallManager(@NotNull TeamKunPluginManager pluginManager)
+    public InstallManager(@NotNull KPMDaemon daemon)
     {
-        this.pluginManager = pluginManager;
+        this.daemon = daemon;
+        this.tokenStore = daemon.getTokenStore();
         this.signalHandleManager = new SignalHandleManager();
 
         this.runningInstall = null;
@@ -68,7 +71,7 @@ public class InstallManager
             terminal.error("他のインストーラが起動しています。");
             return;
         }
-        if (!this.pluginManager.isTokenAvailable())
+        if (!this.tokenStore.isTokenAvailable())
         {
             terminal.error("GitHub にログインされていません。");
             terminal.info("/kpm register でログインしてください。");
@@ -81,7 +84,7 @@ public class InstallManager
         PluginInstaller installer;
         try
         {
-            installer = new PluginInstaller(copiedHandleManager);
+            installer = new PluginInstaller(this.daemon, copiedHandleManager);
             runningInstall = installer.getProgress();
 
             installer.run(argument);
@@ -116,7 +119,7 @@ public class InstallManager
 
         try
         {
-            PluginUninstaller uninstaller = new PluginUninstaller(copiedHandleManager);
+            PluginUninstaller uninstaller = new PluginUninstaller(this.daemon, copiedHandleManager);
             runningInstall = uninstaller.getProgress();
 
             uninstaller.run(argument);
@@ -143,7 +146,7 @@ public class InstallManager
 
         try
         {
-            AliasUpdater updater = new AliasUpdater(copiedHandleManager);
+            AliasUpdater updater = new AliasUpdater(this.daemon, copiedHandleManager);
             runningInstall = updater.getProgress();
 
             updater.run(argument);
@@ -176,7 +179,7 @@ public class InstallManager
 
         try
         {
-            PluginAutoRemover remover = new PluginAutoRemover(copiedHandleManager);
+            PluginAutoRemover remover = new PluginAutoRemover(this.daemon, copiedHandleManager);
             runningInstall = remover.getProgress();
 
             remover.run(argument);

@@ -1,8 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.commands.debug;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.InstallArgument;
@@ -17,8 +19,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
+@AllArgsConstructor
 public class CommandInstallDebug extends CommandBase
 {
+    @NotNull
+    private final KPMDaemon daemon;
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -30,7 +36,10 @@ public class CommandInstallDebug extends CommandBase
         Runner.runAsync(() -> {
             try
             {
-                PluginInstaller installer = new PluginInstaller(DebugSignalHandler.toManager(terminal));
+                PluginInstaller installer = new PluginInstaller(
+                        this.daemon,
+                        DebugSignalHandler.toManager(terminal)
+                );
 
                 InstallResult<InstallTasks> installResult = installer.execute(new InstallArgument(query));
 

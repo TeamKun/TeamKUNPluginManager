@@ -1,8 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.CurseBukkitSuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.GitHubSuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl.SpigotMCSuccessResult;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class CommandResolve extends CommandBase
 {
     private static final String DELIMITER_SMALL;
@@ -31,6 +33,9 @@ public class CommandResolve extends CommandBase
         DELIMITER_SMALL = ChatColor.BLUE + "==============================";
         DELIMITER = StringUtils.repeat(DELIMITER_SMALL, 2);
     }
+
+    @NotNull
+    private final KPMDaemon daemon;
 
     private static void printResult(Terminal terminal, ResolveResult result, boolean smallDelimiter)
     {
@@ -119,7 +124,7 @@ public class CommandResolve extends CommandBase
         String query = args[0];
 
         terminal.info("プラグインの名前解決をしています...");
-        ResolveResult result = TeamKunPluginManager.getPlugin().getResolver().resolve(query);
+        ResolveResult result = this.daemon.getPluginResolver().resolve(query);
 
         printResult(terminal, result, false);
     }

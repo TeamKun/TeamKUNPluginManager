@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
@@ -79,13 +80,16 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         }
     }
 
+    private final KPMDaemon daemon;
+
     private UnInstallState taskState;
 
-    public UnInstallTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public UnInstallTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
+        this.daemon = daemon;
 
-        taskState = UnInstallState.INITIALIZED;
+        this.taskState = UnInstallState.INITIALIZED;
     }
 
     @Override
@@ -101,7 +105,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
         for (Plugin plugin : orderedUninstallTargets)
         {
-            TeamKunPluginManager.getPlugin().getPluginMetaManager().preparePluginModify(plugin.getName());
+            this.daemon.getPluginMetaManager().preparePluginModify(plugin.getName());
 
             PluginDescriptionFile description = plugin.getDescription();
             UnInstallErrorCause errorCause = uninstallOnePlugin(plugin);
@@ -120,7 +124,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             if (pluginFile.exists())
                 pluginFile.delete();
 
-            TeamKunPluginManager.getPlugin().getPluginMetaManager().onUninstalled(plugin.getName());
+            this.daemon.getPluginMetaManager().onUninstalled(plugin.getName());
         }), 20L);
 
         orderedUninstallTargets.stream()

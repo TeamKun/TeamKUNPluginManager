@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update;
 
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.update.signals.UpdateFinishedSignal;
@@ -26,9 +27,12 @@ import java.util.HashMap;
  */
 public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorCause, UpdateTasks>
 {
-    public AliasUpdater(SignalHandleManager signalHandler) throws IOException
+    private final KPMDaemon daemon;
+
+    public AliasUpdater(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
+        this.daemon = daemon;
     }
 
     @Override
@@ -43,7 +47,7 @@ public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorC
                         )
                         .then(
                                 UpdateTasks.UPDATING_ALIASES,
-                                new UpdateAliasesTask(this.progress, this.signalHandler)
+                                new UpdateAliasesTask(this.daemon, this.progress, this.signalHandler)
                         )
                         .bridgeArgument(sourceDownloadResult ->
                                 new UpdateAliasesArgument(sourceDownloadResult.getDownloadedSources()))

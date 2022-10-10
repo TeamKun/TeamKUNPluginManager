@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.autoremove.signals.PluginEnumeratedSignal;
@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UnIns
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.uninstall.UnInstallResult;
-import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaProvider;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -31,16 +30,12 @@ import java.util.stream.Collectors;
  */
 public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, AutoRemoveErrorCause, AutoRemoveTasks>
 {
-    private static final PluginMetaProvider META_PROVIDER;
+    private final KPMDaemon daemon;
 
-    static
-    {
-        META_PROVIDER = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider();
-    }
-
-    public PluginAutoRemover(SignalHandleManager signalHandler) throws IOException
+    public PluginAutoRemover(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
+        this.daemon = daemon;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
 
-        targetPlugins = (ArrayList<String>) META_PROVIDER.getUnusedPlugins()
+        targetPlugins = (ArrayList<String>) this.daemon.getPluginMetaManager().getProvider().getUnusedPlugins()
                 .stream()
                 .parallel()
                 .filter(unusedPluginName -> !excludePlugins.contains(unusedPluginName.toLowerCase()))
@@ -82,7 +77,7 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
         PluginUninstaller uninstaller;
         try
         {
-            uninstaller = new PluginUninstaller(this.signalHandler);
+            uninstaller = new PluginUninstaller(this.daemon, this.signalHandler);
         }
         catch (IOException e)
         {

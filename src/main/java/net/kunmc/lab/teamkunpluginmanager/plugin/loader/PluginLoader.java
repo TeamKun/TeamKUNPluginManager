@@ -34,8 +34,6 @@ import java.util.Map;
  */
 public class PluginLoader
 {
-    private static PluginLoader INSTANCE;
-
     private final PluginManager pluginManager;
     private final CommandsPatcher commandsPatcher;
 
@@ -47,25 +45,10 @@ public class PluginLoader
 
     public PluginLoader()
     {
-        setInstance(this);
-
         this.pluginManager = Bukkit.getPluginManager();
         this.commandsPatcher = new CommandsPatcher();
 
         this.initReflections();
-    }
-
-    public static PluginLoader getInstance()
-    {
-        return INSTANCE;
-    }
-
-    private static void setInstance(@NotNull PluginLoader instance)
-    {
-        if (INSTANCE != null)
-            throw new IllegalStateException("PluginLoader is already initialized.");
-
-        INSTANCE = instance;
     }
 
     @SuppressWarnings("unchecked")

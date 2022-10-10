@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.resolver.impl;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.teamkunpluginmanager.plugin.resolver.result.ErrorResult;
@@ -13,14 +12,13 @@ import java.util.List;
 @AllArgsConstructor
 public class BruteforceGitHubResolver implements BaseResolver
 {
-    private final TeamKunPluginManager plugin;
+    private final Object gitHubName;
     private final GitHubURLResolver gitHubURLResolver;
 
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-
-        Object obj = plugin.getPluginConfig().get("gitHubName");
+        Object obj = gitHubName;
 
         if (obj instanceof String) // Legacy support
         {
@@ -33,7 +31,10 @@ public class BruteforceGitHubResolver implements BaseResolver
 
         ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
-        for (String str : plugin.getPluginConfig().getStringList("gitHubName"))
+        if ((obj instanceof List))
+            return result;
+
+        for (String str : (List<String>) obj)
         {
 
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());

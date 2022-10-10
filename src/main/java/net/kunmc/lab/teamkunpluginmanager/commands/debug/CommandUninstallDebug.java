@@ -1,8 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.commands.debug;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.PluginUninstaller;
@@ -20,8 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class CommandUninstallDebug extends CommandBase
 {
+    private final KPMDaemon daemon;
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -33,7 +38,8 @@ public class CommandUninstallDebug extends CommandBase
         Runner.runAsync(() -> {
             try
             {
-                PluginUninstaller installer = new PluginUninstaller(DebugSignalHandler.toManager(terminal));
+                PluginUninstaller installer =
+                        new PluginUninstaller(this.daemon, DebugSignalHandler.toManager(terminal));
 
                 InstallResult<UnInstallTasks> installResult = installer.execute(new UninstallArgument(query));
 

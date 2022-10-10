@@ -1,7 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.DependType;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.InstallOperator;
@@ -30,8 +32,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class CommandInfo extends CommandBase
 {
+    private final KPMDaemon daemon;
+
     private static Component dependTree(String name, List<String> l)
     {
         TextComponent content = Component.text(name + ": ");
@@ -118,9 +123,6 @@ public class CommandInfo extends CommandBase
 
         terminal.info("依存関係ツリーを読み込み中...");
 
-        PluginMetaProvider provider = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider();
-
-
         JavaPlugin plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin(args[0]);
 
         if (plugin == null)
@@ -129,6 +131,7 @@ public class CommandInfo extends CommandBase
             return;
         }
 
+        PluginMetaProvider provider = this.daemon.getPluginMetaManager().getProvider();
         if (!provider.isPluginMetaExists(plugin.getName()))
         {
             terminal.error("プラグインが見つかりませんでした。");

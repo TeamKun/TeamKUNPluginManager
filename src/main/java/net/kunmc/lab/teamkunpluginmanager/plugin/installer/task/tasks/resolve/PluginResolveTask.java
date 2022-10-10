@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
@@ -20,18 +20,14 @@ import org.jetbrains.annotations.Nullable;
  */
 public class PluginResolveTask extends InstallTask<PluginResolveArgument, PluginResolveResult>
 {
-    private static final PluginResolver PLUGIN_RESOLVER;
-
-    static
-    {
-        PLUGIN_RESOLVER = TeamKunPluginManager.getPlugin().getResolver();
-    }
+    private final PluginResolver resolver;
 
     private PluginResolveState taskState;
 
-    public PluginResolveTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public PluginResolveTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
+        this.resolver = daemon.getPluginResolver();
 
         this.taskState = PluginResolveState.INITIALIZED;
     }
@@ -67,9 +63,9 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
         String query = arguments.getQuery();
 
         this.taskState = PluginResolveState.PRE_RESOLVING;
-        this.postSignal(new PluginResolvingSignal(PLUGIN_RESOLVER, query));
+        this.postSignal(new PluginResolvingSignal(this.resolver, query));
 
-        ResolveResult queryResolveResult = PLUGIN_RESOLVER.resolve(query);
+        ResolveResult queryResolveResult = this.resolver.resolve(query);
 
         this.taskState = PluginResolveState.PRE_RESOLVE_FINISHED;
 

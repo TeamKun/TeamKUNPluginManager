@@ -2,12 +2,13 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@AllArgsConstructor
 public class CommandRegister extends CommandBase
 {
     private static final String CLIENT_ID = "94c5d446dbc765895979";
@@ -34,7 +36,7 @@ public class CommandRegister extends CommandBase
             "https://github.com/login/oauth/access_token?client_id=" + CLIENT_ID +
                     "&grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Adevice_code&device_code=";
 
-    private static final TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
+    private final KPMDaemon daemon;
 
     private static void parseErrorAndPost(Terminal terminal, HTTPResponse response)
     {
@@ -55,7 +57,7 @@ public class CommandRegister extends CommandBase
         }
     }
 
-    private static void performAction(Terminal terminal)
+    private void performAction(Terminal terminal)
     {
         terminal.info(ChatColor.LIGHT_PURPLE + "サーバと通信しています...");
 
@@ -67,6 +69,7 @@ public class CommandRegister extends CommandBase
         if (response.getStatus() != HTTPResponse.RequestStatus.OK)
         {
             parseErrorAndPost(terminal, response);
+            return;
         }
 
         JsonObject object = response.getAsJson().getAsJsonObject();
@@ -101,7 +104,7 @@ public class CommandRegister extends CommandBase
 
     }
 
-    private static Runner.GeneralExceptableRunner polling(Terminal terminal, String device_code, AtomicBoolean successFlag)
+    private Runner.GeneralExceptableRunner polling(Terminal terminal, String device_code, AtomicBoolean successFlag)
     {
         return () -> {
             HTTPResponse httpResponse = Requests.request(RequestContext.builder()
@@ -133,7 +136,7 @@ public class CommandRegister extends CommandBase
                 throw new RuntimeException(); // For cancel bukkit task
             }
 
-            kpmInstance.getTokenStore().storeToken(response.get("access_token").getAsString());
+            this.daemon.getTokenStore().storeToken(response.get("access_token").getAsString());
             terminal.success("トークンを正常に保管しました！");
             if (terminal.isPlayer())
                 terminal.clearNotification();
@@ -156,7 +159,7 @@ public class CommandRegister extends CommandBase
         {
             try
             {
-                kpmInstance.getTokenStore().storeToken(args[0]);
+                this.daemon.getTokenStore().storeToken(args[0]);
             }
             catch (IOException e)
             {
@@ -177,7 +180,7 @@ public class CommandRegister extends CommandBase
             if (result.test(QuestionAttribute.CANCELLABLE))
                 terminal.error("キャンセルしました。");
             else if (result.test(QuestionAttribute.YES))
-                performAction(terminal);
+                this.performAction(terminal);
 
         }, (e, b) -> {
         });

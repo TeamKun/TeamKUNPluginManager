@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
@@ -12,6 +13,8 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.si
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.teamkunpluginmanager.plugin.loader.CommandsPatcher;
 import net.kunmc.lab.teamkunpluginmanager.plugin.meta.InstallOperator;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaManager;
+import net.kunmc.lab.teamkunpluginmanager.plugin.meta.PluginMetaProvider;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
@@ -50,11 +53,17 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         COMMANDS_PATCHER = new CommandsPatcher();
     }
 
+    private final PluginMetaManager pluginMetaManager;
+    private final PluginMetaProvider pluginMetaProvider;
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public PluginsInstallTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
+
+        PluginMetaManager pluginMetaManager = daemon.getPluginMetaManager();
+        this.pluginMetaManager = pluginMetaManager;
+        this.pluginMetaProvider = pluginMetaManager.getProvider();
 
         this.state = PluginsInstallState.INITIALIZED;
     }
@@ -91,7 +100,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             }
 
             for (Plugin plugin : installedPlugins)
-                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().buildDependencyTree(plugin);
+                this.pluginMetaProvider.buildDependencyTree(plugin);
 
             // Install plugin after dependencies installed
 
@@ -101,7 +110,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
                     );
 
             if (result.isSuccess() && result.getInstalledPlugin() != null)
-                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().buildDependencyTree(result.getInstalledPlugin());
+                this.pluginMetaProvider.buildDependencyTree(result.getInstalledPlugin());
 
             return result;
         }
@@ -164,7 +173,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
 
         // Enable plugin
-        TeamKunPluginManager.getPlugin().getPluginMetaManager().preparePluginModify(target);
+        this.pluginMetaManager.preparePluginModify(target);
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginEnablingSignal.Pre(target));
         PLUGIN_MANAGER.enablePlugin(target);
@@ -172,7 +181,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         installedPlugins.add(target);
 
-        TeamKunPluginManager.getPlugin().getPluginMetaManager().onInstalled(
+        this.pluginMetaManager.onInstalled(
                 target,
                 isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN,
                 query,

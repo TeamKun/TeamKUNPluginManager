@@ -1,8 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.utils.Messages;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
@@ -11,13 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
+@AllArgsConstructor
 public class CommandStatus extends CommandBase
 {
+    private final KPMDaemon daemon;
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -25,22 +26,15 @@ public class CommandStatus extends CommandBase
 
         terminal.writeLine(Messages.keyValue("プラグイン数", Bukkit.getPluginManager().getPlugins().length));
 
-        File resolve = new File(
-                TeamKunPluginManager.getPlugin().getDataFolder(),
-                TeamKunPluginManager.getPlugin().getPluginConfig().getString("resolvePath")
-        );
-        if (resolve.exists())
-            terminal.writeLine(Messages.keyValue(
-                    "最終アップデート",
-                    new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(resolve.lastModified()))
-            ));
-
-        String autoRemovable = Messages.getUnInstallableMessage();
-
+        List<String> autoRemovable = this.daemon.getPluginMetaManager().getProvider().getUnusedPlugins();
         if (!autoRemovable.isEmpty())
-            terminal.writeLine(autoRemovable);
+            terminal.writeLine(
+                    ChatColor.BLUE + "以下のプラグインがインストールされていますが、もう必要とされていません:\n" +
+                            ChatColor.GREEN + "  " + String.join(" ", autoRemovable) + "\n" +
+                            ChatColor.BLUE + "これを削除するには、'/kpm autoremove' を利用してください。"
+            );
 
-        if (!TeamKunPluginManager.getPlugin().isTokenAvailable())
+        if (!this.daemon.getTokenStore().isTokenAvailable())
             terminal.writeLine(ChatColor.RED + "トークンがセットされていません！/kpm register でトークンを発行してください。");
     }
 

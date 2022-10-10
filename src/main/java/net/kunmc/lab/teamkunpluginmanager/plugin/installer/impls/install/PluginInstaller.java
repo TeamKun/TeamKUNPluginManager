@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.install.signals.AlreadyInstalledPluginSignal;
@@ -20,7 +21,6 @@ import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.Pl
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.install.PluginsInstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.resolve.PluginResolveTask;
-import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.plugin.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
@@ -47,9 +47,12 @@ import java.nio.file.Path;
  */
 public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallErrorCause, InstallTasks>
 {
-    public PluginInstaller(@NotNull SignalHandleManager signalHandler) throws IOException
+    private final KPMDaemon daemon;
+
+    public PluginInstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
+        this.daemon = daemon;
     }
 
     @Override
@@ -64,7 +67,10 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         // region Do plugin resolve, download and description load.
 
         TaskResult pluginDescriptionResult =
-                this.submitter(InstallTasks.RESOLVING_QUERY, new PluginResolveTask(progress, signalHandler))
+                this.submitter(
+                                InstallTasks.RESOLVING_QUERY,
+                                new PluginResolveTask(this.daemon, progress, signalHandler)
+                        )
                         .then(InstallTasks.DOWNLOADING, new DownloadTask(progress, signalHandler))
                         .bridgeArgument(result -> {
                             if (result.getResolveResult() == null)
@@ -73,12 +79,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                             return new DownloadArgument(result.getResolveResult().getDownloadUrl());
                         })
                         .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(progress, signalHandler))
-                        .bridgeArgument(result -> {
-                            if (result.getPath() == null)
-                                throw new IllegalArgumentException("Plugin Description Loading must be successful");
-
-                            return new DescriptionLoadArgument(result.getPath());
-                        })
+                        .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
                         .submitAll(new PluginResolveArgument(query));
 
         DescriptionLoadResult descriptionLoadResult = (DescriptionLoadResult) pluginDescriptionResult;
@@ -136,10 +137,16 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         // region Do collect dependencies, compute dependencies load order and install them.
         TaskResult installResult =
-                this.submitter(InstallTasks.COLLECTING_DEPENDENCIES, new DependsCollectTask(progress, signalHandler))
+                this.submitter(
+                                InstallTasks.COLLECTING_DEPENDENCIES,
+                                new DependsCollectTask(this.daemon, progress, signalHandler)
+                        )
                         .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(progress, signalHandler))
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
-                        .then(InstallTasks.INSTALLING_PLUGINS, new PluginsInstallTask(progress, signalHandler))
+                        .then(
+                                InstallTasks.INSTALLING_PLUGINS,
+                                new PluginsInstallTask(this.daemon, progress, signalHandler)
+                        )
                         .bridgeArgument(result -> new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, query, result.getOrder()
                         ))
@@ -160,11 +167,9 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         File oldPluginFile = PluginUtil.getFile(plugin);
 
-        PluginLoader.getInstance().unloadPlugin(plugin);  // TODO: Replace with uninstall.
+        this.daemon.getPluginLoader().unloadPlugin(plugin);  // TODO: Replace with uninstall.
 
         if (!safeDelete(oldPluginFile))
-            Runner.runLater(() -> {
-                safeDelete(oldPluginFile);
-            }, 10L);
+            Runner.runLater(() -> safeDelete(oldPluginFile), 10L);
     }
 }

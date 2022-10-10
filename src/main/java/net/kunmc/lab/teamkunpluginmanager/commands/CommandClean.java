@@ -1,9 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.clean.CleanArgument;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -12,15 +13,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class CommandClean extends CommandBase
 {
+    private final KPMDaemon daemon;
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        TeamKunPluginManager kpmInstance = TeamKunPluginManager.getPlugin();
-
         Runner.runAsync(() ->
-                kpmInstance.getInstallManager().runGarbageClean(terminal, new CleanArgument())
+                this.daemon.getInstallManager().runGarbageClean(terminal, new CleanArgument())
         );
     }
 

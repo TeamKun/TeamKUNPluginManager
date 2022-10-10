@@ -1,24 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.utils;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
 import org.bukkit.ChatColor;
-
-import java.util.List;
 
 public class Messages
 {
-
-    public static String getUnInstallableMessage()
-    {
-        List<String> rmble = TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getUnusedPlugins();
-
-        if (rmble.isEmpty())
-            return "";
-
-        return ChatColor.BLUE + "以下のプラグインがインストールされていますが、もう必要とされていません:\n" +
-                ChatColor.GREEN + "  " + String.join(" ", rmble) + "\n" +
-                ChatColor.BLUE + "これを削除するには、'/kpm autoremove' を利用してください。";
-    }
 
     public static String getModifyMessage(ModifyType type, String name)
     {

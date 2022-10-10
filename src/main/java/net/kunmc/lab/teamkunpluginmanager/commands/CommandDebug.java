@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.commands;
 
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.command.SubCommandWith;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.commands.debug.CommandDepTreeDebug;
 import net.kunmc.lab.teamkunpluginmanager.commands.debug.CommandInstallDebug;
 import net.kunmc.lab.teamkunpluginmanager.commands.debug.CommandUninstallDebug;
@@ -20,10 +20,12 @@ public class CommandDebug extends SubCommandWith
 
     static
     {
+        KPMDaemon daemon = KPMDaemon.getInstance();
+
         COMMANDS = new HashMap<>();
-        COMMANDS.put("installDebug", new CommandInstallDebug());
-        COMMANDS.put("uninstallDebug", new CommandUninstallDebug());
-        COMMANDS.put("depTree", new CommandDepTreeDebug(TeamKunPluginManager.getPlugin().getPluginMetaManager()));
+        COMMANDS.put("installDebug", new CommandInstallDebug(daemon));
+        COMMANDS.put("uninstallDebug", new CommandUninstallDebug(daemon));
+        COMMANDS.put("depTree", new CommandDepTreeDebug(daemon.getPluginMetaManager()));
     }
 
     @Override

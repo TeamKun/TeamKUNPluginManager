@@ -1,5 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.collector;
 
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.dependencies.DependencyElement;
@@ -51,15 +52,17 @@ import java.util.stream.Collectors;
  */
 public class DependsCollectTask extends InstallTask<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
+    private final KPMDaemon daemon;
     private final SignalHandleManager signalHandler;
     private final DependsCollectStatus status;
 
     private DependsCollectState taskState;
 
-    public DependsCollectTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public DependsCollectTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
 
+        this.daemon = daemon;
         this.signalHandler = signalHandler;
         this.status = progress.getDependsCollectStatus();
 
@@ -123,7 +126,6 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
                     Path pluginPath = downloadResults.get(actualName).getPath();
 
-                    assert pluginPath != null;
                     this.status.onCollect(
                             exceptedName,
                             new DependencyElement(exceptedName, pluginPath,
@@ -160,7 +162,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
     {
         DependsCollectArgument arguments = new DependsCollectArgument(pluginDescription, alreadyCollectedPlugins);
 
-        return new DependsCollectTask(this.progress, this.signalHandler) // do new() because DependsCollectTask is stateful.
+        return new DependsCollectTask(this.daemon, this.progress, this.signalHandler) // do new() because DependsCollectTask is stateful.
                 .runTask(arguments);
     }
 
@@ -190,9 +192,6 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         try
         {
             Path pluginPath = downloadResult.getPath();
-
-            if (pluginPath == null)
-                return null;
 
             return PluginUtil.loadDescription(pluginPath.toFile());
         }
@@ -253,7 +252,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
     {
         PluginResolveArgument resolveArgument = new PluginResolveArgument(dependency);
 
-        return new PluginResolveTask(this.progress, this.signalHandler)
+        return new PluginResolveTask(this.daemon, this.progress, this.signalHandler)
                 .runTask(resolveArgument);
     }
 

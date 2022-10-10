@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall;
 
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.impls.uninstall.signals.PluginIsDependencySignal;
@@ -43,9 +43,12 @@ import java.util.stream.Collectors;
  */
 public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnInstallErrorCause, UnInstallTasks>
 {
-    public PluginUninstaller(SignalHandleManager signalHandler) throws IOException
+    private final KPMDaemon daemon;
+
+    public PluginUninstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(signalHandler);
+        this.daemon = daemon;
     }
 
     @Override
@@ -138,7 +141,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                         )
                         .then(
                                 UnInstallTasks.UNINSTALLING_PLUGINS,
-                                new UnInstallTask(this.progress, this.signalHandler)
+                                new UnInstallTask(this.daemon, this.progress, this.signalHandler)
                         )
                         .bridgeArgument(computeResult -> {
                             List<DependencyElement> ordered = computeResult.getOrder();
@@ -173,7 +176,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         ArrayList<Plugin> plugins = new ArrayList<>();
 
         List<DependencyNode> dependencies =
-                TeamKunPluginManager.getPlugin().getPluginMetaManager().getProvider().getDependOn(target.getName());
+                this.daemon.getPluginMetaManager().getProvider().getDependOn(target.getName());
 
         for (DependencyNode depend : dependencies)
         {

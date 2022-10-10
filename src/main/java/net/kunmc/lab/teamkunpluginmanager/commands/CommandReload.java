@@ -1,9 +1,10 @@
 package net.kunmc.lab.teamkunpluginmanager.commands;
 
+import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import net.kunmc.lab.teamkunpluginmanager.plugin.loader.PluginLoader;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -15,8 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class CommandReload extends CommandBase
 {
+    private final KPMDaemon daemon;
+
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
@@ -33,7 +37,7 @@ public class CommandReload extends CommandBase
 
         Runner.runAsync(() -> {
             terminal.info("プラグイン %s を再読み込み中...", args[0]);
-            PluginLoader.getInstance().reloadPlugin(plugin);
+            this.daemon.getPluginLoader().reloadPlugin(plugin);
             terminal.success("プラグイン %s を正常に再読み込み中しました。", args[0]);
         });
     }

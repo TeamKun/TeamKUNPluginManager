@@ -3,7 +3,7 @@ package net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.tasks.alias.upd
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import net.kunmc.lab.teamkunpluginmanager.TeamKunPluginManager;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.plugin.alias.AliasUpdater;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.plugin.installer.task.InstallTask;
@@ -28,11 +28,14 @@ import java.util.Map;
  */
 public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, UpdateAliasesResult>
 {
+    private final KPMDaemon daemon;
+
     private UpdateAliasesState status;
 
-    public UpdateAliasesTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public UpdateAliasesTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
     {
         super(progress, signalHandler);
+        this.daemon = daemon;
 
         this.status = UpdateAliasesState.INITIALIZED;
     }
@@ -77,7 +80,7 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
 
     private long updateAliasesFromSource(String sourceName, URL url, Path source)
     {
-        AliasUpdater updater = TeamKunPluginManager.getPlugin().getAliasProvider().createUpdater(
+        AliasUpdater updater = this.daemon.getAliasProvider().createUpdater(
                 sourceName, url.toString()
         );
 
