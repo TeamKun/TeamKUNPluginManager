@@ -23,6 +23,7 @@
             <groupId>net.kunmc.lab</groupId>
             <artifactId>KPMCommon</artifactId>
             <version>3.0.0-pre5</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
