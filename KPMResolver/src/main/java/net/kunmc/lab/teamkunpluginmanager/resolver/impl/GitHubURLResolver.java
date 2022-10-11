@@ -3,15 +3,15 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kunmc.lab.teamkunpluginmanager.common.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.common.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.common.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.URLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

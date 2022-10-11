@@ -1,8 +1,6 @@
-package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
+package net.kunmc.lab.teamkunpluginmanager.alias;
 
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
-import net.kunmc.lab.teamkunpluginmanager.alias.Alias;
-import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
@@ -12,12 +10,12 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 
-public class KnownPluginsResolver implements BaseResolver
+public class AliasPluginResolver implements BaseResolver
 {
     private final PluginResolver resolver;
     private final AliasProvider aliasProvider;
 
-    public KnownPluginsResolver(@NotNull KPMDaemon daemon)
+    public AliasPluginResolver(@NotNull KPMDaemon daemon)
     {
         this.resolver = daemon.getPluginResolver();
         this.aliasProvider = daemon.getAliasProvider();

@@ -1,8 +1,8 @@
-package net.kunmc.lab.teamkunpluginmanager.utils.http;
+package net.kunmc.lab.teamkunpluginmanager.common.http;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.common.TokenStore;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,12 +22,10 @@ import java.util.function.Consumer;
 
 public class Requests
 {
-    private static final KPMDaemon DAEMON;
-
-    static
-    {
-        DAEMON = KPMDaemon.getInstance();
-    }
+    @Setter
+    private static TokenStore tokenStore;
+    @Setter
+    private static String version;
 
     @Getter
     @Setter
@@ -65,7 +63,7 @@ public class Requests
         HashMap<String, String> headers = new HashMap<>();
 
         headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
-                DAEMON.getVersion());
+                version);
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
@@ -73,10 +71,10 @@ public class Requests
         {
             headers.put("Accept", "application/vnd.github.v3+json");
 
-            if (DAEMON.getTokenStore().isTokenAvailable())
+            if (tokenStore.isTokenAvailable())
                 headers.put(
                         "Authorization",
-                        "Token " + DAEMON.getTokenStore().getToken()
+                        "Token " + tokenStore.getToken()
                 );
 
         }

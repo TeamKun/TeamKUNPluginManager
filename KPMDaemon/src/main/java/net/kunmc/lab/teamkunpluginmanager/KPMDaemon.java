@@ -2,7 +2,10 @@ package net.kunmc.lab.teamkunpluginmanager;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.alias.AliasPluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
+import net.kunmc.lab.teamkunpluginmanager.common.TokenStore;
+import net.kunmc.lab.teamkunpluginmanager.common.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
@@ -10,10 +13,8 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
-import net.kunmc.lab.teamkunpluginmanager.resolver.impl.KnownPluginsResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
-import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -109,6 +110,7 @@ public class KPMDaemon
         this.setupDependencyTree();
         this.setupPluginResolvers(organizationNames);
         this.setupToken();
+        this.initializeRequests();
     }
 
     private void setupDependencyTree()
@@ -122,7 +124,7 @@ public class KPMDaemon
         GitHubURLResolver githubResolver = new GitHubURLResolver();
         this.pluginResolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         this.pluginResolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
-        this.pluginResolver.addResolver(new KnownPluginsResolver(this), "local", "alias");
+        this.pluginResolver.addResolver(new AliasPluginResolver(this), "local", "alias");
         this.pluginResolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
         this.pluginResolver.addResolver(githubResolver, "github", "gh");
 
@@ -155,6 +157,12 @@ public class KPMDaemon
 
         if (tokenEnv != null && !tokenEnv.isEmpty())
             this.tokenStore.fromEnv();
+    }
+
+    private void initializeRequests()
+    {
+        Requests.setVersion(getVersion());
+        Requests.setTokenStore(this.tokenStore);
     }
 
     public void shutdown()

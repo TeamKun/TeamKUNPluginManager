@@ -2,9 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.installer;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.common.TokenStore;
 import net.kunmc.lab.teamkunpluginmanager.installer.exceptions.InstallerRunningException;
 import net.kunmc.lab.teamkunpluginmanager.installer.exceptions.TokenNotAvailableException;
-import net.kunmc.lab.teamkunpluginmanager.utils.TokenStore;
 import org.jetbrains.annotations.NotNull;
 
 /**

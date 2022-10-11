@@ -1,11 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.impl;
 
 import lombok.Getter;
+import net.kunmc.lab.teamkunpluginmanager.common.http.HTTPResponse;
+import net.kunmc.lab.teamkunpluginmanager.common.http.RequestContext;
+import net.kunmc.lab.teamkunpluginmanager.common.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.MarketplaceResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.HTTPResponse;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestContext;
-import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

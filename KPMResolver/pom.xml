@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>KPMDaemon</artifactId>
+    <artifactId>KPMResolver</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -19,11 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>net.kunmc.lab</groupId>
-            <artifactId>KPMResolver</artifactId>
-            <version>3.0.0-pre5</version>
-        </dependency>
         <dependency>
             <groupId>net.kunmc.lab</groupId>
             <artifactId>KPMCommon</artifactId>

@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.utils.http;
+package net.kunmc.lab.teamkunpluginmanager.common.http;
 
 public enum RequestMethod
 {
