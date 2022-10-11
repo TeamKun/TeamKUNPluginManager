@@ -19,6 +19,7 @@
     </properties>
 
     <build>
+        <finalName>${project.parent.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -27,7 +28,6 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <outputFileName>${parent.artifactId}-${project.version}.jar</outputFileName>
                 </configuration>
             </plugin>
             <plugin>
