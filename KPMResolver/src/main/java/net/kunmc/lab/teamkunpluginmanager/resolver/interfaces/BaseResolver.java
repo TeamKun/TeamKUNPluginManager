@@ -6,7 +6,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.MultiResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 
 /**
- * プラグインリゾルバのインターフェース
+ * プラグインの解決を行うクラスのインターフェースです。
  */
 public interface BaseResolver
 {
@@ -26,7 +26,7 @@ public interface BaseResolver
     ResolveResult autoPickOnePlugin(MultiResult multiResult);
 
     /**
-     * 与えられたクエリが解決可能かどうかを返します。
+     * 与えられたクエリがこのリゾルバで解決可能かどうかを返します。
      *
      * @param query クエリ
      * @return クエリが解決可能ならばtrue

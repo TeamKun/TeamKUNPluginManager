@@ -11,16 +11,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * URLをプラグインの直リンクに変換するためのリゾルバのインタフェース
+ * URL を解決するリゾルバのインターフェースです。
  */
 public interface URLResolver extends BaseResolver
 {
     /**
-     * 使用可能なURLのホスト
-     * @return ホスト
+     * このリゾルバが対応してるURLのホスト名を返します。
+     *
+     * @return このリゾルバが対応してるURLのホスト名
      */
     String[] getHosts();
 
+    /**
+     * このリゾルバがクエリに対応しているかを返します。
+     *
+     * @param query クエリ (URL)
+     * @return このリゾルバがクエリに対応しているか
+     */
     @Override
     default boolean isValidResolver(QueryContext query)
     {

@@ -10,6 +10,9 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * エイリアスを使用してプラグインを解決するクラスです。
+ */
 public class AliasPluginResolver implements BaseResolver
 {
     private final PluginResolver resolver;

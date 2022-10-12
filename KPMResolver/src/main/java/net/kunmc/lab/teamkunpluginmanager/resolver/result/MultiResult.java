@@ -4,17 +4,17 @@ import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 
 /**
- * 解決結果が複数ある場合に返されるクラス。
+ * 解決結果が複数ある場合に返されるクラスです。
  */
 @Value
 public class MultiResult implements ResolveResult
 {
     /**
-     * リゾルバ
+     * この解決を提供したリゾルバです。
      */
     BaseResolver resolver;
     /**
-     * The results.
+     * 解決結果の配列です。
      */
     ResolveResult[] results;
 }

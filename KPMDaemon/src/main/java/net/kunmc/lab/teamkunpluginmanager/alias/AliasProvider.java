@@ -45,16 +45,32 @@ public class AliasProvider
                 });
     }
 
+    /**
+     * このクラスを破棄します。
+     */
     public void close()
     {
         this.db.close();
     }
 
+    /**
+     * アップデータを作成します。
+     *
+     * @param sourceName ソースの名前
+     * @param sourceURL  ソースのURL
+     * @return アップデータ
+     */
     public AliasUpdater createUpdater(@NotNull String sourceName, @NotNull String sourceURL)
     {
         return new AliasUpdater(sourceName, sourceURL, this);
     }
 
+    /**
+     * エイリアスが存在するかどうかを返します。
+     *
+     * @param name エイリアス対象の名前
+     * @return エイリアスが存在するかどうか
+     */
     public boolean hasAlias(@NotNull String name)
     {
         return Transaction.create(this.db, "SELECT COUNT(*) FROM alias WHERE name = ?")
@@ -62,6 +78,12 @@ public class AliasProvider
                 .isExists();
     }
 
+    /**
+     * ソースが存在するかどうかを返します。
+     *
+     * @param id ソースのID
+     * @return ソースが存在するかどうか
+     */
     public boolean hasSource(String id)
     {
         return Transaction.create(this.db, "SELECT COUNT(*) FROM source WHERE name = ?")
@@ -69,7 +91,13 @@ public class AliasProvider
                 .isExists();
     }
 
-    public AliasSource getSource(int id)
+    /**
+     * ソースを取得します。
+     *
+     * @param id ソースのID
+     * @return ソース
+     */
+    public AliasSource getSource(String id)
     {
         try (ResultRow row = Transaction.create(this.db, "SELECT * FROM source WHERE name = ?")
                 .set(1, id)
@@ -88,7 +116,13 @@ public class AliasProvider
         }
     }
 
-    public Alias getAlias(String name)
+    /**
+     * エイリアスを取得します。
+     *
+     * @param name エイリアス対象の名前
+     * @return エイリアス
+     */
+    public Alias getAlias(String name)  // TODO: Update method name
     {
         try (ResultRow row = Transaction.create(this.db, "SELECT * FROM alias WHERE name = ?")
                 .set(1, name)

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class PluginUtil  // TODO: Rewrite this class
+public class PluginUtil
 {
 
     private static final Method pluginGetFile;

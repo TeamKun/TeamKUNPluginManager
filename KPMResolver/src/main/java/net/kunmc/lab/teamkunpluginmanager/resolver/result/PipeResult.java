@@ -6,18 +6,19 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * 次のリゾルバに処理を任せる.
+ * 他のリゾルバに解決を委譲することを表す解決結果です。
+ * 通常は内部でのみで使用され、{@link net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver#resolve(String)} から返されることはありません。
  */
 @Value
 public class PipeResult implements ResolveResult
 {
     /**
-     * リゾルバ
+     * この解決を提供したリゾルバです。
      */
     @NotNull
     BaseResolver resolver;
     /**
-     * 改変したクエリ
+     * リゾルバがクエリを改変する場合に使用されるクエリです。
      */
     @NotNull
     QueryContext query;

@@ -16,6 +16,13 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * インストーラの基底クラスです。
+ *
+ * @param <A> インストーラの引数の型
+ * @param <E> インストールのタスクの列挙型
+ * @param <P> インストールのタスクの引数の型
+ */
 public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E extends Enum<E>, P extends Enum<P>>
 {
     protected final KPMDaemon daemon;
@@ -31,13 +38,37 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         this.progress = InstallProgress.of(this, signalHandler, null);
     }
 
+    /**
+     * シグナルを送信します。
+     *
+     * @param signal シグナル
+     */
     protected void postSignal(@NotNull Signal signal)
     {
         this.signalHandler.handleSignal(this.progress, signal);
     }
 
+    /**
+     * インストーラを実行します。
+     * このメソッドを直接呼び出すことは推奨されておらず、{@link AbstractInstaller#run(AbstractInstallerArgument)}を使用してください。
+     *
+     * @param arguments インストーラに渡す引数
+     * @return インストールの結果
+     * @throws IOException         ファイルの読み書きに失敗した場合
+     * @throws TaskFailedException インストールの途中でタスクが失敗した場合
+     * @see AbstractInstaller#run(AbstractInstallerArgument)
+     */
     protected abstract InstallResult<P> execute(@NotNull A arguments) throws IOException, TaskFailedException;
 
+    /**
+     * インストーラを実行します。
+     * このメソッドは、内部で{@link AbstractInstaller#execute(AbstractInstallerArgument)}を呼び出します。
+     *
+     * @param arguments インストーラに渡す引数
+     * @return インストールの結果
+     * @throws IOException ファイルの読み書きに失敗した場合
+     * @see AbstractInstaller#execute(AbstractInstallerArgument)
+     */
     public InstallResult<P> run(@NotNull A arguments) throws IOException
     {
         try
@@ -50,6 +81,11 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         }
     }
 
+    /**
+     * インストールが成功したときの後始末を行います。
+     *
+     * @return インストールの結果
+     */
     @NotNull
     protected InstallResult<P> success()
     {
@@ -59,6 +95,12 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         return result;
     }
 
+    /**
+     * インストールが失敗したときの後始末を引数を指定して行います。
+     *
+     * @param customResult インストールの結果
+     * @return インストールの結果
+     */
     @NotNull
     protected InstallResult<P> success(InstallResult<P> customResult)
     {
@@ -70,6 +112,13 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         return customResult;
     }
 
+    /**
+     * インストールが失敗したときの後始末を行います。
+     *
+     * @param reason 失敗の理由
+     * @param <T>    インストールのタスクの列挙型
+     * @return インストールの結果
+     */
     public <T extends Enum<T>> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
     {  // TODO: Implement debug mode
         InstallFailedInstallResult<P, T, ?> result = new InstallFailedInstallResult<>(this.progress, reason);
@@ -78,6 +127,15 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         return result;
     }
 
+    /**
+     * インストールが失敗したときの後始末を行います。
+     *
+     * @param reason     失敗の理由
+     * @param taskStatus タスクの状態
+     * @param <T>        インストールのタスクの列挙型
+     * @param <S>        インストールのタスクの引数の型
+     * @return インストールの結果
+     */
     public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
             @Nullable T reason,
             @NotNull S taskStatus)
@@ -98,6 +156,16 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
             return this.error(null, result.getState());
     }
 
+    /**
+     * タスクのSubmitterを取得します。
+     *
+     * @param taskState タスクの状態
+     * @param task      タスク
+     * @param <A>       タスクの引数の型
+     * @param <R>       タスクの戻り値の型
+     * @param <TT>      タスクの列挙型
+     * @return タスクのSubmitter
+     */
     @NotNull
     protected <A extends TaskArgument, R extends TaskResult<?, ?>, TT extends InstallTask<A, R>>
     TaskChain<A, P, R, R, TT>
@@ -106,6 +174,12 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         return new TaskChain<>(task, taskState, this);
     }
 
+    /**
+     * プラグインが無視リストに入っているかどうかを取得します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインが無視リストに入っているかどうか
+     */
     protected boolean isPluginIgnored(@NotNull String pluginName)
     {
         return KPMDaemon.getInstance().getEnvs().getExcludes().stream()
@@ -113,6 +187,12 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
                 .anyMatch(s -> s.equalsIgnoreCase(pluginName));
     }
 
+    /**
+     * ファイルを安全に削除します。
+     *
+     * @param f 削除するファイル
+     * @return 削除に成功したかどうか
+     */
     protected boolean safeDelete(@NotNull File f)
     {
         try

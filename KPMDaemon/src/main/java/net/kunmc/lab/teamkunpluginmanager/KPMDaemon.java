@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * KPMを操作するためのクラスです。
+ * KPMのデーモンです。
  */
 @Getter
 public class KPMDaemon

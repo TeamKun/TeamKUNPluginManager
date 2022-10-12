@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * プラグインを解決するクラス
+ * プラグインを解決するクラスです。
  */
 public class PluginResolver
 {
@@ -29,6 +29,12 @@ public class PluginResolver
         this.allResolvers = new ArrayList<>();
     }
 
+    /**
+     * リゾルバを追加します。
+     *
+     * @param resolver 追加するリゾルバ
+     * @param names    リゾルバの名前とエイリアス
+     */
     public void addResolver(BaseResolver resolver, String... names)
     {
         for (String name : names)
@@ -47,13 +53,19 @@ public class PluginResolver
         }
     }
 
+    /**
+     * 代替リゾルバを追加します。
+     * 代替リゾルバは、プラグインが見つからなかった場合にフォールバックとして使用されるリゾルバです。
+     *
+     * @param resolver 追加するリゾルバ
+     */
     public void addOnNotFoundResolver(BaseResolver resolver)
     {
         onNotFoundResolvers.add(resolver);
     }
 
     /**
-     * クエリを使用してプラグインを解決する
+     * クエリを使用してプラグインを解決します。
      *
      * @param query クエリ
      */

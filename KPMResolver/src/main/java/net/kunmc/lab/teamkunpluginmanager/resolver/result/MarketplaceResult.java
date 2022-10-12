@@ -1,25 +1,31 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
- * 紹介文付きのリソースの解決結果を格納。
+ * プラグインの説明等が掲載されいる場合に返されるクラスです。
  */
 public interface MarketplaceResult
 {
     /**
-     * 掲載されているタイトル/名前
+     * 掲載されているタイトル/名前を返します。
+     *
      * @return 掲載されているタイトル/名前
      */
+    @NotNull
     String getTitle();
 
     /**
-     * 掲載されているURL
-     * @return 掲載されているURL
+     * 掲載先のURLを返します．
+     * @return 掲載先のURL
      */
+    @NotNull
     String getUrl();
 
     /**
-     * 掲載されている紹介文
+     * 掲載されている紹介文を返します。
      * @return 掲載されている紹介文
      */
+    @NotNull
     String getDescription();
 }

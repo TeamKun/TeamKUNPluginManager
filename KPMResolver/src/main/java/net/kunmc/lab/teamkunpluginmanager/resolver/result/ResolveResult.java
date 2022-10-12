@@ -5,19 +5,19 @@ import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 
 /**
- * プラグイン解決結果のインタフェース
+ * プラグイン解決結果のインタフェースです。
  */
 public interface ResolveResult
 {
     /**
-     * この結果を解決したリゾルバ
+     * この解決を提供したリゾルバです。
      *
      * @return リゾルバ
      */
     BaseResolver getResolver();
 
     /**
-     * プラグイン供給元
+     * プラグイン供給元です。
      */
     @AllArgsConstructor
     enum Source

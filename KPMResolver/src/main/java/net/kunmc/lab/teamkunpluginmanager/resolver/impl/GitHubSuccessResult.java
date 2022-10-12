@@ -7,6 +7,8 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+
 @Getter
 public class GitHubSuccessResult extends SuccessResult implements MarketplaceResult
 {
@@ -56,18 +58,21 @@ public class GitHubSuccessResult extends SuccessResult implements MarketplaceRes
         this.repoName = repoName;
     }
 
+    @Nonnull
     @Override
     public String getTitle()
     {
         return repoName + " - " + releaseName;
     }
 
+    @Nonnull
     @Override
     public String getUrl()
     {
         return "https://github.com/" + owner + "/" + repoName;
     }
 
+    @Nonnull
     @Override
     public String getDescription()
     {

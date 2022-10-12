@@ -18,6 +18,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
+/**
+ * トークンを安全に保存するためのクラスです。
+ */
 public class TokenStore
 {
     private static final String ALGORITHM = "AES";
@@ -140,6 +143,11 @@ public class TokenStore
         }
     }
 
+    /**
+     * トークンを保存します。
+     *
+     * @param token トークン
+     */
     public void storeToken(String token) throws IOException
     {
         byte[] tokenBytes = encryptToken(token);
@@ -158,6 +166,12 @@ public class TokenStore
         this.tokenCache = token;
     }
 
+    /**
+     * トークンをファイルから読み込みます。
+     *
+     * @return トークンの読み取りに成功したかどうか
+     * @throws IOException トークンの読み取りに失敗した場合(ファイルが存在しない場合は{@code false}を返します)
+     */
     public boolean loadToken() throws IOException
     {
         if (!Files.exists(tokenPath))
@@ -175,6 +189,12 @@ public class TokenStore
         return true;
     }
 
+    /**
+     * トークンを KPMv2 の形式から移行します。
+     *
+     * @return 移行に成功したかどうか
+     * @throws IOException 移行に失敗した場合
+     */
     public boolean migrateToken() throws IOException
     {
         File oldToken = new File(new File("").getAbsoluteFile(), "kpm.vault");
@@ -191,11 +211,21 @@ public class TokenStore
         return true;
     }
 
+    /**
+     * トークンが利用可能かどうかを返します。
+     *
+     * @return トークンが利用可能かどうか
+     */
     public boolean isTokenAvailable()
     {
         return this.tokenCache != null;
     }
 
+    /**
+     * トークンを取得します。また、ロードされていない場合はロードします。
+     *
+     * @return トークン
+     */
     public String getToken()
     {
         if (this.tokenCache == null)
@@ -213,6 +243,9 @@ public class TokenStore
         return this.tokenCache;
     }
 
+    /**
+     * トークンを環境変数 {@code TOKEN} から取得します。
+     */
     public void fromEnv()
     {
         String token = System.getenv("TOKEN");

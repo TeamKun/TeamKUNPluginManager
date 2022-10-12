@@ -2,6 +2,9 @@ package net.kunmc.lab.teamkunpluginmanager.installer.task;
 
 import lombok.Getter;
 
+/**
+ * タスクが失敗したことを表すクラスです。
+ */
 public class TaskFailedException extends Exception
 {
     @Getter

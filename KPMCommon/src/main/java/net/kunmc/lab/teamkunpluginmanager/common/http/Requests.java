@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * HTTP リクエストを補助するクラスです。
+ */
 public class Requests
 {
     @Setter
@@ -85,6 +88,12 @@ public class Requests
         return headers;
     }
 
+    /**
+     * リクエストを送信し、レスポンスを受け取ります。
+     *
+     * @param context リクエストのコンテキスト
+     * @return レスポンス
+     */
     @NotNull
     public static HTTPResponse request(@NotNull RequestContext context)
     {
@@ -176,14 +185,13 @@ public class Requests
     }
 
     /**
-     * Download a file from a URL
-     *
-     * @param method     The HTTP method to use
-     * @param url        The URL to download from
-     * @param path       The path to save the file to
-     * @param onProgress A callback to be called when the download progresses.
-     * @return The downloaded file size or -1 if the download failed.
-     * @throws IOException If the download failed
+     * URLを使用してファイルをダウンロードします。
+     * @param method リクエストメソッド
+     * @param url URL
+     * @param path ダウンロード先のパス
+     * @param onProgress ダウンロードの進捗を通知するコールバック
+     * @return ダウンロードしたファイルのパス
+     * @throws IOException ダウンロードに失敗した場合
      */
     public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
                                     @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
@@ -237,6 +245,15 @@ public class Requests
         }
     }
 
+    /**
+     * URLを使用してファイルをダウンロードします。
+     *
+     * @param method リクエストメソッド
+     * @param url    URL
+     * @param path   ダウンロード先のパス
+     * @return ファイルの大きさ
+     * @throws IOException ダウンロードに失敗した場合
+     */
     public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
                                     @NotNull Path path) throws IOException
     {

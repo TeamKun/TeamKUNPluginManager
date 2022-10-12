@@ -7,16 +7,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 複数の情報を含んだクエリ
+ * 複数の情報を含んだクエリです。
  */
 @Data
 @Builder
 public class QueryContext
 {
+    /**
+     * 指定リゾルバの名前です。
+     */
     @Nullable
     String resolverName;
+    /**
+     * 指定クエリです。
+     */
     @NotNull
     String query;
+    /**
+     * 指定バージョンです。
+     */
     @Nullable
     String version;
 
@@ -24,7 +33,7 @@ public class QueryContext
     private static final String versionEqualQuerySeparator = "==";
 
     /**
-     * クエリ文字列からQueryContextをパースする
+     * クエリ文字列からQueryContextを生成します。
      *
      * @param query クエリ文字列
      * @return QueryContext

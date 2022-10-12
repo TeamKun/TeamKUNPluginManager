@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task;
 
 /**
- * タスクの引数を表します。
+ * タスクの引数の基底クラスです。
  */
 public abstract class TaskArgument
 {

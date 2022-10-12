@@ -26,6 +26,9 @@ public class AliasSource
     @NotNull
     SourceType type;
 
+    /**
+     * ソースの種類を表す列挙型です。
+     */
     public enum SourceType
     {
         /**

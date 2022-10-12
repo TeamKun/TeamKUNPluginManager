@@ -3,6 +3,9 @@ package net.kunmc.lab.teamkunpluginmanager.alias;
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.utils.db.Transaction;
 
+/**
+ * エイリアスを更新するトランザクションを補助するクラスです。
+ */
 public class AliasUpdater
 {
     private final String sourceName;
@@ -36,6 +39,12 @@ public class AliasUpdater
                 .executeUpdate(false);
     }
 
+    /**
+     * エイリアスのアップデートを行います。
+     *
+     * @param name  エイリアス対象の名前
+     * @param alias エイリアス
+     */
     public void update(String name, String alias)
     {
         this.transaction.renew("INSERT OR REPLACE INTO alias (name, alias, source_id) VALUES (?, ?, ?)")
@@ -55,6 +64,9 @@ public class AliasUpdater
                 .executeUpdate(false);
     }
 
+    /**
+     * すべてのアップデートを終了し、データベースの更新を行います。
+     */
     public void done()
     {
         transaction.renew("INSERT OR REPLACE INTO source (name, source, type) VALUES (?, ?, ?)")
@@ -68,6 +80,9 @@ public class AliasUpdater
         this.transaction.finishManually();
     }
 
+    /**
+     * アップデートをキャンセルし、データベースをロールバックします。
+     */
     public void cancel()
     {
         this.transaction.abortManually();

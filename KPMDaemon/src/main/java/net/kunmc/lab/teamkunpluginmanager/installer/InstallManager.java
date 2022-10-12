@@ -8,7 +8,7 @@ import net.kunmc.lab.teamkunpluginmanager.installer.exceptions.TokenNotAvailable
 import org.jetbrains.annotations.NotNull;
 
 /**
- * プラグインのインストールを管理するクラスです。
+ * インストールを管理するクラスです。
  */
 public class InstallManager
 {

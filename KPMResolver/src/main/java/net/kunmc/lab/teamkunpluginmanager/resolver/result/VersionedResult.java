@@ -3,13 +3,12 @@ package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 import java.util.List;
 
 /**
- * プラグインの対応するバージョンを格納するインターフェース。
+ * プラグインの対応するバージョンを格納するインターフェースです。
  */
 public interface VersionedResult
 {
     /**
-     * プラグインの対応する一覧。
-     *
+     * プラグインが対応するバージョン一覧です。
      */
     List<String> getVersions();
 }

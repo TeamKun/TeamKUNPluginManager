@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * プラグイン解決中のエラーの結果。
+ * 解決に失敗したことを表すクエリ解決結果です。
  */
 @EqualsAndHashCode
 @Getter
@@ -15,19 +15,19 @@ import org.jetbrains.annotations.Nullable;
 public class ErrorResult implements ResolveResult
 {
     /**
-     * エラーケース
+     * エラーのかんたんな理由です。
      */
     @NotNull
     private final ErrorCause cause;
 
     /**
-     * プラグインの供給元
+     * プラグインの提供元です。
      */
     @NotNull
     private final Source source; // TODO: フロントエンドに依存しないよう、メッセージプロバイダ作る。
 
     /**
-     * この結果を提供したリゾルバ
+     * この解決を提供したリゾルバです。
      */
     @Nullable
     private final BaseResolver resolver;
@@ -40,44 +40,46 @@ public class ErrorResult implements ResolveResult
     }
 
     /**
-     * エラーケース
+     * エラーのかんたんな理由を表す列挙型です。
      */
     public enum ErrorCause
     {
         /**
-         * リゾルバが合っていない。
+         * クエリに対応するリゾルバが見つかりませんでした。
          */
         RESOLVER_MISMATCH("対応するリゾルバが見つかりませんでした。"),
         /**
-         * 不正なクエリ
+         * 不正なクエリが指定されました。
          */
         INVALID_QUERY("不正なクエリです。"),
         /**
-         * プラグインがみつからない。
-         * サーバが404を返した場合もこのケースになる。
+         * プラグインが見つかりませんでした。
          */
         PLUGIN_NOT_FOUND("プラグインが見つかりませんでした。"),
         /**
-         * サーバに合ったプラグインが見つからなかった
+         * この Minecraft サーバに適合するプラグインが見つかりませんでした。
          */
         MATCH_PLUGIN_NOT_FOUND("サーバに対応するプラグインが見つかりませんでした。"),
         /**
-         * プラグイン自体は見つかったが、アセット(jarファイル)が見つからない。
+         * プラグインは見つかりましたが、 .jar や .zip などのファイルが見つかりませんでした。
          */
         ASSET_NOT_FOUND("プラグインは見つかりましたが、ファイルが見つかりませんでした。"),
         /**
-         * サーバのレスポンスが破損している/おかしい。
+         * サーバが不正なレスポンスを返しました。
          */
         SERVER_RESPONSE_MALFORMED("サーバが不正なレスポンスを返しました。"),
         /**
-         * その他のサーバに関するエラー
+         * サーバがエラーを返しました。
          */
         SERVER_RESPONSE_ERROR("サーバがエラーを返答しました。"),
         /**
-         * その他のエラー
+         * 不明なエラーが発生しました。
          */
         UNKNOWN_ERROR("不明なエラーが発生しました。");
 
+        /**
+         * エラーの詳細な理由です。
+         */
         @Getter
         private String message;
 

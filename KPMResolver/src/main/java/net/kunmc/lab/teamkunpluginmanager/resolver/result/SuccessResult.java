@@ -6,37 +6,37 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * 解決成功のResolveResult実装。
+ * 解決に成功したことを表すクエリ解決結果です。
  */
 @Data
 public class SuccessResult implements ResolveResult
 {
     /**
-     * プラグインのダウンロードリンク
+     * プラグインのダウンロードリンクです。
      */
     @NotNull
     private final String downloadUrl;
 
     /**
-     * プラグインのファイル名
+     * プラグインのファイル名です。
      */
     @Nullable
     private final String fileName;
 
     /**
-     * プラグインのバージョン
+     * プラグインのバージョンです。
      */
     @Nullable
     private final String version;
 
     /**
-     * プラグインの供給元
+     * プラグインの供給元です。
      */
     @NotNull
     private final Source source;
 
     /**
-     * この結果を提供したリゾルバ
+     * この解決を提供したリゾルバです。
      */
     @NotNull
     private final BaseResolver resolver;

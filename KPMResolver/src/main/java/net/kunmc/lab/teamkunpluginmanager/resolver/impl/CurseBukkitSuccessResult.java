@@ -9,6 +9,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 
 /**
@@ -39,6 +40,7 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
         this.title = title;
     }
 
+    @Nonnull
     @Override
     public String getUrl()
     {
@@ -48,7 +50,7 @@ public class CurseBukkitSuccessResult extends SuccessResult implements Marketpla
             return "https://dev.bukkit.org/projects/" + this.slug;
     }
 
-
+    @Nonnull
     @Override
     public String getDescription()
     {

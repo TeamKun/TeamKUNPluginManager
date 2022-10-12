@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * KPM の実行環境を表すクラスです。
+ */
 @Builder
 @Getter
 public class KPMEnvironment

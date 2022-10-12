@@ -15,8 +15,14 @@ import org.jetbrains.annotations.Nullable;
 public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S extends Enum<S>>
         extends InstallResult<P>
 {
+    /**
+     * 失敗した理由を表す列挙型です。
+     */
     @Nullable
     private final T reason;
+    /**
+     * タスクの状態を表す列挙型です。
+     */
     @Nullable
     private final S taskStatus;
 
