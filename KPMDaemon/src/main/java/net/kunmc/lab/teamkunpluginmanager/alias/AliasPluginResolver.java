@@ -27,7 +27,7 @@ public class AliasPluginResolver implements BaseResolver
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        Alias alias = this.aliasProvider.getAlias(query.getQuery());
+        Alias alias = this.aliasProvider.getNameByAlias(query.getQuery());
 
         if (alias == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);

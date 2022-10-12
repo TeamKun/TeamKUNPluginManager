@@ -122,7 +122,7 @@ public class AliasProvider
      * @param name エイリアス対象の名前
      * @return エイリアス
      */
-    public Alias getAlias(String name)  // TODO: Update method name
+    public Alias getNameByAlias(String name)
     {
         try (ResultRow row = Transaction.create(this.db, "SELECT * FROM alias WHERE name = ?")
                 .set(1, name)
