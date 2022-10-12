@@ -120,7 +120,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
      * @return インストールの結果
      */
     public <T extends Enum<T>> InstallFailedInstallResult<P, T, ?> error(@NotNull T reason)
-    {  // TODO: Implement debug mode
+    {
         InstallFailedInstallResult<P, T, ?> result = new InstallFailedInstallResult<>(this.progress, reason);
         this.postSignal(new InstallFinishedSignal(result));
 
@@ -139,7 +139,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
     public <T extends Enum<T>, S extends Enum<S>> InstallFailedInstallResult<P, T, S> error(
             @Nullable T reason,
             @NotNull S taskStatus)
-    {  // TODO: Implement debug mode
+    {
         InstallFailedInstallResult<P, T, S> result = new InstallFailedInstallResult<>(this.progress, reason, taskStatus);
         this.postSignal(new InstallFinishedSignal(result));
 
