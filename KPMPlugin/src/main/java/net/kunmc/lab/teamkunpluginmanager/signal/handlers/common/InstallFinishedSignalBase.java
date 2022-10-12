@@ -3,11 +3,11 @@ package net.kunmc.lab.teamkunpluginmanager.signal.handlers.common;
 import lombok.AccessLevel;
 import lombok.Setter;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.Utils;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallFailedInstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 
 /**
  * インストールが完了したときのシグナルを処理するハンドラーの基底クラスです。

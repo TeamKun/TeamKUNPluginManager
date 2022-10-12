@@ -2,11 +2,11 @@ package net.kunmc.lab.teamkunpluginmanager.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kunmc.lab.teamkunpluginmanager.Utils;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
-import net.kunmc.lab.teamkunpluginmanager.utils.Utils;
 import org.bukkit.ChatColor;
 
 /**

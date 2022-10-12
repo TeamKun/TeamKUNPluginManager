@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.utils;
+package net.kunmc.lab.teamkunpluginmanager;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
