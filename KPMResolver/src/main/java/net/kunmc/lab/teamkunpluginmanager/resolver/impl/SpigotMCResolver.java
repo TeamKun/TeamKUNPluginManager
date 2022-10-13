@@ -67,7 +67,7 @@ public class SpigotMCResolver implements URLResolver
     {
         boolean external = jsonObject.get("external").getAsBoolean();
         if (external)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("SpigotMC ではホストされていません。"),
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND,
                     ResolveResult.Source.SPIGOT_MC
             );
 
@@ -80,8 +80,9 @@ public class SpigotMCResolver implements URLResolver
 
         boolean premium = jsonObject.get("premium").getAsBoolean();
         if (premium)
-            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("このプラグインはプレミアムプラグインです。"),
-                    ResolveResult.Source.SPIGOT_MC
+            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+                    ResolveResult.Source.SPIGOT_MC,
+                    "This plugin is marked as premium plugin."
             );
 
         long[] versions = StreamSupport.stream(jsonObject.get("versions").getAsJsonArray().spliterator(), false)
@@ -106,8 +107,8 @@ public class SpigotMCResolver implements URLResolver
             if (String.valueOf(v).equals(version))
                 return new SpigotMCSuccessResult(this, version, name, id, description, testedVersions);
 
-        return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND.value("指定されたバージョンのプラグインが見つかりませんでした。"),
-                ResolveResult.Source.SPIGOT_MC
+        return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.SPIGOT_MC,
+                "Version " + version + " not found."
         );
     }
 

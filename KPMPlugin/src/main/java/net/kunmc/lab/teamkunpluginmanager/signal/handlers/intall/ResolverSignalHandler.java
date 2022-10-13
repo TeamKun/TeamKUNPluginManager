@@ -7,6 +7,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.signals.PluginResolvingSignal;
+import net.kunmc.lab.teamkunpluginmanager.resolver.result.ErrorResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
 import org.bukkit.ChatColor;
@@ -39,7 +40,10 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolveError(PluginResolveErrorSignal signal)
     {
-        terminal.error(signal.getError().getCause().getMessage());
+        ErrorResult.ErrorCause errorCause = signal.getError().getCause();
+        String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
+
+        terminal.writeLine(ChatColor.RED + "プラグインの解決に失敗しました: " + errorCause + message);
     }
 
     @SignalHandler

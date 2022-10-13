@@ -117,7 +117,7 @@ public class GitHubURLResolver implements URLResolver
             if (result instanceof ErrorResult)
             {
                 ErrorResult errorResult = (ErrorResult) result;
-                if (errorResult.getCause() == ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
+                if (errorResult.getCause() == ErrorResult.ErrorCause.VERSION_MISMATCH)
                     isFound = true;
                 else if (errorResult.getCause() == ErrorResult.ErrorCause.ASSET_NOT_FOUND)
                     isNoAssets = true;
@@ -131,7 +131,7 @@ public class GitHubURLResolver implements URLResolver
             if (isFound)
                 return new ErrorResult(
                         this,
-                        ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND.value("指定されたバージョンが見つかりませんでした。"),
+                        ErrorResult.ErrorCause.VERSION_MISMATCH,
                         ResolveResult.Source.GITHUB
                 );
             else if (isNoAssets)
@@ -156,7 +156,7 @@ public class GitHubURLResolver implements URLResolver
 
         if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
                 !("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
-            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+            return new ErrorResult(this, ErrorResult.ErrorCause.VERSION_MISMATCH, ResolveResult.Source.GITHUB);
 
         JsonArray assets = object.getAsJsonArray("assets");
 

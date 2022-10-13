@@ -32,11 +32,23 @@ public class ErrorResult implements ResolveResult
     @Nullable
     private final BaseResolver resolver;
 
-    public ErrorResult(@Nullable BaseResolver resolver, @NotNull ErrorCause cause, @NotNull Source source)
+    /**
+     * エラーの詳細な理由です。
+     */
+    @Nullable
+    private final String message;
+
+    public ErrorResult(@Nullable BaseResolver resolver, @NotNull ErrorCause cause, @NotNull Source source, @Nullable String message)
     {
-        this.resolver = resolver;
         this.cause = cause;
         this.source = source;
+        this.resolver = resolver;
+        this.message = message;
+    }
+
+    public ErrorResult(@Nullable BaseResolver resolver, @NotNull ErrorCause cause, @NotNull Source source)
+    {
+        this(resolver, cause, source, null);
     }
 
     /**
@@ -47,57 +59,38 @@ public class ErrorResult implements ResolveResult
         /**
          * クエリに対応するリゾルバが見つかりませんでした。
          */
-        RESOLVER_MISMATCH("対応するリゾルバが見つかりませんでした。"),
+        RESOLVER_MISMATCH,
         /**
          * 不正なクエリが指定されました。
          */
-        INVALID_QUERY("不正なクエリです。"),
+        INVALID_QUERY,
+        /**
+         * ホストの解決に失敗しました。
+         */
+        HOST_RESOLVE_FAILED,
         /**
          * プラグインが見つかりませんでした。
          */
-        PLUGIN_NOT_FOUND("プラグインが見つかりませんでした。"),
+        PLUGIN_NOT_FOUND,
         /**
          * この Minecraft サーバに適合するプラグインが見つかりませんでした。
          */
-        MATCH_PLUGIN_NOT_FOUND("サーバに対応するプラグインが見つかりませんでした。"),
+        VERSION_MISMATCH,
         /**
          * プラグインは見つかりましたが、 .jar や .zip などのファイルが見つかりませんでした。
          */
-        ASSET_NOT_FOUND("プラグインは見つかりましたが、ファイルが見つかりませんでした。"),
+        ASSET_NOT_FOUND,
         /**
          * サーバが不正なレスポンスを返しました。
          */
-        SERVER_RESPONSE_MALFORMED("サーバが不正なレスポンスを返しました。"),
+        SERVER_RESPONSE_MALFORMED,
         /**
          * サーバがエラーを返しました。
          */
-        SERVER_RESPONSE_ERROR("サーバがエラーを返答しました。"),
+        SERVER_RESPONSE_ERROR,
         /**
          * 不明なエラーが発生しました。
          */
-        UNKNOWN_ERROR("不明なエラーが発生しました。");
-
-        /**
-         * エラーの詳細な理由です。
-         */
-        @Getter
-        private String message;
-
-        @Getter
-        private boolean messageChanged;
-
-        ErrorCause(String message)
-        {
-            this.message = message;
-            this.messageChanged = false;
-        }
-
-        public ErrorCause value(String message)
-        {
-            this.message = message;
-            this.messageChanged = true;
-            return this;
-        }
-
+        UNKNOWN_ERROR
     }
 }

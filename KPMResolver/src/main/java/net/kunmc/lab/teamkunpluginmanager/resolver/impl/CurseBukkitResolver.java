@@ -120,7 +120,7 @@ public class CurseBukkitResolver implements URLResolver
 
         JsonObject pickedPlugin = pickUpValidVersion(projectFilesResult, version);
         if (pickedPlugin == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND, source);
+            return new ErrorResult(this, ErrorResult.ErrorCause.VERSION_MISMATCH, source);
 
         String downloadUrl = pickedPlugin.get("downloadUrl").getAsString();
         String fileName = pickedPlugin.get("fileName").getAsString();

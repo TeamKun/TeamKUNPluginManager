@@ -96,7 +96,7 @@ public class PluginResolver
         if (result instanceof ErrorResult)
         {
             ErrorResult error = (ErrorResult) result;
-            if (error.getCause() != ErrorResult.ErrorCause.MATCH_PLUGIN_NOT_FOUND)
+            if (error.getCause() != ErrorResult.ErrorCause.VERSION_MISMATCH)
                 result = resolves(onNotFoundResolvers, queryContext, url);
         }
 

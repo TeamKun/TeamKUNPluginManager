@@ -74,32 +74,34 @@ public interface URLResolver extends BaseResolver
         switch (response.getStatus())
         {
             case URL_MALFORMED:
-                return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY.value("不正なURLが指定されました。"), source);
+                return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, source, "URL Malformed.");
             case UNABLE_TO_RESOLVE_HOST:
-                URL url = null;
+                URL url;
                 try
                 {
                     url = new URL(response.getRequest().getUrl());
                 }
-                catch (MalformedURLException ignored)
+                catch (MalformedURLException e)
                 {
+                    throw new IllegalStateException("Illegal URL: " + response.getRequest().getUrl());
                 }
 
                 return new ErrorResult(this,
-                        ErrorResult.ErrorCause.INVALID_QUERY.value("ホストが解決できませんでした：" +
-                                (url == null ? "Unknown host": url.getHost())), source
+                        ErrorResult.ErrorCause.HOST_RESOLVE_FAILED, source,
+                        "Unable to resolve host " + url.getHost() + "."
                 );
             case REDIRECT_LIMIT_EXCEED:
                 return new ErrorResult(this,
-                        ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED.value("リダイレクト回数が上限に達しました。"), source
+                        ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED, source, "Redirect limit exceed."
                 );
             case IO_EXCEPTION_OCCURRED:
                 return new ErrorResult(this, ErrorResult.ErrorCause.UNKNOWN_ERROR, source);
             case REDIRECT_LOCATION_MALFORMED:
                 return new ErrorResult(
                         this,
-                        ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED.value("リダイレクト先が不正です：" + response.getHeader("Location")),
-                        source
+                        ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED,
+                        source,
+                        "Redirect location malformed: " + response.getHeader("Location")
                 );
         }
 
@@ -109,25 +111,27 @@ public interface URLResolver extends BaseResolver
             case 200:
                 return null;
             case 403:
-                return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
-                        .value(errorCodeWith("サーバからリソースをダウンロードする権限がありません。", code)), source);
+                return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR, source,
+                        errorCodeWith("Forbidden", code)
+                );
             case 404:
                 return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND
-                        .value(errorCodeWith("サーバからリソースを見つけることができません。", code)), source);
+                        , source, errorCodeWith("Not Found", code)
+                );
             case 418:
                 return new ErrorResult(this,
                         ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
-                                .value(errorCodeWith("ティーポットでコーヒーを淹れようとしました。", code)), source
+                        , source, errorCodeWith("I'm a teapot", code)
                 );
             default:
                 if (code >= 500 && code < 600)
                     return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
-                            .value(errorCodeWith("サーバーがダウンしています。", code)), source);
-
-                return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
-                        .value(errorCodeWith("サーバーがエラーレスポンスを返答しました。。", code)),
-                        source
-                );
+                            , source, errorCodeWith("Server Error", code)
+                    );
+                else
+                    return new ErrorResult(this, ErrorResult.ErrorCause.UNKNOWN_ERROR
+                            , source, errorCodeWith("Unknown Error", code)
+                    );
         }
     }
 }
