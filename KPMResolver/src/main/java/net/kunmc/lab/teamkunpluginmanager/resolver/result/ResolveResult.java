@@ -1,7 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.resolver.result;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.resolver.interfaces.BaseResolver;
 
 /**
@@ -25,34 +24,30 @@ public interface ResolveResult
         /**
          * GitHub
          */
-        GITHUB("GitHub"),
+        GITHUB,
         /**
-         * @link https://www.spigotmc.org/resources/
+         * <a href="https://www.spigotmc.org/resources/">...</a>
          */
-        SPIGOT_MC("Spigot-MC"),
+        SPIGOT_MC,
         /**
-         * @link https://dev.bukkit.org/projects/plugins/
+         * <a href="https://dev.bukkit.org/projects/plugins/">...</a>
          */
-        DEV_BUKKIT("Bukkit-Project"),
+        DEV_BUKKIT,
         /**
-         * @link https://curseforge.com/bukkit-plugins/
+         * <a href="https://curseforge.com/bukkit-plugins/">...</a>
          */
-        CURSE_FORGE("CurseForge"),
+        CURSE_FORGE,
         /**
          * ローカルの既知プラグイン
          */
-        LOCAL_KNOWN("Alias"),
+        LOCAL_KNOWN,
         /**
          * 直リンク
          */
-        DIRECT("Direct"),
+        DIRECT,
         /**
          * 不明
          */
-        UNKNOWN("Unknown");
-
-        @Getter
-        private final String name;
-
+        UNKNOWN
     }
 }

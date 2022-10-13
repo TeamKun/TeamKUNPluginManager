@@ -24,7 +24,7 @@ public class ErrorResult implements ResolveResult
      * プラグインの提供元です。
      */
     @NotNull
-    private final Source source; // TODO: フロントエンドに依存しないよう、メッセージプロバイダ作る。
+    private final Source source;
 
     /**
      * この解決を提供したリゾルバです。
