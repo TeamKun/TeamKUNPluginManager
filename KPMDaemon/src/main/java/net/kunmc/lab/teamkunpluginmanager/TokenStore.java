@@ -39,7 +39,7 @@ public class TokenStore
         this.tokenPath = tokenPath;
         try
         {
-            this.key = getkey(keyPath);
+            this.key = this.getkey(keyPath);
             this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
         }
         catch (IOException e)
@@ -88,10 +88,10 @@ public class TokenStore
         try
         {
             Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, SECONDARY_KEY_SPEC);
+            cipher.init(Cipher.ENCRYPT_MODE, this.SECONDARY_KEY_SPEC);
             byte[] encrypted = cipher.doFinal(token.getBytes());
 
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, ALGORITHM));
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key, ALGORITHM));
 
             return cipher.doFinal(encrypted);
         }
@@ -106,11 +106,11 @@ public class TokenStore
         try
         {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, ALGORITHM));
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key, ALGORITHM));
 
             byte[] decrypted = cipher.doFinal(encryptedToken);
 
-            cipher.init(Cipher.DECRYPT_MODE, SECONDARY_KEY_SPEC);
+            cipher.init(Cipher.DECRYPT_MODE, this.SECONDARY_KEY_SPEC);
 
             return new String(cipher.doFinal(decrypted));
         }
@@ -150,7 +150,7 @@ public class TokenStore
      */
     public void storeToken(String token) throws IOException
     {
-        byte[] tokenBytes = encryptToken(token);
+        byte[] tokenBytes = this.encryptToken(token);
         long time = System.currentTimeMillis();
         String tokenBody = Base64.getEncoder().encodeToString(tokenBytes);
         String tokenString = String.format(
@@ -159,9 +159,9 @@ public class TokenStore
                 time
         );
 
-        Files.write(tokenPath, tokenString.getBytes());
+        Files.write(this.tokenPath, tokenString.getBytes());
 
-        setPermission(tokenPath);
+        setPermission(this.tokenPath);
 
         this.tokenCache = token;
     }
@@ -174,17 +174,17 @@ public class TokenStore
      */
     public boolean loadToken() throws IOException
     {
-        if (!Files.exists(tokenPath))
+        if (!Files.exists(this.tokenPath))
             return false;
 
-        String tokenString = new String(Files.readAllBytes(tokenPath));
+        String tokenString = new String(Files.readAllBytes(this.tokenPath));
 
         String[] tokenParts = tokenString.split(",");
         if (tokenParts.length != 2)
             return false;
 
         String tokenBody = tokenParts[0];
-        this.tokenCache = decryptToken(Base64.getDecoder().decode(tokenBody));
+        this.tokenCache = this.decryptToken(Base64.getDecoder().decode(tokenBody));
 
         return true;
     }
@@ -203,7 +203,7 @@ public class TokenStore
             return false;
 
         String token = new String(Files.readAllBytes(oldToken.toPath()));
-        storeToken(token);
+        this.storeToken(token);
 
         //noinspection ResultOfMethodCallIgnored
         oldToken.delete();
@@ -232,7 +232,7 @@ public class TokenStore
         {
             try
             {
-                loadToken();
+                this.loadToken();
             }
             catch (IOException e)
             {

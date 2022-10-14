@@ -34,7 +34,7 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolving(PluginResolvingSignal signal)
     {
-        terminal.writeLine(ChatColor.GREEN + "プラグインを解決しています ...");
+        this.terminal.writeLine(ChatColor.GREEN + "プラグインを解決しています ...");
     }
 
     @SignalHandler
@@ -43,13 +43,13 @@ public class ResolverSignalHandler
         ErrorResult.ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        terminal.writeLine(ChatColor.RED + "プラグインの解決に失敗しました: " + errorCause + message);
+        this.terminal.writeLine(ChatColor.RED + "プラグインの解決に失敗しました: " + errorCause + message);
     }
 
     @SignalHandler
     public void onPluginsResolve(MultiplePluginResolvedSignal signal)
     {
-        terminal.warn("複数のプラグインが見つかりました。");
+        this.terminal.warn("複数のプラグインが見つかりました。");
 
         AtomicLong index = new AtomicLong(0);
 
@@ -68,7 +68,7 @@ public class ResolverSignalHandler
 
         try
         {
-            QuestionResult result = terminal.getInput().showQuestion(
+            QuestionResult result = this.terminal.getInput().showQuestion(
                     "使用するプラグインを選択してください",
                     new AttributeChoice(keywordToTitle),
                     QuestionAttribute.CANCELLABLE
@@ -76,7 +76,7 @@ public class ResolverSignalHandler
 
             if (result.test(QuestionAttribute.CANCELLABLE))
             {
-                terminal.error(ChatColor.RED + "インストールをキャンセルしました。");
+                this.terminal.error(ChatColor.RED + "インストールをキャンセルしました。");
                 signal.setCancel(true);
                 return;
             }
@@ -87,12 +87,12 @@ public class ResolverSignalHandler
 
             if (selected == null)
             {
-                terminal.error("不明な回答が選択されました。");
+                this.terminal.error("不明な回答が選択されました。");
                 signal.setCancel(true);
                 return;
             }
 
-            terminal.writeLine(ChatColor.GREEN + selected.getFileName() + "(" + selected.getVersion() + ") が解決されました。");
+            this.terminal.writeLine(ChatColor.GREEN + selected.getFileName() + "(" + selected.getVersion() + ") が解決されました。");
             signal.setSpecifiedResult(selected);
         }
         catch (InterruptedException ex)

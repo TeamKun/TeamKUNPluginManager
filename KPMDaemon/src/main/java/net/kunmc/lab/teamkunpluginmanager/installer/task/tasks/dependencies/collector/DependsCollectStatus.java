@@ -55,8 +55,8 @@ public class DependsCollectStatus
      */
     public void addDependency(@NotNull String dependencyName)
     {
-        if (!enumeratedDependencies.containsKey(dependencyName))
-            enumeratedDependencies.put(dependencyName, null);
+        if (!this.enumeratedDependencies.containsKey(dependencyName))
+            this.enumeratedDependencies.put(dependencyName, null);
     }
 
     /**
@@ -67,7 +67,7 @@ public class DependsCollectStatus
      */
     public boolean isCollected(@NotNull String dependencyName)
     {
-        return enumeratedDependencies.containsKey(dependencyName);
+        return this.enumeratedDependencies.containsKey(dependencyName);
     }
 
     /**
@@ -77,7 +77,7 @@ public class DependsCollectStatus
      */
     public boolean isErrors()
     {
-        return enumeratedDependencies.containsValue(null);
+        return this.enumeratedDependencies.containsValue(null);
     }
 
     /**
@@ -88,8 +88,8 @@ public class DependsCollectStatus
      */
     public void onCollect(@NotNull String dependencyName, DependencyElement dependencyElement)
     {
-        if (enumeratedDependencies.containsKey(dependencyName))
-            enumeratedDependencies.put(dependencyName, dependencyElement);
+        if (this.enumeratedDependencies.containsKey(dependencyName))
+            this.enumeratedDependencies.put(dependencyName, dependencyElement);
     }
 
     /**

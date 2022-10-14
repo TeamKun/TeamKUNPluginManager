@@ -26,6 +26,6 @@ public class DependencyNameMismatchSignal extends DependencyCollectFailedSignalB
      */
     public String getActualDependencyName()
     {
-        return getFailedDependency();
+        return this.getFailedDependency();
     }
 }

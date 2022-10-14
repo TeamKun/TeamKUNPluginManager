@@ -76,7 +76,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     {
         // region Check if token is provided in argument
         if (argument.getToken() != null)  // Token is already prepared, so register it as is.
-            if (registerToken(argument.getToken()))
+            if (this.registerToken(argument.getToken()))
                 return this.success();
             else
                 return this.error(RegisterErrorCause.IO_EXCEPTION_OCCURRED);
@@ -103,7 +103,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         // region Request verification code
         this.progress.setCurrentTask(RegisterTasks.REQUESTING_USER_VERIFICATION_CODE);
         this.postSignal(new VerificationCodeRequestingSignal());
-        UserVerificationCodeResponse userVerifyCodeResponse = requestVerificationCode();
+        UserVerificationCodeResponse userVerifyCodeResponse = this.requestVerificationCode();
         if (userVerifyCodeResponse == null)
             return this.error(RegisterErrorCause.VERIFICATION_CODE_REQUEST_FAILED);
 
@@ -117,7 +117,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         // region Polling user verification
 
         this.progress.setCurrentTask(RegisterTasks.POLLING_USER_VERIFICATION);
-        VerificationSubmitPollingResponse pollingResponse = pollVerifyCodeSubmit(userVerifyCodeResponse);
+        VerificationSubmitPollingResponse pollingResponse = this.pollVerifyCodeSubmit(userVerifyCodeResponse);
         if (pollingResponse == null)
             return this.error(RegisterErrorCause.VERIFICATION_FAILED);
 
@@ -129,7 +129,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
 
         this.postSignal(new UserVerificationSuccessSignal(accessToken, tokenType, scope));
 
-        if (registerToken(accessToken))
+        if (this.registerToken(accessToken))
             return this.success();
         else
             return this.error(RegisterErrorCause.IO_EXCEPTION_OCCURRED);
@@ -149,7 +149,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         {
             if (!response.isSuccessful())
             {
-                String errorMessage = getErrorMessage(response);
+                String errorMessage = this.getErrorMessage(response);
                 int errorCode = response.getStatusCode();
                 this.postSignal(new VerificationCodeRequestFailedSignal(
                         errorCode,
@@ -159,7 +159,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
                 return null;
             }
 
-            return toUserVerificationCodeResponse(response);
+            return this.toUserVerificationCodeResponse(response);
         }
         catch (IOException e)
         {
@@ -255,11 +255,11 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
                             return null;
                     }
 
-                    randomSleep(intervalMillis);
+                    this.randomSleep(intervalMillis);
                     continue;
                 }
 
-                VerificationSubmitPollingResponse pollingResponse = toVerificationSubmitPollingResponse(response);
+                VerificationSubmitPollingResponse pollingResponse = this.toVerificationSubmitPollingResponse(response);
                 if (pollingResponse != null)
                     return pollingResponse;
             }
@@ -269,7 +269,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
                 return null;
             }
 
-            randomSleep(intervalMillis);
+            this.randomSleep(intervalMillis);
         }
     }
 

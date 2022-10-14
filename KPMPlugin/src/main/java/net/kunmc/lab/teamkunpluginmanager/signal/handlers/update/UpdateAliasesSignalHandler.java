@@ -19,14 +19,14 @@ public class UpdateAliasesSignalHandler
     @SignalHandler
     public void onUpdateAliases(UpdateFinishedSignal signal)
     {
-        terminal.success("エイリアスが更新されました。");
-        terminal.success("登録数：%d", signal.getAliases());
+        this.terminal.success("エイリアスが更新されました。");
+        this.terminal.success("登録数：%d", signal.getAliases());
     }
 
     @SignalHandler
     public void onURLMalformed(MalformedURLSignal signal)
     {
-        terminal.warn("不正なURLが指定されました(%s)： %s", signal.getRemoteName(), signal.getRemoteURL());
+        this.terminal.warn("不正なURLが指定されました(%s)： %s", signal.getRemoteName(), signal.getRemoteURL());
     }
 
     @SignalHandler
@@ -35,13 +35,13 @@ public class UpdateAliasesSignalHandler
         switch (signal.getErrorCause())
         {
             case IO_ERROR:
-                terminal.warn("不正なソースファイルが指定されました(%s)：IOError", signal.getSourceName());
+                this.terminal.warn("不正なソースファイルが指定されました(%s)：IOError", signal.getSourceName());
                 break;
             case SOURCE_FILE_MALFORMED:
-                terminal.warn("不正なソースファイルが指定されました(%s)：Malformed", signal.getSourceName());
+                this.terminal.warn("不正なソースファイルが指定されました(%s)：Malformed", signal.getSourceName());
                 break;
             default:
-                terminal.warn("不正なソースファイルが指定されました(%s)：Unknown", signal.getSourceName());
+                this.terminal.warn("不正なソースファイルが指定されました(%s)：Unknown", signal.getSourceName());
         }
     }
 
@@ -49,9 +49,9 @@ public class UpdateAliasesSignalHandler
     public void onInstallFinished(InstallFinishedSignal signal)
     {
         if (signal.getResult().isSuccess())
-            terminal.success("エイリアスの更新に成功しました。");
+            this.terminal.success("エイリアスの更新に成功しました。");
         else
-            terminal.warn("エイリアスの更新に失敗しました。");
+            this.terminal.warn("エイリアスの更新に失敗しました。");
     }
 
 }

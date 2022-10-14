@@ -26,7 +26,7 @@ public class InstallerSignalHandler
     @SignalHandler
     public void onPluginInstallStart(PluginInstallingSignal signal)
     {
-        terminal.writeLine(ChatColor.GREEN + signal.getPluginDescription().getName() + " をインストールする準備をしています ...");
+        this.terminal.writeLine(ChatColor.GREEN + signal.getPluginDescription().getName() + " をインストールする準備をしています ...");
     }
 
     @SignalHandler
@@ -34,20 +34,20 @@ public class InstallerSignalHandler
     {
         String src = ".../" + signal.getSource().getFileName();
         String dest = ".../" + signal.getTarget().getFileName();
-        terminal.writeLine(ChatColor.GREEN + src + " を " + dest + " に再配置しています ...");
+        this.terminal.writeLine(ChatColor.GREEN + src + " を " + dest + " に再配置しています ...");
     }
 
     @SignalHandler
     public void onPluginLoadPre(PluginLoadSignal.Pre signal)
     {
-        terminal.writeLine(ChatColor.GREEN +
+        this.terminal.writeLine(ChatColor.GREEN +
                 PluginUtil.getPluginString(signal.getPluginDescription()) + " を読み込んでいます ...");
     }
 
     @SignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
-        terminal.writeLine(ChatColor.GREEN +
+        this.terminal.writeLine(ChatColor.GREEN +
                 PluginUtil.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
     }
 }

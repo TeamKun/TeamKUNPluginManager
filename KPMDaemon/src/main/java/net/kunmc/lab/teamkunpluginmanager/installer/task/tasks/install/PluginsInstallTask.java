@@ -216,8 +216,8 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         }
         catch (FileAlreadyExistsException e)
         {
-            String sourceHash = generateSHA1(source);
-            String targetHash = generateSHA1(target);
+            String sourceHash = this.generateSHA1(source);
+            String targetHash = this.generateSHA1(target);
 
             if (sourceHash == null || targetHash == null)
                 return false;
@@ -225,7 +225,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             if (sourceHash.equals(targetHash))
                 return true;
             else
-                return moveFile(source, target, true);
+                return this.moveFile(source, target, true);
         }
     }
 
@@ -239,7 +239,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         try
         {
-            if (!moveFile(source, target, false))
+            if (!this.moveFile(source, target, false))
                 return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
             else
                 return null;

@@ -42,14 +42,14 @@ public class PluginResolver
             if (name.equalsIgnoreCase("http") || name.equalsIgnoreCase("https"))
                 throw new IllegalArgumentException("HTTP and HTTPS are reserved names.");
 
-            List<BaseResolver> resolverList = resolvers.get(name.toLowerCase());
+            List<BaseResolver> resolverList = this.resolvers.get(name.toLowerCase());
 
             if (resolverList == null)
-                resolvers.put(name.toLowerCase(), new ArrayList<>(Collections.singletonList(resolver)));
+                this.resolvers.put(name.toLowerCase(), new ArrayList<>(Collections.singletonList(resolver)));
             else
                 resolverList.add(resolver);
 
-            allResolvers.add(resolver);
+            this.allResolvers.add(resolver);
         }
     }
 
@@ -61,7 +61,7 @@ public class PluginResolver
      */
     public void addOnNotFoundResolver(BaseResolver resolver)
     {
-        onNotFoundResolvers.add(resolver);
+        this.onNotFoundResolvers.add(resolver);
     }
 
     /**
@@ -74,12 +74,12 @@ public class PluginResolver
         QueryContext context = QueryContext.fromString(query);
 
         if (context.getResolverName() == null)
-            return actuallyResolve(allResolvers, context);
+            return this.actuallyResolve(this.allResolvers, context);
 
-        if (!resolvers.containsKey(context.getResolverName().toLowerCase()))
+        if (!this.resolvers.containsKey(context.getResolverName().toLowerCase()))
             return new ErrorResult(null, ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
 
-        return actuallyResolve(resolvers.get(context.getResolverName().toLowerCase()), context);
+        return this.actuallyResolve(this.resolvers.get(context.getResolverName().toLowerCase()), context);
     }
 
     private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
@@ -90,14 +90,14 @@ public class PluginResolver
         if (resolverName != null)
             url = toURL(queryContext.getQuery());
 
-        ResolveResult result = resolves(resolvers, queryContext, url);
+        ResolveResult result = this.resolves(resolvers, queryContext, url);
 
 
         if (result instanceof ErrorResult)
         {
             ErrorResult error = (ErrorResult) result;
             if (error.getCause() != ErrorResult.ErrorCause.VERSION_MISMATCH)
-                result = resolves(onNotFoundResolvers, queryContext, url);
+                result = this.resolves(this.onNotFoundResolvers, queryContext, url);
         }
 
         return result;
@@ -115,7 +115,7 @@ public class PluginResolver
 
             finishedResolvers.add(resolver);
 
-            ResolveResult result = actuallyResolve(resolver, queryContext, url);
+            ResolveResult result = this.actuallyResolve(resolver, queryContext, url);
 
             if (result == null || result instanceof PipeResult)
                 continue;

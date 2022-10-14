@@ -29,24 +29,24 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onTokenGenerateStarting(TokenGenerateStartingSignal signal)
     {
-        terminal.info("GitHub へ Web ブラウザを用いてログインします。");
-        terminal.info("この操作により、 KPM はあなたの GitHub アカウントにアクセスできるようになります。");
+        this.terminal.info("GitHub へ Web ブラウザを用いてログインします。");
+        this.terminal.info("この操作により、 KPM はあなたの GitHub アカウントにアクセスできるようになります。");
 
-        signal.setContinueGenerate(SignalHandlingUtils.askContinue(terminal));
+        signal.setContinueGenerate(SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler
     public void onVerificationCodeRequesting(VerificationCodeRequestingSignal signal)
     {
-        terminal.info("サーバに接続しています ...");
+        this.terminal.info("サーバに接続しています ...");
     }
 
     @SignalHandler
     public void onVerificationCodeRequestFailed(VerificationCodeRequestFailedSignal signal)
     {
-        terminal.removeProgressbar("codeExpire");
+        this.terminal.removeProgressbar("codeExpire");
 
-        terminal.error("検証コードの取得に失敗しました：" + signal.getHttpStatusCode() + " " + signal.getErrorMessage());
+        this.terminal.error("検証コードの取得に失敗しました：" + signal.getHttpStatusCode() + " " + signal.getErrorMessage());
     }
 
     @SignalHandler
@@ -57,16 +57,16 @@ public class TokenGenerateSignalHandler
         long expiresInSec = signal.getExpiresIn();
         int expiresInMin = (int) (expiresInSec / 60);
 
-        terminal.writeLine(
+        this.terminal.writeLine(
                 ChatColor.DARK_GREEN + "このリンクからコードを有効化してください：" +
                         ChatColor.BLUE + ChatColor.UNDERLINE + verificationUrl);
-        terminal.writeLine(ChatColor.DARK_GREEN + "コード： " + ChatColor.WHITE + userCode);
-        terminal.info("このコードは " + expiresInMin + " 分で失効します。");
+        this.terminal.writeLine(ChatColor.DARK_GREEN + "コード： " + ChatColor.WHITE + userCode);
+        this.terminal.info("このコードは " + expiresInMin + " 分で失効します。");
 
         int expiresInSecInt = (int) expiresInSec;
 
-        if (terminal.isPlayer())
-            terminal.showNotification(userCode, "GitHubでこのコードを入力して有効化してください。",
+        if (this.terminal.isPlayer())
+            this.terminal.showNotification(userCode, "GitHubでこのコードを入力して有効化してください。",
                     expiresInSecInt * 1000
             );
 
@@ -78,33 +78,33 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onVerificationCodeExpired(VerificationCodeExpiredSignal signal)
     {
-        terminal.error("コードが失効しました： " + signal.getUserCode());
+        this.terminal.error("コードが失効しました： " + signal.getUserCode());
 
-        progressbar.hide();
-        terminal.removeProgressbar("codeExpire");
+        this.progressbar.hide();
+        this.terminal.removeProgressbar("codeExpire");
     }
 
     @SignalHandler
     public void onUserDoesntCompleteVerify(UserDoesntCompleteVerifySignal signal)
     {
-        progressbar.setProgress((int) signal.getRemainTime());
+        this.progressbar.setProgress((int) signal.getRemainTime());
     }
 
     @SignalHandler
     public void onUserVerifyDenied(UserVerifyDeniedSignal signal)
     {
-        progressbar.hide();
-        terminal.removeProgressbar("codeExpire");
+        this.progressbar.hide();
+        this.terminal.removeProgressbar("codeExpire");
 
-        terminal.error("コードの有効化に失敗しました：ユーザがコードの有効化を拒否しました。");
+        this.terminal.error("コードの有効化に失敗しました：ユーザがコードの有効化を拒否しました。");
     }
 
     @SignalHandler
     public void onUserVerifySucceeded(UserVerificationSuccessSignal signal)
     {
-        progressbar.hide();
-        terminal.removeProgressbar("codeExpire");
+        this.progressbar.hide();
+        this.terminal.removeProgressbar("codeExpire");
 
-        terminal.success("コードの有効化に成功しました。");
+        this.terminal.success("コードの有効化に成功しました。");
     }
 }

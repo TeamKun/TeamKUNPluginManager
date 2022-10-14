@@ -128,7 +128,7 @@ public class PluginMetaManager implements Listener
      */
     public void onInstalled(@NotNull Plugin plugin, @NotNull InstallOperator operator, @Nullable String resolveQuery, boolean isDependency)
     {
-        onInstalled(plugin, operator, resolveQuery, System.currentTimeMillis(), isDependency);
+        this.onInstalled(plugin, operator, resolveQuery, System.currentTimeMillis(), isDependency);
     }
 
     /**

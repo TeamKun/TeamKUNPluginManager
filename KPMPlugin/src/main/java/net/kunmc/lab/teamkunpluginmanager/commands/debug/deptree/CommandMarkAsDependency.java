@@ -27,7 +27,7 @@ public class CommandMarkAsDependency extends CommandBase
             return;
 
         String pluginName = args[0];
-        if (!provider.isPluginMetaExists(pluginName))
+        if (!this.provider.isPluginMetaExists(pluginName))
         {
             terminal.error("Cannot find plugin meta of " + pluginName);
             return;
@@ -36,7 +36,7 @@ public class CommandMarkAsDependency extends CommandBase
 
         if (args.length < 2)
         {
-            boolean isDependency = provider.getPluginMeta(pluginName, false, false).isDependency();
+            boolean isDependency = this.provider.getPluginMeta(pluginName, false, false).isDependency();
             terminal.success("Plugin " + pluginName + " is " + (isDependency ? "dependency": "not dependency"));
 
             return;
@@ -44,7 +44,7 @@ public class CommandMarkAsDependency extends CommandBase
 
         boolean isDependency = Boolean.parseBoolean(args[1]);
 
-        provider.setDependencyFlag(pluginName, isDependency);
+        this.provider.setDependencyFlag(pluginName, isDependency);
 
         terminal.success("Marked " + pluginName + " as " + (isDependency ? "dependency": "not dependency"));
     }

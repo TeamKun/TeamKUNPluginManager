@@ -45,7 +45,7 @@ public class PluginMetaProvider implements Listener
      */
     public void close()
     {
-        db.close();
+        this.db.close();
     }
 
     /**
@@ -56,7 +56,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getDependOn(@NotNull String pluginName)
     {
-        return getDependDataFromTable("depend", pluginName, "dependency",
+        return this.getDependDataFromTable("depend", pluginName, "dependency",
                 DependType.HARD_DEPEND, false
         );
     }
@@ -69,7 +69,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getSoftDependOn(@NotNull String pluginName)
     {
-        return getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
+        return this.getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
                 DependType.SOFT_DEPEND, false
         );
     }
@@ -83,7 +83,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getLoadBefore(@NotNull String pluginName)
     {
-        return getDependDataFromTable("load_before", pluginName, "load_before",
+        return this.getDependDataFromTable("load_before", pluginName, "load_before",
                 DependType.LOAD_BEFORE, false
         );
     }
@@ -96,7 +96,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getDependedBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("depend", pluginName, "dependency",
+        return this.getDependDataFromTable("depend", pluginName, "dependency",
                 DependType.HARD_DEPEND, true
         );
     }
@@ -109,7 +109,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getSoftDependedBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
+        return this.getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
                 DependType.SOFT_DEPEND, true
         );
     }
@@ -123,7 +123,7 @@ public class PluginMetaProvider implements Listener
      */
     public List<DependencyNode> getLoadBeforeBy(@NotNull String pluginName)
     {
-        return getDependDataFromTable("load_before", pluginName, "load_before",
+        return this.getDependDataFromTable("load_before", pluginName, "load_before",
                 DependType.LOAD_BEFORE, true
         );
     }
@@ -637,7 +637,7 @@ public class PluginMetaProvider implements Listener
         statement.setString(1, pluginName);
         ResultSet resultSet = statement.executeQuery();
 
-        if (isNotDependencyInternal(con, checkIsDependency, pluginName))
+        if (this.isNotDependencyInternal(con, checkIsDependency, pluginName))
             return 0;
 
         while (resultSet.next())
@@ -645,7 +645,7 @@ public class PluginMetaProvider implements Listener
             String name = resultSet.getString("name");
             String parent = resultSet.getString("parent");
 
-            if (isNotDependencyInternal(con, checkIsDependency, name))
+            if (this.isNotDependencyInternal(con, checkIsDependency, name))
                 return 1;
 
             int checkUnused = this.isUnusedRecursive(con, name, depth + 1);

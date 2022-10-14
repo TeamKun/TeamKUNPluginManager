@@ -66,7 +66,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -79,7 +79,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -92,7 +92,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -105,7 +105,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -118,7 +118,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -131,7 +131,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -144,7 +144,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -157,7 +157,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -170,7 +170,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }
@@ -183,7 +183,7 @@ public class ResultRow implements AutoCloseable
         }
         catch (SQLException e)
         {
-            handleException();
+            this.handleException();
             throw new IllegalStateException(e);
         }
     }

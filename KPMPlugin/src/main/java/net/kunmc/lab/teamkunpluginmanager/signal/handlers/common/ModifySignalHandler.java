@@ -40,6 +40,6 @@ public class ModifySignalHandler
                 break;
         }
 
-        terminal.writeLine(printMessage);
+        this.terminal.writeLine(printMessage);
     }
 }

@@ -74,10 +74,10 @@ public class HTTPResponse implements AutoCloseable
      */
     public String getAsString()
     {
-        if (inputStream == null)
+        if (this.inputStream == null)
             return null;
-        else if (bodyCache != null)
-            return bodyCache;
+        else if (this.bodyCache != null)
+            return this.bodyCache;
 
         StringBuilder sb = new StringBuilder();
 
@@ -85,7 +85,7 @@ public class HTTPResponse implements AutoCloseable
         int len;
         try
         {
-            while ((len = inputStream.read(buffer)) != -1)
+            while ((len = this.inputStream.read(buffer)) != -1)
                 sb.append(new String(buffer, 0, len));
         }
         catch (Exception e)
@@ -93,8 +93,8 @@ public class HTTPResponse implements AutoCloseable
             e.printStackTrace();
         }
 
-        bodyCache = sb.toString();
-        return bodyCache;
+        this.bodyCache = sb.toString();
+        return this.bodyCache;
     }
 
     /**
@@ -104,10 +104,10 @@ public class HTTPResponse implements AutoCloseable
      */
     public JsonElement getAsJson()
     {
-        if (inputStream == null)
+        if (this.inputStream == null)
             return null;
 
-        String json = getAsString();
+        String json = this.getAsString();
         return new Gson().fromJson(json, JsonElement.class);
     }
 
@@ -120,10 +120,10 @@ public class HTTPResponse implements AutoCloseable
      */
     public <T> T getAsObject(Class<T> clazz)
     {
-        if (inputStream == null)
+        if (this.inputStream == null)
             return null;
 
-        String json = getAsString();
+        String json = this.getAsString();
         return new Gson().fromJson(json, clazz);
     }
 
@@ -135,7 +135,7 @@ public class HTTPResponse implements AutoCloseable
     @Override
     public void close() throws IOException
     {
-        if (inputStream != null)
+        if (this.inputStream != null)
             this.inputStream.close();
     }
 
@@ -149,7 +149,7 @@ public class HTTPResponse implements AutoCloseable
     @Nullable
     public String getHeader(@NotNull String header)
     {
-        return headers.getOrDefault(header.toLowerCase(), headers.get(header));
+        return this.headers.getOrDefault(header.toLowerCase(), this.headers.get(header));
     }
 
     /**
@@ -159,7 +159,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isSuccessful()
     {
-        return statusCode >= 200 && statusCode < 300;
+        return this.statusCode >= 200 && this.statusCode < 300;
     }
 
     /**
@@ -169,7 +169,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isRedirect()
     {
-        return statusCode >= 300 && statusCode < 400;
+        return this.statusCode >= 300 && this.statusCode < 400;
     }
 
     /**
@@ -179,7 +179,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isClientError()
     {
-        return statusCode >= 400 && statusCode < 500;
+        return this.statusCode >= 400 && this.statusCode < 500;
     }
 
     /**
@@ -189,7 +189,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isServerError()
     {
-        return statusCode >= 500 && statusCode < 600;
+        return this.statusCode >= 500 && this.statusCode < 600;
     }
 
     /**
@@ -201,7 +201,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isError()
     {
-        return isClientError() || isServerError();
+        return this.isClientError() || this.isServerError();
     }
 
     /**
@@ -211,7 +211,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isOK()
     {
-        return statusCode == 200;
+        return this.statusCode == 200;
     }
 
     /**

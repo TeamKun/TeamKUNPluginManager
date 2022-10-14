@@ -47,7 +47,7 @@ public interface BaseResolver
 
         ResolveResult result = results[0];
         if (result instanceof MultiResult)
-            return autoPickFirst((MultiResult) result, source);
+            return this.autoPickFirst((MultiResult) result, source);
 
         return result;
     }

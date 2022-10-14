@@ -50,7 +50,7 @@ public class AliasUpdater
         this.transaction.renew("INSERT OR REPLACE INTO alias (name, alias, source_id) VALUES (?, ?, ?)")
                 .set(1, name)
                 .set(2, alias)
-                .set(3, sourceName)
+                .set(3, this.sourceName)
                 .executeUpdate(false);
 
         this.aliasesCount++;
@@ -60,7 +60,7 @@ public class AliasUpdater
     {
         this.transaction.renew("DELETE FROM alias WHERE name IN " +
                         "(SELECT name FROM v_exists_alias EXCEPT SELECT name FROM alias WHERE source_id = ?)")
-                .set(1, sourceName)
+                .set(1, this.sourceName)
                 .executeUpdate(false);
     }
 
@@ -69,9 +69,9 @@ public class AliasUpdater
      */
     public void done()
     {
-        transaction.renew("INSERT OR REPLACE INTO source (name, source, type) VALUES (?, ?, ?)")
-                .set(1, sourceName)
-                .set(2, sourceURL)
+        this.transaction.renew("INSERT OR REPLACE INTO source (name, source, type) VALUES (?, ?, ?)")
+                .set(1, this.sourceName)
+                .set(2, this.sourceURL)
                 .set(3, AliasSource.SourceType.WEB_SERVER.name())
                 .executeUpdate(false);
 

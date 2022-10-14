@@ -34,7 +34,7 @@ public class AliasPluginResolver implements BaseResolver
 
         try
         {
-            ResolveResult detailedResult = resolver.resolve(alias.getName());
+            ResolveResult detailedResult = this.resolver.resolve(alias.getName());
             if (detailedResult instanceof SuccessResult)
                 return new SuccessResult(this, ((SuccessResult) detailedResult).getDownloadUrl(), ResolveResult.Source.LOCAL_KNOWN);
             else

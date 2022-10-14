@@ -39,7 +39,7 @@ public class CleanArgument extends AbstractInstallerArgument
      */
     public CleanArgument addExcludeDataName(@NotNull String dataName)
     {
-        excludeDataNames.add(dataName);
+        this.excludeDataNames.add(dataName);
         return this;
     }
 

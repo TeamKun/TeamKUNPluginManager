@@ -40,7 +40,7 @@ public class AutoRemoveArgument extends AbstractInstallerArgument
      */
     public AutoRemoveArgument addExcludePlugin(@NotNull String pluginName)
     {
-        excludePlugins.add(pluginName);
+        this.excludePlugins.add(pluginName);
         return this;
     }
 

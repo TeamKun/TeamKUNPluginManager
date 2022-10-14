@@ -31,7 +31,7 @@ public class GarbageCleanSignalHandler
                 .map(path -> path.getFileName().toString())
                 .collect(Collectors.joining(" ")));
 
-        signal.setCancel(!SignalHandlingUtils.askContinue(terminal));
+        signal.setCancel(!SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler

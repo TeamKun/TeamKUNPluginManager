@@ -22,19 +22,19 @@ public class UninstallReadySignalHandler
 
     private void printUninstallInfo(List<Plugin> uninstallTargets)
     {
-        terminal.writeLine(ChatColor.GREEN + "以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
-        terminal.writeLine("  " + uninstallTargets.stream()
+        this.terminal.writeLine(ChatColor.GREEN + "以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
+        this.terminal.writeLine("  " + uninstallTargets.stream()
                 .map(Plugin::getName)
                 .sorted()
                 .collect(Collectors.joining(" ")));
-        Utils.printInstallStatistics(terminal, 0, uninstallTargets.size(), 0, 0);
+        Utils.printInstallStatistics(this.terminal, 0, uninstallTargets.size(), 0, 0);
     }
 
 
     @SignalHandler
     public void onPluginsEnumerated(UninstallReadySignal signal)
     {
-        printUninstallInfo(signal.getPlugins());
-        signal.setContinueUninstall(SignalHandlingUtils.askContinue(terminal));
+        this.printUninstallInfo(signal.getPlugins());
+        signal.setContinueUninstall(SignalHandlingUtils.askContinue(this.terminal));
     }
 }

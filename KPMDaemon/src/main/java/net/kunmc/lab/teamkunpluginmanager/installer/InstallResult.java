@@ -60,7 +60,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public int getUpgradedCount()
     {
-        return progress.getUpgraded().size();
+        return this.progress.getUpgraded().size();
     }
 
     /**
@@ -70,7 +70,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public int getInstalledCount()
     {
-        return progress.getInstalled().size();
+        return this.progress.getInstalled().size();
     }
 
     /**
@@ -80,7 +80,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public int getRemovedCount()
     {
-        return progress.getRemoved().size();
+        return this.progress.getRemoved().size();
     }
 
     /**
@@ -90,7 +90,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public int getPendingCount()
     {
-        return progress.getPending().size();
+        return this.progress.getPending().size();
     }
 
     /**
@@ -100,7 +100,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public String[] getUpgraded()
     {
-        return progress.getUpgraded().toArray(new String[0]);
+        return this.progress.getUpgraded().toArray(new String[0]);
     }
 
     /**
@@ -110,7 +110,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public String[] getInstalled()
     {
-        return progress.getInstalled().toArray(new String[0]);
+        return this.progress.getInstalled().toArray(new String[0]);
     }
 
     /**
@@ -120,7 +120,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public String[] getRemoved()
     {
-        return progress.getRemoved().toArray(new String[0]);
+        return this.progress.getRemoved().toArray(new String[0]);
     }
 
     /**
@@ -130,7 +130,7 @@ public class InstallResult<P extends Enum<P>>
      */
     public String[] getPending()
     {
-        return progress.getPending().toArray(new String[0]);
+        return this.progress.getPending().toArray(new String[0]);
     }
 
     /**
@@ -142,13 +142,13 @@ public class InstallResult<P extends Enum<P>>
     {
         TextComponent component = Component.text("")
                 .append(Component.text("アップグレード：")
-                        .append(getResultStatusComponent(getUpgraded(), "アップグレードされたプラグイン")))
+                        .append(getResultStatusComponent(this.getUpgraded(), "アップグレードされたプラグイン")))
                 .append(Component.text("、インストール：")
-                        .append(getResultStatusComponent(getInstalled(), "インストールされたプラグイン")))
+                        .append(getResultStatusComponent(this.getInstalled(), "インストールされたプラグイン")))
                 .append(Component.text("、削除：")
-                        .append(getResultStatusComponent(getRemoved(), "削除されたプラグイン")))
+                        .append(getResultStatusComponent(this.getRemoved(), "削除されたプラグイン")))
                 .append(Component.text("、保留：")
-                        .append(getResultStatusComponent(getPending(), "保留されたプラグイン")));
+                        .append(getResultStatusComponent(this.getPending(), "保留されたプラグイン")));
 
         terminal.write(component);
     }

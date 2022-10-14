@@ -107,7 +107,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             this.daemon.getPluginMetaManager().preparePluginModify(plugin.getName());
 
             PluginDescriptionFile description = plugin.getDescription();
-            UnInstallErrorCause errorCause = uninstallOnePlugin(plugin);
+            UnInstallErrorCause errorCause = this.uninstallOnePlugin(plugin);
 
             if (errorCause == UnInstallErrorCause.INTERNAL_UNINSTALL_OK)
                 uninstalledPlugins.add(description);
@@ -137,7 +137,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
         boolean success = errors.isEmpty();
 
-        return new UnInstallResult(success, taskState, success ? null: UnInstallErrorCause.SOME_UNINSTALL_FAILED,
+        return new UnInstallResult(success, this.taskState, success ? null: UnInstallErrorCause.SOME_UNINSTALL_FAILED,
                 uninstalledPlugins, errors
         );
     }

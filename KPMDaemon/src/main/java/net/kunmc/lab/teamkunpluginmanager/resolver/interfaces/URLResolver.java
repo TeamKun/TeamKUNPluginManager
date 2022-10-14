@@ -35,10 +35,10 @@ public interface URLResolver extends BaseResolver
         {
             URL url = new URL(query.getQuery());
 
-            if (getHosts().length == 0)
+            if (this.getHosts().length == 0)
                 return true;
 
-            for (String host : getHosts())
+            for (String host : this.getHosts())
                 if (url.getHost().equalsIgnoreCase(host))
                     return true;
         }

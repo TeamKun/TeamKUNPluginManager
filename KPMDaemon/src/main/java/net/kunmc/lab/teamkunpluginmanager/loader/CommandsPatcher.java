@@ -146,7 +146,7 @@ public class CommandsPatcher
         // Get commandMap field
         try
         {
-            fCommandMap = ReflectionUtils.getAccessibleField(cCraftServer, true, "commandMap");
+            this.fCommandMap = ReflectionUtils.getAccessibleField(cCraftServer, true, "commandMap");
         }
         catch (NoSuchFieldException e)
         {
@@ -217,7 +217,7 @@ public class CommandsPatcher
 
     public void unWrapCommand(String command)
     {
-        iBrigadierCommandDispatcher.getRoot().removeCommand(command);
+        this.iBrigadierCommandDispatcher.getRoot().removeCommand(command);
     }
 
     /**

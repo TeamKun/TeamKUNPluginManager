@@ -160,7 +160,7 @@ public class KPMDaemon
 
     private void initializeRequests()
     {
-        Requests.setVersion(getVersion());
+        Requests.setVersion(this.getVersion());
         Requests.setTokenStore(this.tokenStore);
     }
 

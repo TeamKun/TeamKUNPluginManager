@@ -27,7 +27,7 @@ public class SpigotMCResolver implements URLResolver
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        Matcher matcher = urlMatcher(PATTERN, query.getQuery());
+        Matcher matcher = this.urlMatcher(PATTERN, query.getQuery());
 
         if (matcher == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
@@ -55,12 +55,12 @@ public class SpigotMCResolver implements URLResolver
                 .url(spigotAPIUrl)
                 .build());
 
-        ErrorResult mayError = processErrorResponse(data, ResolveResult.Source.SPIGOT_MC);
+        ErrorResult mayError = this.processErrorResponse(data, ResolveResult.Source.SPIGOT_MC);
 
         if (mayError != null)
             return mayError;
 
-        return buildResult(data.getAsJson().getAsJsonObject(), version);
+        return this.buildResult(data.getAsJson().getAsJsonObject(), version);
     }
 
     private ResolveResult buildResult(JsonObject jsonObject, @Nullable String version)
@@ -71,7 +71,7 @@ public class SpigotMCResolver implements URLResolver
                     ResolveResult.Source.SPIGOT_MC
             );
 
-        String description = b64Decode(jsonObject.get("description").getAsString());
+        String description = this.b64Decode(jsonObject.get("description").getAsString());
         String name = jsonObject.get("name").getAsString();
         List<String> testedVersions = StreamSupport.stream(jsonObject.get("testedVersions").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsString)
@@ -130,7 +130,7 @@ public class SpigotMCResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return autoPickFirst(multiResult, ResolveResult.Source.SPIGOT_MC);
+        return this.autoPickFirst(multiResult, ResolveResult.Source.SPIGOT_MC);
     }
 
     @Override

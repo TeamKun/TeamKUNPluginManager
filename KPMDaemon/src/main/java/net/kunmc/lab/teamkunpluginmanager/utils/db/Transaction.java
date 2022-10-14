@@ -172,7 +172,7 @@ public class Transaction
      */
     public Transaction set(int index, @Nullable String value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -196,7 +196,7 @@ public class Transaction
      */
     public Transaction set(int index, int value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -219,7 +219,7 @@ public class Transaction
      */
     public Transaction set(int index, boolean value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -242,7 +242,7 @@ public class Transaction
      */
     public Transaction set(int index, long value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -265,7 +265,7 @@ public class Transaction
      */
     public Transaction set(int index, double value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -288,7 +288,7 @@ public class Transaction
      */
     public Transaction set(int index, float value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -311,7 +311,7 @@ public class Transaction
      */
     public Transaction set(int index, byte value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -334,7 +334,7 @@ public class Transaction
      */
     public Transaction set(int index, short value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -357,7 +357,7 @@ public class Transaction
      */
     public Transaction set(int index, byte[] value)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -380,7 +380,7 @@ public class Transaction
      */
     public Transaction setNull(int index, int type)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -402,7 +402,7 @@ public class Transaction
      */
     public int executeUpdate(boolean autoFinish)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -454,7 +454,7 @@ public class Transaction
      */
     public int executeUpdate()
     {
-        return executeUpdate(true);
+        return this.executeUpdate(true);
     }
 
     /**
@@ -464,7 +464,7 @@ public class Transaction
      */
     public <T> QueryResult<T> executeQuery()
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -599,7 +599,7 @@ public class Transaction
      */
     public boolean isExists(boolean closeConnection)
     {
-        if (!checkPrepareCondition())
+        if (!this.checkPrepareCondition())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -637,7 +637,7 @@ public class Transaction
      */
     public boolean isExists()
     {
-        return isExists(true);
+        return this.isExists(true);
     }
 
     public void close() throws Exception
@@ -774,7 +774,7 @@ public class Transaction
          */
         public ArrayList<T> mapToList(Function<ResultSet, T> resultMapper)
         {
-            return mapToList(resultMapper, -1);
+            return this.mapToList(resultMapper, -1);
         }
 
         /**

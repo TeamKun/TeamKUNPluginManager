@@ -32,14 +32,14 @@ public class DownloadingSignalHandler
         this.currentDownload = id;
         this.downloadTotalSize = 0;
         this.downloadStarted = System.currentTimeMillis();
-        this.downloadProgressBar = terminal.createProgressbar("ダウンロード");
+        this.downloadProgressBar = this.terminal.createProgressbar("ダウンロード");
         this.downloadProgressBar.setProgressMax(100);
     }
 
     private void addDownloadArtifact(String url, long size)
     {
         this.downloadTotalSize += size;
-        terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + Utils.roundSizeUnit(size) + "]");
+        this.terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + Utils.roundSizeUnit(size) + "]");
     }
 
     private void endDownloads()
@@ -49,7 +49,7 @@ public class DownloadingSignalHandler
         if (elapsedSec == 0)
             elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
-        terminal.writeLine(
+        this.terminal.writeLine(
                 ChatColor.GREEN + Utils.roundSizeUnit(this.downloadTotalSize) + " を " +
                         ChatColor.YELLOW + elapsedSec + "秒" +
                         ChatColor.GREEN + "で取得しました (" +
@@ -63,7 +63,7 @@ public class DownloadingSignalHandler
     @SignalHandler
     public void onDownloadingSignal(DownloadProgressSignal signal)
     {
-        if (currentDownload == null)
+        if (this.currentDownload == null)
         {
             this.startDownloads(signal.getDownloadId());
             this.addDownloadArtifact(signal.getUrl(), signal.getTotalSize());
@@ -76,7 +76,7 @@ public class DownloadingSignalHandler
     @SignalHandler
     public void onDownloadFailed(DownloadErrorSignal signal)
     {
-        terminal.writeLine(String.format(ChatColor.RED + "失敗 %s: %s(%s)",
+        this.terminal.writeLine(String.format(ChatColor.RED + "失敗 %s: %s(%s)",
                 signal.getUrl(), signal.getCause(), signal.getValue()
         ));
     }

@@ -62,20 +62,20 @@ public class GitHubSuccessResult extends SuccessResult implements MarketplaceRes
     @Override
     public String getTitle()
     {
-        return repoName + " - " + releaseName;
+        return this.repoName + " - " + this.releaseName;
     }
 
     @Nonnull
     @Override
     public String getUrl()
     {
-        return "https://github.com/" + owner + "/" + repoName;
+        return "https://github.com/" + this.owner + "/" + this.repoName;
     }
 
     @Nonnull
     @Override
     public String getDescription()
     {
-        return releaseBody;
+        return this.releaseBody;
     }
 }

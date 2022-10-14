@@ -21,7 +21,7 @@ public class SignalHandleManager
 
     public SignalHandleManager()
     {
-        handlerLists = new ArrayList<>();
+        this.handlerLists = new ArrayList<>();
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -53,7 +53,7 @@ public class SignalHandleManager
     {
         List<Class<? extends Signal>> handleTargetClasses = enumerateHandlers(object);
 
-        for (SignalHandlerList<? extends Signal> handlerList : handlerLists)
+        for (SignalHandlerList<? extends Signal> handlerList : this.handlerLists)
         {
             handlerList.bakeAll(object);
             handleTargetClasses.removeIf(handlerList::isSignalType);
@@ -62,7 +62,7 @@ public class SignalHandleManager
         for (Class<? extends Signal> handleTargetClass : handleTargetClasses)
         {
             SignalHandlerList<? extends Signal> handlerList = new SignalHandlerList<>(handleTargetClass);
-            handlerLists.add(handlerList);
+            this.handlerLists.add(handlerList);
             handlerList.bakeAll(object);
         }
     }
@@ -75,7 +75,7 @@ public class SignalHandleManager
      */
     public void handleSignal(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
     {
-        for (SignalHandlerList<? extends Signal> handlerList : handlerLists)
+        for (SignalHandlerList<? extends Signal> handlerList : this.handlerLists)
             invokeHandler(installProgress, handlerList, signal);
     }
 
@@ -87,7 +87,7 @@ public class SignalHandleManager
     public SignalHandleManager copy()
     {
         SignalHandleManager manager = new SignalHandleManager();
-        manager.handlerLists.addAll(handlerLists);
+        manager.handlerLists.addAll(this.handlerLists);
         return manager;
     }
 }

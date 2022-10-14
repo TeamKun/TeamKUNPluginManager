@@ -20,11 +20,11 @@ public class CommandDepTreeDebug extends SubCommandWith
 
     public CommandDepTreeDebug(PluginMetaManager manager)
     {
-        COMMANDS = new HashMap<>();
+        this.COMMANDS = new HashMap<>();
 
-        COMMANDS.put("markAsDependency", new CommandMarkAsDependency(manager.getProvider()));
-        COMMANDS.put("relation", new CommandRelation(manager.getProvider()));
-        COMMANDS.put("purge", new CommandPurge(manager.getProvider()));
+        this.COMMANDS.put("markAsDependency", new CommandMarkAsDependency(manager.getProvider()));
+        this.COMMANDS.put("relation", new CommandRelation(manager.getProvider()));
+        this.COMMANDS.put("purge", new CommandPurge(manager.getProvider()));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CommandDepTreeDebug extends SubCommandWith
     @Override
     protected Map<String, CommandBase> getSubCommands(@NotNull CommandSender sender)
     {
-        return COMMANDS;
+        return this.COMMANDS;
     }
 
     @Override

@@ -16,7 +16,7 @@ public class TokenRegisterSignalHandler
     @SignalHandler
     public void onTokenStored(TokenStoredSignal signal)
     {
-        terminal.success("トークンが登録されました。");
+        this.terminal.success("トークンが登録されました。");
     }
 
 

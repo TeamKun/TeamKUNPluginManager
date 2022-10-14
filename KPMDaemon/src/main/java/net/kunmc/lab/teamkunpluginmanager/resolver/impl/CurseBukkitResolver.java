@@ -43,9 +43,9 @@ public class CurseBukkitResolver implements URLResolver
 
         Matcher matcher;
         if (bukkitFlag)
-            matcher = urlMatcher(BUKKIT_PATTERN, query.getQuery());
+            matcher = this.urlMatcher(BUKKIT_PATTERN, query.getQuery());
         else
-            matcher = urlMatcher(CURSE_PATTERN, query.getQuery());
+            matcher = this.urlMatcher(CURSE_PATTERN, query.getQuery());
 
         if (matcher == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
@@ -72,7 +72,7 @@ public class CurseBukkitResolver implements URLResolver
                 .build());
 
         if (response.getStatus() != HTTPResponse.RequestStatus.OK)
-            return processErrorResponse(response, errorSource);
+            return this.processErrorResponse(response, errorSource);
 
         JsonElement json = response.getAsJson();
         if (!json.isJsonArray())
@@ -97,7 +97,7 @@ public class CurseBukkitResolver implements URLResolver
         if (projectId == -1)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, errorSource);
 
-        return processFiles(slug, name, projectId, version, errorSource);
+        return this.processFiles(slug, name, projectId, version, errorSource);
     }
 
     private ResolveResult processFiles(String slug, String name, long projectId, String version, ResolveResult.Source source)
@@ -106,7 +106,7 @@ public class CurseBukkitResolver implements URLResolver
                 .url("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId)
                 .build());
 
-        ErrorResult mayError = processErrorResponse(response, source);
+        ErrorResult mayError = this.processErrorResponse(response, source);
         if (mayError != null)
             return mayError;
 

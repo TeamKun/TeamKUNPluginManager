@@ -33,15 +33,15 @@ public abstract class InstallFinishedSignalBase
     {
         InstallResult<?> installResult = finished.getResult();
 
-        if (printResult)
-            Utils.printInstallStatistics(terminal, installResult);
+        if (this.printResult)
+            Utils.printInstallStatistics(this.terminal, installResult);
 
         if (finished.getResult() instanceof InstallFailedInstallResult)
         {
-            onFail((InstallFailedInstallResult<?, ?, ?>) finished.getResult());
+            this.onFail((InstallFailedInstallResult<?, ?, ?>) finished.getResult());
         }
         else
-            onSuccess(installResult);
+            this.onSuccess(installResult);
     }
 
     /**

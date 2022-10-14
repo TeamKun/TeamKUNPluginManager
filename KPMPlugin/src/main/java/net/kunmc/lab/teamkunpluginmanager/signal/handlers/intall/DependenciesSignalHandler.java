@@ -30,32 +30,32 @@ public class DependenciesSignalHandler
     @SignalHandler
     public void onDependencyResolveFailed(DependencyResolveFailedSignal signal)
     {
-        terminal.error("依存関係の解決に失敗しました: " + signal.getFailedDependency());
+        this.terminal.error("依存関係の解決に失敗しました: " + signal.getFailedDependency());
     }
 
     @SignalHandler
     public void onDepsDepsFailed(DependencyCollectDependencysDependsFailedSignal signal)
     {
         signal.getCollectFailedDependencies().forEach(dependency ->
-                terminal.error("依存関係の取得に失敗しました: " + dependency));
+                this.terminal.error("依存関係の取得に失敗しました: " + dependency));
     }
 
     @SignalHandler
     public void onDependencyLoadDescriptionFailed(DependencyLoadDescriptionFailedSignal signal)
     {
-        terminal.error("依存関係の読み取りに失敗しました: " + signal.getFailedDependency());
+        this.terminal.error("依存関係の読み取りに失敗しました: " + signal.getFailedDependency());
     }
 
     @SignalHandler
     public void onDependencyNameMismatch(DependencyNameMismatchSignal signal)
     {
-        terminal.error("依存関係の整合性が確認できませんでした: " + signal.getFailedDependency());
-        terminal.info("他のバージョンのプラグインを使用することで解決できる可能性があります。");
+        this.terminal.error("依存関係の整合性が確認できませんでした: " + signal.getFailedDependency());
+        this.terminal.info("他のバージョンのプラグインを使用することで解決できる可能性があります。");
     }
 
     @SignalHandler
     public void onDependencyTreeBuilt(DependsLoadOrderComputingSignal.Pre signal)
     {
-        terminal.writeLine(ChatColor.GREEN + "依存関係ツリーを構築中 ...");
+        this.terminal.writeLine(ChatColor.GREEN + "依存関係ツリーを構築中 ...");
     }
 }

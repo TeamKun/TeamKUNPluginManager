@@ -35,31 +35,31 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onPluginUninstall(PluginUninstallingSignal signal)
     {
-        terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " をアンインストールしています ...");
+        this.terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " をアンインストールしています ...");
     }
 
     @SignalHandler
     public void onRecipeRemove(PluginRegisteredRecipeSignal.Removing signal)
     {
-        terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " のレシピを削除しています ...");
+        this.terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " のレシピを削除しています ...");
     }
 
     @SignalHandler
     public void onDisabling(PluginDisablingSignal.Pre signal)
     {
-        terminal.writeLine(ChatColor.GREEN + PluginUtil.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
+        this.terminal.writeLine(ChatColor.GREEN + PluginUtil.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
     }
 
     @SignalHandler
     public void onUnloading(PluginUnloadingSignal.Pre signal)
     {
-        terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " を削除しています ...");
+        this.terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " を削除しています ...");
     }
 
     @SignalHandler
     public void onError(PluginUninstallErrorSignal signal)
     {
-        terminal.error(
+        this.terminal.error(
                 ChatColor.GREEN + PluginUtil.getPluginString(signal.getDescription()) + " のアンインストールに失敗しました: ",
                 getErrorCauseMessage(signal)
         );

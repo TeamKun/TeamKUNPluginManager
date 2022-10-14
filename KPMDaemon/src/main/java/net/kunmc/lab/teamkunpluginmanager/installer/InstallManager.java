@@ -60,7 +60,7 @@ public class InstallManager
             @NotNull A arguments
     )
     {
-        if (isRunning())
+        if (this.isRunning())
             throw new InstallerRunningException("Install is already running.");
         if (!this.tokenStore.isTokenAvailable())
             throw new TokenNotAvailableException("Token is not available.");

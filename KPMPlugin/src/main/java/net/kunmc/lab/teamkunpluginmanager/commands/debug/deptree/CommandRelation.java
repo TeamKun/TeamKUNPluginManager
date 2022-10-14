@@ -32,7 +32,7 @@ public class CommandRelation extends CommandBase
             return;
 
         String pluginName = args[0];
-        if (!provider.isPluginMetaExists(pluginName))
+        if (!this.provider.isPluginMetaExists(pluginName))
         {
             terminal.error("Cannot find plugin meta of " + pluginName);
             return;
@@ -40,7 +40,7 @@ public class CommandRelation extends CommandBase
 
         if (args.length < 2)
         {
-            List<DependencyNode> dependencies = provider.getPluginMeta(pluginName, false, false).getDependsOn();
+            List<DependencyNode> dependencies = this.provider.getPluginMeta(pluginName, false, false).getDependsOn();
             terminal.success("Plugin " + pluginName + " depends on " +
                     dependencies.stream()
                             .map(DependencyNode::getDependsOn)
@@ -56,7 +56,7 @@ public class CommandRelation extends CommandBase
             return;
         }
 
-        PluginMeta meta = provider.getPluginMeta(pluginName, true, false);
+        PluginMeta meta = this.provider.getPluginMeta(pluginName, true, false);
         if (args.length < 3)
         {
             List<DependencyNode> dependencies = meta.getDependsOn();
@@ -70,7 +70,7 @@ public class CommandRelation extends CommandBase
         }
 
         String targetPluginName = args[2];
-        if (!provider.isPluginMetaExists(targetPluginName))
+        if (!this.provider.isPluginMetaExists(targetPluginName))
         {
             terminal.error("Cannot find plugin meta of " + targetPluginName);
             return;
@@ -89,19 +89,19 @@ public class CommandRelation extends CommandBase
             meta.getDependsOn().add(new DependencyNode(pluginName, targetPluginName, type.get()));
             terminal.success("Added dependency " + targetPluginName + " to " + pluginName + " with type " + type.get());
 
-            provider.savePluginMeta(meta);
+            this.provider.savePluginMeta(meta);
         }
         else
         {
             assert node != null;
             terminal.success("Removed dependency " + targetPluginName + " from " + pluginName + " with type " + node.getDependType());
 
-            provider.savePluginMeta(meta);
+            this.provider.savePluginMeta(meta);
         }
 
-        provider.deleteFromDependencyTree(pluginName);
-        provider.deleteFromDependencyTree(targetPluginName);
-        provider.buildDependencyTree(pluginName);
+        this.provider.deleteFromDependencyTree(pluginName);
+        this.provider.deleteFromDependencyTree(targetPluginName);
+        this.provider.buildDependencyTree(pluginName);
     }
 
     @Override

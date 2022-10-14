@@ -29,7 +29,7 @@ public class AutoRemoveReadySignalHandler
         this.terminal.writeLine("  " + uninstallTargets.stream()
                 .sorted()
                 .collect(Collectors.joining(" ")));
-        Utils.printInstallStatistics(terminal, 0, uninstallTargets.size(), 0, 0);
+        Utils.printInstallStatistics(this.terminal, 0, uninstallTargets.size(), 0, 0);
     }
 
 
@@ -37,6 +37,6 @@ public class AutoRemoveReadySignalHandler
     public void onPluginEnumerated(PluginEnumeratedSignal signal)
     {
         this.printUninstallInfo(signal.getTargetPlugins());
-        signal.setCancel(!SignalHandlingUtils.askContinue(terminal));
+        signal.setCancel(!SignalHandlingUtils.askContinue(this.terminal));
     }
 }

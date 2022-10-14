@@ -24,39 +24,39 @@ public class PluginIsDependencySignalHandler
     @SignalHandler
     public void onPluginIsDependency(PluginIsDependencySignal signal)
     {
-        terminal.warn(PluginUtil.getPluginString(signal.getPlugin()) + " は以下のプラグインの依存関係です。");
-        terminal.writeLine("  " + signal.getDependedBy().stream()
+        this.terminal.warn(PluginUtil.getPluginString(signal.getPlugin()) + " は以下のプラグインの依存関係です。");
+        this.terminal.writeLine("  " + signal.getDependedBy().stream()
                 .map(Plugin::getName)
                 .sorted()
                 .collect(Collectors.joining(" ")));
-        terminal.warn("このプラグインのアンインストールにより、これらのプラグインが動作しなくなる可能性があります。");
+        this.terminal.warn("このプラグインのアンインストールにより、これらのプラグインが動作しなくなる可能性があります。");
 
-        boolean uninstallThem = pollUninstallDeps(signal.getDependedBy());
+        boolean uninstallThem = this.pollUninstallDeps(signal.getDependedBy());
 
         signal.setForceUninstall(uninstallThem);
     }
 
     private boolean pollUninstallDeps(List<Plugin> dependencies)
     {
-        if (yesForAll)
+        if (this.yesForAll)
             return true;
 
         try
         {
-            QuestionResult result = terminal.getInput().showYNQuestion(
+            QuestionResult result = this.terminal.getInput().showYNQuestion(
                     "これらのプラグインもアンインストールを行いますか?",
                     QuestionAttribute.APPLY_FOR_ALL
             ).waitAndGetResult();
 
             if (result.test(QuestionAttribute.APPLY_FOR_ALL))
-                yesForAll = true;
+                this.yesForAll = true;
 
             return result.test(QuestionAttribute.YES);
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
-            terminal.error("不明なエラーが発生しました: " + e.getMessage());
+            this.terminal.error("不明なエラーが発生しました: " + e.getMessage());
             return false;
         }
     }

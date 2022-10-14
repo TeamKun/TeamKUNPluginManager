@@ -53,7 +53,7 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
     {
         Path downloadPath = arguments.getPath();
         if (downloadPath == null)
-            downloadPath = progress.getInstallTempDir().resolve(this.randomDownloadID + ".kpmcache");
+            downloadPath = this.progress.getInstallTempDir().resolve(this.randomDownloadID + ".kpmcache");
 
         DownloadStartingSignal downloadingSignal = new DownloadStartingSignal(
                 this.randomDownloadID,
@@ -69,7 +69,7 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 
         try
         {
-            long size = Requests.downloadFile(RequestMethod.GET, url, path, progress -> onDownload(progress, url));
+            long size = Requests.downloadFile(RequestMethod.GET, url, path, progress -> this.onDownload(progress, url));
 
             this.postSignal(new DownloadSucceedSignal(this.randomDownloadID, path, size));
 

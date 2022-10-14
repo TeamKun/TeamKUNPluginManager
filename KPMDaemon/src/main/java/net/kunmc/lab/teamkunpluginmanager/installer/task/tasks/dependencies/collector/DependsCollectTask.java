@@ -107,7 +107,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         // region Collect dependency's dependencies (Recursive via collectDependsDepends)
         this.taskState = DependsCollectState.COLLECTING_DEPENDS_DEPENDS;
 
-        HashMap<String, PluginDescriptionFile> dependsDescriptions = downloadResultsToPluginDescriptionFiles(downloadResults);
+        HashMap<String, PluginDescriptionFile> dependsDescriptions = this.downloadResultsToPluginDescriptionFiles(downloadResults);
 
         // Remove failed dependencies from load description results
         dependsDescriptions.entrySet().removeIf(entry -> entry.getValue() == null);
@@ -233,7 +233,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         Map<String, DownloadResult> downloadResults = resolvedPlugins.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
                     SuccessResult successResult = (SuccessResult) entry.getValue();
-                    return passDownloader(successResult.getDownloadUrl());  // Actual downloading
+                    return this.passDownloader(successResult.getDownloadUrl());  // Actual downloading
                 }));
 
         downloadResults.entrySet().stream()

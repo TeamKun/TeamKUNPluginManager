@@ -81,7 +81,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
             this.taskState = PluginResolveState.MULTI_RESOLVING;
 
             MultiResult multiResult = (MultiResult) queryResolveResult;
-            ResolveResult actualResolveResult = resolveMultipleResults(arguments.getQuery(), multiResult);
+            ResolveResult actualResolveResult = this.resolveMultipleResults(arguments.getQuery(), multiResult);
 
             if (actualResolveResult == null)
                 return new PluginResolveResult(false, this.taskState,

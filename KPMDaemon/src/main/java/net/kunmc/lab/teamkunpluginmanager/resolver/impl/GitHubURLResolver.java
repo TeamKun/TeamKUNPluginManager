@@ -32,7 +32,7 @@ public class GitHubURLResolver implements URLResolver
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        Matcher matcher = urlMatcher(GITHUB_REPO_PATTERN, query.getQuery());
+        Matcher matcher = this.urlMatcher(GITHUB_REPO_PATTERN, query.getQuery());
 
         if (matcher == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
@@ -72,13 +72,13 @@ public class GitHubURLResolver implements URLResolver
         if (repository == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
 
-        return processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
+        return this.processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
     }
 
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
+        return this.autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
     }
 
     private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable String version)
@@ -93,7 +93,7 @@ public class GitHubURLResolver implements URLResolver
                 .url(apiURL)
                 .build());
 
-        ErrorResult mayError = processErrorResponse(response, ResolveResult.Source.GITHUB);
+        ErrorResult mayError = this.processErrorResponse(response, ResolveResult.Source.GITHUB);
 
         if (mayError != null)
             return mayError;
@@ -102,7 +102,7 @@ public class GitHubURLResolver implements URLResolver
         {
             JsonObject jsonObject = response.getAsJson().getAsJsonObject();
 
-            return buildResultSingle(owner, repositoryName, jsonObject, version);
+            return this.buildResultSingle(owner, repositoryName, jsonObject, version);
         }
 
         JsonArray jsonArray = response.getAsJson().getAsJsonArray();
@@ -112,7 +112,7 @@ public class GitHubURLResolver implements URLResolver
         boolean isNoAssets = false;
         for (JsonElement jsonElement : jsonArray)
         {
-            ResolveResult result = buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
+            ResolveResult result = this.buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
 
             if (result instanceof ErrorResult)
             {

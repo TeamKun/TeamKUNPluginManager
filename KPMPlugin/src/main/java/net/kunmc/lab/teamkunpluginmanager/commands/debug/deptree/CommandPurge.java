@@ -32,21 +32,21 @@ public class CommandPurge extends CommandBase
         {
             Arrays.stream(Bukkit.getPluginManager().getPlugins())
                     .forEach(plugin -> {
-                        provider.deleteFromDependencyTree(pluginName);
-                        provider.removePluginMeta(pluginName);
+                        this.provider.deleteFromDependencyTree(pluginName);
+                        this.provider.removePluginMeta(pluginName);
 
                         terminal.success("Purged " + pluginName);
                     });
         }
 
-        if (!provider.isPluginMetaExists(pluginName))
+        if (!this.provider.isPluginMetaExists(pluginName))
         {
             terminal.error("Cannot find plugin meta of " + pluginName);
             return;
         }
 
-        provider.deleteFromDependencyTree(pluginName);
-        provider.removePluginMeta(pluginName);
+        this.provider.deleteFromDependencyTree(pluginName);
+        this.provider.removePluginMeta(pluginName);
 
         terminal.success("Purged " + pluginName);
     }

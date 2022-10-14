@@ -247,8 +247,8 @@ public class DebugSignalHandler
     public void handleAll(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
     {
         if (!(signal instanceof DownloadProgressSignal))
-            printSignal(signal, terminal);
+            printSignal(signal, this.terminal);
 
-        handleInputSignals(signal, terminal);
+        handleInputSignals(signal, this.terminal);
     }
 }

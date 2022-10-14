@@ -28,36 +28,36 @@ class SignalHandlerList<T extends Signal>
 
     private boolean isBaked(Method method)
     {
-        return handlers.stream().parallel()
+        return this.handlers.stream().parallel()
                 .map(Pair::getRight)
                 .anyMatch(method::equals);
     }
 
     public void bakeAll(Object object)
     {
-        synchronized (handlers)
+        synchronized (this.handlers)
         {
             Arrays.stream(object.getClass().getMethods()).parallel()
                     .filter(method -> method.isAnnotationPresent(SignalHandler.class))
                     .filter(method -> !this.isBaked(method))
                     .filter(method -> method.getParameterCount() == 1)
-                    .filter(method -> signalType.isAssignableFrom(method.getParameterTypes()[0]))
+                    .filter(method -> this.signalType.isAssignableFrom(method.getParameterTypes()[0]))
                     .forEach(method -> {
                         method.setAccessible(true);
 
                         if (Modifier.isStatic(method.getModifiers()))
-                            handlers.add(new Pair<>(null, method));
+                            this.handlers.add(new Pair<>(null, method));
                         else
-                            handlers.add(new Pair<>(object, method));
+                            this.handlers.add(new Pair<>(object, method));
                     });
         }
     }
 
     void onSignal(InstallProgress<?, ?> installProgress, T signal)
     {
-        synchronized (handlers)
+        synchronized (this.handlers)
         {
-            handlers.forEach(pair -> {
+            this.handlers.forEach(pair -> {
                 try
                 {
                     pair.getRight().invoke(pair.getLeft(), signal);
@@ -73,6 +73,6 @@ class SignalHandlerList<T extends Signal>
 
     boolean isSignalType(Class<?> type)
     {
-        return signalType.isAssignableFrom(type);
+        return this.signalType.isAssignableFrom(type);
     }
 }

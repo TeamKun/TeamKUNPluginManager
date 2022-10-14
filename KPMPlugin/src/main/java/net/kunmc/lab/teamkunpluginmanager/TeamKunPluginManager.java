@@ -72,9 +72,9 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onEnable()
     {
-        saveDefaultConfig();
+        this.saveDefaultConfig();
         plugin = this;
-        this.pluginConfig = getConfig();
+        this.pluginConfig = this.getConfig();
         this.commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
 
 
@@ -93,7 +93,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         this.headInstallers = new HeadInstallers(this.daemon);
 
-        registerCommands(commandManager);
+        this.registerCommands(this.commandManager);
     }
 
 }

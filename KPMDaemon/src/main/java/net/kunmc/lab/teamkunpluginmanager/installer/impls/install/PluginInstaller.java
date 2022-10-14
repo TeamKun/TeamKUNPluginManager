@@ -66,16 +66,16 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         TaskResult pluginDescriptionResult =
                 this.submitter(
                                 InstallTasks.RESOLVING_QUERY,
-                                new PluginResolveTask(this.daemon, progress, signalHandler)
+                                new PluginResolveTask(this.daemon, this.progress, this.signalHandler)
                         )
-                        .then(InstallTasks.DOWNLOADING, new DownloadTask(progress, signalHandler))
+                        .then(InstallTasks.DOWNLOADING, new DownloadTask(this.progress, this.signalHandler))
                         .bridgeArgument(result -> {
                             if (result.getResolveResult() == null)
                                 throw new IllegalArgumentException("Plugin Resolving must be successful");
 
                             return new DownloadArgument(result.getResolveResult().getDownloadUrl());
                         })
-                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(progress, signalHandler))
+                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this.progress, this.signalHandler))
                         .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
                         .submitAll(new PluginResolveArgument(query));
 
@@ -136,13 +136,13 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         TaskResult installResult =
                 this.submitter(
                                 InstallTasks.COLLECTING_DEPENDENCIES,
-                                new DependsCollectTask(this.daemon, progress, signalHandler)
+                                new DependsCollectTask(this.daemon, this.progress, this.signalHandler)
                         )
-                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(progress, signalHandler))
+                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(this.progress, this.signalHandler))
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
                         .then(
                                 InstallTasks.INSTALLING_PLUGINS,
-                                new PluginsInstallTask(this.daemon, progress, signalHandler)
+                                new PluginsInstallTask(this.daemon, this.progress, this.signalHandler)
                         )
                         .bridgeArgument(result -> new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, query, result.getOrder()
@@ -166,7 +166,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         this.daemon.getPluginLoader().unloadPlugin(plugin);  // TODO: Replace with uninstall.
 
-        if (!safeDelete(oldPluginFile))
-            Runner.runLater(() -> safeDelete(oldPluginFile), 10L);
+        if (!this.safeDelete(oldPluginFile))
+            Runner.runLater(() -> this.safeDelete(oldPluginFile), 10L);
     }
 }

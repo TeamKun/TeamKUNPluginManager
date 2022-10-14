@@ -20,10 +20,10 @@ public class BruteforceGitHubResolver implements BaseResolver
     {
         ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
 
-        for (String str : gitHubName)
+        for (String str : this.gitHubName)
         {
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());
-            result = gitHubURLResolver.resolve(query);
+            result = this.gitHubURLResolver.resolve(query);
 
             if (result instanceof ErrorResult)
             {
