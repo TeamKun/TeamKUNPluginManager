@@ -1,8 +1,5 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download;
 
-import net.kunmc.lab.teamkunpluginmanager.common.http.DownloadProgress;
-import net.kunmc.lab.teamkunpluginmanager.common.http.RequestMethod;
-import net.kunmc.lab.teamkunpluginmanager.common.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadErrorSignal;
@@ -10,6 +7,9 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadStartingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.DownloadProgress;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

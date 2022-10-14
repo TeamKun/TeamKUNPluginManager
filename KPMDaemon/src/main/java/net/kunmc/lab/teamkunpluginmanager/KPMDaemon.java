@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasPluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
-import net.kunmc.lab.teamkunpluginmanager.common.TokenStore;
-import net.kunmc.lab.teamkunpluginmanager.common.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
@@ -15,6 +13,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
+import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 

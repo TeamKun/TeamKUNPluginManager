@@ -1,8 +1,8 @@
-package net.kunmc.lab.teamkunpluginmanager.common.http;
+package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.kunmc.lab.teamkunpluginmanager.common.TokenStore;
+import net.kunmc.lab.teamkunpluginmanager.TokenStore;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

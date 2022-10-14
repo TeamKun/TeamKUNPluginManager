@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.common.http;
+package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 import lombok.Builder;
 import lombok.Singular;

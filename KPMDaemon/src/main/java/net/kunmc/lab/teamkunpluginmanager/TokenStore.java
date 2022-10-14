@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.common;
+package net.kunmc.lab.teamkunpluginmanager;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.common.http;
+package net.kunmc.lab.teamkunpluginmanager.utils.http;
 
 /**
  * HTTPリクエストのメソッドを表す列挙型です。
