@@ -111,6 +111,7 @@ public class TaskChain<
      * @return タスクの結果
      * @throws TaskFailedException タスクの実行に失敗した場合
      */
+    @SuppressWarnings("unchecked")
     public @NotNull TaskResult<?, ?> submitFromThis(@NotNull TaskArgument argument) throws TaskFailedException
     {
         try

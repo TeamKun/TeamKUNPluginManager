@@ -143,9 +143,11 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
      * @param id            インストールに割り当てる一意のID
      * @param <P>           インストールの進捗状況の型
      * @return インスタンス
-     * @throws IOException       ディレクトリの作成に失敗した場合
-     * @throws SecurityException ディレクトリの作成に失敗した場合
+     * @throws IOException        ディレクトリの作成に失敗した場合
+     * @throws SecurityException  ディレクトリの作成に失敗した場合
+     * @throws ClassCastException 間違った型のキャッシュを取得しようとした場合
      */
+    @SuppressWarnings("unchecked")
     public static <P extends Enum<P>, PI extends AbstractInstaller<?, ?, P>> InstallProgress<P, PI> of(
             @NotNull PI installer,
             @NotNull SignalHandleManager signalHandler,
