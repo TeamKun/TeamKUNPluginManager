@@ -22,7 +22,7 @@ import java.util.stream.StreamSupport;
 
 public class SpigotMCResolver implements URLResolver
 {
-    private static final Pattern PATTERN = Pattern.compile("/resources/([\\w-]+\\.?(?<resourceId>[\\d]+))(?:/|/updates/?|/downloads/?|(?:update/?\\?update=|download/?\\?version=)(?<version>\\d+))?");
+    private static final Pattern PATTERN = Pattern.compile("/resources/([\\w-]+\\.?(?<resourceId>\\d+))(?:/|/updates/?|/downloads/?|(?:update/?\\?update=|download/?\\?version=)(?<version>\\d+))?");
 
     @Override
     public ResolveResult resolve(QueryContext query)
