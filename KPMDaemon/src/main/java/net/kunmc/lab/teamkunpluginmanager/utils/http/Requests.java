@@ -112,6 +112,8 @@ public class Requests
 
             if (context.getTimeout() > 0)
                 connection.setReadTimeout(context.getTimeout());
+            if (context.getMethod() == RequestMethod.POST)
+                connection.setDoOutput(true);
 
             for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
                 connection.setRequestProperty(entry.getKey(), entry.getValue());

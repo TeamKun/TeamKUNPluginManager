@@ -12,6 +12,8 @@ import net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall.DependenciesSig
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall.InstallFinishedSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall.InstallerSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.intall.ResolverSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.signal.handlers.register.TokenGenerateSignalHandler;
+import net.kunmc.lab.teamkunpluginmanager.signal.handlers.register.TokenRegisterSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall.PluginIsDependencySignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall.UninstallFinishedSignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.handlers.uninstall.UninstallReadySignalHandler;
@@ -116,6 +118,15 @@ public class HeadSignalHandlers
                 getCommonHandlers(terminal),
                 new GarbageCleanFinishedSignalHandler(terminal),
                 new GarbageCleanSignalHandler(terminal)
+        );
+    }
+
+    public static List<Object> getTokenRegistererHandlers(Terminal terminal)
+    {
+        return createHandlersList(
+                getCommonHandlers(terminal),
+                new TokenRegisterSignalHandler(terminal),
+                new TokenGenerateSignalHandler(terminal)
         );
     }
 }

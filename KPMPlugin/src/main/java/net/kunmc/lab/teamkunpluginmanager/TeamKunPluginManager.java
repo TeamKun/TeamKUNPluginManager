@@ -40,7 +40,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("clean", new CommandClean(this));
         commandManager.registerCommand("info", new CommandInfo(this.daemon));
         commandManager.registerCommand("install", new CommandInstall(this), "add", "i");
-        commandManager.registerCommand("register", new CommandRegister(this.daemon), "login");
+        commandManager.registerCommand("register", new CommandRegister(this, this.daemon), "login");
         commandManager.registerCommand("reload", new CommandReload(this.daemon));
         commandManager.registerCommand("resolve", new CommandResolve(this.daemon));
         commandManager.registerCommand("status", new CommandStatus(this.daemon));

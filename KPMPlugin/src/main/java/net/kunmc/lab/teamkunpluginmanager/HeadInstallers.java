@@ -12,6 +12,8 @@ import net.kunmc.lab.teamkunpluginmanager.installer.impls.clean.CleanArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.clean.GarbageCleaner;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.InstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.PluginInstaller;
+import net.kunmc.lab.teamkunpluginmanager.installer.impls.register.RegisterArgument;
+import net.kunmc.lab.teamkunpluginmanager.installer.impls.register.TokenRegisterer;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.update.AliasUpdater;
@@ -171,5 +173,32 @@ public class HeadInstallers
         }
 
         this.headRun(terminal, garbageCleaner, argument);
+    }
+
+    /**
+     * トークンの登録を実行します。
+     *
+     * @param terminal ターミナル
+     * @param argument トークン登録の引数
+     * @throws IllegalStateException インストールが進行中の場合
+     */
+    public void runRegister(@NotNull Terminal terminal, @NotNull RegisterArgument argument) throws IllegalStateException
+    {
+        SignalHandleManager handleManager = new SignalHandleManager();
+        HeadSignalHandlers.getTokenRegistererHandlers(terminal).forEach(handleManager::register);
+
+        TokenRegisterer register;
+        try
+        {
+            register = new TokenRegisterer(this.daemon, handleManager);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            return;
+        }
+
+        this.headRun(terminal, register, argument);
     }
 }

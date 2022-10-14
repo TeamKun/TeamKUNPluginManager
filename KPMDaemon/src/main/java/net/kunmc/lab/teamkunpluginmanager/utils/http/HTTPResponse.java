@@ -112,6 +112,22 @@ public class HTTPResponse implements AutoCloseable
     }
 
     /**
+     * レスポンスボディをオブジェクトとして取得します。
+     *
+     * @param clazz クラス
+     * @param <T>   クラスの型
+     * @return レスポンスボディ
+     */
+    public <T> T getAsObject(Class<T> clazz)
+    {
+        if (inputStream == null)
+            return null;
+
+        String json = getAsString();
+        return new Gson().fromJson(json, clazz);
+    }
+
+    /**
      * このクラスを破棄します。
      *
      * @throws IOException I/O エラーが発生した場合
