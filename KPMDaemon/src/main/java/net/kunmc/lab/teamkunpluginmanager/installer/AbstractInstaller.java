@@ -161,14 +161,14 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
      *
      * @param taskState タスクの状態
      * @param task      タスク
-     * @param <A>       タスクの引数の型
+     * @param <AA>      タスクの引数の型
      * @param <R>       タスクの戻り値の型
      * @param <TT>      タスクの列挙型
      * @return タスクのSubmitter
      */
     @NotNull
-    protected <A extends TaskArgument, R extends TaskResult<?, ?>, TT extends InstallTask<A, R>>
-    TaskChain<A, P, R, R, TT>
+    protected <AA extends TaskArgument, R extends TaskResult<?, ?>, TT extends InstallTask<AA, R>>
+    TaskChain<AA, P, R, R, TT>
     submitter(@NotNull P taskState, @NotNull TT task)
     {
         return new TaskChain<>(task, taskState, this);
