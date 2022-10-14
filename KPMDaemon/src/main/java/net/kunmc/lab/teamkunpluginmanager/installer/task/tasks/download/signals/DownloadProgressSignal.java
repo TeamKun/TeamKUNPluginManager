@@ -32,7 +32,7 @@ public class DownloadProgressSignal extends DownloadSignal
      */
     double percentage;
 
-    public DownloadProgressSignal(@NotNull String downloadId, String url, long totalSize, long downloaded, double percentage)
+    public DownloadProgressSignal(@NotNull String downloadId, @NotNull String url, long totalSize, long downloaded, double percentage)
     {
         super(downloadId);
         this.url = url;
