@@ -61,7 +61,7 @@ public class TokenGenerateSignalHandler
                 ChatColor.DARK_GREEN + "このリンクからコードを有効化してください：" +
                         ChatColor.BLUE + ChatColor.UNDERLINE + verificationUrl);
         terminal.writeLine(ChatColor.DARK_GREEN + "コード： " + ChatColor.WHITE + userCode);
-        terminal.info("I：このコードは " + expiresInMin + " 分で失効します。");
+        terminal.info("このコードは " + expiresInMin + " 分で失効します。");
 
         int expiresInSecInt = (int) expiresInSec;
 
