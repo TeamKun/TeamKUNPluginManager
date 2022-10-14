@@ -67,9 +67,7 @@ public class InstallManager
 
         this.runningInstall = installer.getProgress();
 
-        Runner.runAsync(() -> {
-            installer.run(arguments);
-        });
+        Runner.runAsync(() -> installer.run(arguments));
 
         return (InstallProgress<T, I>) installer.getProgress();
     }
