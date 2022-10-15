@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasPluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallManager;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInfoManager;
 import net.kunmc.lab.teamkunpluginmanager.loader.PluginLoader;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
@@ -14,6 +15,7 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
+import net.kunmc.lab.teamkunpluginmanager.utils.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -48,6 +50,11 @@ public class KPMDaemon
      */
     @NotNull
     private final PluginMetaManager pluginMetaManager;
+    /**
+     * プラグインのKPM情報ファイルを管理するクラスです。
+     */
+    @NotNull
+    private final KPMInfoManager kpmInfoManager;
     /**
      * トークンを保管しセキュアに管理するクラスです。
      */
@@ -84,6 +91,7 @@ public class KPMDaemon
         this.envs = env;
         this.logger = env.getLogger();
         this.pluginMetaManager = new PluginMetaManager(env.getPlugin(), env.getMetadataDBPath());
+        this.kpmInfoManager = new KPMInfoManager(this);
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
         this.aliasProvider = new AliasProvider(env.getAliasesDBPath());
@@ -160,7 +168,7 @@ public class KPMDaemon
 
     private void initializeRequests()
     {
-        Requests.setVersion(this.getVersion());
+        Requests.setVersion(this.getVersion().toString());
         Requests.setTokenStore(this.tokenStore);
     }
 
@@ -170,8 +178,8 @@ public class KPMDaemon
         this.aliasProvider.close();
     }
 
-    public String getVersion()
+    public Version getVersion()
     {
-        return this.getEnvs().getPlugin().getDescription().getVersion();
+        return Version.ofUnsafe(this.getEnvs().getPlugin().getDescription().getVersion());
     }
 }

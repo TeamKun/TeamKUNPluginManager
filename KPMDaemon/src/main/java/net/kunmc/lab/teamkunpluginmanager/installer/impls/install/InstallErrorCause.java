@@ -16,4 +16,5 @@ public enum InstallErrorCause
      * {@link net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal} でも置換が選択されませんでした。
      */
     PLUGIN_ALREADY_INSTALLED,
+    INCOMPATIBLE_KPM_VERSION,
 }
