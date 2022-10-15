@@ -25,6 +25,7 @@ import java.io.IOException;
  */
 public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E extends Enum<E>, P extends Enum<P>>
 {
+    @Getter
     protected final KPMDaemon daemon;
     @Getter
     protected final InstallProgress<P, AbstractInstaller<A, E, P>> progress;

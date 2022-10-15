@@ -1,7 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.collector;
 
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
@@ -58,13 +58,13 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
 
     private DependsCollectState taskState;
 
-    public DependsCollectTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public DependsCollectTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        this.daemon = daemon;
-        this.signalHandler = signalHandler;
-        this.status = progress.getDependsCollectStatus();
+        this.daemon = installer.getDaemon();
+        this.signalHandler = installer.getProgress().getSignalHandler();
+        this.status = this.progress.getDependsCollectStatus();
 
         this.taskState = DependsCollectState.INITIALIZED;
     }
@@ -162,7 +162,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
     {
         DependsCollectArgument arguments = new DependsCollectArgument(pluginDescription, alreadyCollectedPlugins);
 
-        return new DependsCollectTask(this.daemon, this.progress, this.signalHandler) // do new() because DependsCollectTask is stateful.
+        return new DependsCollectTask(this.progress.getInstaller()) // do new() because DependsCollectTask is stateful.
                 .runTask(arguments);
     }
 
@@ -224,7 +224,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
     {
         DownloadArgument argument = new DownloadArgument(url);
 
-        return new DownloadTask(this.progress, this.signalHandler)
+        return new DownloadTask(this.progress.getInstaller())
                 .runTask(argument);
     }
 
@@ -252,7 +252,7 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
     {
         PluginResolveArgument resolveArgument = new PluginResolveArgument(dependency);
 
-        return new PluginResolveTask(this.daemon, this.progress, this.signalHandler)
+        return new PluginResolveTask(this.progress.getInstaller())
                 .runTask(resolveArgument);
     }
 

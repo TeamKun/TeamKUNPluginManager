@@ -1,9 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.description;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.description.signals.LoadPluginDescriptionSignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -19,9 +18,9 @@ public class DescriptionLoadTask extends InstallTask<DescriptionLoadArgument, De
 {
     private DescriptionLoadState taskState;
 
-    public DescriptionLoadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public DescriptionLoadTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.taskState = DescriptionLoadState.INITIALIZED;
     }
 

@@ -40,11 +40,11 @@ public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorC
         UpdateAliasesResult result =
                 (UpdateAliasesResult) this.submitter(
                                 UpdateTasks.DOWNLOADING_SOURCES,
-                                new SourceDownloadTask(this.progress, this.signalHandler)
+                                new SourceDownloadTask(this)
                         )
                         .then(
                                 UpdateTasks.UPDATING_ALIASES,
-                                new UpdateAliasesTask(this.daemon, this.progress, this.signalHandler)
+                                new UpdateAliasesTask(this)
                         )
                         .bridgeArgument(sourceDownloadResult ->
                                 new UpdateAliasesArgument(sourceDownloadResult.getDownloadedSources()))

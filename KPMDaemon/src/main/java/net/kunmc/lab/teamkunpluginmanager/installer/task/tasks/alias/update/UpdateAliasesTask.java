@@ -5,12 +5,11 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.alias.AliasUpdater;
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.update.signals.AliasUpdateSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.update.signals.InvalidSourceSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.update.signals.SourcePreparedSignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,10 +31,10 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
 
     private UpdateAliasesState status;
 
-    public UpdateAliasesTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public UpdateAliasesTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
-        this.daemon = daemon;
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
+        this.daemon = installer.getDaemon();
 
         this.status = UpdateAliasesState.INITIALIZED;
     }

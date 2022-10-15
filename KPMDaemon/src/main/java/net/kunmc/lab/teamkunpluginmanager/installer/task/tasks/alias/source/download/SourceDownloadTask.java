@@ -1,6 +1,6 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.source.download;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.source.download.signals.MalformedURLSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.alias.source.download.signals.SourceDownloadFailedSignal;
@@ -26,11 +26,11 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
     private final SignalHandleManager signalHandler;
     private SourceDownloadState status;
 
-    public SourceDownloadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public SourceDownloadTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        this.signalHandler = signalHandler;
+        this.signalHandler = installer.getProgress().getSignalHandler();
         this.status = SourceDownloadState.INITIALIZED;
     }
 
@@ -110,7 +110,7 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
 
     private Path downloadSource(String remoteName, URL remoteURL)
     {
-        DownloadResult result = new DownloadTask(this.progress, this.signalHandler)
+        DownloadResult result = new DownloadTask(this.progress.getInstaller())
                 .runTask(new DownloadArgument(remoteURL.toString()));
         boolean success = result.isSuccess();
 

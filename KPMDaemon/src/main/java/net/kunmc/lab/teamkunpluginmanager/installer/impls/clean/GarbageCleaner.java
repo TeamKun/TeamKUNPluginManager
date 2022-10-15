@@ -55,11 +55,11 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
 
         GarbageCleanResult result = (GarbageCleanResult) this.submitter(
                         CleanTasks.SEARCHING_GARBAGE,
-                        new GarbageSearchTask(this.progress, this.signalHandler)
+                        new GarbageSearchTask(this)
                 )
                 .then(
                         CleanTasks.DELETING_GARBAGE,
-                        new GarbageCleanTask(this.progress, this.signalHandler)
+                        new GarbageCleanTask(this)
                 )
                 .bridgeArgument(searchResult ->
                         new GarbageCleanArgument(searchResult.getGarbageFiles()))

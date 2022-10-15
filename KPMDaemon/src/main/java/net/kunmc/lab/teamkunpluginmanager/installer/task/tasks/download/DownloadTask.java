@@ -1,12 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadStartingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.signals.DownloadSucceedSignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.DownloadProgress;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.RequestMethod;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
@@ -26,9 +25,9 @@ public class DownloadTask extends InstallTask<DownloadArgument, DownloadResult>
 
     private DownloadState taskState;
 
-    public DownloadTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public DownloadTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.randomDownloadID = UUID.randomUUID().toString();
 

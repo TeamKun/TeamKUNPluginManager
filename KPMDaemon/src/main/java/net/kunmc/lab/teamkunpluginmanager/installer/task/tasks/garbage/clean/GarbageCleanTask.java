@@ -1,12 +1,11 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.signal.GarbageDeleteSkippedSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.signal.GarbageDeletingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.clean.signal.InvalidIntegritySignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,9 +21,9 @@ public class GarbageCleanTask extends InstallTask<GarbageCleanArgument, GarbageC
 {
     private GarbageCleanState status;
 
-    public GarbageCleanTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public GarbageCleanTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.status = GarbageCleanState.INITIALIZED;
     }

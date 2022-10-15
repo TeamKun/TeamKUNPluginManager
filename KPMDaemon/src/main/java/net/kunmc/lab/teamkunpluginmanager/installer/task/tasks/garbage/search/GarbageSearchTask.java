@@ -1,9 +1,8 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.search;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.garbage.search.signals.GarbageSearchingSignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -20,9 +19,9 @@ public class GarbageSearchTask extends InstallTask<GarbageSearchArgument, Garbag
 {
     private GarbageSearchState status;
 
-    public GarbageSearchTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public GarbageSearchTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.status = GarbageSearchState.INITIALIZED;
     }

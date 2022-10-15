@@ -66,16 +66,16 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         TaskResult pluginDescriptionResult =
                 this.submitter(
                                 InstallTasks.RESOLVING_QUERY,
-                                new PluginResolveTask(this.daemon, this.progress, this.signalHandler)
+                                new PluginResolveTask(this)
                         )
-                        .then(InstallTasks.DOWNLOADING, new DownloadTask(this.progress, this.signalHandler))
+                        .then(InstallTasks.DOWNLOADING, new DownloadTask(this))
                         .bridgeArgument(result -> {
                             if (result.getResolveResult() == null)
                                 throw new IllegalArgumentException("Plugin Resolving must be successful");
 
                             return new DownloadArgument(result.getResolveResult().getDownloadUrl());
                         })
-                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this.progress, this.signalHandler))
+                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this))
                         .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
                         .submitAll(new PluginResolveArgument(query));
 
@@ -136,13 +136,13 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         TaskResult installResult =
                 this.submitter(
                                 InstallTasks.COLLECTING_DEPENDENCIES,
-                                new DependsCollectTask(this.daemon, this.progress, this.signalHandler)
+                                new DependsCollectTask(this)
                         )
-                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(this.progress, this.signalHandler))
+                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(this))
                         .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
                         .then(
                                 InstallTasks.INSTALLING_PLUGINS,
-                                new PluginsInstallTask(this.daemon, this.progress, this.signalHandler)
+                                new PluginsInstallTask(this)
                         )
                         .bridgeArgument(result -> new PluginsInstallArgument(
                                 pluginFilePath, pluginDescription, query, result.getOrder()

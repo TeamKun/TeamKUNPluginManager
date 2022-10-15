@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginEnablingSignal;
@@ -14,7 +14,6 @@ import net.kunmc.lab.teamkunpluginmanager.loader.CommandsPatcher;
 import net.kunmc.lab.teamkunpluginmanager.meta.InstallOperator;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaProvider;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.entity.Player;
@@ -56,11 +55,11 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
     private final PluginMetaProvider pluginMetaProvider;
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public PluginsInstallTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        PluginMetaManager pluginMetaManager = daemon.getPluginMetaManager();
+        PluginMetaManager pluginMetaManager = installer.getDaemon().getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;
         this.pluginMetaProvider = pluginMetaManager.getProvider();
 

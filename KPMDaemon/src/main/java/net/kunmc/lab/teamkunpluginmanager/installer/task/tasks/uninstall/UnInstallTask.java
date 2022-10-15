@@ -2,7 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
@@ -11,7 +11,6 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.uninstall.signals.StartingGCSignal;
 import net.kunmc.lab.teamkunpluginmanager.loader.CommandsPatcher;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -83,10 +82,10 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
     private UnInstallState taskState;
 
-    public UnInstallTask(@NotNull KPMDaemon daemon, @NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public UnInstallTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
-        this.daemon = daemon;
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
+        this.daemon = installer.getDaemon();
 
         this.taskState = UnInstallState.INITIALIZED;
     }

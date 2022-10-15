@@ -1,10 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.computer;
 
-import net.kunmc.lab.teamkunpluginmanager.installer.InstallProgress;
+import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +26,9 @@ public class DependsComputeOrderTask extends InstallTask<DependsComputeOrderArgu
 {
     private DependsComputeOrderState state;
 
-    public DependsComputeOrderTask(@NotNull InstallProgress<?, ?> progress, @NotNull SignalHandleManager signalHandler)
+    public DependsComputeOrderTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
-        super(progress, signalHandler);
+        super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.state = DependsComputeOrderState.INITIALIZED;
     }

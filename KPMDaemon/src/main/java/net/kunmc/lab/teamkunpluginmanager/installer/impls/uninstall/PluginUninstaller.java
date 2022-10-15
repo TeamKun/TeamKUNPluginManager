@@ -134,11 +134,11 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         UnInstallResult uninstallResult = (UnInstallResult)
                 this.submitter(
                                 UnInstallTasks.COMPUTING_UNINSTALL_ORDER,
-                                new DependsComputeOrderTask(this.progress, this.signalHandler)
+                                new DependsComputeOrderTask(this)
                         )
                         .then(
                                 UnInstallTasks.UNINSTALLING_PLUGINS,
-                                new UnInstallTask(this.daemon, this.progress, this.signalHandler)
+                                new UnInstallTask(this)
                         )
                         .bridgeArgument(computeResult -> {
                             List<DependencyElement> ordered = computeResult.getOrder();
