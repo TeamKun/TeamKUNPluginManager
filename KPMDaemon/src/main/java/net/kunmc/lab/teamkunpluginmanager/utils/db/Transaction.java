@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 /**
  * DBのトランザクションを簡単に行うためのクラスです。
  */
-public class Transaction
+public class Transaction implements AutoCloseable
 {
     /**
      * Dbのコネクションです。
@@ -640,10 +640,17 @@ public class Transaction
         return this.isExists(true);
     }
 
-    public void close() throws Exception
+    @Override
+    public void close()
     {
-        if (!this.connection.isClosed())
-            this.connection.close();
+        try
+        {
+            if (!this.connection.isClosed())
+                this.connection.close();
+        }
+        catch (SQLException ignored)
+        {
+        }
     }
 
     /**

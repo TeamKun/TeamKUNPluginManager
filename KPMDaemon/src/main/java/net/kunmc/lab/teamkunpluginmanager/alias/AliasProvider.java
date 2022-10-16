@@ -99,11 +99,12 @@ public class AliasProvider
      */
     public AliasSource getSource(String id)
     {
-        try (ResultRow row = Transaction.create(this.db, "SELECT * FROM source WHERE name = ?")
-                .set(1, id)
-                .executeQuery()
-                .stream()
-                .findFirst().orElse(null))
+        try (Transaction transaction = Transaction.create(this.db, "SELECT * FROM source WHERE name = ?")
+                .set(1, id);
+             ResultRow row = transaction
+                     .executeQuery()
+                     .stream()
+                     .findFirst().orElse(null))
         {
             if (row == null)
                 return null;
@@ -124,11 +125,12 @@ public class AliasProvider
      */
     public Alias getNameByAlias(String name)
     {
-        try (ResultRow row = Transaction.create(this.db, "SELECT * FROM alias WHERE name = ?")
-                .set(1, name)
-                .executeQuery()
-                .stream()
-                .findFirst().orElse(null))
+        try (Transaction transaction = Transaction.create(this.db, "SELECT * FROM alias WHERE name = ?")
+                .set(1, name);
+             ResultRow row = transaction
+                     .executeQuery()
+                     .stream()
+                     .findFirst().orElse(null))
         {
             if (row == null)
                 return null;
