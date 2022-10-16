@@ -61,9 +61,10 @@ public class Requests
         return doRedirect(newResponse, redirectCount + 1);
     }
 
-    private static Map<String, String> setupDefaultHeaders(@NotNull String host)
+    @NotNull
+    private static Map<String, String> setupDefaultHeaders(@NotNull String host, @NotNull Map<String, String> currentHeaders)
     {
-        HashMap<String, String> headers = new HashMap<>();
+        HashMap<String, String> headers = new HashMap<>(currentHeaders);
 
         headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
                 version);
@@ -72,9 +73,10 @@ public class Requests
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".githubusercontent.com"))
         {
-            headers.put("Accept", "application/vnd.github.v3+json");
+            if (!headers.containsKey("Accept"))
+                headers.put("Accept", "application/vnd.github.v3+json");
 
-            if (tokenStore.isTokenAvailable())
+            if (!headers.containsKey("Authorization") && tokenStore.isTokenAvailable())
                 headers.put(
                         "Authorization",
                         "Token " + tokenStore.getToken()
@@ -118,7 +120,7 @@ public class Requests
             for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
                 connection.setRequestProperty(entry.getKey(), entry.getValue());
 
-            setupDefaultHeaders(url.getHost())
+            setupDefaultHeaders(url.getHost(), context.getExtraHeaders())
                     .forEach(connection::setRequestProperty);
 
             connection.connect();
@@ -198,11 +200,15 @@ public class Requests
     public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
                                     @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
     {
-        try (HTTPResponse response = request(RequestContext.builder()
+        RequestContext.RequestContextBuilder context = RequestContext.builder()
                 .url(url)
                 .method(method)
-                .followRedirects(true)
-                .build());
+                .followRedirects(true);
+
+        if (url.matches("^https?://api\\.github\\.com/.+?/releases/assets/\\d+$"))
+            context.header("Accept", "application/octet-stream");
+
+        try (HTTPResponse response = request(context.build());
              OutputStream output = Files.newOutputStream(path))
         {
             if (response.getStatusCode() < 200 || response.getStatusCode() >= 300)

@@ -170,7 +170,7 @@ public class GitHubURLResolver implements URLResolver
 
             JsonObject assetObject = asset.getAsJsonObject();
 
-            String downloadURL = assetObject.get("browser_download_url").getAsString();
+            String downloadURL = assetObject.get("url").getAsString();
             String fileName = assetObject.get("name").getAsString();
             long size = assetObject.get("size").getAsLong();
 
