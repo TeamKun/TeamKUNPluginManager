@@ -16,5 +16,13 @@ public enum InstallErrorCause
      * {@link net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal} でも置換が選択されませんでした。
      */
     PLUGIN_ALREADY_INSTALLED,
+    /**
+     * プラグインの<code>api-version</code>が、このサーバーバージョンと互換性がありません。
+     */
+    INCOMPATIBLE_API_VERSION,
+    /**
+     * プラグインのKPM指定バージョンと、このKPMのバージョンが互換性がなく、
+     * {@link net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.PluginIncompatibleWithKPMSignal} でも強制インストールが選択されませんでした。
+     */
     INCOMPATIBLE_KPM_VERSION,
 }

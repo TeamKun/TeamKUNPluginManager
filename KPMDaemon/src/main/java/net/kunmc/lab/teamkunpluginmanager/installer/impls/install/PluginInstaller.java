@@ -160,9 +160,11 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     }
 
     @Nullable
+    @SuppressWarnings("deprecation")
     private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, KPMInformationFile kpmInfo)
     {
         String pluginName = pluginDescription.getName();
+
 
         // region Check if the plugin is marked as ignored
         if (this.isPluginIgnored(pluginName))
@@ -176,6 +178,13 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         // endregion
 
         // region Check if the plugin is incompatible with the server.
+        if (pluginDescription.getAPIVersion() != null)
+        {
+            String apiVersion = pluginDescription.getAPIVersion();
+            if (Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
+                return InstallErrorCause.INCOMPATIBLE_API_VERSION;
+        }
+
         if (!kpmInfo.getKpmVersion().isGreaterThanOrEqualTo(this.daemon.getVersion()))
         {
             PluginIncompatibleWithKPMSignal incompatibleSignal =
@@ -185,6 +194,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
             if (!incompatibleSignal.isForceInstall())
                 return InstallErrorCause.INCOMPATIBLE_KPM_VERSION;
         }
+        // endregion
 
         return null;  // No error with environment.
     }
