@@ -25,9 +25,9 @@ public class CheckEnvSignalHandler
     public void onPluginIsIgnored(IgnoredPluginSignal signal)
     {
         this.terminal.warn(PluginUtil.getPluginString(signal.getPluginDescription()) +
-                " は ignore としてマークされていますが強制的にインストールが可能です。");
+                " は ignore としてマークされていますが強制的な操作が可能です。");
 
-        this.terminal.writeLine(ChatColor.DARK_RED + "W: 強制的なインストールは予期しない問題を引き起こす可能性があります。");
+        this.terminal.writeLine(ChatColor.DARK_RED + "W: 強制的な操作は予期しない問題を引き起こす可能性があります。");
 
         signal.setCancelInstall(!SignalHandlingUtils.askContinue(this.terminal));
     }
