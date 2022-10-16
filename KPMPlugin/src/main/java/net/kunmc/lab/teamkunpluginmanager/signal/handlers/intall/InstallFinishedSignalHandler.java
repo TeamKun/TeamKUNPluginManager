@@ -41,6 +41,12 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             case PLUGIN_ALREADY_INSTALLED:
                 this.terminal.error("指定されたプラグインは既にインストールされています。");
                 return true;
+            case INCOMPATIBLE_API_VERSION:
+                this.terminal.error("指定されたプラグインは、このサーバーバージョンと互換性がありません(プラグインのapi-versionがより新しい可能性があります)。");
+                return true;
+            case INCOMPATIBLE_KPM_VERSION:
+                this.terminal.error("指定されたプラグインは、このKPMのバージョンと互換性がありません。");
+                return true;
         }
 
         return false;
