@@ -181,11 +181,11 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         if (pluginDescription.getAPIVersion() != null)
         {
             String apiVersion = pluginDescription.getAPIVersion();
-            if (Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
+            if (!Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
                 return InstallErrorCause.INCOMPATIBLE_API_VERSION;
         }
 
-        if (!kpmInfo.getKpmVersion().isGreaterThanOrEqualTo(this.daemon.getVersion()))
+        if (kpmInfo.getKpmVersion().isGreaterThanOrEqualTo(this.daemon.getVersion()))
         {
             PluginIncompatibleWithKPMSignal incompatibleSignal =
                     new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInfo, this.daemon.getVersion());
