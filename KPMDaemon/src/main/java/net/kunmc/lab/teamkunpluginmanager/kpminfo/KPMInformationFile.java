@@ -32,6 +32,7 @@ public class KPMInformationFile
     /**
      * 対応するKPMのバージョンです。
      * このバージョンより古いKPMではこの情報ファイルを読み込むことができません。
+     * YAMLのキーは{@code kpm}です。
      */
     Version kpmVersion;
 
