@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskResult;
@@ -21,12 +22,14 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.PluginsIn
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.PluginsInstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,21 +91,19 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         pluginName = pluginDescription.getName();
         // endregion
 
+        // Load kpmInfo
+        KPMInformationFile kpmInfo = this.daemon.getKpmInfoManager().loadInfo(pluginFilePath, pluginDescription);
+        if (kpmInfo == null)
+            return null; // No kpmInfo file.
+
         boolean replacePlugin = false;
         // region Do assertions.
 
         this.progress.setCurrentTask(InstallTasks.CHECKING_ENVIRONMENT);
 
-        // region Check if plugin is ignored.
-        if (this.isPluginIgnored(pluginName))
-        {
-            IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(pluginDescription);
-            this.postSignal(ignoredPluginSignal);
-
-            if (ignoredPluginSignal.isCancelInstall())
-                return this.error(InstallErrorCause.PLUGIN_IGNORED);
-        }
-        // endregion
+        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription, kpmInfo);
+        if (checkEnvErrorResult != null)
+            return this.error(checkEnvErrorResult);
 
         // region Check if plugin is already installed.
 
@@ -156,6 +157,46 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
             this.progress.addInstalled(pluginDescription);
 
         return this.success();
+    }
+
+    @Nullable
+    @SuppressWarnings("deprecation")
+    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, KPMInformationFile kpmInfo)
+    {
+        String pluginName = pluginDescription.getName();
+
+
+        // region Check if the plugin is marked as ignored
+        if (this.isPluginIgnored(pluginName))
+        {
+            IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(pluginDescription);
+            this.postSignal(ignoredPluginSignal);
+
+            if (ignoredPluginSignal.isCancelInstall())
+                return InstallErrorCause.PLUGIN_IGNORED;
+        }
+        // endregion
+
+        // region Check if the plugin is incompatible with the server.
+        if (pluginDescription.getAPIVersion() != null)
+        {
+            String apiVersion = pluginDescription.getAPIVersion();
+            if (!Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
+                return InstallErrorCause.INCOMPATIBLE_API_VERSION;
+        }
+
+        if (kpmInfo.getKpmVersion().isGreaterThanOrEqualTo(this.daemon.getVersion()))
+        {
+            PluginIncompatibleWithKPMSignal incompatibleSignal =
+                    new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInfo, this.daemon.getVersion());
+            this.postSignal(incompatibleSignal);
+
+            if (!incompatibleSignal.isForceInstall())
+                return InstallErrorCause.INCOMPATIBLE_KPM_VERSION;
+        }
+        // endregion
+
+        return null;  // No error with environment.
     }
 
     private void removeOldPlugin(Plugin plugin)

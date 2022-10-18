@@ -1,0 +1,45 @@
+package net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals;
+
+import lombok.Data;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
+import net.kunmc.lab.teamkunpluginmanager.signal.Signal;
+import net.kunmc.lab.teamkunpluginmanager.utils.versioning.Version;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * プラグインがこのKPMと互換性がない場合に投げられるシグナルです。
+ */
+@Data
+public class PluginIncompatibleWithKPMSignal implements Signal
+{
+    /**
+     * プラグインの説明ファイルです。
+     */
+    @NotNull
+    private final PluginDescriptionFile pluginDescription;
+    /**
+     * プラグインのKPM情報です。
+     */
+    @NotNull
+    private final KPMInformationFile kpmInformation;
+    /**
+     * このKPMのバージョンです。
+     */
+    @NotNull
+    private final Version kpmVersion;
+
+    /**
+     * 強制的にインストールするかどうかを示すフラグです。
+     */
+    private boolean forceInstall;
+
+    public PluginIncompatibleWithKPMSignal(@NotNull PluginDescriptionFile pluginDescription, @NotNull KPMInformationFile kpmInformation, @NotNull Version kpmVersion)
+    {
+        this.pluginDescription = pluginDescription;
+        this.kpmInformation = kpmInformation;
+        this.kpmVersion = kpmVersion;
+
+        this.forceInstall = false;
+    }
+}

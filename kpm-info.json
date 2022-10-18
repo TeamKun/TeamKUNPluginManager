@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "KPM Information File Schema",
+  "type": "object",
+  "definitions": {
+    "version": {
+      "type": "string",
+      "pattern": "^v?(?<major>[3-9]\\d*)\\.(?<minor>0|[1-9]\\d*)(\\.(?<patch>0|[1-9]\\d*))(-(?<preRelease>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))(?:\\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    }
+  },
+  "properties": {
+    "kpm": {
+      "$ref": "#/definitions/version",
+      "description": "対応するKPMのバージョンです。このバージョンより古いKPMではプラグインを読み込めません。",
+      "examples": [
+        "3.0.0",
+        "v3.0-pre1"
+      ]
+    }
+  },
+  "required": [
+    "kpm"
+  ],
+  "additionalProperties": false
+}
