@@ -185,7 +185,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                 return InstallErrorCause.INCOMPATIBLE_API_VERSION;
         }
 
-        if (kpmInfo.getKpmVersion().isGreaterThanOrEqualTo(this.daemon.getVersion()))
+        if (kpmInfo.getKpmVersion().isOlderThan(this.daemon.getVersion()))
         {
             PluginIncompatibleWithKPMSignal incompatibleSignal =
                     new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInfo, this.daemon.getVersion());

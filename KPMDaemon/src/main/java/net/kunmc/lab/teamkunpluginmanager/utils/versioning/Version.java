@@ -103,22 +103,22 @@ public class Version implements Comparable<Version>
         return this.preRelease != null;
     }
 
-    public boolean isGreaterThan(@Nonnull Version other)
+    public boolean isNewerThan(@Nonnull Version other)
     {
         return this.compareTo(other) > 0;
     }
 
-    public boolean isLessThan(@Nonnull Version other)
+    public boolean isOlderThan(@Nonnull Version other)
     {
         return this.compareTo(other) < 0;
     }
 
-    public boolean isGreaterThanOrEqualTo(@Nonnull Version other)
+    public boolean isNewerThanOrEqualTo(@Nonnull Version other)
     {
         return this.compareTo(other) >= 0;
     }
 
-    public boolean isLessThanOrEqualTo(@Nonnull Version other)
+    public boolean isOlderThanOrEqualTo(@Nonnull Version other)
     {
         return this.compareTo(other) <= 0;
     }
