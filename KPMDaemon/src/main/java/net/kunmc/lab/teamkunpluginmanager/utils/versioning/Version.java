@@ -69,33 +69,10 @@ public class Version implements Comparable<Version>
         return VERSION_PATTERN.matcher(versionString).find();
     }
 
-    @Nullable
-    public static Version of(@NotNull String rawVersion)
-    {
-        if (rawVersion.isEmpty() || !isValidVersionString(rawVersion))
-            return null;
-
-        try
-        {
-            return compileVersion(rawVersion);
-        }
-        catch (InvalidVersionSyntaxException e)
-        {
-            return null;
-        }
-    }
-
     @NotNull
-    public static Version ofUnsafe(@NotNull String rawVersion)
+    public static Version of(@NotNull String rawVersion) throws InvalidVersionSyntaxException
     {
-        try
-        {
-            return compileVersion(rawVersion);
-        }
-        catch (InvalidVersionSyntaxException e)
-        {
-            throw new IllegalArgumentException(e);
-        }
+        return compileVersion(rawVersion);
     }
 
     public boolean isPreRelease()

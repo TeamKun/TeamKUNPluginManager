@@ -70,15 +70,18 @@ public class KPMInformationFile
 
         Version version;
         // region Parse kpm => kpmVersion [required]
-        if (!map.containsKey("kpm"))
+        if (map.containsKey("kpm"))
+        {
+            Object kpmVersionObj = map.get("kpm");
+            if (!(kpmVersionObj instanceof String))
+                throw new InvalidInformationFileException("kpmVersion is not a string.");
+
+            if (Version.isValidVersionString((String) kpmVersionObj))
+                throw new InvalidInformationFileException("Invalid syntax of kpm version: " + kpmVersionObj);
+            version = Version.of((String) kpmVersionObj);
+        }
+        else
             throw new InvalidInformationFileException("kpm is not found.");
-
-        Object kpmVersionObj = map.get("kpm");
-        if (!(kpmVersionObj instanceof String))
-            throw new InvalidInformationFileException("kpmVersion is not a string.");
-
-        if ((version = Version.of((String) kpmVersionObj)) == null)
-            throw new InvalidInformationFileException("Invalid syntax of kpm version: " + kpmVersionObj);
         // endregion
 
         return new KPMInformationFile(version);

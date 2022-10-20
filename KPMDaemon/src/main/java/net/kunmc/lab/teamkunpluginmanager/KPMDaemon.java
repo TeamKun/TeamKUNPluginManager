@@ -180,6 +180,6 @@ public class KPMDaemon
 
     public Version getVersion()
     {
-        return Version.ofUnsafe(this.getEnvs().getPlugin().getDescription().getVersion());
+        return Version.of(this.getEnvs().getPlugin().getDescription().getVersion());
     }
 }
