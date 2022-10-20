@@ -37,7 +37,7 @@ public class KPMInfoManager
         KPMInformationFile info = null;
         try
         {
-            info = KPMInformationFile.load(path);
+            info = KPMInfoParser.load(path);
             this.lookupNames.put(descriptionFile.getName(), info);
         }
         catch (InvalidInformationFileException e)
