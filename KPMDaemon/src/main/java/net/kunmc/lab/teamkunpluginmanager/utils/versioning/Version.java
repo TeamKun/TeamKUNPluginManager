@@ -163,17 +163,22 @@ public class Version implements Comparable<Version>
         if (this.preRelease != null)
         {
             if (o.preRelease == null)
-                return 1;
+                return -1;
             else
                 return this.preRelease.compareTo(o.preRelease);
         }
-        else if (this.buildMetadata != null)
+        else if (o.preRelease != null)
+            return 1;
+
+        if (this.buildMetadata != null)
         {
             if (o.buildMetadata == null)
                 return 1;
             else
                 return this.buildMetadata.compareTo(o.buildMetadata);
         }
+        else if (o.buildMetadata != null)
+            return -1;
 
         return 0;
     }
