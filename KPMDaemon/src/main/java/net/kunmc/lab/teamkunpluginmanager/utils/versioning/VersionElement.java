@@ -11,9 +11,16 @@ import javax.annotation.Nonnull;
 @Getter
 public class VersionElement implements Comparable<VersionElement>
 {
+    /**
+     * 生のバージョン要素です。
+     */
     @NotNull
     private final String rawValue;
 
+    /**
+     * int型に変換されたバージョン要素です。
+     * 変換できない場合は-1が代入されます。
+     */
     private final int intValue;
 
     public VersionElement(@NotNull String rawValue)
@@ -40,5 +47,11 @@ public class VersionElement implements Comparable<VersionElement>
             return Integer.compare(this.intValue, o.intValue);
         else
             return this.rawValue.compareTo(o.rawValue);
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.rawValue;
     }
 }
