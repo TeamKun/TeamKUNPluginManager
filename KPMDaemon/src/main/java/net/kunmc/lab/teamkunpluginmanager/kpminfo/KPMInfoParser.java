@@ -1,7 +1,9 @@
 package net.kunmc.lab.teamkunpluginmanager.kpminfo;
 
+import net.kunmc.lab.teamkunpluginmanager.resolver.QueryContext;
 import net.kunmc.lab.teamkunpluginmanager.utils.versioning.Version;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -48,28 +50,40 @@ public class KPMInfoParser
         }
     }
 
+    @NotNull
     private static KPMInformationFile loadFromMap(Map<?, ?> map) throws InvalidInformationFileException
     {
         if (map == null)
             throw new InvalidInformationFileException("Information file is empty.");
 
-        Version version;
-        // region Parse kpm => kpmVersion [required]
+        Version version = parseVersion(map); // Parse kpm => kpmVersion [required]
+        QueryContext updateQuery = parseUpdateQuery(map); // Parse update => updateQuery [required]
+
+        return new KPMInformationFile(version, updateQuery);
+    }
+
+    @NotNull
+    private static Version parseVersion(Map<?, ?> map) throws InvalidInformationFileException
+    {
         if (map.containsKey("kpm"))
         {
             Object kpmVersionObj = map.get("kpm");
-            if (!(kpmVersionObj instanceof String))
-                throw new InvalidInformationFileException("kpmVersion is not a string.");
-
-            if (Version.isValidVersionString((String) kpmVersionObj))
+            if (Version.isValidVersionString(kpmVersionObj.toString()))
                 throw new InvalidInformationFileException("Invalid syntax of kpm version: " + kpmVersionObj);
-            version = Version.of((String) kpmVersionObj);
+            return Version.of((String) kpmVersionObj);
         }
         else
             throw new InvalidInformationFileException("kpm is not found.");
-        // endregion
 
-        return new KPMInformationFile(version);
+    }
 
+    @Nullable
+    private static QueryContext parseUpdateQuery(Map<?, ?> map)
+    {
+        if (!map.containsKey("update"))
+            return null;
+
+        Object updateQueryObj = map.get("update");
+        return QueryContext.fromString(updateQueryObj.toString());
     }
 }

@@ -2,8 +2,8 @@ package net.kunmc.lab.teamkunpluginmanager.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandler;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandlingUtils;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;

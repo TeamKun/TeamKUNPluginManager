@@ -17,6 +17,14 @@ public enum PluginsInstallErrorCause
      * 無効なプラグイン情報ファイルが指定されました。
      */
     INVALID_PLUGIN_DESCRIPTION,
+    /**
+     * プラグインがこのサーバに互換性がありません。
+     */
+    INCOMPATIBLE_WITH_BUKKIT_VERSION,
+    /**
+     * プラグインがこのKPMに互換性がありません。
+     */
+    INCOMPATIBLE_WITH_KPM_VERSION,
 
     /**
      * {@link java.io.IOException} が発生しました。

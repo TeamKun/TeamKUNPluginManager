@@ -18,9 +18,9 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.Download
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
-import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.Pair;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +52,6 @@ import java.util.stream.Collectors;
 public class DependsCollectTask extends InstallTask<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
     private final KPMDaemon daemon;
-    private final SignalHandleManager signalHandler;
     private final DependsCollectStatus status;
 
     private DependsCollectState taskState;
@@ -63,7 +61,6 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.daemon = installer.getDaemon();
-        this.signalHandler = installer.getProgress().getSignalHandler();
         this.status = this.progress.getDependsCollectStatus();
 
         this.taskState = DependsCollectState.INITIALIZED;
@@ -107,16 +104,15 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         // region Collect dependency's dependencies (Recursive via collectDependsDepends)
         this.taskState = DependsCollectState.COLLECTING_DEPENDS_DEPENDS;
 
-        HashMap<String, PluginDescriptionFile> dependsDescriptions = this.downloadResultsToPluginDescriptionFiles(downloadResults);
+        HashMap<String, DependencyElement> dependsDescriptions = this.downloadResultsToDependencyElement(downloadResults);
 
         // Remove failed dependencies from load description results
         dependsDescriptions.entrySet().removeIf(entry -> entry.getValue() == null);
 
         dependsDescriptions.entrySet().stream()
-                .filter(entry -> Objects.nonNull(entry.getValue()))
                 .filter(entry -> downloadResults.containsKey(entry.getKey()))
-                .forEach(entry -> {
-                    String exceptedName = entry.getValue().getName();
+                .forEach((entry) -> {
+                    String exceptedName = entry.getValue().getPluginName();
                     String actualName = entry.getKey();
                     if (!exceptedName.equals(actualName))
                     {
@@ -124,13 +120,9 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
                         return;
                     }
 
-                    Path pluginPath = downloadResults.get(actualName).getPath();
-
                     this.status.onCollect(
                             exceptedName,
-                            new DependencyElement(exceptedName, pluginPath,
-                                    entry.getValue(), exceptedName
-                            )
+                            entry.getValue()
                     );
                 });
 
@@ -166,14 +158,15 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
                 .runTask(arguments);
     }
 
-    private void collectDependsDepends(@NotNull HashMap<String, PluginDescriptionFile> dependsDescriptions,
+    private void collectDependsDepends(@NotNull HashMap<String, DependencyElement> dependencies,
                                        @NotNull List<String> alreadyCollectedPlugins)
     {
         List<String> alreadyCollected = new ArrayList<>(alreadyCollectedPlugins);
 
-        for (Map.Entry<String, PluginDescriptionFile> entry : dependsDescriptions.entrySet())
+        for (Map.Entry<String, DependencyElement> entry : dependencies.entrySet())
         {
-            DependsCollectResult dependsCollectResult = this.passCollector(entry.getValue(), alreadyCollected);
+            DependsCollectResult dependsCollectResult =
+                    this.passCollector(entry.getValue().getPluginDescription(), alreadyCollected);
 
             if (!dependsCollectResult.isSuccess())
             {
@@ -202,22 +195,39 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
         }
     }
 
-    private HashMap<String, @Nullable PluginDescriptionFile> downloadResultsToPluginDescriptionFiles(
+    private HashMap<String, @Nullable DependencyElement> downloadResultsToDependencyElement(
             @NotNull Map<String, DownloadResult> downloadResults)
     {
-        HashMap<String, PluginDescriptionFile> pluginDescriptionFiles = new HashMap<>();
+        HashMap<String, DependencyElement> dependencyElements = new HashMap<>();
 
         for (Map.Entry<String, DownloadResult> entry : downloadResults.entrySet())
         {
             PluginDescriptionFile pluginDescriptionFile = this.downloadResultToPluginDescriptionFile(entry.getValue());
-
             if (pluginDescriptionFile == null)
+            {
                 this.postSignal(new DependencyLoadDescriptionFailedSignal(entry.getKey()));
+                continue;
+            }
+
+            KPMInformationFile kpmInfoFile;
+            if (this.daemon.getKpmInfoManager().hasInfo(entry.getValue().getPath()))
+                kpmInfoFile = this.daemon.getKpmInfoManager().loadInfo(entry.getValue().getPath(), pluginDescriptionFile);
             else
-                pluginDescriptionFiles.put(entry.getKey(), pluginDescriptionFile);
+                kpmInfoFile = null;
+
+            String query;
+            if (kpmInfoFile != null && kpmInfoFile.getUpdateQuery() != null)
+                query = kpmInfoFile.getUpdateQuery().getQuery();
+            else
+                query = pluginDescriptionFile.getName();
+
+            dependencyElements.put(entry.getKey(), new DependencyElement(
+                    pluginDescriptionFile.getName(), entry.getValue().getPath(),
+                    pluginDescriptionFile, kpmInfoFile, query
+            ));
         }
 
-        return pluginDescriptionFiles;
+        return dependencyElements;
     }
 
     private DownloadResult passDownloader(@NotNull String url)

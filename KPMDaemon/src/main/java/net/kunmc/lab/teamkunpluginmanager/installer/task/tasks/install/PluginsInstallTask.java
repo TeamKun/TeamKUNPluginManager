@@ -6,14 +6,17 @@ import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginEnablingSignal;
+import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginInstallingSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginLoadSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginRelocatingSignal;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import net.kunmc.lab.teamkunpluginmanager.loader.CommandsPatcher;
 import net.kunmc.lab.teamkunpluginmanager.meta.InstallOperator;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaProvider;
+import net.kunmc.lab.teamkunpluginmanager.utils.versioning.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.entity.Player;
@@ -90,7 +93,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
                 Path path = dependency.getPluginPath();
 
                 PluginsInstallResult result =
-                        this.installOne(path, pluginDescription, dependency.getQuery(),
+                        this.installOne(path, pluginDescription, dependency.getKpmInfoFile(),
                                 installedPlugins, true
                         );
                 if (!result.isSuccess())  // installOne returns null if installation is failed
@@ -104,7 +107,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
             PluginsInstallResult result =
                     this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(),
-                            arguments.getQuery(), installedPlugins, false
+                            arguments.getKpmInformation(), installedPlugins, false
                     );
 
             if (result.isSuccess() && result.getInstalledPlugin() != null)
@@ -120,9 +123,13 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     @NotNull
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
-                                            @Nullable String query, @NotNull List<Plugin> installedPlugins, boolean isDependency)
+                                            @Nullable KPMInformationFile kpmInformationFile, @NotNull List<Plugin> installedPlugins, boolean isDependency)
     {
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
+
+        PluginsInstallErrorCause checkEnvError;
+        if ((checkEnvError = this.checkEnv(pluginDescription, kpmInformationFile)) != null)
+            return new PluginsInstallResult(false, this.state, checkEnvError);
 
         this.state = PluginsInstallState.PLUGIN_RELOCATING;
 
@@ -178,6 +185,12 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         this.postSignal(new PluginEnablingSignal.Post(target));
 
         installedPlugins.add(target);
+
+        String query;
+        if (kpmInformationFile != null && kpmInformationFile.getUpdateQuery() != null)
+            query = kpmInformationFile.getUpdateQuery().toString();
+        else
+            query = null;
 
         this.pluginMetaManager.onInstalled(
                 target,
@@ -255,5 +268,36 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
         }
+    }
+
+    @Nullable
+    @SuppressWarnings("deprecation")
+    private PluginsInstallErrorCause checkEnv(PluginDescriptionFile pluginDescription, @Nullable KPMInformationFile kpmInformation)
+    {
+
+        if (pluginDescription.getAPIVersion() != null)
+        {
+            String apiVersion = pluginDescription.getAPIVersion();
+            if (!Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
+                return PluginsInstallErrorCause.INCOMPATIBLE_WITH_KPM_VERSION;
+        }
+
+        if (kpmInformation == null)
+            return null;
+
+        Version daemonVersion = this.progress.getInstaller().getDaemon().getVersion();
+
+        if (kpmInformation.getKpmVersion().isOlderThan(daemonVersion))
+        {
+            PluginIncompatibleWithKPMSignal incompatibleSignal =
+                    new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInformation, daemonVersion);
+            this.postSignal(incompatibleSignal);
+
+            if (!incompatibleSignal.isForceInstall())
+                return PluginsInstallErrorCause.INCOMPATIBLE_WITH_KPM_VERSION;
+
+        }
+
+        return null;
     }
 }

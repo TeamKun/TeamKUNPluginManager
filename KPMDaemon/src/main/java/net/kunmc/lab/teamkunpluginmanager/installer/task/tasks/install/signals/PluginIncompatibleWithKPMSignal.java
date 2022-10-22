@@ -1,4 +1,4 @@
-package net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals;
+package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals;
 
 import lombok.Data;
 import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;

@@ -1,5 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.installer.impls.install;
 
+import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
+
 /**
  * インストールのエラーを表す列挙型です。
  */
@@ -22,7 +24,7 @@ public enum InstallErrorCause
     INCOMPATIBLE_API_VERSION,
     /**
      * プラグインのKPM指定バージョンと、このKPMのバージョンが互換性がなく、
-     * {@link net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.PluginIncompatibleWithKPMSignal} でも強制インストールが選択されませんでした。
+     * {@link PluginIncompatibleWithKPMSignal} でも強制インストールが選択されませんでした。
      */
     INCOMPATIBLE_KPM_VERSION,
 }

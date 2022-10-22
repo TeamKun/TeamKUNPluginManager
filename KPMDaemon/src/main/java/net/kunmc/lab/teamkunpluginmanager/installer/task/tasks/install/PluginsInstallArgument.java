@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,10 +30,10 @@ public class PluginsInstallArgument extends TaskArgument
     @NotNull
     PluginDescriptionFile pluginDescription;
     /**
-     * プラグインの解決に使用したクエリです。
+     * プラグインのKPM情報ファイルです。
      */
     @Nullable
-    String query;
+    KPMInformationFile kpmInformation;
 
     /**
      * 依存関係の要素です。

@@ -5,7 +5,6 @@ import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskResult;
@@ -93,15 +92,13 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         // Load kpmInfo
         KPMInformationFile kpmInfo = this.daemon.getKpmInfoManager().loadInfo(pluginFilePath, pluginDescription);
-        if (kpmInfo == null)
-            return null; // No kpmInfo file.
 
         boolean replacePlugin = false;
         // region Do assertions.
 
         this.progress.setCurrentTask(InstallTasks.CHECKING_ENVIRONMENT);
 
-        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription, kpmInfo);
+        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription);
         if (checkEnvErrorResult != null)
             return this.error(checkEnvErrorResult);
 
@@ -146,7 +143,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                                 new PluginsInstallTask(this)
                         )
                         .bridgeArgument(result -> new PluginsInstallArgument(
-                                pluginFilePath, pluginDescription, query, result.getOrder()
+                                pluginFilePath, pluginDescription, kpmInfo, result.getOrder()
                         ))
                         .submitAll(new DependsCollectArgument(pluginDescription));
         // endregion
@@ -160,8 +157,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     }
 
     @Nullable
-    @SuppressWarnings("deprecation")
-    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, KPMInformationFile kpmInfo)
+    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription)
     {
         String pluginName = pluginDescription.getName();
 
@@ -174,25 +170,6 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
             if (ignoredPluginSignal.isCancelInstall())
                 return InstallErrorCause.PLUGIN_IGNORED;
-        }
-        // endregion
-
-        // region Check if the plugin is incompatible with the server.
-        if (pluginDescription.getAPIVersion() != null)
-        {
-            String apiVersion = pluginDescription.getAPIVersion();
-            if (!Bukkit.getUnsafe().isSupportedApiVersion(apiVersion))
-                return InstallErrorCause.INCOMPATIBLE_API_VERSION;
-        }
-
-        if (kpmInfo.getKpmVersion().isOlderThan(this.daemon.getVersion()))
-        {
-            PluginIncompatibleWithKPMSignal incompatibleSignal =
-                    new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInfo, this.daemon.getVersion());
-            this.postSignal(incompatibleSignal);
-
-            if (!incompatibleSignal.isForceInstall())
-                return InstallErrorCause.INCOMPATIBLE_KPM_VERSION;
         }
         // endregion
 

@@ -1,6 +1,7 @@
 package net.kunmc.lab.teamkunpluginmanager.kpminfo;
 
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
+import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.zip.ZipFile;
 
 /**
  * KPM情報ファイルを管理するクラスです。
@@ -76,6 +78,38 @@ public class KPMInfoManager
     public KPMInformationFile getInfo(@NotNull String pluginName)
     {
         return this.lookupNames.get(pluginName);
+    }
+
+    /**
+     * プラグインが KPM情報ファイルを持っているかどうかを取得します。
+     *
+     * @param plugin プラグイン名
+     * @return プラグインが KPM情報ファイルを持っているかどうか
+     */
+    public boolean hasInfo(@NotNull Plugin plugin)
+    {
+        if (this.lookupNames.containsKey(plugin.getDescription().getName()))
+            return true;
+
+        return this.hasInfo(PluginUtil.getFile(plugin).toPath());
+    }
+
+    /**
+     * プラグインが KPM情報ファイルを持っているかどうかを取得します。
+     *
+     * @param pluginFile プラグインのファイル
+     * @return プラグインが KPM情報ファイルを持っているかどうか
+     */
+    public boolean hasInfo(@NotNull Path pluginFile)
+    {
+        try (ZipFile zipFile = new ZipFile(pluginFile.toFile()))
+        {
+            return zipFile.getEntry("kpm.info") != null;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     /**
