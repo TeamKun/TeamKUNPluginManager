@@ -132,30 +132,6 @@ public class PluginMetaManager implements Listener
     }
 
     /**
-     * すべてのプラグインのデータをクロールします。
-     */
-    public void crawlAll()
-    {
-        Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-
-        for (Plugin plugin : plugins)
-        {
-            if (this.provider.isPluginMetaExists(plugin.getName()))
-                continue;
-
-            this.provider.savePluginMeta(
-                    plugin,
-                    InstallOperator.UNKNOWN,
-                    System.currentTimeMillis(),
-                    null,
-                    false
-            );
-
-            this.provider.buildDependencyTree(plugin);
-        }
-    }
-
-    /**
      * プラグインがアンインストールされたときに呼び出します。
      *
      * @param pluginName アンインストールされたプラグインの名前
@@ -163,6 +139,28 @@ public class PluginMetaManager implements Listener
     public void onUninstalled(@NotNull String pluginName)
     {
         this.provider.removePluginMeta(pluginName);
+    }
+
+    /**
+     * プラグインのメタデータが存在するかどうかを返します。
+     *
+     * @param pluginName プラグインの名前
+     * @return プラグインのメタデータが存在するかどうか
+     */
+    public boolean hasPluginMeta(@NotNull String pluginName)
+    {
+        return this.provider.isPluginMetaExists(pluginName);
+    }
+
+    /**
+     * プラグインのメタデータが存在するかどうかを返します。
+     *
+     * @param plugin プラグイン
+     * @return プラグインのメタデータが存在するかどうか
+     */
+    public boolean hasPluginMeta(@NotNull Plugin plugin)
+    {
+        return this.hasPluginMeta(plugin.getName());
     }
 
     private boolean checkNoAutoCreateMetadata(Plugin plugin)

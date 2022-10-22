@@ -2,8 +2,10 @@ package net.kunmc.lab.teamkunpluginmanager.utils.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -725,10 +727,13 @@ public class Transaction implements AutoCloseable
     /**
      * クエリの実行結果を表すクラスです。
      */
-    @AllArgsConstructor
+    @RequiredArgsConstructor
     public class QueryResult<T>
     {
         private final ResultSet result;
+        @Setter
+        @Accessors(chain = true)
+        private Function<ResultRow, T> mapper;
 
         /**
          * ResultSetをそのまま取得します。
@@ -746,7 +751,6 @@ public class Transaction implements AutoCloseable
         public void close() throws SQLException
         {
             this.result.close();
-            Transaction.this.connection.close();
         }
 
         /**
@@ -756,14 +760,14 @@ public class Transaction implements AutoCloseable
          * @param max          最大件数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultSet, T> resultMapper, long max)
+        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper, long max)
         {
             ArrayList<T> list = new ArrayList<>();
 
             try
             {
                 while (this.result.next() && !(max == -1 || list.size() >= max))
-                    list.add(resultMapper.apply(this.result));
+                    list.add(resultMapper.apply(new ResultRow(this.result, true)));
             }
             catch (SQLException e)
             {
@@ -779,7 +783,7 @@ public class Transaction implements AutoCloseable
          * @param resultMapper マッピング関数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultSet, T> resultMapper)
+        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper)
         {
             return this.mapToList(resultMapper, -1);
         }
@@ -805,6 +809,36 @@ public class Transaction implements AutoCloseable
         public Stream<ResultRow> stream()
         {
             return this.stream(true);
+        }
+
+        /**
+         * 次の行に移動します。
+         *
+         * @return 次の行が存在するかどうか
+         */
+        public boolean next()
+        {
+            try
+            {
+                return this.result.next();
+            }
+            catch (SQLException e)
+            {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        /**
+         * 行の内容をマップして返します。
+         *
+         * @return マップされた行の内容
+         */
+        public T get()
+        {
+            if (this.mapper == null)
+                throw new IllegalStateException("Mapper is not set.");
+
+            return this.mapper.apply(new ResultRow(this.result, true));
         }
     }
 

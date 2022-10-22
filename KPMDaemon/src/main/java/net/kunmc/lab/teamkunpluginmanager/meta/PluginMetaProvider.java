@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.utils.db.Transaction;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -256,10 +257,18 @@ public class PluginMetaProvider implements Listener
                 connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
         statement.setString(1, name);
 
-        for (String author : authors)
+        try
         {
-            statement.setString(2, author);
-            statement.execute();
+            for (String author : authors)
+            {
+                statement.setString(2, author);
+                statement.execute();
+            }
+        }
+        catch (SQLException e)
+        {
+            KPMDaemon.getInstance().getLogger()
+                    .warn("Failed to save plugin author data: " + name + " by " + authors);
         }
 
         statement = connection.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
@@ -560,6 +569,17 @@ public class PluginMetaProvider implements Listener
         Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
                 .set(1, pluginName)
                 .executeUpdate();
+    }
+
+    /**
+     * PluginMeta のイテレータを取得します。
+     *
+     * @return PluginMeta のイテレータ
+     */
+    @NotNull
+    public PluginMetaIterator getPluginMetaIterator()
+    {
+        return new PluginMetaIterator(this, Transaction.create(this.db));
     }
 
     /**

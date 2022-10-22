@@ -7,6 +7,9 @@ import net.kunmc.lab.teamkunpluginmanager.alias.AliasProvider;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallManager;
 import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInfoManager;
 import net.kunmc.lab.teamkunpluginmanager.loader.PluginLoader;
+import net.kunmc.lab.teamkunpluginmanager.meta.InstallOperator;
+import net.kunmc.lab.teamkunpluginmanager.meta.PluginMeta;
+import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaIterator;
 import net.kunmc.lab.teamkunpluginmanager.meta.PluginMetaManager;
 import net.kunmc.lab.teamkunpluginmanager.resolver.PluginResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.BruteforceGitHubResolver;
@@ -16,12 +19,16 @@ import net.kunmc.lab.teamkunpluginmanager.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.teamkunpluginmanager.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.teamkunpluginmanager.utils.http.Requests;
 import net.kunmc.lab.teamkunpluginmanager.utils.versioning.Version;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * KPMのデーモンです。
@@ -123,7 +130,47 @@ public class KPMDaemon
     private void setupDependencyTree()
     {
         this.logger.info("Loading plugin meta data ...");
-        this.pluginMetaManager.crawlAll();
+
+        List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
+        List<String> pluginNames = plugins.stream().parallel()
+                .map(Plugin::getName)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+
+        try (PluginMetaIterator iterator = this.pluginMetaManager.getProvider().getPluginMetaIterator())
+        {
+            while (iterator.hasNext())
+            {
+                PluginMeta meta = iterator.next();
+
+                if (pluginNames.contains(meta.getName().toLowerCase()))
+                    continue;
+
+
+                this.logger.info("Plugin {} is not loaded by server. Removing from database ...", meta.getName());
+                iterator.remove();
+            }
+        }
+
+        for (Plugin plugin : plugins)
+        {
+            if (this.pluginMetaManager.hasPluginMeta(plugin))
+                continue;
+
+            this.pluginMetaManager.getProvider().savePluginMeta(
+                    plugin,
+                    InstallOperator.UNKNOWN,
+                    System.currentTimeMillis(),
+                    null,
+                    false
+            );
+
+            this.logger.info("Plugin {} is not managed by KPM. Adding to database ...", plugin.getName());
+
+            this.pluginMetaManager.getProvider().buildDependencyTree(plugin);
+        }
+
     }
 
     private void setupPluginResolvers(List<String> organizationNames)
