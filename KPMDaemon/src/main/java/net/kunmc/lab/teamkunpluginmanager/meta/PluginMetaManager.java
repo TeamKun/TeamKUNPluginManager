@@ -84,6 +84,9 @@ public class PluginMetaManager implements Listener
     @EventHandler
     public void onDisable(PluginDisableEvent event)
     {
+        if (!PluginUtil.isServerRunning())
+            return;  // The server is being stopped.
+
         Plugin plugin = event.getPlugin();
         if (plugin.getName().equalsIgnoreCase("TeamKUNPluginManager") ||
                 this.checkNoAutoCreateMetadata(plugin))
