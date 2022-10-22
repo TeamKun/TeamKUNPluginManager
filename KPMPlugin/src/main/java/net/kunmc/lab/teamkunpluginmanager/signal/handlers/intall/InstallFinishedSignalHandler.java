@@ -41,12 +41,6 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             case PLUGIN_ALREADY_INSTALLED:
                 this.terminal.error("指定されたプラグインは既にインストールされています。");
                 return true;
-            case INCOMPATIBLE_API_VERSION:
-                this.terminal.error("指定されたプラグインは、このサーバーバージョンと互換性がありません(プラグインのapi-versionがより新しい可能性があります)。");
-                return true;
-            case INCOMPATIBLE_KPM_VERSION:
-                this.terminal.error("指定されたプラグインは、このKPMのバージョンと互換性がありません。");
-                return true;
         }
 
         return false;
@@ -125,6 +119,12 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 break;
             case INVALID_PLUGIN_DESCRIPTION:
                 this.terminal.error("不正なプラグイン情報ファイルが含まれています。");
+                break;
+            case INCOMPATIBLE_WITH_BUKKIT_VERSION:
+                this.terminal.error("指定されたプラグインは、このサーバのバージョンと互換性がありません(プラグインのapi-versionがより新しい可能性があります)。");
+                break;
+            case INCOMPATIBLE_WITH_KPM_VERSION:
+                this.terminal.error("指定されたプラグインは、この KPM のバージョンと互換性がありません。");
                 break;
             case IO_EXCEPTION_OCCURRED:
                 this.terminal.error("プラグインのインストール中に I/O エラーが発生しました。");
