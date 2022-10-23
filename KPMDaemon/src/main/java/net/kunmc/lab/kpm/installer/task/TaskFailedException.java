@@ -1,0 +1,35 @@
+package net.kunmc.lab.kpm.installer.task;
+
+import lombok.Getter;
+
+/**
+ * タスクが失敗したことを表すクラスです。
+ */
+public class TaskFailedException extends Exception
+{
+    @Getter
+    private final TaskResult<?, ?> result;
+
+    public TaskFailedException(TaskResult<?, ?> result)
+    {
+        this.result = result;
+    }
+
+    public TaskFailedException(String message, TaskResult<?, ?> result)
+    {
+        super(message);
+        this.result = result;
+    }
+
+    public TaskFailedException(String message, Throwable cause, TaskResult<?, ?> result)
+    {
+        super(message, cause);
+        this.result = result;
+    }
+
+    public TaskFailedException(Throwable cause, TaskResult<?, ?> result)
+    {
+        super(cause);
+        this.result = result;
+    }
+}
