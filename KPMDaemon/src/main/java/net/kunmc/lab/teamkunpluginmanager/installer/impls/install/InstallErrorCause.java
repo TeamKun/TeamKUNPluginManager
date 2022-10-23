@@ -17,4 +17,9 @@ public enum InstallErrorCause
      * {@link net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal} でも置換が選択されませんでした。
      */
     PLUGIN_ALREADY_INSTALLED,
+    /**
+     * プラグインの持つKPM情報ファイルが不正であり、
+     * {@link net.kunmc.lab.teamkunpluginmanager.installer.signals.InvalidKPMInfoFileSignal} でも無視が選択されませんでした。
+     */
+    INVALID_KPM_INFO_FILE,
 }

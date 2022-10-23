@@ -5,6 +5,7 @@ import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
 import net.kunmc.lab.teamkunpluginmanager.installer.InstallResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.impls.install.signals.AlreadyInstalledPluginSignal;
+import net.kunmc.lab.teamkunpluginmanager.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskFailedException;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.TaskResult;
@@ -21,6 +22,7 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.PluginsIn
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.install.PluginsInstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import net.kunmc.lab.teamkunpluginmanager.signal.SignalHandleManager;
 import net.kunmc.lab.teamkunpluginmanager.utils.PluginUtil;
@@ -31,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -91,7 +94,21 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         // endregion
 
         // Load kpmInfo
-        KPMInformationFile kpmInfo = this.daemon.getKpmInfoManager().loadInfo(pluginFilePath, pluginDescription);
+        KPMInformationFile kpmInfo = null;
+        try
+        {
+            kpmInfo = this.daemon.getKpmInfoManager().loadInfo(pluginFilePath, pluginDescription);
+        }
+        catch (InvalidInformationFileException e)
+        {
+            InvalidKPMInfoFileSignal signal = new InvalidKPMInfoFileSignal(pluginFilePath, pluginDescription);
+            this.postSignal(signal);
+            if (!signal.isIgnore())
+                return this.error(InstallErrorCause.INVALID_KPM_INFO_FILE);
+        }
+        catch (FileNotFoundException ignored)
+        {
+        }  // KPM info file is not required so we can ignore it.
 
         boolean replacePlugin = false;
         // region Do assertions.
@@ -131,6 +148,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
 
         // region Do collect dependencies, compute dependencies load order and install them.
+        KPMInformationFile finalKpmInfo = kpmInfo;
         TaskResult installResult =
                 this.submitter(
                                 InstallTasks.COLLECTING_DEPENDENCIES,
@@ -143,7 +161,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                                 new PluginsInstallTask(this)
                         )
                         .bridgeArgument(result -> new PluginsInstallArgument(
-                                pluginFilePath, pluginDescription, kpmInfo, result.getOrder()
+                                pluginFilePath, pluginDescription, finalKpmInfo, result.getOrder()
                         ))
                         .submitAll(new DependsCollectArgument(pluginDescription));
         // endregion

@@ -2,6 +2,7 @@ package net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.col
 
 import net.kunmc.lab.teamkunpluginmanager.KPMDaemon;
 import net.kunmc.lab.teamkunpluginmanager.installer.AbstractInstaller;
+import net.kunmc.lab.teamkunpluginmanager.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.InstallTask;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
@@ -18,6 +19,7 @@ import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.download.Download
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.teamkunpluginmanager.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.teamkunpluginmanager.kpminfo.KPMInformationFile;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.ResolveResult;
 import net.kunmc.lab.teamkunpluginmanager.resolver.result.SuccessResult;
@@ -27,6 +29,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -209,11 +212,22 @@ public class DependsCollectTask extends InstallTask<DependsCollectArgument, Depe
                 continue;
             }
 
-            KPMInformationFile kpmInfoFile;
-            if (this.daemon.getKpmInfoManager().hasInfo(entry.getValue().getPath()))
+            KPMInformationFile kpmInfoFile = null;
+            try
+            {
                 kpmInfoFile = this.daemon.getKpmInfoManager().loadInfo(entry.getValue().getPath(), pluginDescriptionFile);
-            else
-                kpmInfoFile = null;
+            }
+            catch (InvalidInformationFileException ex)
+            {
+                InvalidKPMInfoFileSignal signal =
+                        new InvalidKPMInfoFileSignal(entry.getValue().getPath(), pluginDescriptionFile);
+                this.postSignal(signal);
+                if (!signal.isIgnore())
+                    continue;
+            }
+            catch (FileNotFoundException ignored)
+            {
+            }
 
             String query;
             if (kpmInfoFile != null && kpmInfoFile.getUpdateQuery() != null)

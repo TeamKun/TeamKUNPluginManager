@@ -32,25 +32,15 @@ public class KPMInfoManager
      * @param path            KPM情報ファイルのパス
      * @param descriptionFile プラグインの説明ファイル
      * @return 読み込みに成功した場合はKPM情報ファイル、失敗した場合はnull
+     * @throws InvalidInformationFileException KPM情報ファイルが不正な場合
+     * @throws FileNotFoundException           KPM情報ファイルが見つからない場合
      */
     @Nullable
-    public KPMInformationFile loadInfo(@NotNull Path path, @NotNull PluginDescriptionFile descriptionFile)
+    public KPMInformationFile loadInfo(@NotNull Path path, @NotNull PluginDescriptionFile descriptionFile) throws
+            FileNotFoundException, InvalidInformationFileException
     {
-        KPMInformationFile info = null;
-        try
-        {
-            info = KPMInfoParser.load(path);
-            this.lookupNames.put(descriptionFile.getName(), info);
-        }
-        catch (InvalidInformationFileException e)
-        {
-            this.daemon.getLogger().warn(
-                    "The plugin " + descriptionFile.getName() + " has invalid KPM information file: " + e.getMessage());
-            this.daemon.getLogger().warn("The plugin's KPM information will be ignored.");
-        }
-        catch (FileNotFoundException ignored)
-        {
-        }
+        KPMInformationFile info = KPMInfoParser.load(path);
+        this.lookupNames.put(descriptionFile.getName(), info);
 
         return info;
     }
