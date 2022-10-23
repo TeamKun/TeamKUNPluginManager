@@ -68,7 +68,7 @@ public class KPMInfoParser
         if (map.containsKey("kpm"))
         {
             Object kpmVersionObj = map.get("kpm");
-            if (Version.isValidVersionString(kpmVersionObj.toString()))
+            if (!Version.isValidVersionString(kpmVersionObj.toString()))
                 throw new InvalidInformationFileException("Invalid syntax of kpm version: " + kpmVersionObj);
             return Version.of((String) kpmVersionObj);
         }
