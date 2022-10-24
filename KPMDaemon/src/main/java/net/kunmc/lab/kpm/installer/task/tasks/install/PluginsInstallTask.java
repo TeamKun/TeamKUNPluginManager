@@ -1,6 +1,8 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install;
 
 import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.hook.HookExecutor;
+import net.kunmc.lab.kpm.hook.hooks.PluginInstallHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
@@ -56,6 +58,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     private final PluginMetaManager pluginMetaManager;
     private final PluginMetaProvider pluginMetaProvider;
+    private final HookExecutor hookExecutor;
     private PluginsInstallState state;
 
     public PluginsInstallTask(@NotNull AbstractInstaller<?, ?, ?> installer)
@@ -65,6 +68,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         PluginMetaManager pluginMetaManager = installer.getDaemon().getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;
         this.pluginMetaProvider = pluginMetaManager.getProvider();
+        this.hookExecutor = installer.getDaemon().getHookExecutor();
 
         this.state = PluginsInstallState.INITIALIZED;
     }
@@ -125,7 +129,23 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
                                             @Nullable KPMInformationFile kpmInformationFile, @NotNull List<Plugin> installedPlugins, boolean isDependency)
     {
+        // Define variables
+        InstallOperator operator = isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN;
+        String query;
+        if (kpmInformationFile != null && kpmInformationFile.getUpdateQuery() != null)
+            query = kpmInformationFile.getUpdateQuery().toString();
+        else
+            query = null;
+
+        // Start install
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
+
+        if (kpmInformationFile != null)
+            kpmInformationFile.getHooks().runHook(new PluginInstallHook.Pre(
+                    operator,
+                    isDependency,
+                    query
+            ));
 
         PluginsInstallErrorCause checkEnvError;
         if ((checkEnvError = this.checkEnv(pluginDescription, kpmInformationFile)) != null)
@@ -186,18 +206,19 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         installedPlugins.add(target);
 
-        String query;
-        if (kpmInformationFile != null && kpmInformationFile.getUpdateQuery() != null)
-            query = kpmInformationFile.getUpdateQuery().toString();
-        else
-            query = null;
-
         this.pluginMetaManager.onInstalled(
                 target,
-                isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN,
+                operator,
                 query,
                 isDependency
         );
+
+        if (kpmInformationFile != null)
+            kpmInformationFile.getHooks().runHook(new PluginInstallHook.Post(
+                    operator,
+                    isDependency,
+                    query
+            ));
 
         return new PluginsInstallResult(true, this.state, null, null, target, installedPlugins);
     }

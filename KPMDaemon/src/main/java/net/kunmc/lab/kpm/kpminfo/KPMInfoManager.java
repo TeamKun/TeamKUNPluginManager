@@ -39,7 +39,7 @@ public class KPMInfoManager
     public KPMInformationFile loadInfo(@NotNull Path path, @NotNull PluginDescriptionFile descriptionFile) throws
             FileNotFoundException, InvalidInformationFileException
     {
-        KPMInformationFile info = KPMInfoParser.load(path);
+        KPMInformationFile info = KPMInfoParser.load(this.daemon, path);
         this.lookupNames.put(descriptionFile.getName(), info);
 
         return info;

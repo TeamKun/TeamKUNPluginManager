@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
 import net.kunmc.lab.kpm.alias.AliasProvider;
+import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.installer.InstallManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.loader.PluginLoader;
@@ -82,12 +83,16 @@ public class KPMDaemon
      */
     @NotNull
     private final AliasProvider aliasProvider;
-
     /**
      * プラグインをロード/アンロードするためのクラスです。
      */
     @NotNull
     private final PluginLoader pluginLoader;
+    /**
+     * フックを実行するクラスです。
+     */
+    @NotNull
+    private final HookExecutor hookExecutor;
 
     {
         INSTANCE = this;
@@ -104,6 +109,7 @@ public class KPMDaemon
         this.aliasProvider = new AliasProvider(env.getAliasesDBPath());
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
+        this.hookExecutor = new HookExecutor(this);
 
         this.setupDaemon(env.getDataDirPath(), env.getOrganizations());
     }

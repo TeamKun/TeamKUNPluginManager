@@ -1,5 +1,8 @@
 package net.kunmc.lab.kpm.kpminfo;
 
+import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.hook.HookRecipientList;
+import net.kunmc.lab.kpm.hook.KPMHookRecipient;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +13,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
 
@@ -24,13 +30,13 @@ public class KPMInfoParser
     }
 
     @NotNull
-    public static KPMInformationFile load(InputStream stream) throws InvalidInformationFileException
+    public static KPMInformationFile load(@NotNull KPMDaemon daemon, @NotNull InputStream stream) throws InvalidInformationFileException
     {
-        return loadFromMap(YAML_PARSER.load(stream));
+        return loadFromMap(daemon, YAML_PARSER.load(stream));
     }
 
     @NotNull
-    public static KPMInformationFile load(Path jarFile) throws InvalidInformationFileException, FileNotFoundException
+    public static KPMInformationFile load(@NotNull KPMDaemon daemon, @NotNull Path jarFile) throws InvalidInformationFileException, FileNotFoundException
     {
         File file = jarFile.toFile();
         if (!file.exists())
@@ -42,7 +48,7 @@ public class KPMInfoParser
             if (stream == null)
                 throw new InvalidInformationFileException("kpm.yml not found in " + file.getAbsolutePath());
 
-            return load(stream);
+            return load(daemon, stream);
         }
         catch (IOException e)
         {
@@ -51,15 +57,16 @@ public class KPMInfoParser
     }
 
     @NotNull
-    private static KPMInformationFile loadFromMap(Map<?, ?> map) throws InvalidInformationFileException
+    private static KPMInformationFile loadFromMap(@NotNull KPMDaemon daemon, Map<?, ?> map) throws InvalidInformationFileException
     {
         if (map == null)
             throw new InvalidInformationFileException("Information file is empty.");
 
         Version version = parseVersion(map); // Parse kpm => kpmVersion [required]
         QueryContext updateQuery = parseUpdateQuery(map); // Parse update => updateQuery [required]
+        HookRecipientList hooks = parseHooks(daemon, map); // Parse hooks [optional]
 
-        return new KPMInformationFile(version, updateQuery);
+        return new KPMInformationFile(version, updateQuery, hooks);
     }
 
     @NotNull
@@ -78,12 +85,66 @@ public class KPMInfoParser
     }
 
     @Nullable
-    private static QueryContext parseUpdateQuery(Map<?, ?> map)
+    private static QueryContext parseUpdateQuery(Map<?, ?> map) throws InvalidInformationFileException
     {
         if (!map.containsKey("update"))
             return null;
 
-        Object updateQueryObj = map.get("update");
-        return QueryContext.fromString(updateQueryObj.toString());
+        String updateQuery = map.get("update").toString();
+        if (updateQuery.isEmpty())
+            throw new InvalidInformationFileException("Update query is empty.");
+
+        return QueryContext.fromString(updateQuery);
     }
+
+    @NotNull
+    private static HookRecipientList parseHooks(KPMDaemon daemon, Map<?, ?> map) throws InvalidInformationFileException
+    {
+        HookRecipientList result = new HookRecipientList(daemon.getHookExecutor());
+
+        if (!map.containsKey("hooks"))
+            return result;
+
+        Object hooksObj = map.get("hooks");
+        if (!(hooksObj instanceof List))
+            throw new InvalidInformationFileException("hooks must be a list of full-qualified class names.");
+
+        List<?> hooks = (List<?>) hooksObj;
+
+        for (Object hook : hooks)
+        {
+            if (!(hook instanceof String))
+                throw new InvalidInformationFileException("hooks must be a list of full-qualified class names.");
+
+            String hookClassName = (String) hook;
+            try
+            {
+                Class<?> hookClass = Class.forName(hookClassName);
+                if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
+                    throw new InvalidInformationFileException("Class " + hookClassName + " is not a KPMHookRecipient.");
+
+                Constructor<? extends KPMHookRecipient> constructor =
+                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMDaemon.class);
+
+                result.add(constructor.newInstance(daemon));
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new InvalidInformationFileException("Hook recipient class was not found: " + hookClassName, e);
+            }
+            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+            {
+                throw new InvalidInformationFileException("Failed to create an instance of hook recipient class: " +
+                        hookClassName, e);
+            }
+            catch (NoSuchMethodException e)
+            {
+                throw new InvalidInformationFileException("Hook recipient class must have a constructor with" +
+                        " a single parameter of type KPMDaemon: " + hookClassName, e);
+            }
+        }
+
+        return result;
+    }
+
 }

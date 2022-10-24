@@ -3,6 +3,8 @@ package net.kunmc.lab.kpm.kpminfo;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import net.kunmc.lab.kpm.hook.HookRecipientList;
+import net.kunmc.lab.kpm.hook.KPMHookRecipient;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import org.jetbrains.annotations.NotNull;
@@ -28,4 +30,14 @@ public class KPMInformationFile
      */
     @Nullable
     QueryContext updateQuery;
+    /**
+     * KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
+     * KPMフックは、KPMがプラグインを読み込む際や、プラグインをアンロードする際に呼び出されるフックです。
+     *
+     * @see net.kunmc.lab.kpm.hook.KPMHook
+     * @see KPMHookRecipient
+     * @see net.kunmc.lab.kpm.hook.HookListener
+     */
+    @NotNull
+    HookRecipientList hooks;
 }
