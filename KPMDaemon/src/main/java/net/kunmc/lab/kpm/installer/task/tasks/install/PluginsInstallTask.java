@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.install;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.hook.HookExecutor;
-import net.kunmc.lab.kpm.hook.hooks.PluginInstallHook;
+import net.kunmc.lab.kpm.hook.hooks.PluginInstalledHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
@@ -140,13 +140,6 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         // Start install
         this.postSignal(new PluginInstallingSignal(path, pluginDescription));
 
-        if (kpmInformationFile != null)
-            kpmInformationFile.getHooks().runHook(new PluginInstallHook.Pre(
-                    operator,
-                    isDependency,
-                    query
-            ));
-
         PluginsInstallErrorCause checkEnvError;
         if ((checkEnvError = this.checkEnv(pluginDescription, kpmInformationFile)) != null)
             return new PluginsInstallResult(false, this.state, checkEnvError);
@@ -214,7 +207,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         );
 
         if (kpmInformationFile != null)
-            kpmInformationFile.getHooks().runHook(new PluginInstallHook.Post(
+            kpmInformationFile.getHooks().runHook(new PluginInstalledHook(
                     operator,
                     isDependency,
                     query
