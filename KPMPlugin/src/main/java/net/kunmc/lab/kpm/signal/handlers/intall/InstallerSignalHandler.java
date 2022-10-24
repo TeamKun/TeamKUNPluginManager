@@ -56,7 +56,7 @@ public class InstallerSignalHandler
     @SignalHandler
     public void onInvalidKPMInfoFile(InvalidKPMInfoFileSignal signal)
     {
-        this.terminal.warn("プラグイン " + signal.getPlugin() + " はKPM情報ファイル (kpm.yml) を持っていますが、" +
+        this.terminal.warn("プラグイン " + signal.getDescriptionFile().getName() + " はKPM情報ファイル (kpm.yml) を持っていますが、" +
                 "KPMが理解できる形式ではありません。");
         this.terminal.info(ChatColor.GRAY + "このファイルを無視して強制的にインストールできますが、" +
                 "強制的な操作は予期しない問題を引き起こす可能性があります。");
