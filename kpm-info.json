@@ -28,10 +28,23 @@
         "TeamKUN/DaredemoOpPlugin",
         "bukkit>daredemo-op-plugin"
       ]
+    },
+    "hooks": {
+      "type": "array",
+      "description": "KPMフックを受け取るクラスの一覧です。KPMフックを受け取るには, このフィールドに KPMHookRecipient を実装したクラスのフルパスを指定します。また, KPMフックを受け取るクラスは, 1つのKPMDaemonのみを引数にとるコンストラクタを持つ必要があります。",
+      "items": {
+        "type": "string",
+        "examples": [
+          "net.kunmc.lab.exampleplugin.kpmhooks.ExampleKPMHookRecipient"
+        ],
+        "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
     }
   },
   "required": [
     "kpm"
   ],
-  "additionalProperties": false
+  "additionalProperties": true
 }
