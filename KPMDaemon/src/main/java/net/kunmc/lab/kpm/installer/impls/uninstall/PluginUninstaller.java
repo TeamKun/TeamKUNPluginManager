@@ -111,6 +111,9 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
         UninstallReadySignal uninstallReadySignal = new UninstallReadySignal(plugins);
         this.postSignal(uninstallReadySignal);
+        if (!uninstallReadySignal.isContinueUninstall())
+            return this.error(UnInstallErrorCause.CANCELLED);
+
         plugins = uninstallReadySignal.getPlugins();
 
         // region Uninstall plugin

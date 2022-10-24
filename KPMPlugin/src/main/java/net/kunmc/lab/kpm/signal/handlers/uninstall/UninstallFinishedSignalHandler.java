@@ -39,6 +39,9 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
             case PLUGIN_IS_DEPENDENCY:
                 this.terminal.error("指定されたプラグインが他のプラグインの依存関係に含まれています。");
                 return true;
+            case CANCELLED:
+                this.terminal.error("アンインストールがキャンセルされました。");
+                return true;
         }
 
         return false;

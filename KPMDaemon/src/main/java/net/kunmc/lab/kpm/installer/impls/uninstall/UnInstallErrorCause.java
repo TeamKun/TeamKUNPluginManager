@@ -19,4 +19,8 @@ public enum UnInstallErrorCause
      * {@link net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal} でも強制アンインストールが選択されませんでした。
      */
     PLUGIN_IS_DEPENDENCY,
+    /**
+     * アンインストールがユーザまたはシグナルによってキャンセルされました。
+     */
+    CANCELLED,
 }
