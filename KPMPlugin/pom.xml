@@ -86,9 +86,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.kunmc.lab</groupId>
+            <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMDaemon</artifactId>
-            <version>${project.version}</version>
+            <version>3.0.0-pre5</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
