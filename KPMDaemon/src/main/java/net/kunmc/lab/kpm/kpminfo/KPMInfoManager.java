@@ -71,6 +71,30 @@ public class KPMInfoManager
     }
 
     /**
+     * プラグインのKPM情報ファイルを取得するか読み込みます。
+     *
+     * @param plugin プラグイン
+     * @return プラグインのKPM情報ファイル
+     */
+    @Nullable
+    public KPMInformationFile getOrLoadInfo(@NotNull Plugin plugin)
+    {
+        KPMInformationFile info = this.getInfo(plugin);
+        if (info != null)
+            return info;
+
+        try
+        {
+            return this.loadInfo(PluginUtil.getFile(plugin).toPath(), plugin.getDescription());
+        }
+        catch (FileNotFoundException | InvalidInformationFileException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * プラグインが KPM情報ファイルを持っているかどうかを取得します。
      *
      * @param plugin プラグイン名

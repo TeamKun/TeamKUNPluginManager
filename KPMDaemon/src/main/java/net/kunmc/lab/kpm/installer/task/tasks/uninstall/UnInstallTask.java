@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
 
 import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.hook.hooks.PluginUninstallHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
@@ -9,6 +10,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallE
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallingSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.StartingGCSignal;
+import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -144,6 +146,12 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
     private UnInstallErrorCause uninstallOnePlugin(@NotNull Plugin plugin)
     {
         this.postSignal(new PluginUninstallingSignal(plugin));
+        KPMInformationFile kpmInfo = null;
+        if (this.daemon.getKpmInfoManager().hasInfo(plugin))
+            kpmInfo = this.daemon.getKpmInfoManager().getOrLoadInfo(plugin);
+
+        if (kpmInfo != null)
+            kpmInfo.getHooks().runHook(new PluginUninstallHook.Pre(plugin.getDescription(), kpmInfo, plugin));
 
         this.taskState = UnInstallState.RECIPES_UNREGISTERING;
         this.unregisterRecipes(plugin);
@@ -178,6 +186,9 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             return UnInstallErrorCause.INTERNAL_CLASS_UNLOAD_FAILED;
 
         this.postSignal(new PluginUnloadingSignal.Post(pluginName));
+
+        if (kpmInfo != null)
+            kpmInfo.getHooks().runHook(new PluginUninstallHook.Post(plugin.getDescription(), kpmInfo));
 
         return UnInstallErrorCause.INTERNAL_UNINSTALL_OK;
     }
