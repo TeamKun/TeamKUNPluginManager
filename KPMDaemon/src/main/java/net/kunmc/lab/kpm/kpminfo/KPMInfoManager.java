@@ -42,6 +42,9 @@ public class KPMInfoManager
         KPMInformationFile info = KPMInfoParser.load(this.daemon, path);
         this.lookupNames.put(descriptionFile.getName(), info);
 
+        if (PluginUtil.isPluginLoaded(descriptionFile.getName()))
+            info.getHooks().bakeHooks(this.daemon);
+
         return info;
     }
 

@@ -1,9 +1,14 @@
 package net.kunmc.lab.kpm.hook;
 
 import lombok.Getter;
+import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * KPMフックの受け取りを行うクラスを管理するクラスです。
@@ -11,11 +16,18 @@ import java.util.ArrayList;
 public class HookRecipientList extends ArrayList<KPMHookRecipient>
 {
     @Getter
+    private final KPMDaemon daemon;
+    @Getter
     private final HookExecutor executor;
 
-    public HookRecipientList(@NotNull HookExecutor executor)
+    @Getter
+    private final List<String> reservedHookClasses;
+
+    public HookRecipientList(@NotNull KPMDaemon daemon, @NotNull HookExecutor executor)
     {
+        this.daemon = daemon;
         this.executor = executor;
+        this.reservedHookClasses = new ArrayList<>();
     }
 
     /**
@@ -25,7 +37,62 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
      */
     public void runHook(KPMHook hook)
     {
+        if (!this.reservedHookClasses.isEmpty())
+        {
+            try
+            {
+                this.bakeHooks(this.daemon);
+            }
+            catch (InvalidInformationFileException e)
+            {
+                throw new IllegalStateException("Failed to bake hook listeners: " + e.getMessage(), e);
+            }
+        }
+
         for (KPMHookRecipient recipient : this)
             this.executor.runHook(recipient, hook);
+    }
+
+    public void add(@NotNull String className)
+    {
+        this.reservedHookClasses.add(className);
+    }
+
+    /**
+     * 予約クラス名からフックを作成します。
+     *
+     * @param daemon KPMデーモンのインスタンス
+     * @throws InvalidInformationFileException 予約クラス名が無効な場合
+     */
+    public void bakeHooks(@NotNull KPMDaemon daemon) throws InvalidInformationFileException
+    {
+        for (String className : this.reservedHookClasses)
+        {
+            try
+            {
+                Class<?> hookClass = Class.forName(className);
+                if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
+                    throw new InvalidInformationFileException("Class " + className + " is not a KPMHookRecipient.");
+
+                Constructor<? extends KPMHookRecipient> constructor =
+                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMDaemon.class);
+
+                this.add(constructor.newInstance(daemon));
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new InvalidInformationFileException("Hook recipient class was not found: " + className, e);
+            }
+            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+            {
+                throw new InvalidInformationFileException("Failed to create an instance of hook recipient class: " +
+                        className, e);
+            }
+            catch (NoSuchMethodException e)
+            {
+                throw new InvalidInformationFileException("Hook recipient class must have a constructor with" +
+                        " a single parameter of type KPMDaemon: " + className, e);
+            }
+        }
     }
 }

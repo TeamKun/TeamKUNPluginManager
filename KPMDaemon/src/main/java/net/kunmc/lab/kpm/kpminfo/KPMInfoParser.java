@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm.kpminfo;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.hook.HookRecipientList;
-import net.kunmc.lab.kpm.hook.KPMHookRecipient;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import org.jetbrains.annotations.NotNull;
@@ -13,8 +12,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +97,7 @@ public class KPMInfoParser
     @NotNull
     private static HookRecipientList parseHooks(KPMDaemon daemon, Map<?, ?> map) throws InvalidInformationFileException
     {
-        HookRecipientList result = new HookRecipientList(daemon.getHookExecutor());
+        HookRecipientList result = new HookRecipientList(daemon, daemon.getHookExecutor());
 
         if (!map.containsKey("hooks"))
             return result;
@@ -116,32 +113,7 @@ public class KPMInfoParser
             if (!(hook instanceof String))
                 throw new InvalidInformationFileException("hooks must be a list of full-qualified class names.");
 
-            String hookClassName = (String) hook;
-            try
-            {
-                Class<?> hookClass = Class.forName(hookClassName);
-                if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
-                    throw new InvalidInformationFileException("Class " + hookClassName + " is not a KPMHookRecipient.");
-
-                Constructor<? extends KPMHookRecipient> constructor =
-                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMDaemon.class);
-
-                result.add(constructor.newInstance(daemon));
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new InvalidInformationFileException("Hook recipient class was not found: " + hookClassName, e);
-            }
-            catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
-            {
-                throw new InvalidInformationFileException("Failed to create an instance of hook recipient class: " +
-                        hookClassName, e);
-            }
-            catch (NoSuchMethodException e)
-            {
-                throw new InvalidInformationFileException("Hook recipient class must have a constructor with" +
-                        " a single parameter of type KPMDaemon: " + hookClassName, e);
-            }
+            result.add(hook.toString());
         }
 
         return result;
