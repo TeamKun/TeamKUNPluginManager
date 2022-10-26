@@ -22,7 +22,7 @@ public abstract class KPMHookRecipient
 
     private final HashMap<Method, Class<? extends KPMHook>> hooks;
 
-    protected KPMHookRecipient(KPMDaemon daemon)
+    public KPMHookRecipient(KPMDaemon daemon)
     {
         this.daemon = daemon;
         this.hooks = new HashMap<>();
