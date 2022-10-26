@@ -301,7 +301,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         Version daemonVersion = this.progress.getInstaller().getDaemon().getVersion();
 
-        if (kpmInformation.getKpmVersion().isOlderThan(daemonVersion))
+        if (kpmInformation.getKpmVersion().isNewerThan(daemonVersion))
         {
             PluginIncompatibleWithKPMSignal incompatibleSignal =
                     new PluginIncompatibleWithKPMSignal(pluginDescription, kpmInformation, daemonVersion);
