@@ -401,7 +401,7 @@ public class PluginMetaProvider
                 .executeUpdate();
     }
 
-    private void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
+    void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
         PreparedStatement statement =
                 connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");

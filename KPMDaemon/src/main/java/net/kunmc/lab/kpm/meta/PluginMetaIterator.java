@@ -11,6 +11,7 @@ import java.util.List;
 
 public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
 {
+    private final PluginMetaProvider provider;
     private final Transaction transaction;
     private final Transaction.QueryResult<PluginMeta> results;
     private final List<String> removeTargets;
@@ -20,6 +21,7 @@ public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
 
     public PluginMetaIterator(@NotNull PluginMetaProvider metaProvider, @NotNull Transaction transaction)
     {
+        this.provider = metaProvider;
         this.transaction = transaction.renew("SELECT * FROM plugin_meta");
         this.results = this.transaction.<PluginMeta>executeQuery()
                 .setMapper(row -> {
@@ -86,12 +88,10 @@ public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
         {
             this.results.close();
 
-            Transaction transaction = this.transaction.renew("DELETE FROM plugin_meta WHERE name = ?");
             for (String name : this.removeTargets)
-            {
-                transaction.set(1, name);
-                transaction.executeUpdate(false);
-            }
+                this.provider.removePluginRelationalData(this.transaction.getConnection(), name);
+
+            this.transaction.finishManually();
         }
         catch (SQLException e)
         {
