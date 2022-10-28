@@ -53,6 +53,12 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (result.getReason() instanceof net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause &&
                 this.handleGeneralErrors((net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause) result.getReason()))
             return;
+        if (result.getException() != null)
+        {
+            this.terminal.error("アンインストール中に予期しないエラーが発生しました：%s", result.getException());
+            return;
+        }
+
 
         if (result.getReason() instanceof UnInstallErrorCause)
         {

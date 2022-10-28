@@ -43,7 +43,9 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof AutoRemoveErrorCause)
             this.handleAutoRemoveErrors((AutoRemoveErrorCause) result.getReason());
-
-        this.terminal.error("プラグインの自動削除に失敗しました。");
+        else if (result.getException() != null)
+            this.terminal.error("プラグインの自動削除中に予期しないエラーが発生しました：%s", result.getException());
+        else
+            this.terminal.error("プラグインの自動削除に失敗しました。");
     }
 }

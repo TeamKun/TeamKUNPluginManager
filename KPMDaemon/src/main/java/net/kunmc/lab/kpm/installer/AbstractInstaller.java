@@ -80,6 +80,14 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
         {
             return this.handleTaskError(e.getResult());
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            InstallFailedInstallResult<P, ?, ?> result = new InstallFailedInstallResult<>(this.progress, e);
+            this.postSignal(new InstallFinishedSignal(result));
+
+            return result;
+        }
     }
 
     /**

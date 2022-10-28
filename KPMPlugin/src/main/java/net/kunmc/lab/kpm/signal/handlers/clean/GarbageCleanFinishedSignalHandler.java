@@ -43,6 +43,9 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof GarbageCleanErrorCause)
             this.handleGarbageCleanErrors((GarbageCleanErrorCause) result.getReason());
-        this.terminal.error("不要データの削除に失敗しました。");
+        else if (result.getException() != null)
+            this.terminal.error("不要データの削除中に予期しないエラーが発生しました：%s", result.getException());
+        else
+            this.terminal.error("不要データの削除に失敗しました。");
     }
 }

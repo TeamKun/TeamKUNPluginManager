@@ -141,6 +141,11 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (result.getReason() instanceof InstallErrorCause &&
                 this.handleGeneralErrors((InstallErrorCause) result.getReason()))
             return;
+        if (result.getException() != null)
+        {
+            this.terminal.error("プラグインのインストール中に予期しないエラーが発生しました：%s", result.getException());
+            return;
+        }
 
         Enum<?> errorCause = result.getReason();
 
