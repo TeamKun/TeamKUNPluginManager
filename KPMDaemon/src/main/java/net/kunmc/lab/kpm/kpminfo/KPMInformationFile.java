@@ -20,13 +20,16 @@ public class KPMInformationFile
     /**
      * 対応するKPMのバージョンです。
      * このバージョンより古いKPMではこの情報ファイルを読み込むことができません。
-     * YAMLのキーは{@code kpm}です。
+     *
+     * @serial
+     * @serialField kpm {@link Version} 対応するKPMのバージョンです。
      */
     @NotNull
     Version kpmVersion;
     /**
      * アップデートで使用するクエリです。
-     * YAMLのキーは{@code update}です。
+     * @serial
+     * @serialField update {@link QueryContext} アップデートで使用するクエリです。
      */
     @Nullable
     QueryContext updateQuery;
@@ -37,6 +40,8 @@ public class KPMInformationFile
      * @see net.kunmc.lab.kpm.hook.KPMHook
      * @see KPMHookRecipient
      * @see net.kunmc.lab.kpm.hook.HookListener
+     * @serial
+     * @serialField hooks {@link HookRecipientList} KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
      */
     @NotNull
     HookRecipientList hooks;
