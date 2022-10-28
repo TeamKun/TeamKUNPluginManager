@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Singular;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * KPM の実行環境を表すクラスです。
@@ -92,6 +92,6 @@ public class KPMEnvironment
 
     public static KPMEnvironmentBuilder builder(@NotNull Plugin plugin)
     {
-        return builder(plugin, plugin.getSLF4JLogger(), plugin.getDataFolder().toPath());
+        return builder(plugin, plugin.getLogger(), plugin.getDataFolder().toPath());
     }
 }

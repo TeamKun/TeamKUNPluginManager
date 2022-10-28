@@ -7,6 +7,7 @@ import net.kunmc.lab.kpm.alias.AliasProvider;
 import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.installer.InstallManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
+import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.PluginLoader;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
@@ -20,15 +21,17 @@ import net.kunmc.lab.kpm.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.kpm.utils.http.Requests;
 import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -131,6 +134,28 @@ public class KPMDaemon
         this.setupPluginResolvers(organizationNames);
         this.setupToken();
         this.initializeRequests();
+        this.loadKPMInformationFromPlugins();
+    }
+
+    private void loadKPMInformationFromPlugins()
+    {
+        Runner.runLater(() -> {
+
+            this.logger.info("Loading KPM information from plugins...");
+
+            KPMInfoManager kpmInfoManager = this.getKpmInfoManager();
+            Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+
+            int loaded = 0;
+            for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+            {
+                KPMInformationFile info = kpmInfoManager.getOrLoadInfo(plugin);
+                if (info != null)
+                    loaded++;
+            }
+
+            this.logger.log(Level.INFO, "Loaded {0} KPM information from {1} plugins.", new Object[]{loaded, plugins.length});
+        }, 1L);
     }
 
     private void setupDependencyTree()
@@ -153,8 +178,7 @@ public class KPMDaemon
                 if (pluginNames.contains(meta.getName().toLowerCase()))
                     continue;
 
-
-                this.logger.info("Plugin {} is not loaded by server. Removing from database ...", meta.getName());
+                this.logger.log(Level.INFO, "Found plugin meta: {0}", meta.getName());
                 iterator.remove();
             }
         }
@@ -171,8 +195,7 @@ public class KPMDaemon
                     null,
                     false
             );
-
-            this.logger.info("Plugin {} is not managed by KPM. Adding to database ...", plugin.getName());
+            this.logger.log(Level.INFO, "Plugin {0} is not managed by KPM. Adding to database ...", plugin.getName());
 
             this.pluginMetaManager.getProvider().buildDependencyTree(plugin);
         }
@@ -204,12 +227,12 @@ public class KPMDaemon
                     tokenAvailable = true;
 
             if (!tokenAvailable)
-                this.logger.warn("Token is not available. Please login with /kpm register");
+                this.logger.log(Level.WARNING, "No token is available in this server. Please run /kpm token to set a token.");
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            this.logger.error("Failed to load token");
+            this.logger.log(Level.WARNING, "Failed to load token.");
         }
 
 

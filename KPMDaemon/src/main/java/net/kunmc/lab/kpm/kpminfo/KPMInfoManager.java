@@ -86,6 +86,9 @@ public class KPMInfoManager
         if (info != null)
             return info;
 
+        if (!this.hasInfo(plugin))
+            return null;
+
         try
         {
             return this.loadInfo(PluginUtil.getFile(plugin).toPath(), plugin.getDescription());
@@ -121,7 +124,7 @@ public class KPMInfoManager
     {
         try (ZipFile zipFile = new ZipFile(pluginFile.toFile()))
         {
-            return zipFile.getEntry("kpm.info") != null;
+            return zipFile.getEntry("kpm.yml") != null;
         }
         catch (Exception e)
         {

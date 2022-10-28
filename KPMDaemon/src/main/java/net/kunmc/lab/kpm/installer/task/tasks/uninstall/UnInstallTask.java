@@ -212,13 +212,13 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         catch (IllegalAccessException e)
         {
             e.printStackTrace();
-            this.daemon.getLogger().warn("Unable to unload classes of plugin " + plugin.getName());
+            this.daemon.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
             return false;
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            this.daemon.getLogger().warn("Unable to close class loader of plugin " +
+            this.daemon.getLogger().warning("Unable to close class loader of plugin " +
                     plugin.getName());
             return false;
         }

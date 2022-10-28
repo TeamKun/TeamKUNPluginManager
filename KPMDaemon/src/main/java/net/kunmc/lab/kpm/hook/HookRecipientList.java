@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * KPMフックの受け取りを行うクラスを管理するクラスです。
@@ -70,7 +71,10 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
         {
             try
             {
+                this.daemon.getLogger().setLevel(Level.OFF);
                 Class<?> hookClass = Class.forName(className);
+                this.daemon.getLogger().setLevel(Level.INFO);
+
                 if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
                     throw new InvalidInformationFileException("Class " + className + " is not a KPMHookRecipient.");
 

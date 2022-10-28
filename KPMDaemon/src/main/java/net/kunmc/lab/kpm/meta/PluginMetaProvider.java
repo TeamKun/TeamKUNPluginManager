@@ -261,7 +261,7 @@ public class PluginMetaProvider
         catch (SQLException e)
         {
             KPMDaemon.getInstance().getLogger()
-                    .warn("Failed to save plugin author data: " + name + " by " + authors);
+                    .warning("Failed to save plugin author data: " + name + " by " + authors);
         }
 
         statement = connection.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");

@@ -251,7 +251,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
                             this.postSignal(new UserVerifyDeniedSignal(apiResponse.getUserCode()));
                             return null;
                         default:
-                            this.daemon.getLogger().warn("Unknown error occurred while polling user verification: " + error);
+                            this.daemon.getLogger().warning("Unknown error occurred while polling user verification: " + error);
                             return null;
                     }
 

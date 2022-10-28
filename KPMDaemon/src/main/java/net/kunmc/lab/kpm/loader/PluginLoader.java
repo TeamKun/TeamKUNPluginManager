@@ -173,12 +173,12 @@ public class PluginLoader
         catch (IllegalAccessException e)
         {
             e.printStackTrace();
-            this.daemon.getLogger().warn("Unable to unload classes of plugin " + plugin.getName());
+            this.daemon.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            this.daemon.getLogger().warn("Unable to close class loader of plugin " + plugin.getName());
+            this.daemon.getLogger().warning("Unable to close class loader of plugin " + plugin.getName());
         }
 
         // Check +XX:+DisableExplicitGC flag
