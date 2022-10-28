@@ -3,9 +3,6 @@ package net.kunmc.lab.kpm.meta;
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.utils.db.Transaction;
-import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
  * プラグインのメタデータを提供するクラスです。
  */
 @SuppressWarnings("unused")
-public class PluginMetaProvider implements Listener
+public class PluginMetaProvider
 {
     private final HikariDataSource db;
 
@@ -35,10 +32,6 @@ public class PluginMetaProvider implements Listener
         this.db = Transaction.createDataSource(databasePath);
 
         this.initializeTables();
-
-        // Below lambda will be executed after all plugins are loaded.
-        // (Bukkit runs task after all plugins are loaded.)
-        Runner.runLater(() -> Bukkit.getPluginManager().registerEvents(this, plugin), 1L);
     }
 
     /**
