@@ -25,9 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * GitHubのトークンを登録するインストーラーの実装です。
@@ -55,22 +52,6 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     public TokenRegisterer(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
-    }
-
-    private static byte[] urlEncodeAndToBytes(String str)
-    {
-        try
-        {
-            return URLEncoder.encode(
-                    str,
-                    StandardCharsets.UTF_8.name()
-            ).getBytes(StandardCharsets.UTF_8);
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            // This exception will never be thrown.
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
