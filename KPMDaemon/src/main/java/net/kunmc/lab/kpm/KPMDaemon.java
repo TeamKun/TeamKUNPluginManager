@@ -27,7 +27,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -114,7 +113,7 @@ public class KPMDaemon
         this.installManager = new InstallManager(this);
         this.hookExecutor = new HookExecutor(this);
 
-        this.setupDaemon(env.getDataDirPath(), env.getOrganizations());
+        this.setupDaemon(env.getOrganizations());
     }
 
     /**
@@ -128,7 +127,7 @@ public class KPMDaemon
         return INSTANCE;
     }
 
-    public void setupDaemon(@NotNull Path dataFolder, @NotNull List<String> organizationNames)
+    public void setupDaemon(@NotNull List<String> organizationNames)
     {
         this.setupDependencyTree();
         this.setupPluginResolvers(organizationNames);
