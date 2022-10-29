@@ -19,13 +19,13 @@ import java.util.List;
 public class PluginResolver
 {
     private final HashMap<String, List<BaseResolver>> resolvers;
-    private final List<BaseResolver> onNotFoundResolvers;
+    private final List<BaseResolver> fallbackResolvers;
     private final List<BaseResolver> allResolvers;
 
     public PluginResolver()
     {
         this.resolvers = new HashMap<>();
-        this.onNotFoundResolvers = new ArrayList<>();
+        this.fallbackResolvers = new ArrayList<>();
         this.allResolvers = new ArrayList<>();
     }
 
@@ -54,14 +54,14 @@ public class PluginResolver
     }
 
     /**
-     * 代替リゾルバを追加します。
-     * 代替リゾルバは、プラグインが見つからなかった場合にフォールバックとして使用されるリゾルバです。
+     * フォールバックリゾルバを追加します。
+     * フォールバックリゾルバは、プラグインが見つからなかった場合にフォールバックとして使用されるリゾルバです。
      *
      * @param resolver 追加するリゾルバ
      */
-    public void addOnNotFoundResolver(BaseResolver resolver)
+    public void addFallbackResolver(BaseResolver resolver)
     {
-        this.onNotFoundResolvers.add(resolver);
+        this.fallbackResolvers.add(resolver);
     }
 
     /**
@@ -97,7 +97,7 @@ public class PluginResolver
         {
             ErrorResult error = (ErrorResult) result;
             if (error.getCause() != ErrorResult.ErrorCause.VERSION_MISMATCH)
-                result = this.resolves(this.onNotFoundResolvers, queryContext, url);
+                result = this.resolves(this.fallbackResolvers, queryContext, url);
         }
 
         return result;

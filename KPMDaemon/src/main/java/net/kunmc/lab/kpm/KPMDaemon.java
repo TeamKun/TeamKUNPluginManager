@@ -211,11 +211,11 @@ public class KPMDaemon
         this.pluginResolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
         this.pluginResolver.addResolver(githubResolver, "github", "gh");
 
-        this.pluginResolver.addOnNotFoundResolver(new BruteforceGitHubResolver(
+        this.pluginResolver.addFallbackResolver(new BruteforceGitHubResolver(
                 organizationNames,
                 githubResolver
         ));
-        this.pluginResolver.addOnNotFoundResolver(new RawURLResolver());
+        this.pluginResolver.addFallbackResolver(new RawURLResolver());
     }
 
     private void setupToken()
