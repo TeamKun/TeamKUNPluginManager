@@ -25,7 +25,8 @@ import java.util.stream.Collectors;
  * 自動削除は主に以下の流れで動作します。
  *
  * <ol>
- *     <li>{@link AutoRemoveTasks#} - 自動削除対象のプラグインを検索する。</li>
+ *     <li>{@link AutoRemoveTasks#SEARCHING_REMOVABLES} - 自動削除対象のプラグインを検索する。</li>
+ *     <li>{@link AutoRemoveTasks#UNINSTALLING_PLUGINS} - 自動削除対象のプラグインを削除する。</li>
  * </ol>
  */
 public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, AutoRemoveErrorCause, AutoRemoveTasks>
