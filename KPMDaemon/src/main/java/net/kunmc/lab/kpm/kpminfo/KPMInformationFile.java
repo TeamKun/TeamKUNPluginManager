@@ -21,15 +21,14 @@ public class KPMInformationFile
      * 対応するKPMのバージョンです。
      * このバージョンより古いKPMではこの情報ファイルを読み込むことができません。
      *
-     * @serial
-     * @serialField kpm {@link Version} 対応するKPMのバージョンです。
+     * @serial kpm {@link Version} 対応するKPMのバージョンです。
      */
     @NotNull
     Version kpmVersion;
     /**
      * アップデートで使用するクエリです。
-     * @serial
-     * @serialField update {@link QueryContext} アップデートで使用するクエリです。
+     *
+     * @serial update {@link QueryContext} アップデートで使用するクエリです。
      */
     @Nullable
     QueryContext updateQuery;
@@ -40,8 +39,7 @@ public class KPMInformationFile
      * @see net.kunmc.lab.kpm.hook.KPMHook
      * @see KPMHookRecipient
      * @see net.kunmc.lab.kpm.hook.HookListener
-     * @serial
-     * @serialField hooks {@link HookRecipientList} KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
+     * @serial hooks {@link HookRecipientList} KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
      */
     @NotNull
     HookRecipientList hooks;
