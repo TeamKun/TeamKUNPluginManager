@@ -34,7 +34,9 @@ import java.nio.charset.StandardCharsets;
  * トークン登録は主に以下の流れで動作します。
  *
  * <ol>
- *     <li>{@link RegisterTasks#} - トークン登録対象のプラグインを検索する。</li>
+ *     <li>{@link RegisterTasks#REQUESTING_USER_VERIFICATION_CODE} - ユーザ検証コードの要求しています。</li>
+ *     <li>{@link RegisterTasks#POLLING_USER_VERIFICATION} - ユーザ検証コードの入力を待機します。</li>
+ *     <li>{@link RegisterTasks#REGISTERING_TOKEN} - トークンの登録中です。</li>
  * </ol>
  */
 public class TokenRegisterer extends AbstractInstaller<RegisterArgument, RegisterErrorCause, RegisterTasks>
