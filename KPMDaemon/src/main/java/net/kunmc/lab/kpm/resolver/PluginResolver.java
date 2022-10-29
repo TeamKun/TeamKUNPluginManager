@@ -153,7 +153,12 @@ public class PluginResolver
 
     private static boolean isValidURLResolver(URL url, URLResolver resolver)
     {
-        for (String host : resolver.getHosts())
+        String[] hosts = resolver.getHosts();
+
+        if (hosts.length == 0)
+            return true;
+
+        for (String host : hosts)
         {
             if (url.getHost().equalsIgnoreCase(host))
                 return true;

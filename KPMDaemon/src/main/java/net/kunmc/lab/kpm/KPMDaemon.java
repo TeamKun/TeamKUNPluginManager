@@ -18,6 +18,7 @@ import net.kunmc.lab.kpm.resolver.impl.BruteforceGitHubResolver;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.kpm.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.OmittedGitHubResolver;
+import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.kpm.utils.http.Requests;
 import net.kunmc.lab.kpm.utils.versioning.Version;
@@ -214,6 +215,7 @@ public class KPMDaemon
                 organizationNames,
                 githubResolver
         ));
+        this.pluginResolver.addOnNotFoundResolver(new RawURLResolver());
     }
 
     private void setupToken()
