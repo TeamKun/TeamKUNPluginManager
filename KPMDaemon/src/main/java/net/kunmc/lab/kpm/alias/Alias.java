@@ -9,7 +9,7 @@ import lombok.Value;
 public class Alias
 {
     /**
-     * 正式名です。。
+     * 正式名です。
      */
     String name;
 
