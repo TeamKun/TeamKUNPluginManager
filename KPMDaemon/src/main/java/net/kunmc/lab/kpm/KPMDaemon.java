@@ -178,7 +178,7 @@ public class KPMDaemon
                 if (pluginNames.contains(meta.getName().toLowerCase()))
                     continue;
 
-                this.logger.log(Level.INFO, "Found plugin meta: {0}", meta.getName());
+                this.logger.log(Level.INFO, "Found unused plugin meta: {0}", meta.getName());
                 iterator.remove();
             }
         }

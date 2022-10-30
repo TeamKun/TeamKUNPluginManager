@@ -401,6 +401,14 @@ public class PluginMetaProvider
                 .executeUpdate();
     }
 
+    void removePluginMeta(String pluginName, Transaction transaction)
+    {
+        transaction.renew("DELETE FROM plugin_meta WHERE name = ?")
+                .set(1, pluginName)
+                .beforeCommit(tr -> this.removePluginRelationalData(tr.getConnection(), pluginName))
+                .executeUpdate(false);
+    }
+
     void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
         PreparedStatement statement =

@@ -89,7 +89,10 @@ public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
             this.results.close();
 
             for (String name : this.removeTargets)
+            {
+                this.provider.removePluginMeta(name, this.transaction);
                 this.provider.removePluginRelationalData(this.transaction.getConnection(), name);
+            }
         }
         catch (SQLException e)
         {
