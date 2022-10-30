@@ -43,4 +43,12 @@ public class KPMInformationFile
      */
     @NotNull
     HookRecipientList hooks;
+    /**
+     * プラグインが登録したレシピの名前空間または名前空間キーです。
+     * これらは、プラグインが登録したレシピを識別し、アンインストール時に正常に削除するために使用されます。
+     *
+     * @serial recipes {@link String} プラグインが登録したレシピの名前空間または名前空間キーです。
+     */
+    @NotNull
+    String[] recipes;
 }

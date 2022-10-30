@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -234,6 +235,8 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
                 new ArrayList<>(Collections.singletonList(plugin.getName().toLowerCase(Locale.ROOT)));
         if (kpmInfo != null)
         {
+            targetNamespaces.addAll(Arrays.asList(kpmInfo.getRecipes()));
+
             RecipesUnregisteringHook.Searching searchingHook = new RecipesUnregisteringHook.Searching(targetNamespaces);
             kpmInfo.getHooks().runHook(searchingHook);
             targetNamespaces = searchingHook.getTargetNamespaces();
@@ -276,10 +279,16 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             return false;
 
         NamespacedKey recipeKey = ((Keyed) recipe).getKey();
-        String recipeNamespace = recipeKey.getNamespace();
+        String targetNS = recipeKey.getNamespace().toLowerCase(Locale.ROOT);
+        String targetKey = recipeKey.getKey().toLowerCase(Locale.ROOT);
+        String targetFullName = targetNS + ":" + targetKey;
 
         String foundSignature = targetNamespaces.stream().parallel()
-                .filter(recipeNamespace::equalsIgnoreCase)
+                .filter(key ->
+                        key.equalsIgnoreCase(targetNS)
+                                || key.equalsIgnoreCase(targetKey)
+                                || key.equalsIgnoreCase(targetFullName)
+                )
                 .findFirst().orElse(null);
         boolean isTargetRecipe = foundSignature != null;
 

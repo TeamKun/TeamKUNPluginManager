@@ -62,8 +62,9 @@ public class KPMInfoParser
         Version version = parseVersion(map); // Parse kpm => kpmVersion [required]
         QueryContext updateQuery = parseUpdateQuery(map); // Parse update => updateQuery [required]
         HookRecipientList hooks = parseHooks(daemon, map); // Parse hooks [optional]
+        String[] recipes = parseRecipes(map); // Parse recipes [optional]
 
-        return new KPMInformationFile(version, updateQuery, hooks);
+        return new KPMInformationFile(version, updateQuery, hooks, recipes);
     }
 
     @NotNull
@@ -118,5 +119,30 @@ public class KPMInfoParser
 
         return result;
     }
+
+    private static String[] parseRecipes(Map<?, ?> map) throws InvalidInformationFileException
+    {
+        if (!map.containsKey("recipes"))
+            return new String[0];
+
+        Object recipesObj = map.get("recipes");
+        if (!(recipesObj instanceof List))
+            throw new InvalidInformationFileException("recipes must be a list of strings.");
+
+        List<?> recipes = (List<?>) recipesObj;
+        String[] result = new String[recipes.size()];
+
+        for (int i = 0; i < recipes.size(); i++)
+        {
+            Object recipe = recipes.get(i);
+            if (!(recipe instanceof String))
+                throw new InvalidInformationFileException("recipes must be a list of strings.");
+
+            result[i] = recipe.toString();
+        }
+
+        return result;
+    }
+
 
 }
