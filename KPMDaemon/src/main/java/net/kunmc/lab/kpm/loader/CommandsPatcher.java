@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -309,5 +310,16 @@ public class CommandsPatcher
     public void unPatchCommand(@NotNull Plugin plugin)
     {
         this.unPatchCommand(plugin, true);
+    }
+
+    /**
+     * コマンドをすべて登録します。
+     *
+     * @param fallbackPrefix フォールバックのプレフィックス
+     * @param commands       コマンド
+     */
+    public void registerAll(String fallbackPrefix, List<Command> commands)
+    {
+        this.getCommandMap().registerAll(fallbackPrefix, commands);
     }
 }

@@ -20,8 +20,11 @@ import net.kunmc.lab.kpm.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
@@ -194,7 +197,27 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         this.pluginMetaManager.preparePluginModify(target);
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginEnablingSignal.Pre(target));
-        PLUGIN_MANAGER.enablePlugin(target);
+        if (!PLUGIN_MANAGER.isPluginEnabled(target))
+        {
+            List<Command> commands = PluginCommandYamlParser.parse(target);
+
+            if (!commands.isEmpty())
+                COMMANDS_PATCHER.registerAll(target.getDescription().getName(), commands);
+
+            try
+            {
+                target.getPluginLoader().enablePlugin(target);
+            }
+            catch (Throwable e)
+            {
+                e.printStackTrace();
+                this.postSignal(new PluginEnablingSignal.Error(target, e));
+                return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.EXCEPTION_OCCURRED);
+            }
+
+            HandlerList.bakeAll();
+        }
+
         this.postSignal(new PluginEnablingSignal.Post(target));
 
         installedPlugins.add(target);

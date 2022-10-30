@@ -31,6 +31,24 @@ public class PluginEnablingSignal implements Signal
     }
 
     /**
+     * 有効化中にエラーが発生した場合に送信されるシグナルです。
+     */
+    public static class Error extends PluginEnablingSignal
+    {
+        /**
+         * エラーの原因です。
+         */
+        @NotNull
+        private final Throwable cause;
+
+        public Error(@NotNull Plugin plugin, @NotNull Throwable cause)
+        {
+            super(plugin);
+            this.cause = cause;
+        }
+    }
+
+    /**
      * 有効化を行った後に送信されるシグナルです。
      */
     public static class Post extends PluginEnablingSignal
