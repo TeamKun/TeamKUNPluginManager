@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.hook.hooks.PluginUninstallHook;
+import net.kunmc.lab.kpm.hook.hooks.RecipesUnregisteringHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
@@ -25,13 +26,14 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -154,7 +156,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
             kpmInfo.getHooks().runHook(new PluginUninstallHook.Pre(plugin.getDescription(), kpmInfo, plugin));
 
         this.taskState = UnInstallState.RECIPES_UNREGISTERING;
-        this.unregisterRecipes(plugin);
+        this.unregisterRecipes(plugin, kpmInfo);
 
         this.taskState = UnInstallState.COMMANDS_UNPATCHING;
         COMMANDS_PATCHER.unPatchCommand(plugin, false);
@@ -226,11 +228,20 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         return true;
     }
 
-    private void unregisterRecipes(@NotNull Plugin plugin)
+    private void unregisterRecipes(@NotNull Plugin plugin, @Nullable KPMInformationFile kpmInfo)
     {
-        PluginRegisteredRecipeSignal.Searching signal = new PluginRegisteredRecipeSignal.Searching(plugin);
+        ArrayList<String> targetNamespaces =
+                new ArrayList<>(Collections.singletonList(plugin.getName().toLowerCase(Locale.ROOT)));
+        if (kpmInfo != null)
+        {
+            RecipesUnregisteringHook.Searching searchingHook = new RecipesUnregisteringHook.Searching(targetNamespaces);
+            kpmInfo.getHooks().runHook(searchingHook);
+            targetNamespaces = searchingHook.getTargetNamespaces();
+        }
+
+        PluginRegisteredRecipeSignal.Searching signal =
+                new PluginRegisteredRecipeSignal.Searching(plugin, targetNamespaces.toArray(new String[0]));
         this.postSignal(signal);
-        String[] targetNamespaces = signal.getTargetNamespaces();
 
         Iterator<Recipe> recipeIterator = Bukkit.recipeIterator();
         while (recipeIterator.hasNext())
@@ -239,13 +250,27 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
             if (this.isRecipeRemoveTarget(plugin, targetNamespaces, recipe))
             {
+                if (kpmInfo != null)
+                {
+                    RecipesUnregisteringHook.Pre preHook = new RecipesUnregisteringHook.Pre(recipe);
+                    kpmInfo.getHooks().runHook(preHook);
+                    if (preHook.isCancelled())
+                        continue;
+                }
+
                 this.postSignal(new PluginRegisteredRecipeSignal.Removing(plugin, recipe));
                 recipeIterator.remove();
+
+                if (kpmInfo != null)
+                {
+                    RecipesUnregisteringHook.Post postHook = new RecipesUnregisteringHook.Post(recipe);
+                    kpmInfo.getHooks().runHook(postHook);
+                }
             }
         }
     }
 
-    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull String[] targetNamespaces, @NotNull Recipe recipe)
+    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull ArrayList<String> targetNamespaces, @NotNull Recipe recipe)
     {
         if (!(recipe instanceof Keyed))
             return false;
@@ -253,7 +278,7 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         NamespacedKey recipeKey = ((Keyed) recipe).getKey();
         String recipeNamespace = recipeKey.getNamespace();
 
-        String foundSignature = Arrays.stream(targetNamespaces).parallel()
+        String foundSignature = targetNamespaces.stream().parallel()
                 .filter(recipeNamespace::equalsIgnoreCase)
                 .findFirst().orElse(null);
         boolean isTargetRecipe = foundSignature != null;

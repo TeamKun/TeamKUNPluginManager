@@ -8,7 +8,8 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * プラグインが登録したレシピについてのシグナルです。
@@ -68,13 +69,12 @@ public class PluginRegisteredRecipeSignal implements Signal
          * デフォルトでは, プラグインの名前(Lower case)が使用されます。
          */
         @NotNull
-        private String[] targetNamespaces;
+        private ArrayList<String> targetNamespaces;
 
-        public Searching(@NotNull Plugin plugin)
+        public Searching(@NotNull Plugin plugin, @NotNull String... targetNamespaces)
         {
             super(plugin);
-
-            this.targetNamespaces = new String[]{plugin.getName().toLowerCase(Locale.ROOT)};
+            this.targetNamespaces = (ArrayList<String>) Arrays.asList(targetNamespaces);
         }
     }
 
