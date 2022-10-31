@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -67,8 +68,11 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
      */
     public void bakeHooks(@NotNull KPMDaemon daemon) throws InvalidInformationFileException
     {
-        for (String className : this.reservedHookClasses)
+        Iterator<String> iterator = this.reservedHookClasses.iterator();
+        while (iterator.hasNext())
         {
+            String className = iterator.next();
+
             try
             {
                 this.daemon.getLogger().setLevel(Level.OFF);
@@ -97,8 +101,12 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
                 throw new InvalidInformationFileException("Hook recipient class must have a constructor with" +
                         " a single parameter of type KPMDaemon: " + className, e);
             }
-        }
+            finally
+            {
+                this.daemon.getLogger().setLevel(Level.INFO);
 
-        this.reservedHookClasses.clear();
+                iterator.remove();
+            }
+        }
     }
 }
