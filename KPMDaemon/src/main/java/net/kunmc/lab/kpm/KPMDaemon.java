@@ -20,6 +20,7 @@ import net.kunmc.lab.kpm.resolver.impl.GitHubURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.OmittedGitHubResolver;
 import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
+import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.kpm.utils.http.Requests;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -97,6 +98,12 @@ public class KPMDaemon
     @NotNull
     private final HookExecutor hookExecutor;
 
+    /**
+     * サーバの状態を判定するクラスです。
+     */
+    @NotNull
+    private final ServerConditionChecker serverConditionChecker;
+
     {
         INSTANCE = this;
     }
@@ -113,6 +120,7 @@ public class KPMDaemon
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
         this.hookExecutor = new HookExecutor(this);
+        this.serverConditionChecker = new ServerConditionChecker(this);
 
         this.setupDaemon(env.getOrganizations());
     }

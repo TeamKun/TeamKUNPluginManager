@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMEnvironment;
 import net.kunmc.lab.kpm.utils.PluginUtil;
+import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -91,7 +92,8 @@ public class PluginMetaManager implements Listener
     @EventHandler
     public void onDisable(PluginDisableEvent event)
     {
-        if (!PluginUtil.isServerRunning())
+        ServerConditionChecker conditions = this.daemon.getServerConditionChecker();
+        if (conditions.isStopping() || conditions.isReloading())
             return;  // The server is being stopped.
 
         Plugin plugin = event.getPlugin();

@@ -26,22 +26,14 @@ public class PluginUtil
 {
 
     private static final Method pluginGetFile;
-    private static final Field fIsRunning;  // Lnet/minecraft/server/<version>/MinecraftServer; -> isRunning:Z
-    private static final Object oMinecraftServer;  // Lnet/minecraft/server/<version>/MinecraftServer; -> Lnet/minecraft/server/<version>/DedicatedServer;
-
     static
     {
         try
         {
             pluginGetFile = ReflectionUtils.getAccessibleMethod(JavaPlugin.class, "getFile");
             pluginGetFile.setAccessible(true);
-
-            Class<?> cMinecraftServer = ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("MinecraftServer");
-            fIsRunning = ReflectionUtils.getAccessibleField(cMinecraftServer, true, "isRunning");
-
-            oMinecraftServer = ReflectionUtils.getValue(Bukkit.getServer(), true, "console");
         }
-        catch (NoSuchMethodException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e)
+        catch (NoSuchMethodException e)
         {
             throw new RuntimeException(e);
         }
@@ -164,16 +156,4 @@ public class PluginUtil
         return desc;
     }
 
-    public static boolean isServerRunning()
-    {
-        try
-        {
-            return fIsRunning.getBoolean(oMinecraftServer);
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-    }
 }
