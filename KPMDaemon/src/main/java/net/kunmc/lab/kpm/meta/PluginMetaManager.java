@@ -49,7 +49,11 @@ public class PluginMetaManager implements Listener
      */
     public void preparePluginModify(@NotNull String pluginName)
     {
-        this.exceptedPluginModifications.add(pluginName);
+        synchronized (this.exceptedPluginModifications)
+        {
+            if (!this.exceptedPluginModifications.contains(pluginName))
+                this.exceptedPluginModifications.add(pluginName);
+        }
     }
 
     /**
@@ -171,13 +175,9 @@ public class PluginMetaManager implements Listener
 
     private boolean checkNoAutoCreateMetadata(Plugin plugin)
     {
-        String pluginName = plugin.getName();
-        if (this.exceptedPluginModifications.contains(pluginName))
+        synchronized (this.exceptedPluginModifications)
         {
-            this.exceptedPluginModifications.remove(pluginName);
-            return true;
+            return this.exceptedPluginModifications.remove(plugin.getName());
         }
-
-        return false;
     }
 }
