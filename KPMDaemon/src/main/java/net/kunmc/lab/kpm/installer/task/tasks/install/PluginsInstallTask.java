@@ -161,8 +161,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             // Load plugin
             this.state = PluginsInstallState.PLUGIN_LOADING;
             this.postSignal(new PluginLoadSignal.Pre(path, pluginDescription));
-            target = PLUGIN_MANAGER.loadPlugin(targetPath.toFile());
-            assert target != null;
+            target = this.runSyncThrowing(() -> PLUGIN_MANAGER.loadPlugin(targetPath.toFile()));
             this.postSignal(new PluginLoadSignal.Post(path, pluginDescription, target));
 
             this.progress.addPending(target.getName());
@@ -170,7 +169,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             // Run Plugin#onLoad
             this.state = PluginsInstallState.ONLOAD_RUNNING;
             this.postSignal(new PluginOnLoadRunningSignal.Pre(target));
-            target.onLoad();
+            this.runSyncThrowing(target::onLoad);
             this.postSignal(new PluginOnLoadRunningSignal.Post(target));
 
         }
@@ -194,7 +193,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         this.pluginMetaManager.preparePluginModify(target);
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginEnablingSignal.Pre(target));
-        PLUGIN_MANAGER.enablePlugin(target);
+        this.runSync(() -> PLUGIN_MANAGER.enablePlugin(target));
         if (!target.isEnabled())
         {
             this.postSignal(new PluginEnablingSignal.Failed(target));
@@ -213,11 +212,13 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         );
 
         if (kpmInformationFile != null)
-            kpmInformationFile.getHooks().runHook(new PluginInstalledHook(
-                    operator,
-                    isDependency,
-                    query
-            ));
+            this.runSync(() ->
+                    kpmInformationFile.getHooks().runHook(new PluginInstalledHook(
+                            operator,
+                            isDependency,
+                            query
+                    ))
+            );
 
         return new PluginsInstallResult(true, this.state, null, null, target, installedPlugins);
     }
