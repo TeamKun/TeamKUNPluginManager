@@ -1,6 +1,8 @@
 package net.kunmc.lab.kpm.meta;
 
 import lombok.Getter;
+import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMEnvironment;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
@@ -12,7 +14,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import java.util.List;
  */
 public class PluginMetaManager implements Listener
 {
+    private final KPMDaemon daemon;
     /**
      * メタデータを提供するプロバイダです。
      */
@@ -28,14 +30,15 @@ public class PluginMetaManager implements Listener
     private final PluginMetaProvider provider;
     private final List<String> exceptedPluginModifications;
 
-    public PluginMetaManager(@NotNull Plugin plugin, @NotNull Path databasePath)
+    public PluginMetaManager(@NotNull KPMDaemon daemon, @NotNull KPMEnvironment env)
     {
-        this.provider = new PluginMetaProvider(plugin, databasePath);
+        this.daemon = daemon;
+        this.provider = new PluginMetaProvider(env.getPlugin(), env.getMetadataDBPath());
         this.exceptedPluginModifications = new ArrayList<>();
 
         // Below lambda will be executed after all plugins are loaded.
         // (Bukkit runs task after all plugins are loaded.)
-        Runner.runLater(() -> Bukkit.getPluginManager().registerEvents(this, plugin), 1L);
+        Runner.runLater(() -> Bukkit.getPluginManager().registerEvents(this, env.getPlugin()), 1L);
     }
 
     /**
@@ -71,12 +74,12 @@ public class PluginMetaManager implements Listener
 
         String pluginNameFull = PluginUtil.getPluginString(plugin);
 
-        System.out.println("プラグインの追加が検出されました: " + pluginNameFull);
+        this.daemon.getLogger().info("プラグインの追加が検出されました: " + pluginNameFull);
 
-        System.out.println("プラグインのメタデータを作成してします ...");
+        this.daemon.getLogger().info("プラグインのメタデータを作成しています ...");
         this.onInstalled(plugin, InstallOperator.UNKNOWN, null, false);
 
-        System.out.println("依存関係ツリーを構築しています ...");
+        this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
         this.provider.buildDependencyTree(plugin);
 
     }
@@ -94,12 +97,12 @@ public class PluginMetaManager implements Listener
 
         String pluginNameFull = PluginUtil.getPluginString(plugin);
 
-        System.out.println("プラグインの削除が検出されました: " + pluginNameFull);
+        this.daemon.getLogger().info("プラグインの削除が検出されました: " + pluginNameFull);
 
-        System.out.println("プラグインのメタデータを削除しています ...");
+        this.daemon.getLogger().info("プラグインのメタデータを削除しています ...");
         this.onUninstalled(pluginNameFull);
 
-        System.out.println("依存関係ツリーを構築しています ...");
+        this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
         this.provider.deleteFromDependencyTree(pluginNameFull);
     }
 

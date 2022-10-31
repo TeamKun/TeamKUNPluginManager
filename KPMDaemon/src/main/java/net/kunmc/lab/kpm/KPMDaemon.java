@@ -105,7 +105,7 @@ public class KPMDaemon
     {
         this.envs = env;
         this.logger = env.getLogger();
-        this.pluginMetaManager = new PluginMetaManager(env.getPlugin(), env.getMetadataDBPath());
+        this.pluginMetaManager = new PluginMetaManager(this, env);
         this.kpmInfoManager = new KPMInfoManager(this);
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
