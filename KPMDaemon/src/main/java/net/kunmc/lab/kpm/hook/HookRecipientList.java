@@ -98,5 +98,7 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
                         " a single parameter of type KPMDaemon: " + className, e);
             }
         }
+
+        this.reservedHookClasses.clear();
     }
 }
