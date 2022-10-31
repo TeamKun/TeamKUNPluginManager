@@ -13,10 +13,12 @@ import org.bukkit.ChatColor;
 public class UninstallerSignalHandler
 {
     private final Terminal terminal;
+    private boolean oneRecipeRemoved;
 
     public UninstallerSignalHandler(Terminal terminal)
     {
         this.terminal = terminal;
+        this.oneRecipeRemoved = false;
     }
 
     private static String getErrorCauseMessage(PluginUninstallErrorSignal signal)
@@ -41,7 +43,11 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onRecipeRemove(PluginRegisteredRecipeSignal.Removing signal)
     {
-        this.terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " のレシピを削除しています ...");
+        if (!this.oneRecipeRemoved)
+        {
+            this.terminal.writeLine(ChatColor.RED + PluginUtil.getPluginString(signal.getPlugin()) + " のレシピを削除しています ...");
+            this.oneRecipeRemoved = true;
+        }
     }
 
     @SignalHandler
