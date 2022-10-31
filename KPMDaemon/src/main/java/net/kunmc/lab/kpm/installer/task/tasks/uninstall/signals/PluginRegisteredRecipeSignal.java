@@ -74,7 +74,7 @@ public class PluginRegisteredRecipeSignal implements Signal
         public Searching(@NotNull Plugin plugin, @NotNull String... targetNamespaces)
         {
             super(plugin);
-            this.targetNamespaces = (ArrayList<String>) Arrays.asList(targetNamespaces);
+            this.targetNamespaces = new ArrayList<>(Arrays.asList(targetNamespaces));
         }
     }
 
