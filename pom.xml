@@ -19,6 +19,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <pyglib.version>1.0.12</pyglib.version>
     </properties>
     <url>https://kunmc.net/</url>
 
@@ -71,12 +72,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.0</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.TeamKUN</groupId>
-            <artifactId>PeyangPaperUtils</artifactId>
-            <version>1.0.12</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
