@@ -8,7 +8,7 @@ import net.kunmc.lab.kpm.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
-import org.apache.commons.io.FileUtils;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
