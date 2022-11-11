@@ -21,14 +21,15 @@ public class CleanArgument extends AbstractInstallerArgument
     @NotNull
     private final List<String> excludeDataNames;
 
-    private CleanArgument(@NotNull List<String> excludeDataNames)
+    public CleanArgument(List<String> excludeDataNames)
     {
-        this.excludeDataNames = excludeDataNames;
+        this.excludeDataNames = new ArrayList<>(excludeDataNames);
     }
 
     public CleanArgument()
     {
-        this(new ArrayList<>());
+        this.excludeDataNames = new ArrayList<>();
+        this.excludeDataNames.add("bStats");
     }
 
     /**
