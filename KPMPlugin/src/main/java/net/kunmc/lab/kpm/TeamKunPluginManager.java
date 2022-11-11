@@ -12,6 +12,7 @@ import net.kunmc.lab.kpm.commands.CommandResolve;
 import net.kunmc.lab.kpm.commands.CommandStatus;
 import net.kunmc.lab.kpm.commands.CommandUninstall;
 import net.kunmc.lab.kpm.commands.CommandUpdate;
+import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,6 +53,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onDisable()
     {
+        PeyangPaperUtils.dispose();
         this.daemon.shutdown();
     }
 
@@ -72,6 +74,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     @Override
     public void onEnable()
     {
+        PeyangPaperUtils.init(this);
         this.saveDefaultConfig();
         plugin = this;
         this.pluginConfig = this.getConfig();

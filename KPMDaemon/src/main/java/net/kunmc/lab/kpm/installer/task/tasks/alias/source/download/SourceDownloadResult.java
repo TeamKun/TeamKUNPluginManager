@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.alias.source.download;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.installer.task.TaskResult;
-import net.kunmc.lab.kpm.utils.Pair;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

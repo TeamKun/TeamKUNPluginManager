@@ -9,7 +9,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadResult;
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadTask;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
-import net.kunmc.lab.kpm.utils.Pair;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
