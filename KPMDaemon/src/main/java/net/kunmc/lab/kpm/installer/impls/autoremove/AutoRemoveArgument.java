@@ -1,7 +1,9 @@
 package net.kunmc.lab.kpm.installer.impls.autoremove;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Singular;
 import net.kunmc.lab.kpm.installer.AbstractInstallerArgument;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -14,12 +16,14 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class AutoRemoveArgument extends AbstractInstallerArgument
 {
     /**
      * 自動削除から除外するプラグインのリストです。
      */
     @NotNull
+    @Singular("exclude")
     private final List<String> excludePlugins;
 
     private AutoRemoveArgument(@NotNull List<String> excludePlugins)
@@ -35,24 +39,12 @@ public class AutoRemoveArgument extends AbstractInstallerArgument
     /**
      * 除外するプラグインを追加します。
      *
-     * @param pluginName 除外するプラグインの名前
-     * @return このインスタンス
-     */
-    public AutoRemoveArgument addExcludePlugin(@NotNull String pluginName)
-    {
-        this.excludePlugins.add(pluginName);
-        return this;
-    }
-
-    /**
-     * 除外するプラグインを追加します。
-     *
      * @param plugin 除外するプラグイン
      * @return このインスタンス
      */
     public AutoRemoveArgument addExcludePlugin(@NotNull Plugin plugin)
     {
-        this.addExcludePlugin(plugin.getName());
+        this.excludePlugins.add(plugin.getName());
         return this;
     }
 
