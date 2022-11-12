@@ -141,8 +141,11 @@ public class PluginResolver
     {
         if (resolver instanceof URLResolver)
         {
+            if (url == null)
+                return null;
+
             URLResolver urlResolver = (URLResolver) resolver;
-            if (url != null && !isValidURLResolver(url, urlResolver))
+            if (!isValidURLResolver(url, urlResolver))
                 return null;
         }
         else if (!resolver.isValidResolver(queryContext))
