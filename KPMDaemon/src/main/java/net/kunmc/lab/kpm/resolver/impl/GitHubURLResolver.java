@@ -12,10 +12,14 @@ import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.utils.http.HTTPResponse;
 import net.kunmc.lab.kpm.utils.http.RequestContext;
 import net.kunmc.lab.kpm.utils.http.Requests;
+import net.kunmc.lab.kpm.utils.versioning.Version;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,10 +79,75 @@ public class GitHubURLResolver implements URLResolver
         return this.processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
     }
 
+    private static boolean endsWithIgn(String str, String suffix)
+    {
+        return StringUtils.endsWithIgnoreCase(str, suffix);
+    }
+
+    private static boolean endsWithIgn(String str, String suffix, String suffix2)
+    {
+        return endsWithIgn(str, suffix) || endsWithIgn(str, suffix2);
+    }
+
+    private static long evalResult(GitHubSuccessResult result)
+    {
+        long reputation = 0;
+
+        String fileName = result.getFileName();
+        String version = result.getVersion();
+        boolean isPreRelease = result.isPreRelease();
+        assert fileName != null;
+        assert version != null;
+
+        Version versionObj;
+        if (Version.isValidVersionString(version))
+            versionObj = Version.of(version);
+        else
+            versionObj = Version.of("0.0.0");
+
+        reputation += versionObj.getMajor().getIntValue() + versionObj.getMinor().getIntValue() + versionObj.getPatch().getIntValue();
+        reputation *= 100L;
+
+        if (endsWithIgn(fileName, ".jar", ".zip"))
+            reputation += 10;
+
+        if (endsWithIgn(fileName, ".plugin.jar", ".plugin.zip"))
+            reputation += 5;
+        else if (endsWithIgn(fileName, ".api.jar", ".api.zip"))
+            reputation -= 5;
+
+        if (isPreRelease)
+            reputation -= 5;
+
+        return reputation;
+    }
+
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return this.autoPickFirst(multiResult, ResolveResult.Source.GITHUB);
+        HashMap<Long, ResolveResult> map = new HashMap<>();
+        ErrorResult firstError = null;
+        for (ResolveResult result : multiResult.getResults())
+        {
+            if (result instanceof GitHubSuccessResult)
+            {
+                GitHubSuccessResult successResult = (GitHubSuccessResult) result;
+                map.put(evalResult(successResult), successResult);
+            }
+            else if (result instanceof ErrorResult)
+            {
+                if (firstError == null)
+                    firstError = (ErrorResult) result;
+            }
+        }
+
+        if (map.isEmpty())
+            return firstError;
+
+        return map.entrySet().stream().parallel()
+                .max(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .orElse(null);
     }
 
     private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable String version)
