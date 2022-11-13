@@ -173,8 +173,9 @@ public class GitHubURLResolver implements URLResolver
             String downloadURL = assetObject.get("url").getAsString();
             String fileName = assetObject.get("name").getAsString();
             long size = assetObject.get("size").getAsLong();
+            boolean isPreRelease = object.get("prerelease").getAsBoolean();
 
-            GitHubSuccessResult result = new GitHubSuccessResult(this, downloadURL, fileName, version, repositoryName, owner, size, releaseName, body, releaseId);
+            GitHubSuccessResult result = new GitHubSuccessResult(this, downloadURL, fileName, version, repositoryName, owner, size, releaseName, body, releaseId, isPreRelease);
 
             if (assets.size() == 1)
                 return result;
