@@ -183,6 +183,9 @@ public class GitHubURLResolver implements URLResolver
                 results.add(result);
         }
 
+        if (results.size() == 1)
+            return results.get(0);
+
         return new MultiResult(this, results.toArray(new GitHubSuccessResult[0]));
     }
 
