@@ -106,6 +106,10 @@ public class GitHubURLResolver implements URLResolver
             versionObj = Version.of("0.0.0");
 
         reputation += versionObj.getMajor().getIntValue() + versionObj.getMinor().getIntValue() + versionObj.getPatch().getIntValue();
+        if (versionObj.getPreRelease() != null)
+            reputation += versionObj.getPreRelease().getRawValue().chars().sum();
+        if (versionObj.getBuildMetadata() != null)
+            reputation += versionObj.getBuildMetadata().getRawValue().chars().sum();
         reputation *= 100L;
 
         if (endsWithIgn(fileName, ".jar", ".zip"))
