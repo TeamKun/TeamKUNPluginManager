@@ -84,7 +84,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
         // endregion
 
-        // region Check plugin are depended by other plugins
+        // region Check other plugins depends on this plugin.
 
         for (Plugin plugin : plugins)
         {
@@ -177,17 +177,17 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         ArrayList<Plugin> plugins = new ArrayList<>();
 
         List<DependencyNode> dependencies =
-                this.daemon.getPluginMetaManager().getProvider().getDependOn(target.getName());
+                this.daemon.getPluginMetaManager().getProvider().getDependedBy(target.getName());
 
         for (DependencyNode depend : dependencies)
         {
-            Plugin dependPlugin = this.getPlugin(depend.getDependsOn());
+            Plugin dependPlugin = this.getPlugin(depend.getPlugin());
             if (dependPlugin != null)
             {
                 plugins.add(dependPlugin);
                 plugins.addAll(this.getAllDependencies(dependPlugin));
             }
-            // if depend plugin not found, ignore it because it only exist in database.
+            // if it cannot find the plugin, ignore it because it only exist in database.
             // Doesn't exist in filesystem and server plugins.
         }
 
