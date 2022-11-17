@@ -39,7 +39,8 @@ public class PluginMeta
      */
     boolean isDependency;
     /**
-     * プラグインのインストールに使用した解決クエリです。
+     * プラグインの解決に使用するクエリです。
+     * このクエリは, アップグレード機能で使用されます。
      */
     @Nullable
     String resolveQuery;
