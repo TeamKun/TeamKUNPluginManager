@@ -16,8 +16,8 @@ import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallResult;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallTask;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.kpm.utils.PluginUtil;
-import net.kunmc.lab.kpm.utils.ReversedCollector;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -148,7 +148,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                             List<DependencyElement> ordered = computeResult.getOrder();
                             List<Plugin> orderedPlugins = ordered.stream()
                                     .map(element -> namePluginMap.get(element.getPluginName()))
-                                    .collect(ReversedCollector.toList()); // Convert load order to unload order.
+                                    .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
 
                             return new UnInstallArgument(orderedPlugins);
                         })
