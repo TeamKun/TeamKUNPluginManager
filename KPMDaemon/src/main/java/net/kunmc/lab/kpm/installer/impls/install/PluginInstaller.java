@@ -186,7 +186,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
             IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(pluginDescription);
             this.postSignal(ignoredPluginSignal);
 
-            if (ignoredPluginSignal.isCancelInstall())
+            if (!ignoredPluginSignal.isContinueInstall())
                 return InstallErrorCause.PLUGIN_IGNORED;
         }
         // endregion

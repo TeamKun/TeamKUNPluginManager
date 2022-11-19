@@ -45,7 +45,7 @@ public class DebugSignalHandler
                 IgnoredPluginSignal ignoredPluginSignal = (IgnoredPluginSignal) signal;
 
                 Question question = terminal.getInput().showYNQuestion("Cancel?");
-                ignoredPluginSignal.setCancelInstall(question.waitAndGetResult().test(QuestionAttribute.YES));
+                ignoredPluginSignal.setContinueInstall(question.waitAndGetResult().test(QuestionAttribute.NO));
             }
         }
         catch (Exception e)

@@ -77,7 +77,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
             {
                 IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
                 this.postSignal(ignoredPluginSignal);
-                if (ignoredPluginSignal.isCancelInstall())
+                if (!ignoredPluginSignal.isContinueInstall())
                     return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
             }
         }

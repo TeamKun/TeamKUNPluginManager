@@ -40,7 +40,7 @@ public class CheckEnvSignalHandler
 
         this.terminal.writeLine(ChatColor.DARK_RED + "W: 強制的な操作は予期しない問題を引き起こす可能性があります。");
 
-        signal.setCancelInstall(!SignalHandlingUtils.askContinue(this.terminal));
+        signal.setContinueInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
 
     private void printKeyValue(String key, String value)
