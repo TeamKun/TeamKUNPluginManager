@@ -44,15 +44,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
         if (signal.getSpecifiedResult() != null)
             return signal.getSpecifiedResult(); // Plugin actually resolved by SignalHandler.
 
-        ResolveResult result = results.getResults()[0];
-
-        if (result instanceof MultiResult)
-        {
-            MultiResult multiResult = (MultiResult) result;
-            return this.resolveMultipleResults(query, multiResult); // Recursive call.
-        }
-
-        return result;
+        return this.resolver.pickUpOne(results);
     }
 
     @Override

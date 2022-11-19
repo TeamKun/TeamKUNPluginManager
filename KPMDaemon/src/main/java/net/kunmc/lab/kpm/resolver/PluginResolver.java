@@ -3,6 +3,7 @@ package net.kunmc.lab.kpm.resolver;
 import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.kpm.resolver.interfaces.URLResolver;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.resolver.result.PipeResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 
@@ -80,6 +81,17 @@ public class PluginResolver
             return new ErrorResult(null, ErrorResult.ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
 
         return this.actuallyResolve(this.resolvers.get(context.getResolverName().toLowerCase()), context);
+    }
+
+    /**
+     * 複数の結果({@link MultiResult})を一つの結果にピックアップします。
+     *
+     * @param multiResult 複数の結果
+     * @return 一つの結果
+     */
+    public ResolveResult pickUpOne(MultiResult multiResult)
+    {
+        return multiResult.getResolver().autoPickOnePlugin(multiResult);
     }
 
     private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)

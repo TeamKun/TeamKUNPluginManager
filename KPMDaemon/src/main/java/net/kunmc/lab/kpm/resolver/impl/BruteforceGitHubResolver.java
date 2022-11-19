@@ -46,7 +46,7 @@ public class BruteforceGitHubResolver implements BaseResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return null;
+        return this.gitHubURLResolver.autoPickOnePlugin(multiResult);
     }
 
     @Override
