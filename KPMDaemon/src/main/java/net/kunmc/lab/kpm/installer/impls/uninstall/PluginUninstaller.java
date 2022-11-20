@@ -76,40 +76,42 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         this.progress.setCurrentTask(UnInstallTasks.CHECKING_ENVIRONMENT);
 
         // region Check is plugin marked as ignored
-        for (Plugin plugin : plugins)
+        if (!argument.isSkipExcludeChecks())
         {
-            if (this.isPluginIgnored(plugin.getName()))
+            for (Plugin plugin : plugins)
             {
+                if (!this.isPluginIgnored(plugin.getName()))
+                    continue;
                 IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
                 this.postSignal(ignoredPluginSignal);
-                if (!ignoredPluginSignal.isContinueInstall())
+                if (!(argument.isForceUninstall() || ignoredPluginSignal.isContinueInstall()))
                     return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
             }
         }
-
         // endregion
 
         // region Check other plugins depends on this plugin.
-
-        for (Plugin plugin : plugins)
+        if (!argument.isSkipDependencyChecks())
         {
-            List<Plugin> dependencies = this.getAllDependencies(plugin);
-            dependencies.removeAll(plugins);
-
-            if (!dependencies.isEmpty())
+            for (Plugin plugin : plugins)
             {
+                List<Plugin> dependencies = this.getAllDependencies(plugin);
+                dependencies.removeAll(plugins);
+
+                if (dependencies.isEmpty())
+                    continue;
                 PluginIsDependencySignal pluginIsDependencySignal =
                         new PluginIsDependencySignal(plugin, dependencies);
 
                 this.postSignal(pluginIsDependencySignal);
 
-                if (pluginIsDependencySignal.isForceUninstall())
+                if (argument.isForceUninstall() || pluginIsDependencySignal.isForceUninstall())
                     plugins.addAll(dependencies);
                 else
                     return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);
             }
-        }
 
+        }
         // endregion
 
         // endregion

@@ -36,6 +36,26 @@ public class UninstallArgument extends AbstractInstallerArgument
     @Unmodifiable
     private final List<Plugin> plugins;
 
+    /**
+     * 除外チェックをスキップするかどうかのフラグです。
+     */
+    @Builder.Default
+    private final boolean skipExcludeChecks = false;
+
+    /**
+     * 依存関係チェックをスキップするかどうかのフラグです。
+     */
+    @Builder.Default
+    private final boolean skipDependencyChecks = false;
+
+    /**
+     * 強制アンインストールを行うかどうかのフラグです。
+     * デフォルトでは, 状況に応じたシグナルが送信され, 選択を促されます。
+     * このフラグが true の場合, シグナルは送信されますが, シグナルの選択は無視され, アンインストールが行われます。
+     */
+    @Builder.Default
+    private final boolean forceUninstall = false;
+
     public static UninstallArgumentBuilder builder(Plugin plugin)
     {
         return new UninstallArgumentBuilder()
