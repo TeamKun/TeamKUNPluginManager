@@ -154,7 +154,7 @@ public class GitHubURLResolver implements URLResolver
                 .orElse(null);
     }
 
-    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable String version)
+    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable Version version)
     {
         String apiURL;
         if (tag != null)
@@ -218,7 +218,7 @@ public class GitHubURLResolver implements URLResolver
         return new MultiResult(this, results.toArray(new ResolveResult[0]));
     }
 
-    private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object, @Nullable String queryVersion)
+    private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object, @Nullable Version queryVersion)
     {
         List<GitHubSuccessResult> results = new ArrayList<>();
 
@@ -227,14 +227,22 @@ public class GitHubURLResolver implements URLResolver
         String version = object.get("tag_name").getAsString();
         long releaseId = object.get("id").getAsLong();
 
-        if (queryVersion != null && !queryVersion.equalsIgnoreCase(version) &&
-                !("v" + queryVersion).equalsIgnoreCase(queryVersion) && !queryVersion.equalsIgnoreCase("v" + queryVersion))
-            return new ErrorResult(this, ErrorResult.ErrorCause.VERSION_MISMATCH, ResolveResult.Source.GITHUB);
+        if (queryVersion != null && !(Version.isValidVersionString(version) &&
+                Version.of(version).isEqualTo(queryVersion)))
+            return new ErrorResult(
+                    this,
+                    ErrorResult.ErrorCause.VERSION_MISMATCH,
+                    ResolveResult.Source.GITHUB
+            );
 
         JsonArray assets = object.getAsJsonArray("assets");
 
         if (assets.size() == 0)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.GITHUB);
+            return new ErrorResult(
+                    this,
+                    ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+                    ResolveResult.Source.GITHUB
+            );
 
         for (JsonElement asset : assets)
         {

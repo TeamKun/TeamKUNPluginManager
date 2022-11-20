@@ -41,7 +41,8 @@ public class CommandInstallDebug extends CommandBase
                         DebugSignalHandler.toManager(terminal)
                 );
 
-                InstallResult<InstallTasks> installResult = installer.execute(new InstallArgument(query));
+                InstallResult<InstallTasks> installResult =
+                        installer.execute(InstallArgument.builder(query).build());
 
                 if (installResult instanceof InstallFailedInstallResult)
                 {

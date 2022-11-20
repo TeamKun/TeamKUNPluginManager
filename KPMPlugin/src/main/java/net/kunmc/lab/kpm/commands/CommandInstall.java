@@ -28,7 +28,7 @@ public class CommandInstall extends CommandBase
         String query = args[0];
 
         Runner.runAsync(() ->
-                this.plugin.getHeadInstallers().runInstall(terminal, new InstallArgument(query))
+                this.plugin.getHeadInstallers().runInstall(terminal, InstallArgument.builder(query).build())
         );
     }
 
