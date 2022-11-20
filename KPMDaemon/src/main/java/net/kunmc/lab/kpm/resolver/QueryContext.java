@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.resolver;
 
 import lombok.Builder;
 import lombok.Data;
+import net.kunmc.lab.kpm.utils.versioning.Version;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,7 @@ public class QueryContext
      * 指定バージョンです。
      */
     @Nullable
-    String version;
+    Version version;
 
     private static final String resolverNameQuerySeparator = ">";
     private static final String versionEqualQuerySeparator = "==";
@@ -49,17 +50,23 @@ public class QueryContext
         if (queryParts.length >= 2)
             resolverName = queryParts[0];
 
-        String version = null;
+        String bodyAndVersion = queryParts[queryParts.length - 1];
 
-        String part = queryParts[queryParts.length - 1];
+        int versionSeparatorIndex = bodyAndVersion.lastIndexOf(versionEqualQuerySeparator);
 
-        int versionSeparatorIndex = part.lastIndexOf(versionEqualQuerySeparator);
+        String versionStr = null;
+        Version version = null;
         if (versionSeparatorIndex != -1)
-            version = part.substring(versionSeparatorIndex + 2);
+        {
+            versionStr = bodyAndVersion.substring(versionSeparatorIndex + 2);
+            if (!Version.isValidVersionString(versionStr))
+                throw new IllegalArgumentException("Invalid version string: " + versionStr);
+            version = Version.of(versionStr);
+        }
 
-        String plainQuery = part;
-        if (version != null)
-            plainQuery = part.substring(0, versionSeparatorIndex);
+        String plainQuery = bodyAndVersion;
+        if (versionStr != null)
+            plainQuery = bodyAndVersion.substring(0, versionSeparatorIndex);
 
         return new QueryContext(resolverName, plainQuery, version);
     }
