@@ -41,7 +41,7 @@ public class CommandUninstallDebug extends CommandBase
                 PluginUninstaller installer =
                         new PluginUninstaller(this.daemon, DebugSignalHandler.toManager(terminal));
 
-                InstallResult<UnInstallTasks> installResult = installer.execute(new UninstallArgument(query));
+                InstallResult<UnInstallTasks> installResult = installer.execute(UninstallArgument.builder(query).build());
 
                 if (installResult instanceof InstallFailedInstallResult)
                 {

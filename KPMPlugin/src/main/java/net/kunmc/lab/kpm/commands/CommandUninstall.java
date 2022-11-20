@@ -31,7 +31,10 @@ public class CommandUninstall extends CommandBase
         String query = args[0];
 
         Runner.runAsync(() ->
-                this.plugin.getHeadInstallers().runUninstall(terminal, new UninstallArgument(query))
+                this.plugin.getHeadInstallers().runUninstall(
+                        terminal,
+                        UninstallArgument.builder(query).build()
+                )
         );
     }
 

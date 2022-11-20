@@ -83,7 +83,8 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
             return this.error(AutoRemoveErrorCause.UNINSTALLER_INIT_FAILED);
         }
 
-        UninstallArgument uninstallArgument = new UninstallArgument(targetPlugins.toArray(new String[0]));
+        UninstallArgument uninstallArgument = UninstallArgument.builder(targetPlugins.toArray(new String[0]))
+                .build();
 
         InstallResult<UnInstallTasks> uninstallResult = uninstaller.execute(uninstallArgument);
 

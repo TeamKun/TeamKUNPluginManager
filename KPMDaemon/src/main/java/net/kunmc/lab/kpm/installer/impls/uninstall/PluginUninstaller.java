@@ -55,15 +55,20 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         // region Search plugin
         this.progress.setCurrentTask(UnInstallTasks.SEARCHING_PLUGIN);
 
-        for (String pluginName : argument.getPlugins())
+        if (argument.getPluginNames() != null)
+            for (String pluginName : argument.getPluginNames())
+            {
+                Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+                if (plugin == null)
+                    return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
+
+                plugins.add(plugin);
+            }
+        else
         {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-            if (plugin == null)
-                return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
-
-            plugins.add(plugin);
+            assert argument.getPlugins() != null;
+            plugins.addAll(argument.getPlugins());
         }
-
 
         // endregion
 

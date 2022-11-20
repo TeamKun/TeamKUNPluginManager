@@ -1,32 +1,62 @@
 package net.kunmc.lab.kpm.installer.impls.uninstall;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.installer.AbstractInstallerArgument;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * アンインストールの引数を格納するクラスです。
  */
 @Data
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Builder
 public class UninstallArgument extends AbstractInstallerArgument
 {
     /**
-     * アンインストールするプラグインの名前
+     * アンインストールするプラグインの名前です。
+     * {@link #plugins} またはこのフィールドのどちらかが指定されている必要があります。
      */
-    @NotNull
-    private final String[] plugins;
+    @Nullable
+    @Unmodifiable
+    private final List<String> pluginNames;
 
     /**
-     * 単一のプラグインをアンインストールするための引数を生成します。
-     *
-     * @param plugin アンインストールするプラグイン
+     * アンインストールするプラグインのインスタンスです。
+     * {@link #pluginNames} またはこのフィールドのどちらかが指定されている必要があります。
      */
-    public UninstallArgument(@NotNull String plugin)
+    @Nullable
+    @Unmodifiable
+    private final List<Plugin> plugins;
+
+    public static UninstallArgumentBuilder builder(Plugin plugin)
     {
-        this(new String[]{plugin});
+        return new UninstallArgumentBuilder()
+                .plugins(Collections.singletonList(plugin));
+    }
+
+    public static UninstallArgumentBuilder builder(String pluginName)
+    {
+        return new UninstallArgumentBuilder()
+                .pluginNames(Collections.singletonList(pluginName));
+    }
+
+    public static UninstallArgumentBuilder builder(Plugin... plugins)
+    {
+        return new UninstallArgumentBuilder()
+                .plugins(Arrays.asList(plugins));
+    }
+
+    public static UninstallArgumentBuilder builder(String... pluginNames)
+    {
+        return new UninstallArgumentBuilder()
+                .pluginNames(Arrays.asList(pluginNames));
     }
 }
