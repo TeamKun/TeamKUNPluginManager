@@ -67,10 +67,9 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
      *
      * @param arguments インストーラに渡す引数
      * @return インストールの結果
-     * @throws IOException ファイルの読み書きに失敗した場合
      * @see AbstractInstaller#execute(AbstractInstallerArgument)
      */
-    public InstallResult<P> run(@NotNull A arguments) throws IOException
+    public InstallResult<P> run(@NotNull A arguments)
     {
         try
         {
