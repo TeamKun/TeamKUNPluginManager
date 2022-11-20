@@ -96,26 +96,20 @@ public class PluginResolver
 
     private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
     {
-        URL url = null;
-
-        String resolverName = queryContext.getResolverName();
-        if (resolverName != null)
-            url = toURL(queryContext.getQuery());
-
-        ResolveResult result = this.resolves(resolvers, queryContext, url);
+        ResolveResult result = this.resolves(resolvers, queryContext);
 
 
         if (result instanceof ErrorResult)
         {
             ErrorResult error = (ErrorResult) result;
             if (error.getCause() != ErrorResult.ErrorCause.VERSION_MISMATCH)
-                result = this.resolves(this.fallbackResolvers, queryContext, url);
+                result = this.resolves(this.fallbackResolvers, queryContext);
         }
 
         return result;
     }
 
-    private ResolveResult resolves(List<BaseResolver> resolvers, QueryContext queryContext, URL url)
+    private ResolveResult resolves(List<BaseResolver> resolvers, QueryContext queryContext)
     {
         List<BaseResolver> finishedResolvers = new ArrayList<>();
 
@@ -127,6 +121,7 @@ public class PluginResolver
 
             finishedResolvers.add(resolver);
 
+            URL url = toURL(queryContext.getQuery());
             ResolveResult result = this.actuallyResolve(resolver, queryContext, url);
 
             if (result == null || result instanceof PipeResult)
