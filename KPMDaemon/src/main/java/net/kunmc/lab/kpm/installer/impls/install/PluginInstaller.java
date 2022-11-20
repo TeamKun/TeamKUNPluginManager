@@ -23,6 +23,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
+import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -62,27 +63,39 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     public InstallResult<InstallTasks> execute(@NotNull InstallArgument argument) throws TaskFailedException
     {
         String query = argument.getQuery();
+        SuccessResult resolveResult = argument.getResolveResult();
 
         Path pluginFilePath;
         PluginDescriptionFile pluginDescription;
         String pluginName;
         // region Do plugin resolve, download and description load.
 
-        TaskResult pluginDescriptionResult =
-                this.submitter(
-                                InstallTasks.RESOLVING_QUERY,
-                                new PluginResolveTask(this)
-                        )
-                        .then(InstallTasks.DOWNLOADING, new DownloadTask(this))
-                        .bridgeArgument(result -> {
-                            if (result.getResolveResult() == null)
-                                throw new IllegalArgumentException("Plugin Resolving must be successful");
+        TaskResult pluginDescriptionResult;
 
-                            return new DownloadArgument(result.getResolveResult().getDownloadUrl());
-                        })
-                        .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this))
-                        .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
-                        .submitAll(new PluginResolveArgument(query));
+        if (query != null)
+            pluginDescriptionResult = this.submitter(
+                            InstallTasks.RESOLVING_QUERY,
+                            new PluginResolveTask(this)
+                    )
+                    .then(InstallTasks.DOWNLOADING, new DownloadTask(this))
+                    .bridgeArgument(result -> {
+                        assert result.getResolveResult() != null;
+                        return new DownloadArgument(result.getResolveResult().getDownloadUrl());
+                    })
+                    .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this))
+                    .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
+                    .submitAll(new PluginResolveArgument(query));
+        else if (resolveResult != null)
+            pluginDescriptionResult = this.submitter(
+                            InstallTasks.DOWNLOADING,
+                            new DownloadTask(this)
+                    )
+                    .bridgeArgument(result -> new DownloadArgument(resolveResult.getDownloadUrl()))
+                    .then(InstallTasks.LOADING_PLUGIN_DESCRIPTION, new DescriptionLoadTask(this))
+                    .bridgeArgument(result -> new DescriptionLoadArgument(result.getPath()))
+                    .submitAll(new DownloadArgument(resolveResult.getDownloadUrl()));
+        else
+            throw new IllegalArgumentException("Query or ResolveResult must be specified");
 
         DescriptionLoadResult descriptionLoadResult = (DescriptionLoadResult) pluginDescriptionResult;
 
@@ -115,7 +128,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         this.progress.setCurrentTask(InstallTasks.CHECKING_ENVIRONMENT);
 
-        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription);
+        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription, argument);
         if (checkEnvErrorResult != null)
             return this.error(checkEnvErrorResult);
 
@@ -129,7 +142,9 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                     new AlreadyInstalledPluginSignal(sameServerPlugin.getDescription(), pluginDescription);
 
             this.postSignal(alreadyInstalledPluginSignal);
-            replacePlugin = alreadyInstalledPluginSignal.isReplacePlugin();
+            replacePlugin = alreadyInstalledPluginSignal.isReplacePlugin() ||
+                    argument.isReplaceOldPlugin() ||
+                    argument.isForceInstall();
 
             if (!replacePlugin)
                 return this.error(InstallErrorCause.PLUGIN_ALREADY_INSTALLED);
@@ -175,18 +190,17 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     }
 
     @Nullable
-    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription)
+    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, InstallArgument argument)
     {
         String pluginName = pluginDescription.getName();
 
-
         // region Check if the plugin is marked as ignored
-        if (this.isPluginIgnored(pluginName))
+        if (!argument.isSkipExcludeChecks() && this.isPluginIgnored(pluginName))
         {
             IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(pluginDescription);
             this.postSignal(ignoredPluginSignal);
 
-            if (!ignoredPluginSignal.isContinueInstall())
+            if (!(argument.isForceInstall() || ignoredPluginSignal.isContinueInstall()))
                 return InstallErrorCause.PLUGIN_IGNORED;
         }
         // endregion
