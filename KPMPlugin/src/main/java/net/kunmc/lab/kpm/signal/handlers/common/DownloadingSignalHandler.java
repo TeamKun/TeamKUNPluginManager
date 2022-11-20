@@ -32,8 +32,13 @@ public class DownloadingSignalHandler
         this.currentDownload = id;
         this.downloadTotalSize = 0;
         this.downloadStarted = System.currentTimeMillis();
-        this.downloadProgressBar = this.terminal.createProgressbar("ダウンロード");
-        this.downloadProgressBar.setProgressMax(100);
+        if (this.terminal.isPlayer())
+        {
+            this.downloadProgressBar = this.terminal.createProgressbar("ダウンロード");
+            this.downloadProgressBar.setProgressMax(100);
+        }
+        else
+            this.downloadProgressBar = null;
     }
 
     private void addDownloadArtifact(String url, long size)
@@ -68,6 +73,9 @@ public class DownloadingSignalHandler
             this.startDownloads(signal.getDownloadId());
             this.addDownloadArtifact(signal.getUrl(), signal.getTotalSize());
         }
+
+        if (this.downloadProgressBar == null)
+            return;
 
         double percent = (double) signal.getDownloaded() / signal.getTotalSize();
         this.downloadProgressBar.setProgress((int) (percent * 100));  // max 100
