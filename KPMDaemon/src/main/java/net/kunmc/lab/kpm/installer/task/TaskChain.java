@@ -172,11 +172,16 @@ public class TaskChain<
      * @throws TaskFailedException   タスクの実行に失敗した場合
      * @throws IllegalStateException タスクチェーンが設定されていない場合
      */
-    public @NotNull TaskResult<?, ?> submitAll(@NotNull TaskArgument argument) throws TaskFailedException, IllegalStateException
+    @SuppressWarnings("unchecked")
+    public @NotNull R submitAll(@NotNull TaskArgument argument) throws TaskFailedException, IllegalStateException
     {
         if (this.first == null)
             throw new IllegalStateException("No task chain defined");
-        return this.first.submitFromThis(argument);
+
+        // Suppress unchecked cast warning because this method calls tasks from the first task to the last task(this task).
+        // If any error occurs, it will be thrown as TaskFailedException, so this method will not return any value.
+        // So this method returns the last value type of the task chain, the type is R.
+        return (R) this.first.submitFromThis(argument);
     }
 
 }

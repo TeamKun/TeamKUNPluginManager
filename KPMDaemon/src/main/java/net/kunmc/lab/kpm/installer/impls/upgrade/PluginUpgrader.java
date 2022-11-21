@@ -221,7 +221,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         if (targets == null)
             return new ArrayList<>(Arrays.asList(Bukkit.getPluginManager().getPlugins()));
 
-        LookupResult lookupResult = (LookupResult) this.submitter(UpgradeTasks.SEARCHING_PLUGIN, new PluginLookupTask(this))
+        LookupResult lookupResult = this.submitter(UpgradeTasks.SEARCHING_PLUGIN, new PluginLookupTask(this))
                 .submitAll(new LookupArgument(targets.toArray(new String[0])));
 
         HashMap<String, Plugin> foundPlugins = lookupResult.getPlugins();
@@ -272,7 +272,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
     {
         try
         {
-            PluginResolveResult result = (PluginResolveResult) this.submitter(UpgradeTasks.RESOLVING_PLUGIN, new PluginResolveTask(this))
+            PluginResolveResult result = this.submitter(UpgradeTasks.RESOLVING_PLUGIN, new PluginResolveTask(this))
                     .submitAll(new PluginResolveArgument(query));
 
             return result.getResolveResult();

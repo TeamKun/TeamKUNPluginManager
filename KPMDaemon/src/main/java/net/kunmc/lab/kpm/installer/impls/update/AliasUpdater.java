@@ -38,7 +38,7 @@ public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorC
         Map<String, String> remotes = argument.getRemotes();
 
         UpdateAliasesResult result =
-                (UpdateAliasesResult) this.submitter(
+                this.submitter(
                                 UpdateTasks.DOWNLOADING_SOURCES,
                                 new SourceDownloadTask(this)
                         )

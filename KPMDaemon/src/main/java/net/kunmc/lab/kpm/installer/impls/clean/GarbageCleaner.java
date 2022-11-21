@@ -53,7 +53,7 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
                 .map(Plugin::getName)
                 .collect(Collectors.toList());
 
-        GarbageCleanResult result = (GarbageCleanResult) this.submitter(
+        GarbageCleanResult result = this.submitter(
                         CleanTasks.SEARCHING_GARBAGE,
                         new GarbageSearchTask(this)
                 )

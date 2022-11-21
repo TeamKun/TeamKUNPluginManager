@@ -142,24 +142,23 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         Map<String, Plugin> namePluginMap = plugins.stream().parallel()
                 .collect(Collectors.toMap(Plugin::getName, pl -> pl));
 
-        UnInstallResult uninstallResult = (UnInstallResult)
-                this.submitter(
-                                UnInstallTasks.COMPUTING_UNINSTALL_ORDER,
-                                new DependsComputeOrderTask(this)
-                        )
-                        .then(
-                                UnInstallTasks.UNINSTALLING_PLUGINS,
-                                new UnInstallTask(this)
-                        )
-                        .bridgeArgument(computeResult -> {
-                            List<DependencyElement> ordered = computeResult.getOrder();
-                            List<Plugin> orderedPlugins = ordered.stream()
-                                    .map(element -> namePluginMap.get(element.getPluginName()))
-                                    .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
+        UnInstallResult uninstallResult = this.submitter(
+                        UnInstallTasks.COMPUTING_UNINSTALL_ORDER,
+                        new DependsComputeOrderTask(this)
+                )
+                .then(
+                        UnInstallTasks.UNINSTALLING_PLUGINS,
+                        new UnInstallTask(this)
+                )
+                .bridgeArgument(computeResult -> {
+                    List<DependencyElement> ordered = computeResult.getOrder();
+                    List<Plugin> orderedPlugins = ordered.stream()
+                            .map(element -> namePluginMap.get(element.getPluginName()))
+                            .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
 
-                            return new UnInstallArgument(orderedPlugins);
-                        })
-                        .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
+                    return new UnInstallArgument(orderedPlugins);
+                })
+                .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
         // endregion
 
         return this.success(new PluginUninstallSucceedResult(this.progress, uninstallResult));
