@@ -12,6 +12,7 @@ import net.kunmc.lab.kpm.commands.CommandResolve;
 import net.kunmc.lab.kpm.commands.CommandStatus;
 import net.kunmc.lab.kpm.commands.CommandUninstall;
 import net.kunmc.lab.kpm.commands.CommandUpdate;
+import net.kunmc.lab.kpm.commands.CommandUpgrade;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
@@ -47,6 +48,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("status", new CommandStatus(this.daemon));
         commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
+        commandManager.registerCommand("upgrade", new CommandUpgrade(this));
         commandManager.registerCommand("debug", new CommandDebug());
     }
 

@@ -18,18 +18,21 @@ import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallFinishedSignalHandle
 import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallReadySignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallerSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.update.UpdateAliasesSignalHandler;
+import net.kunmc.lab.kpm.signal.handlers.upgrade.UpgradeSignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class HeadSignalHandlers
 {
     private static List<Object> createHandlersList(List<Object> base, Object... handlers)
     {
         List<Object> list = new ArrayList<>(base);
+        list.removeIf(Objects::isNull);
         list.addAll(Arrays.asList(handlers));
         return list;
     }
@@ -54,7 +57,7 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getInstallHandlers(@NotNull Terminal terminal)
+    public static List<Object> getInstallHandlers(@NotNull Terminal terminal, boolean handleFinish)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
@@ -63,19 +66,29 @@ public class HeadSignalHandlers
                 new CheckEnvSignalHandler(terminal),
                 new DependenciesSignalHandler(terminal),
                 new InstallerSignalHandler(terminal),
-                new InstallFinishedSignalHandler(terminal)
+                handleFinish ? new InstallFinishedSignalHandler(terminal): null
         );
     }
 
-    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal)
+    public static List<Object> getInstallHandlers(@NotNull Terminal terminal)
+    {
+        return getInstallHandlers(terminal, true);
+    }
+
+    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal, boolean handleFinish)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
                 new UninstallerSignalHandler(terminal),
                 new PluginIsDependencySignalHandler(terminal),
                 new UninstallReadySignalHandler(terminal),
-                new UninstallFinishedSignalHandler(terminal)
+                handleFinish ? new UninstallFinishedSignalHandler(terminal): null
         );
+    }
+
+    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal)
+    {
+        return getUninstallHandlers(terminal, true);
     }
 
     public static List<Object> getUpdateHandlers(@NotNull Terminal terminal)
@@ -113,5 +126,20 @@ public class HeadSignalHandlers
                 new TokenRegisterSignalHandler(terminal),
                 new TokenGenerateSignalHandler(terminal)
         );
+    }
+
+    public static List<Object> getUpgraderHandlers(Terminal terminal, int targets)
+    {
+        return createHandlersList(
+                getCommonHandlers(terminal),
+                getInstallHandlers(terminal, false),
+                getUninstallHandlers(terminal, false),
+                new UpgradeSignalHandler(terminal, targets)
+        );
+    }
+
+    public static List<Object> getUpgraderHandlers(Terminal terminal)
+    {
+        return getUpgraderHandlers(terminal, -1);
     }
 }

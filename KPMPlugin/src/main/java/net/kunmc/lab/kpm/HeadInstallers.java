@@ -17,6 +17,8 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.installer.impls.update.AliasUpdater;
 import net.kunmc.lab.kpm.installer.impls.update.UpdateArgument;
+import net.kunmc.lab.kpm.installer.impls.upgrade.PluginUpgrader;
+import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeArgument;
 import net.kunmc.lab.kpm.signal.HeadSignalHandlers;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -168,5 +170,25 @@ public class HeadInstallers
         }
 
         this.headRun(terminal, register, argument);
+    }
+
+    public void runUpgrade(@NotNull Terminal terminal, @NotNull UpgradeArgument argument) throws IllegalStateException
+    {
+        SignalHandleManager handleManager = new SignalHandleManager();
+        HeadSignalHandlers.getUpgraderHandlers(terminal).forEach(handleManager::register);
+
+        PluginUpgrader upgrader;
+        try
+        {
+            upgrader = new PluginUpgrader(this.daemon, handleManager);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            return;
+        }
+
+        this.headRun(terminal, upgrader, argument);
     }
 }
