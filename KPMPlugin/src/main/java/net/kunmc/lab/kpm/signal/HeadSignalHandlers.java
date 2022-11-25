@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * シグナルを受け取り, 処理を行うクラス をまとめるためのユーティリティクラスです.
- */
 public class HeadSignalHandlers
 {
     private static List<Object> createHandlersList(List<Object> base, Object... handlers)
@@ -57,12 +54,6 @@ public class HeadSignalHandlers
         );
     }
 
-    /**
-     * インストールに使用するハンドラを返します.
-     *
-     * @param terminal ターミナル
-     * @return インストールに使用するハンドラ
-     */
     public static List<Object> getInstallHandlers(@NotNull Terminal terminal)
     {
         return createHandlersList(
@@ -76,12 +67,6 @@ public class HeadSignalHandlers
         );
     }
 
-    /**
-     * アンインストールに使用するハンドラを返します.
-     *
-     * @param terminal ターミナル
-     * @return アンインストールに使用するハンドラ
-     */
     public static List<Object> getUninstallHandlers(@NotNull Terminal terminal)
     {
         return createHandlersList(
