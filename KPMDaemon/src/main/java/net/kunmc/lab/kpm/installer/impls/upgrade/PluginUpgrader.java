@@ -175,6 +175,15 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
         // endregion
 
+        // region clean VM(Unlink old Plugin data)
+        targetPlugins.clear();
+        resolveResults.clear();
+        updateQueries.clear();
+        pluginMetas.clear();
+
+        System.gc();
+        // endregion
+
         return this.success();
     }
 
