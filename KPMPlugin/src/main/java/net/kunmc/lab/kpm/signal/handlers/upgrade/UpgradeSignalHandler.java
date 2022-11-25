@@ -47,6 +47,9 @@ public class UpgradeSignalHandler
     @SignalHandler
     public void onPluginNotFound(PluginNotFoundSignal signal)
     {
+        if (signal instanceof ResolveFailedSignal)
+            return;  // implemented in #onResolveFailed(ResolveFailedSignal)
+
         this.terminal.warn("プラグイン " + signal.getSpecifiedPluginName() + " が見つかりませんでした。");
         signal.setContinueUpgrade(this.askCancelOrContinue(++this.currentPluginCount));
     }
