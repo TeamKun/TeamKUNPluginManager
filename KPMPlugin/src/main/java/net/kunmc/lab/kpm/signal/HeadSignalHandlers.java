@@ -18,6 +18,7 @@ import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallFinishedSignalHandle
 import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallReadySignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.uninstall.UninstallerSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.update.UpdateAliasesSignalHandler;
+import net.kunmc.lab.kpm.signal.handlers.upgrade.UpgradeFinishedSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.upgrade.UpgradeSignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.NotNull;
@@ -134,7 +135,8 @@ public class HeadSignalHandlers
                 getCommonHandlers(terminal),
                 getInstallHandlers(terminal, false),
                 getUninstallHandlers(terminal, false),
-                new UpgradeSignalHandler(terminal, targets)
+                new UpgradeSignalHandler(terminal, targets),
+                new UpgradeFinishedSignalHandler(terminal)
         );
     }
 
