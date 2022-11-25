@@ -22,8 +22,13 @@ public class TokenGenerateSignalHandler
     public TokenGenerateSignalHandler(Terminal terminal)
     {
         this.terminal = terminal;
-        this.progressbar = terminal.createProgressbar("codeExpire");
-        this.progressbar.setPrefix(ChatColor.GREEN + "コード有効期限: ");
+        if (terminal.isPlayer())
+        {
+            this.progressbar = terminal.createProgressbar("codeExpire");
+            this.progressbar.setPrefix(ChatColor.GREEN + "コード有効期限: ");
+        }
+        else
+            this.progressbar = null;
     }
 
     @SignalHandler
@@ -66,45 +71,57 @@ public class TokenGenerateSignalHandler
         int expiresInSecInt = (int) expiresInSec;
 
         if (this.terminal.isPlayer())
+        {
             this.terminal.showNotification(userCode, "GitHubでこのコードを入力して有効化してください。",
                     expiresInSecInt * 1000
             );
 
-        this.progressbar.setProgressMax(expiresInSecInt);
-        this.progressbar.setProgress(expiresInSecInt);
-        this.progressbar.show();
+            this.progressbar.setProgressMax(expiresInSecInt);
+            this.progressbar.setProgress(expiresInSecInt);
+            this.progressbar.show();
+        }
     }
 
     @SignalHandler
     public void onVerificationCodeExpired(VerificationCodeExpiredSignal signal)
     {
         this.terminal.error("コードが失効しました： " + signal.getUserCode());
+        this.terminal.info("コードを再取得するには /kpm register を実行してください。");
 
-        this.progressbar.hide();
+        if (!this.terminal.isPlayer())
+
+            this.progressbar.hide();
         this.terminal.removeProgressbar("codeExpire");
     }
 
     @SignalHandler
     public void onUserDoesntCompleteVerify(UserDoesntCompleteVerifySignal signal)
     {
-        this.progressbar.setProgress((int) signal.getRemainTime());
+        if (this.terminal.isPlayer())
+            this.progressbar.setProgress((int) signal.getRemainTime());
     }
 
     @SignalHandler
     public void onUserVerifyDenied(UserVerifyDeniedSignal signal)
     {
+        this.terminal.error("コードの有効化に失敗しました：ユーザがコードの有効化を拒否しました。");
+
+        if (!this.terminal.isPlayer())
+            return;
+
         this.progressbar.hide();
         this.terminal.removeProgressbar("codeExpire");
-
-        this.terminal.error("コードの有効化に失敗しました：ユーザがコードの有効化を拒否しました。");
     }
 
     @SignalHandler
     public void onUserVerifySucceeded(UserVerificationSuccessSignal signal)
     {
+        this.terminal.success("コードの有効化に成功しました。");
+
+        if (!this.terminal.isPlayer())
+            return;
+
         this.progressbar.hide();
         this.terminal.removeProgressbar("codeExpire");
-
-        this.terminal.success("コードの有効化に成功しました。");
     }
 }
