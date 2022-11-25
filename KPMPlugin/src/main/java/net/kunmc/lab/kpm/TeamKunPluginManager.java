@@ -91,7 +91,7 @@ public final class TeamKunPluginManager extends JavaPlugin
                         .tokenKeyPath(dataDir.resolve("token_key.dat"))
                         .metadataDBPath(dataDir.resolve("plugins.db"))
                         .aliasesDBPath(dataDir.resolve("aliases.db"))
-                        .organizations(this.getPluginConfig().getStringList("githubName"))
+                        .organizations(this.getPluginConfig().getStringList("gitHubName"))
                         .sources(this.setupSources())
                         .build()
         );
