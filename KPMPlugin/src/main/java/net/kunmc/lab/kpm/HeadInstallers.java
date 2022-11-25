@@ -50,12 +50,6 @@ public class HeadInstallers
         }
     }
 
-    /**
-     * インストールを実行します。
-     *
-     * @param terminal ターミナル
-     * @param argument インストールの引数
-     */
     public void runInstall(@NotNull Terminal terminal, @NotNull InstallArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
@@ -76,12 +70,6 @@ public class HeadInstallers
         this.headRun(terminal, installer, argument);
     }
 
-    /**
-     * アンインストールを実行します。
-     *
-     * @param terminal ターミナル
-     * @param argument アンインストールするプラグインのクエリ
-     */
     public void runUninstall(@NotNull Terminal terminal, @NotNull UninstallArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
@@ -122,12 +110,6 @@ public class HeadInstallers
         this.headRun(terminal, updater, argument);
     }
 
-    /**
-     * プラグインの自動削除を実行します。
-     *
-     * @param terminal ターミナル
-     * @param argument 自動削除の引数
-     */
     public void runAutoRemove(@NotNull Terminal terminal, @NotNull AutoRemoveArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
@@ -148,13 +130,6 @@ public class HeadInstallers
         this.headRun(terminal, autoRemover, argument);
     }
 
-    /**
-     * 不要データ(ガベージ)の削除を実行します。
-     *
-     * @param terminal ターミナル
-     * @param argument 不要データ削除の引数
-     * @throws IllegalStateException インストールが進行中の場合
-     */
     public void runGarbageClean(@NotNull Terminal terminal, @NotNull CleanArgument argument) throws IllegalStateException
     {
         SignalHandleManager handleManager = new SignalHandleManager();
@@ -175,13 +150,6 @@ public class HeadInstallers
         this.headRun(terminal, garbageCleaner, argument);
     }
 
-    /**
-     * トークンの登録を実行します。
-     *
-     * @param terminal ターミナル
-     * @param argument トークン登録の引数
-     * @throws IllegalStateException インストールが進行中の場合
-     */
     public void runRegister(@NotNull Terminal terminal, @NotNull RegisterArgument argument) throws IllegalStateException
     {
         SignalHandleManager handleManager = new SignalHandleManager();
