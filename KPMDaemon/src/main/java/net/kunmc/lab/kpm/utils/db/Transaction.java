@@ -27,6 +27,13 @@ import java.util.stream.StreamSupport;
  */
 public class Transaction implements AutoCloseable
 {
+    private static final boolean CONN_LEAK_TRACE;
+
+    static
+    {
+        CONN_LEAK_TRACE = Boolean.getBoolean("kpm.conn-leak-trace");
+    }
+
     /**
      * Dbのコネクションです。
      */
@@ -38,6 +45,7 @@ public class Transaction implements AutoCloseable
 
     private TransactionRun beforeCommit;
 
+
     private Transaction(Connection connection, String query) throws SQLException
     {
         this.connection = connection;
@@ -47,6 +55,31 @@ public class Transaction implements AutoCloseable
             this.preparedStatement = this.connection.prepareStatement(query);
         else
             this.preparedStatement = null;
+
+        if (!CONN_LEAK_TRACE)
+            return;
+
+        // Get stack and get the caller of this class
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        StackTraceElement caller;
+        for (int i = 0; i < stack.length; i++)
+        {
+            caller = stack[i];
+            if (!caller.getClassName().equals(this.getClass().getName()))
+                continue;
+
+            if (i + 1 >= stack.length)
+                continue;
+
+            caller = stack[i + 1];
+            if (caller.getClassName().equals(this.getClass().getName()))
+                continue;
+
+            System.out.println("Transaction(" + this.connection.hashCode() +
+                    ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
+                    caller.getFileName() + ":" + caller.getLineNumber());
+            break;
+        }
     }
 
     /**
@@ -438,14 +471,7 @@ public class Transaction implements AutoCloseable
         {
 
             if (autoFinish)
-                try
-                {
-                    this.connection.close();
-                }
-                catch (SQLException e)
-                {
-                    e.printStackTrace();
-                }
+                this.close();
         }
     }
 
@@ -521,14 +547,7 @@ public class Transaction implements AutoCloseable
         }
         finally
         {
-            try
-            {
-                this.connection.close();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            this.close();
         }
     }
 
@@ -558,14 +577,7 @@ public class Transaction implements AutoCloseable
         }
         finally
         {
-            try
-            {
-                this.connection.close();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            this.close();
         }
     }
 
@@ -583,14 +595,7 @@ public class Transaction implements AutoCloseable
             throw new IllegalStateException(e1);
         }
 
-        try
-        {
-            this.connection.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
+        this.close();
     }
 
     /**
@@ -620,15 +625,7 @@ public class Transaction implements AutoCloseable
         }
         finally
         {
-            try
-            {
-                if (closeConnection)
-                    this.connection.close();
-            }
-            catch (SQLException e)
-            {
-                e.printStackTrace();
-            }
+            this.close();
         }
     }
 
@@ -649,6 +646,9 @@ public class Transaction implements AutoCloseable
         {
             if (!this.connection.isClosed())
                 this.connection.close();
+
+            if (CONN_LEAK_TRACE)
+                System.out.println("Transaction(" + this.connection.hashCode() + ") is closed.");
         }
         catch (SQLException ignored)
         {
