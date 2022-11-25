@@ -266,6 +266,9 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
                 ResolveResult result = this.resolveOne(plugin, query);
 
+                if (result == null)
+                    return null; // Cancelled
+
                 resolvedQueries.put(plugin, (SuccessResult) result);
             }
         }
