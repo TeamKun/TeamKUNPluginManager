@@ -37,7 +37,7 @@ class SignalHandlerList<T extends Signal>
     {
         synchronized (this.handlers)
         {
-            Arrays.stream(object.getClass().getMethods()).parallel()
+            Arrays.stream(object.getClass().getMethods())
                     .filter(method -> method.isAnnotationPresent(SignalHandler.class))
                     .filter(method -> !this.isBaked(method))
                     .filter(method -> method.getParameterCount() == 1)
