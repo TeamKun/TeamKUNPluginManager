@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.utils.db.ResultRow;
 import net.kunmc.lab.kpm.utils.db.Transaction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.sql.Statement;
@@ -32,13 +33,13 @@ public class AliasProvider
                     Statement stmt = tr.getConnection().createStatement();
 
                     stmt.execute("CREATE TABLE IF NOT EXISTS alias(" +
-                            "name TEXT NOT NULL, " +
                             "alias TEXT NOT NULL PRIMARY KEY," +
+                            "query TEXT NOT NULL," +
                             "source_id TEXT NOT NULL" +
                             ")");
 
                     stmt.execute("CREATE TABLE IF NOT EXISTS source(" +
-                            "name TEXT PRIMARY KEY NOT NULL, " +
+                            "name TEXT PRIMARY KEY NOT NULL," +
                             "source TEXT NOT NULL," +
                             "type TEXT NOT NULL" +
                             ")");
@@ -68,13 +69,14 @@ public class AliasProvider
     /**
      * エイリアスが存在するかどうかを返します。
      *
-     * @param name エイリアス対象の名前
+     * @param query エイリアス対象のkueri
      * @return エイリアスが存在するかどうか
      */
-    public boolean hasAlias(@NotNull String name)
+    public boolean hasAlias(@NotNull String query)
+
     {
-        return Transaction.create(this.db, "SELECT COUNT(*) FROM alias WHERE name = ?")
-                .set(1, name)
+        return Transaction.create(this.db, "SELECT COUNT(*) FROM alias WHERE query = ?")
+                .set(1, query)
                 .isExists();
     }
 
@@ -118,15 +120,16 @@ public class AliasProvider
     }
 
     /**
-     * エイリアスを取得します。
+     * エイリアスからクエリを取得します。
      *
-     * @param name エイリアス対象の名前
-     * @return エイリアス
+     * @param alias エイリアス
+     * @return 名前
      */
-    public Alias getNameByAlias(String name)
+    @Nullable
+    public Alias getQueryByAlias(String alias)
     {
-        try (Transaction transaction = Transaction.create(this.db, "SELECT * FROM alias WHERE name = ?")
-                .set(1, name);
+        try (Transaction transaction = Transaction.create(this.db, "SELECT * FROM alias WHERE alias = ?")
+                .set(1, alias);
              ResultRow row = transaction
                      .executeQuery()
                      .stream()
@@ -136,8 +139,8 @@ public class AliasProvider
                 return null;
 
             return new Alias(
-                    row.getString("name"),
                     row.getString("alias"),
+                    row.getString("query"),
                     row.getString("source_id")
             );
         }

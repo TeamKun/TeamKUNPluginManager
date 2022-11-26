@@ -22,6 +22,7 @@ public class BruteforceGitHubResolver implements BaseResolver
 
         for (String str : this.gitHubName)
         {
+            String oldQuery = query.getQuery();
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());
             result = this.gitHubURLResolver.resolve(query);
 
@@ -30,10 +31,16 @@ public class BruteforceGitHubResolver implements BaseResolver
                 ErrorResult error = (ErrorResult) result;
 
                 if (error.getCause() == ErrorResult.ErrorCause.INVALID_QUERY)
+                {
+                    query.setQuery(oldQuery);
                     return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
-
+                }
                 if (error.getCause() != ErrorResult.ErrorCause.PLUGIN_NOT_FOUND)
-                    return error;
+                {
+                    query.setQuery(oldQuery);
+                    return result;
+                }
+
                 continue;
             }
 

@@ -28,7 +28,7 @@ public class AliasUpdater
 
     private void createCheckTable(String sourceName)
     {
-        this.transaction.renew("CREATE TABLE v_exists_alias AS SELECT name FROM alias WHERE source_id = ?")
+        this.transaction.renew("CREATE TABLE v_exists_alias AS SELECT alias FROM alias WHERE source_id = ?")
                 .set(1, sourceName)
                 .executeUpdate(false);
     }
@@ -42,14 +42,14 @@ public class AliasUpdater
     /**
      * エイリアスのアップデートを行います。
      *
-     * @param name  エイリアス対象の名前
      * @param alias エイリアス
+     * @param query クエリ
      */
-    public void update(String name, String alias)
+    public void update(String alias, String query)
     {
-        this.transaction.renew("INSERT OR REPLACE INTO alias (name, alias, source_id) VALUES (?, ?, ?)")
-                .set(1, name)
-                .set(2, alias)
+        this.transaction.renew("INSERT OR REPLACE INTO alias (alias, query, source_id) VALUES (?, ?, ?)")
+                .set(1, alias)
+                .set(2, query)
                 .set(3, this.sourceName)
                 .executeUpdate(false);
 
@@ -58,8 +58,8 @@ public class AliasUpdater
 
     private void deleteRemovedAlias()
     {
-        this.transaction.renew("DELETE FROM alias WHERE name IN " +
-                        "(SELECT name FROM v_exists_alias EXCEPT SELECT name FROM alias WHERE source_id = ?)")
+        this.transaction.renew("DELETE FROM alias WHERE alias IN " +
+                        "(SELECT alias FROM v_exists_alias EXCEPT SELECT alias FROM alias WHERE source_id = ?)")
                 .set(1, this.sourceName)
                 .executeUpdate(false);
     }

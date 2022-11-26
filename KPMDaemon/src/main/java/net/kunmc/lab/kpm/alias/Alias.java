@@ -9,14 +9,13 @@ import lombok.Value;
 public class Alias
 {
     /**
-     * 正式名です。
-     */
-    String name;
-
-    /**
      * エイリアスです。
      */
     String alias;
+    /**
+     * クエリです。
+     */
+    String query;
     /**
      * エイリアスのソースです。
      */
