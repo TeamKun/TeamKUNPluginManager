@@ -213,9 +213,9 @@ public class KPMDaemon
     private void setupPluginResolvers(List<String> organizationNames)
     {
         GitHubURLResolver githubResolver = new GitHubURLResolver();
+        this.pluginResolver.addResolver(new AliasPluginResolver(this), "local", "alias");
         this.pluginResolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         this.pluginResolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
-        this.pluginResolver.addResolver(new AliasPluginResolver(this), "local", "alias");
         this.pluginResolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
         this.pluginResolver.addResolver(githubResolver, "github", "gh");
 

@@ -6,8 +6,8 @@ import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.resolver.result.PipeResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,19 +32,8 @@ public class AliasPluginResolver implements BaseResolver
         if (alias == null)
             return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
 
-        try
-        {
-            ResolveResult detailedResult = this.resolver.resolve(alias.getAlias());
-            if (detailedResult instanceof SuccessResult)
-                return new SuccessResult(this, ((SuccessResult) detailedResult).getDownloadUrl(), ResolveResult.Source.LOCAL_KNOWN);
-            else
-                return detailedResult;
-        }
-        catch (StackOverflowError ignored)
-        {
-        }
-
-        return new SuccessResult(this, alias.getName(), null, null, ResolveResult.Source.LOCAL_KNOWN);
+        query.setQuery(alias.getAlias());
+        return new PipeResult(this, query);
     }
 
     @Override
