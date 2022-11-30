@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.resolve.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * プラグインが正常に解決されたことを示すシグナルです。
  */
 @Data
-public class PluginResolvedSuccessfulSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginResolvedSuccessfulSignal extends Signal
 {
     /**
      * 解決する際に使用されたクエリです。

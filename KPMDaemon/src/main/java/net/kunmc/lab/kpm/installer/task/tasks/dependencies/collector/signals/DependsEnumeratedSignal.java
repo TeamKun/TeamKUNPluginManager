@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 
@@ -11,7 +12,8 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Value
-public class DependsEnumeratedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class DependsEnumeratedSignal extends Signal
 {
     /**
      * 列挙された依存関係。

@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.install.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
  * {@link AlreadyInstalledPluginSignal#setReplacePlugin(boolean)} を用いて、既存のプラグインを新規プラグインに置換するかどうかを設定できます。
  */
 @Data
-public class AlreadyInstalledPluginSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class AlreadyInstalledPluginSignal extends Signal
 {
     /**
      * インストールされたプラグインの種類

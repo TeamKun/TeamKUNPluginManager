@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.garbage.clean.signal;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,8 @@ import java.nio.file.Path;
  * 不要データの削除がスキップされたことを示すシグナルです。
  */
 @Value
-public class GarbageDeleteSkippedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class GarbageDeleteSkippedSignal extends Signal
 {
     /**
      * スキップされた不要データのパスです。

@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * プラグインの {@link Plugin#onLoad()} の実行の前後にスローされるシグナルです。
  */
 @Data
-public class PluginOnLoadRunningSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginOnLoadRunningSignal extends Signal
 {
     /**
      * 対象のプラグインです。

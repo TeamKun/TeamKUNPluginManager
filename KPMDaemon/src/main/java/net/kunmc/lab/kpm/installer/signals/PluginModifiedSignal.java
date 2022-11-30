@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -10,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
  * 新規にインストールされた場合、削除された場合、更新された場合にスローされます。
  */
 @Value
-public class PluginModifiedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginModifiedSignal extends Signal
 {
     /**
      * 変更され他プラグインの情報です。

@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,8 @@ import java.nio.file.Path;
  * プラグインのKPM情報ファイルが不正な場合に投げられるシグナルです。
  */
 @Data
-public class InvalidKPMInfoFileSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class InvalidKPMInfoFileSignal extends Signal
 {
     /**
      * プラグインの名前です。

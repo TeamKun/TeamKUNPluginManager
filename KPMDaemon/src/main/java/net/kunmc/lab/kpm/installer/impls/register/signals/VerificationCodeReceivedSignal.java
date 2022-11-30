@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.impls.register.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.installer.impls.register.pojos.UserVerificationCodeResponse;
 import net.kunmc.lab.kpm.signal.Signal;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * ユーザ検証コードを受信したことを示すシグナルです。
  */
 @Value
-public class VerificationCodeReceivedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class VerificationCodeReceivedSignal extends Signal
 {
     /**
      * ユーザが入力する検証コードです。

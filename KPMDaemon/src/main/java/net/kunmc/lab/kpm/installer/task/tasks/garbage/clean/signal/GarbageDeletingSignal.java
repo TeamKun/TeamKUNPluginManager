@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.garbage.clean.signal;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.kpm.signal.Signal;
@@ -12,7 +13,8 @@ import java.nio.file.Path;
  * 不要なデータの削除中であることを示すシグナルです。
  */
 @Data
-public class GarbageDeletingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class GarbageDeletingSignal extends Signal
 {
     /**
      * 不要なデータのパスです。

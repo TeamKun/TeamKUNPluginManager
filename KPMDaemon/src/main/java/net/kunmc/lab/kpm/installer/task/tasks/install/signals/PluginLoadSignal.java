@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
@@ -14,7 +15,8 @@ import java.nio.file.Path;
  * {@link org.bukkit.plugin.PluginManager#loadPlugin(java.io.File)} の呼び出しの前後にスローされます。
  */
 @Data
-public class PluginLoadSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginLoadSignal extends Signal
 {
     /**
      * 対象のプラグインのパスです。

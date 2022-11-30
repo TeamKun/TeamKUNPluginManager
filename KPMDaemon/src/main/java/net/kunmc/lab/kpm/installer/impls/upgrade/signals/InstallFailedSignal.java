@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.signal.Signal;
@@ -9,7 +10,8 @@ import net.kunmc.lab.kpm.signal.Signal;
  * インストールに失敗したことを表すシグナルです。
  */
 @Data
-public class InstallFailedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class InstallFailedSignal extends Signal
 {
     /**
      * 失敗した原因の特定のためのインストール失敗結果です。

@@ -13,7 +13,7 @@ import java.net.URL;
  */
 @AllArgsConstructor
 @Getter
-public abstract class InvalidRemoteSignal implements Signal
+public abstract class InvalidRemoteSignal extends Signal
 {
     /**
      * リモートの名前です。

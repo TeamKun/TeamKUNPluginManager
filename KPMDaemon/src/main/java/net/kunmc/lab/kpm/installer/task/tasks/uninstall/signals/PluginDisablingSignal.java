@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * プラグインの無効化の前後にスローされるシグナルです。
  */
 @Data
-public class PluginDisablingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginDisablingSignal extends Signal
 {
     /**
      * 無効化されるプラグインです。

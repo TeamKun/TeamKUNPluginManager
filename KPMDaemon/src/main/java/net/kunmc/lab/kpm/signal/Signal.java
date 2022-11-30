@@ -1,5 +1,8 @@
 package net.kunmc.lab.kpm.signal;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * インストーラやタスクなどからスローされるシグナルです。
  * シグナルは、主に次のことに使用されます：
@@ -11,6 +14,13 @@ package net.kunmc.lab.kpm.signal;
  * <p>
  * このシグナルは、フロントエンドとバックエンドの隔離のために作成されました。
  */
-public interface Signal
+@Getter
+@Setter
+public abstract class Signal
 {
+    /**
+     * シグナルがハンドルされたかどうかを示すフラグです。
+     * このフラグが {@code true} の場合, ハンドルマネージャはこれ以降のハンドラを呼び出しません。
+     */
+    private boolean handled;
 }

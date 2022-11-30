@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.resolve.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
@@ -12,7 +13,8 @@ import org.jetbrains.annotations.Nullable;
  * 複数のプラグインが解決されたことを示すシグナルです。
  */
 @Data
-public class MultiplePluginResolvedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class MultiplePluginResolvedSignal extends Signal
 {
     /**
      * 解決する際に使用されたクエリです。

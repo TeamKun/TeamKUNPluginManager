@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -11,7 +12,8 @@ import java.nio.file.Path;
  * プラグインのインストール中であることを示すシグナルです。
  */
 @Value
-public class PluginInstallingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginInstallingSignal extends Signal
 {
     /**
      * 対象のプラグインのパスです。

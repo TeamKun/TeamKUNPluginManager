@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.impls.register.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
@@ -8,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
  * ユーザが検証コードの入力を完了していないことを示すシグナルです。
  */
 @Value
-public class UserDoesntCompleteVerifySignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class UserDoesntCompleteVerifySignal extends Signal
 {
     /**
      * ユーザが入力するコードです。

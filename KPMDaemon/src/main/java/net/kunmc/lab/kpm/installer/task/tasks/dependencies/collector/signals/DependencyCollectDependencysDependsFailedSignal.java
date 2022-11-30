@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,8 @@ import java.util.List;
  * 依存関係の依存関係を取得する際に失敗したことを示すシグナルです。
  */
 @Value
-public class DependencyCollectDependencysDependsFailedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class DependencyCollectDependencysDependsFailedSignal extends Signal
 {
     /**
      * 対象のプラグインの名前です。

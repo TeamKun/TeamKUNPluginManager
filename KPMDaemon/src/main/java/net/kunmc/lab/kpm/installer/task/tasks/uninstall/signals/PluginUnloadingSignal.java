@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * プラグインのアンロードの前後にスローされるシグナルです。
  */
-public class PluginUnloadingSignal implements Signal
+public class PluginUnloadingSignal extends Signal
 {
     /**
      * アンロードの前にスローされるシグナルです。

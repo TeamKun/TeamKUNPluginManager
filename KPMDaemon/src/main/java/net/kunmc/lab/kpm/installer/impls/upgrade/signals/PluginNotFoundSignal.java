@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
  * 指定されたプラグインが見つからなかったことを示すシグナルです。
  */
 @Data
-public class PluginNotFoundSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginNotFoundSignal extends Signal
 {
     /**
      * 指定されたプラグインの名前です。

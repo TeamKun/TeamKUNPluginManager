@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,8 @@ import org.jetbrains.annotations.Nullable;
  * アップグレードのクエリを取得したことを示すシグナルです。
  */
 @Data
-public class UpdateQueryRetrievedSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class UpdateQueryRetrievedSignal extends Signal
 {
     /**
      * アップグレード対象のプラグインです。

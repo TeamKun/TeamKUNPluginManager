@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
  * アップグレードの準備が完了したことを示すシグナルです。
  */
 @Data
-public class UpgradeReadySignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class UpgradeReadySignal extends Signal
 {
     private final List<ResolvedPluginElement> plugins;
 

@@ -10,7 +10,7 @@ import net.kunmc.lab.kpm.signal.Signal;
  */
 @AllArgsConstructor
 @Getter
-public abstract class DependencyCollectFailedSignalBase implements Signal
+public abstract class DependencyCollectFailedSignalBase extends Signal
 {
     /**
      * 取得に失敗した依存関係の名前です。

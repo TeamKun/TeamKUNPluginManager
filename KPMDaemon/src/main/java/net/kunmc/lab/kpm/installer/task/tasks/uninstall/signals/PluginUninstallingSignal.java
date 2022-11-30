@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
@@ -8,7 +9,8 @@ import org.bukkit.plugin.Plugin;
  * プラグインのアンインストールのシグナルです。
  */
 @Value
-public class PluginUninstallingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginUninstallingSignal extends Signal
 {
     /**
      * アンインストールされるプラグインです。

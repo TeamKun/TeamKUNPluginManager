@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.kunmc.lab.kpm.signal.Signal;
@@ -15,7 +16,8 @@ import java.util.Arrays;
  * プラグインが登録したレシピについてのシグナルです。
  */
 @Data
-public class PluginRegisteredRecipeSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginRegisteredRecipeSignal extends Signal
 {
     /**
      * レシピを登録したプラグインです。

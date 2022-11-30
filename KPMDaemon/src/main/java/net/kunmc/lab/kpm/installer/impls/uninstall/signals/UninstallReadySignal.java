@@ -11,7 +11,7 @@ import java.util.List;
  * プラグインの列挙が完了したことを通知するシグナルです。
  */
 @Getter
-public class UninstallReadySignal implements Signal
+public class UninstallReadySignal extends Signal
 {
     /**
      * アンインストール対象のプラグインのリスト

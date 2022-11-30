@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.utils.versioning.Version;
@@ -11,7 +12,8 @@ import org.jetbrains.annotations.NotNull;
  * プラグインがこのKPMと互換性がない場合に投げられるシグナルです。
  */
 @Data
-public class PluginIncompatibleWithKPMSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginIncompatibleWithKPMSignal extends Signal
 {
     /**
      * プラグインの説明ファイルです。

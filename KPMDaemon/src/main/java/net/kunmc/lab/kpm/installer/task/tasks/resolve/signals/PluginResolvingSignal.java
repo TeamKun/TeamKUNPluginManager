@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.resolve.signals;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.resolver.PluginResolver;
 import net.kunmc.lab.kpm.signal.Signal;
 
@@ -10,7 +11,8 @@ import net.kunmc.lab.kpm.signal.Signal;
  */
 @Data
 @AllArgsConstructor
-public class PluginResolvingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class PluginResolvingSignal extends Signal
 {
     /**
      * 解決に使用されるプラグインリゾルバです。

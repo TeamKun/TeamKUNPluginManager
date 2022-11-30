@@ -76,7 +76,11 @@ public class SignalHandleManager
     public void handleSignal(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
     {
         for (SignalHandlerList<? extends Signal> handlerList : this.handlerLists)
+        {
             invokeHandler(installProgress, handlerList, signal);
+            if (signal.isHandled())
+                break;
+        }
     }
 
     /**

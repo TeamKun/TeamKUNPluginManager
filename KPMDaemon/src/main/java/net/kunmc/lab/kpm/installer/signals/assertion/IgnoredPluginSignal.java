@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.signals.assertion;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
  * {@link IgnoredPluginSignal#setContinueInstall(boolean)} を変更することで、インストールのキャンセルを設定できます。
  */
 @Data
-public class IgnoredPluginSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class IgnoredPluginSignal extends Signal
 {
     @NotNull
     private final String pluginName;

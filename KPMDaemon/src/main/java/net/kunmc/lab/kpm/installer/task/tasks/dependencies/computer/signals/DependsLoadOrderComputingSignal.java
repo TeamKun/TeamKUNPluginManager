@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.signals;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,8 @@ import java.util.List;
  * 依存関係の読み込み順序を計算する際に発生するシグナルを表します。
  */
 @Data
-public class DependsLoadOrderComputingSignal implements Signal
+@EqualsAndHashCode(callSuper = false)
+public class DependsLoadOrderComputingSignal extends Signal
 {
     /**
      * 指定された依存関係のリストです。
