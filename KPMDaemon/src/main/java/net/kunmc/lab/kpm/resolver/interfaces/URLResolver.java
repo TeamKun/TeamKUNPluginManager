@@ -51,7 +51,7 @@ public interface URLResolver extends BaseResolver
 
     static String errorCodeWith(String message, int code)
     {
-        return message + "(The server responded with " + code + ")。";
+        return message + "(The server responded with " + code + ")";
     }
 
     default Matcher urlMatcher(Pattern pattern, String urlString)
