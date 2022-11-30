@@ -143,12 +143,12 @@ public class HeadSignalHandlers
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
-                getInstallHandlers(terminal, false),
-                getUninstallHandlers(terminal, false),
                 Arrays.asList(
                         new UpgradeSignalHandler(terminal),
                         new UpgradeFinishedSignalHandler(terminal)
-                )
+                ),
+                getInstallHandlers(terminal, false),
+                getUninstallHandlers(terminal, false)
         );
     }
 }

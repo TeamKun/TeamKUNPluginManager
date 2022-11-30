@@ -6,6 +6,9 @@ import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InstallFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
+import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
+import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -33,6 +36,17 @@ public class UpgradeSignalHandler
             return;  // implemented in #onResolveFailed(ResolveFailedSignal)
 
         this.terminal.warn("プラグイン " + signal.getSpecifiedPluginName() + " が見つかりませんでした。");
+    }
+
+    @SignalHandler
+    public void onMultiResolved(MultiplePluginResolvedSignal signal)
+    {
+        ResolveResult result = signal.getResults().getResolver().autoPickOnePlugin(signal.getResults());
+
+        this.terminal.info("複数のプラグインが解決されたため, 自動選択を行います。");
+
+        if (result instanceof SuccessResult)
+            signal.setSpecifiedResult(result);
     }
 
     @SignalHandler
