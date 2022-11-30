@@ -49,7 +49,19 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginsResolve(MultiplePluginResolvedSignal signal)
     {
-        this.terminal.warn("複数のプラグインが見つかりました。");
+        this.terminal.info("複数のプラグインが見つかりました。");
+
+        if (signal.getSpecifiedResult() != null)
+        {
+            if (signal.getSpecifiedResult() instanceof SuccessResult)
+            {
+                SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
+                this.terminal.info("プラグイン " + specifiedResult.getFileName() + "(" +
+                        specifiedResult.getVersion() + ") が選択されました。");
+            }
+
+            return;
+        }
 
         AtomicLong index = new AtomicLong(0);
 
@@ -59,7 +71,7 @@ public class ResolverSignalHandler
                 .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
         LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
-                                e.getKey(),
+                        e.getKey(),
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )
