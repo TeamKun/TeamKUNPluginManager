@@ -216,7 +216,7 @@ public class KPMDaemon
         this.pluginResolver.addResolver(new AliasPluginResolver(this), "local", "alias");
         this.pluginResolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         this.pluginResolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
-        this.pluginResolver.addResolver(new OmittedGitHubResolver(), "github", "gh");
+        this.pluginResolver.addResolver(new OmittedGitHubResolver(githubResolver), "github", "gh");
         this.pluginResolver.addResolver(githubResolver, "github", "gh");
 
         this.pluginResolver.addFallbackResolver(new BruteforceGitHubResolver(

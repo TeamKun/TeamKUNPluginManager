@@ -19,10 +19,10 @@ public class BruteforceGitHubResolver implements BaseResolver
     public ResolveResult resolve(QueryContext query)
     {
         ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+        String oldQuery = query.getQuery();
 
         for (String str : this.gitHubName)
         {
-            String oldQuery = query.getQuery();
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());
             result = this.gitHubURLResolver.resolve(query);
 
@@ -32,20 +32,20 @@ public class BruteforceGitHubResolver implements BaseResolver
 
                 if (error.getCause() == ErrorResult.ErrorCause.INVALID_QUERY)
                 {
-                    query.setQuery(oldQuery);
-                    return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+                    result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+                    break;
                 }
-                if (error.getCause() != ErrorResult.ErrorCause.PLUGIN_NOT_FOUND)
-                {
-                    query.setQuery(oldQuery);
-                    return result;
-                }
-
-                continue;
+                else if (error.getCause() == ErrorResult.ErrorCause.PLUGIN_NOT_FOUND)
+                    continue;
+                else
+                    break;
             }
 
             return result;
         }
+
+        // Result is always ErrorResult so we have to restore old query to pass it to next resolver.
+        query.setQuery(oldQuery);
 
         return result;
     }
