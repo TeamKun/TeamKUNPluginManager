@@ -61,7 +61,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
 
         if (queryResolveResult instanceof ErrorResult)
         {
-            this.postSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult));
+            this.postSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult, query));
             return new PluginResolveResult(false, this.taskState,
                     PluginResolveErrorCause.GOT_ERROR_RESULT, null
             );
@@ -81,7 +81,7 @@ public class PluginResolveTask extends InstallTask<PluginResolveArgument, Plugin
             if (actualResolveResult instanceof ErrorResult)
             {
                 // MultiResult has been resolved, but the actual result is an error
-                this.postSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult));
+                this.postSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult, query));
                 return new PluginResolveResult(false, this.taskState, PluginResolveErrorCause.GOT_ERROR_RESULT, null);
             }
 

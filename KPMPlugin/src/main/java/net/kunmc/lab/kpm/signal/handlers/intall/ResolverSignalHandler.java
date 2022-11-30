@@ -34,7 +34,7 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolving(PluginResolvingSignal signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN + "プラグインを解決しています ...");
+        this.terminal.writeLine(ChatColor.GREEN + signal.getQuery() + " を解決しています ...");
     }
 
     @SignalHandler
@@ -43,7 +43,7 @@ public class ResolverSignalHandler
         ErrorResult.ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        this.terminal.writeLine(ChatColor.RED + "プラグインの解決に失敗しました: " + errorCause + message);
+        this.terminal.writeLine(ChatColor.RED + signal.getQuery() + " の解決に失敗しました: " + errorCause + message);
     }
 
     @SignalHandler
@@ -76,7 +76,7 @@ public class ResolverSignalHandler
 
             if (result.test(QuestionAttribute.CANCELLABLE))
             {
-                this.terminal.error(ChatColor.RED + "インストールをキャンセルしました。");
+                this.terminal.error(ChatColor.RED + "解決をキャンセルしました。");
                 signal.setCancel(true);
                 return;
             }

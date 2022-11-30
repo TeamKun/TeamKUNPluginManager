@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class HeadSignalHandlers
 {
@@ -36,6 +37,15 @@ public class HeadSignalHandlers
         list.removeIf(Objects::isNull);
         list.addAll(Arrays.asList(handlers));
         return list;
+    }
+
+    @SafeVarargs
+    private static List<Object> createHandlersList(List<Object>... lists)
+    {
+        return Arrays.stream(lists)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private static List<Object> createHandlersList(Object... handlers)
@@ -129,19 +139,16 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getUpgraderHandlers(Terminal terminal, int targets)
+    public static List<Object> getUpgraderHandlers(Terminal terminal)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
                 getInstallHandlers(terminal, false),
                 getUninstallHandlers(terminal, false),
-                new UpgradeSignalHandler(terminal, targets),
-                new UpgradeFinishedSignalHandler(terminal)
+                Arrays.asList(
+                        new UpgradeSignalHandler(terminal),
+                        new UpgradeFinishedSignalHandler(terminal)
+                )
         );
-    }
-
-    public static List<Object> getUpgraderHandlers(Terminal terminal)
-    {
-        return getUpgraderHandlers(terminal, -1);
     }
 }
