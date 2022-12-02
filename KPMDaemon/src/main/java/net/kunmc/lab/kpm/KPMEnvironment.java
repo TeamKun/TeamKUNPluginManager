@@ -87,7 +87,9 @@ public class KPMEnvironment
         return new KPMEnvironmentBuilder()
                 .plugin(plugin)
                 .logger(logger)
-                .dataDirPath(dataDirPath);
+                .dataDirPath(dataDirPath)
+                .excludePlugin("TeamKunPluginManager")
+                .excludePlugin("bStats");
     }
 
     public static KPMEnvironmentBuilder builder(@NotNull Plugin plugin)
