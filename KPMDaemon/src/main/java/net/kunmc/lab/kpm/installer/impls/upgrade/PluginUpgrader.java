@@ -224,7 +224,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
     {
         InvalidPluginVersionSignal signal = new InvalidPluginVersionSignal(plugin, cause, currentVersion, newVersion);
         this.postSignal(signal);
-        return signal.isContinueUpgrade() ? UpgradeErrorCause.PLUGIN_EXCLUDED: cause;
+        return signal.isContinueUpgrade() ? null: UpgradeErrorCause.PLUGIN_EXCLUDED;
     }
 
     private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause)
