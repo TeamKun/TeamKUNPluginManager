@@ -123,7 +123,9 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 return this.error(mayErrorCause);
         }
 
-        // Notify upgrade is ready
+        // Notify upgrade is ready or nothing to upgrade
+        if (resolveResults.isEmpty())
+            return this.error(UpgradeErrorCause.UP_TO_DATE);
         resolveResults = this.notifyUpgradeReady(resolveResults);
         if (resolveResults.isEmpty())  // Cancelled
             return this.error(UpgradeErrorCause.CANCELLED);

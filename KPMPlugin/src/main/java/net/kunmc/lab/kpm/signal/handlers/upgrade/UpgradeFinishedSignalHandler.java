@@ -29,6 +29,9 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
     {
         switch (cause)
         {
+            case UP_TO_DATE:  // THIS IS NOT AN ERROR
+                this.terminal.success("プラグインが最新です。");
+                return true;
             case CANCELLED:
                 this.terminal.error("アップグレードがキャンセルされました。");
                 return true;

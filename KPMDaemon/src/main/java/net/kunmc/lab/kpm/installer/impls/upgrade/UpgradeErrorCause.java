@@ -26,6 +26,11 @@ public enum UpgradeErrorCause
      */
     PLUGIN_IS_OLDER_OR_EQUAL,
     /**
+     * アップグレードできるプラグインが見つかりませんでした。
+     * このエラーは, 明確なエラーではない可能性があります。
+     */
+    UP_TO_DATE,
+    /**
      * アップグレードがキャンセルされました。
      */
     CANCELLED,
