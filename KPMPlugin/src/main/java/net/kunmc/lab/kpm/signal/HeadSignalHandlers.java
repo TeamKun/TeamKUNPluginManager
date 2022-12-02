@@ -139,12 +139,12 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getUpgraderHandlers(Terminal terminal)
+    public static List<Object> getUpgraderHandlers(Terminal terminal, boolean isAuto)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
                 Arrays.asList(
-                        new UpgradeSignalHandler(terminal),
+                        new UpgradeSignalHandler(terminal, isAuto),
                         new UpgradeFinishedSignalHandler(terminal)
                 ),
                 getInstallHandlers(terminal, false),

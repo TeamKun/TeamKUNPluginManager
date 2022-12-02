@@ -175,7 +175,10 @@ public class HeadInstallers
     public void runUpgrade(@NotNull Terminal terminal, @NotNull UpgradeArgument argument) throws IllegalStateException
     {
         SignalHandleManager handleManager = new SignalHandleManager();
-        HeadSignalHandlers.getUpgraderHandlers(terminal).forEach(handleManager::register);
+        boolean isAuto = argument.getTargetPlugins() == null || argument.getTargetPlugins().isEmpty();
+
+        HeadSignalHandlers.getUpgraderHandlers(terminal, isAuto)
+                .forEach(handleManager::register);
 
         PluginUpgrader upgrader;
         try

@@ -10,6 +10,7 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InstallFailedSignal;
+import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
@@ -27,6 +28,7 @@ import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
+import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -111,6 +113,16 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
         // endregion
 
+        // region Check plugin condition(such as version not defined or version is not higher than current version etc.)
+        for (Map.Entry<Plugin, SuccessResult> entry : new ArrayList<>(resolveResults.entrySet()))
+        {
+            UpgradeErrorCause mayErrorCause = this.checkPluginMatch(entry.getKey(), entry.getValue());
+            if (mayErrorCause == UpgradeErrorCause.PLUGIN_EXCLUDED)
+                resolveResults.remove(entry.getKey());
+            else if (mayErrorCause != null)
+                return this.error(mayErrorCause);
+        }
+
         // Notify upgrade is ready
         resolveResults = this.notifyUpgradeReady(resolveResults);
         if (resolveResults.isEmpty())  // Cancelled
@@ -185,6 +197,37 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         // endregion
 
         return this.success();
+    }
+
+    private UpgradeErrorCause checkPluginMatch(Plugin plugin, SuccessResult resolveResult)
+    {
+        PluginDescriptionFile description = plugin.getDescription();
+
+        if (resolveResult.getVersion() == null)
+            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_NOT_DEFINED);
+
+        Version currentVersion = Version.ofNullable(description.getVersion());
+        Version newVersion = Version.ofNullable(resolveResult.getVersion());
+
+        if (currentVersion == null || newVersion == null)
+            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_NOT_DEFINED, currentVersion, newVersion);
+
+        if (currentVersion.isNewerThanOrEqualTo(newVersion))
+            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_IS_OLDER_OR_EQUAL, currentVersion, newVersion);
+
+        return null;
+    }
+
+    private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause, Version currentVersion, Version newVersion)
+    {
+        InvalidPluginVersionSignal signal = new InvalidPluginVersionSignal(plugin, cause, currentVersion, newVersion);
+        this.postSignal(signal);
+        return signal.isContinueUpgrade() ? UpgradeErrorCause.PLUGIN_EXCLUDED: cause;
+    }
+
+    private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause)
+    {
+        return this.excludeOrCancel(plugin, cause, null, null);
     }
 
     @Nullable

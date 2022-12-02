@@ -75,6 +75,19 @@ public class Version implements Comparable<Version>
         return compileVersion(rawVersion);
     }
 
+    @Nullable
+    public static Version ofNullable(@NotNull String rawVersion)
+    {
+        try
+        {
+            return compileVersion(rawVersion);
+        }
+        catch (InvalidVersionSyntaxException e)
+        {
+            return null;
+        }
+    }
+
     public boolean isPreRelease()
     {
         return this.preRelease != null;

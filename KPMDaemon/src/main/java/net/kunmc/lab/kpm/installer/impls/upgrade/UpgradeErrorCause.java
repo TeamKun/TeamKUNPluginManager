@@ -14,6 +14,18 @@ public enum UpgradeErrorCause
      */
     PLUGIN_RESOLVE_FAILED,
     /**
+     * プラグインのバージョンが定義されていません。
+     */
+    PLUGIN_VERSION_NOT_DEFINED,
+    /**
+     * プラグインが定義してるバージョンの形式が不正です。
+     */
+    PLUGIN_VERSION_FORMAT_MALFORMED,
+    /**
+     * プラグインのバージョンがサーバのバージョンと変わらないか、古いです。
+     */
+    PLUGIN_IS_OLDER_OR_EQUAL,
+    /**
      * アップグレードがキャンセルされました。
      */
     CANCELLED,
