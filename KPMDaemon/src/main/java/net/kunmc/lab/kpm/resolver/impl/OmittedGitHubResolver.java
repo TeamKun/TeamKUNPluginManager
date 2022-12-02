@@ -25,7 +25,7 @@ public class OmittedGitHubResolver implements BaseResolver
 
         ResolveResult res = this.gitHubURLResolver.resolve(query);
 
-        if (res instanceof SuccessResult)
+        if (res instanceof SuccessResult || res instanceof MultiResult)
             return res;
 
         query.setQuery(repoName); // restore query
