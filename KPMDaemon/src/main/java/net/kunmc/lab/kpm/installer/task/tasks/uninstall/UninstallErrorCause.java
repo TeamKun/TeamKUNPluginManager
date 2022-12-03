@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
 
 /**
  * アンインストールに失敗した理由を表します。

@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.installer.impls.autoremove;
 import lombok.Getter;
 import net.kunmc.lab.kpm.installer.InstallProgress;
 import net.kunmc.lab.kpm.installer.InstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallResult;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallResult;
 
 /**
  * プラグインのアンインストールの結果を表すクラスです。

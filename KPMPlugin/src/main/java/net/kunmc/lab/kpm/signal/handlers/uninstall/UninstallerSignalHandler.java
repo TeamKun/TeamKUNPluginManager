@@ -1,10 +1,10 @@
 package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginDisablingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginRegisteredRecipeSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUninstallErrorSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUninstallingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUnloadingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallErrorSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
