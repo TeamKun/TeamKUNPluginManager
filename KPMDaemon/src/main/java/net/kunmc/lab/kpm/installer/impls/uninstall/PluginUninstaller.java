@@ -11,9 +11,9 @@ import net.kunmc.lab.kpm.installer.task.TaskFailedException;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallResult;
 import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallTask;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UninstallArgument;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  *     <li>{@link UnInstallTasks#UNINSTALLING_PLUGINS} - プラグインをアンインストールする。</li>
  * </ol>
  */
-public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnInstallErrorCause, UnInstallTasks>
+public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument, UnInstallErrorCause, UnInstallTasks>
 {
     public PluginUninstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
@@ -49,7 +49,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
     }
 
     @Override
-    public InstallResult<UnInstallTasks> execute(@NotNull UninstallArgument argument) throws TaskFailedException
+    public InstallResult<UnInstallTasks> execute(@NotNull net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument argument) throws TaskFailedException
     {
         List<Plugin> plugins = new ArrayList<>();
         // region Search plugin
@@ -156,7 +156,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                             .map(element -> namePluginMap.get(element.getPluginName()))
                             .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
 
-                    return new UnInstallArgument(orderedPlugins);
+                    return new UninstallArgument(orderedPlugins);
                 })
                 .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
         // endregion

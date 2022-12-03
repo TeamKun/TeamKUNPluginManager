@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class UnInstallArgument extends TaskArgument
+public class UninstallArgument extends TaskArgument
 {
     /**
      * アンインストールされるプラグインです。

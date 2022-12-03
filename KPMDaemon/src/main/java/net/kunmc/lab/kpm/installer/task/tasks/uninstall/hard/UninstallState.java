@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
 /**
  * アンインストールの状態を表します。
  */
-public enum UnInstallState
+public enum UninstallState
 {
     /**
      * アンインストールが初期化されたことを示します。

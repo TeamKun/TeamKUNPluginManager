@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * プラグインをアンインストールするタスクです。
  */
-public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResult>
+public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResult>
 {
     private static final PluginManager PLUGIN_MANAGER;
     private static final CommandsPatcher COMMANDS_PATCHER;
@@ -85,35 +85,35 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
     private final KPMDaemon daemon;
 
-    private UnInstallState taskState;
+    private UninstallState taskState;
 
     public UnInstallTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.daemon = installer.getDaemon();
 
-        this.taskState = UnInstallState.INITIALIZED;
+        this.taskState = UninstallState.INITIALIZED;
     }
 
     @Override
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public @NotNull UnInstallResult runTask(@NotNull UnInstallArgument arguments)
+    public @NotNull UnInstallResult runTask(@NotNull UninstallArgument arguments)
     {
         List<Plugin> orderedUninstallTargets = arguments.getPlugins();
 
         List<PluginDescriptionFile> uninstalledPlugins = new ArrayList<>();
-        Map<UnInstallErrorCause, PluginDescriptionFile> errors = new HashMap<>();
+        Map<UninstallErrorCause, PluginDescriptionFile> errors = new HashMap<>();
 
-        this.taskState = UnInstallState.UNINSTALLING;
+        this.taskState = UninstallState.UNINSTALLING;
 
         for (Plugin plugin : orderedUninstallTargets)
         {
             this.daemon.getPluginMetaManager().preparePluginModify(plugin.getName());
 
             PluginDescriptionFile description = plugin.getDescription();
-            UnInstallErrorCause errorCause = this.uninstallOnePlugin(plugin);
+            UninstallErrorCause errorCause = this.uninstallOnePlugin(plugin);
 
-            if (errorCause == UnInstallErrorCause.INTERNAL_UNINSTALL_OK)
+            if (errorCause == UninstallErrorCause.INTERNAL_UNINSTALL_OK)
                 uninstalledPlugins.add(description);
             else
             {
@@ -141,12 +141,12 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
 
         boolean success = errors.isEmpty();
 
-        return new UnInstallResult(success, this.taskState, success ? null: UnInstallErrorCause.SOME_UNINSTALL_FAILED,
+        return new UnInstallResult(success, this.taskState, success ? null: UninstallErrorCause.SOME_UNINSTALL_FAILED,
                 uninstalledPlugins, errors
         );
     }
 
-    private UnInstallErrorCause uninstallOnePlugin(@NotNull Plugin plugin)
+    private UninstallErrorCause uninstallOnePlugin(@NotNull Plugin plugin)
     {
         this.postSignal(new PluginUninstallingSignal(plugin));
         KPMInformationFile kpmInfo = null;
@@ -156,13 +156,13 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         if (kpmInfo != null)
             kpmInfo.getHooks().runHook(new PluginUninstallHook.Pre(plugin.getDescription(), kpmInfo, plugin));
 
-        this.taskState = UnInstallState.RECIPES_UNREGISTERING;
+        this.taskState = UninstallState.RECIPES_UNREGISTERING;
         this.unregisterRecipes(plugin, kpmInfo);
 
-        this.taskState = UnInstallState.COMMANDS_UNPATCHING;
+        this.taskState = UninstallState.COMMANDS_UNPATCHING;
         COMMANDS_PATCHER.unPatchCommand(plugin, false);
 
-        this.taskState = UnInstallState.PLUGIN_DISABLING;
+        this.taskState = UninstallState.PLUGIN_DISABLING;
         try
         {
             this.postSignal(new PluginDisablingSignal.Pre(plugin));
@@ -172,28 +172,28 @@ public class UnInstallTask extends InstallTask<UnInstallArgument, UnInstallResul
         catch (Exception ex)
         {
             ex.printStackTrace();
-            return UnInstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
+            return UninstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
         }
 
-        this.taskState = UnInstallState.REMOVING_FROM_BUKKIT;
+        this.taskState = UninstallState.REMOVING_FROM_BUKKIT;
         PLUGINS.remove(plugin);
         LOOKUP_NAMES.remove(plugin.getName().toLowerCase(Locale.ENGLISH));
 
-        this.taskState = UnInstallState.CLASSES_UNLOADING;
+        this.taskState = UninstallState.CLASSES_UNLOADING;
         @SuppressWarnings("StringOperationCanBeSimplified")  // Backup Plugin name to unload classes
         String pluginName = new String(plugin.getName());
 
         this.postSignal(new PluginUnloadingSignal.Pre(plugin));
 
         if (!this.unloadClasses(plugin))
-            return UnInstallErrorCause.INTERNAL_CLASS_UNLOAD_FAILED;
+            return UninstallErrorCause.INTERNAL_CLASS_UNLOAD_FAILED;
 
         this.postSignal(new PluginUnloadingSignal.Post(pluginName));
 
         if (kpmInfo != null)
             kpmInfo.getHooks().runHook(new PluginUninstallHook.Post(plugin.getDescription(), kpmInfo));
 
-        return UnInstallErrorCause.INTERNAL_UNINSTALL_OK;
+        return UninstallErrorCause.INTERNAL_UNINSTALL_OK;
     }
 
     private boolean unloadClasses(@NotNull Plugin plugin)

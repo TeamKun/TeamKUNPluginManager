@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * プラグインのアンインストールを行うタスクの結果です。
  */
-public class UnInstallResult extends TaskResult<UnInstallState, UnInstallErrorCause>
+public class UnInstallResult extends TaskResult<UninstallState, UninstallErrorCause>
 {
     /**
      * アンインストールされたプラグインのプラグイン情報ファイルです。
@@ -25,9 +25,9 @@ public class UnInstallResult extends TaskResult<UnInstallState, UnInstallErrorCa
      */
     @Getter
     @NotNull
-    private final Map<UnInstallErrorCause, PluginDescriptionFile> errors;
+    private final Map<UninstallErrorCause, PluginDescriptionFile> errors;
 
-    public UnInstallResult(boolean success, @NotNull UnInstallState state, @Nullable UnInstallErrorCause errorCause, @NotNull List<PluginDescriptionFile> uninstalledPlugins, @NotNull Map<UnInstallErrorCause, PluginDescriptionFile> errors)
+    public UnInstallResult(boolean success, @NotNull UninstallState state, @Nullable UninstallErrorCause errorCause, @NotNull List<PluginDescriptionFile> uninstalledPlugins, @NotNull Map<UninstallErrorCause, PluginDescriptionFile> errors)
     {
         super(success, state, errorCause);
         this.uninstalledPlugins = uninstalledPlugins;

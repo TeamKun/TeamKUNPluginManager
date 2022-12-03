@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.InstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallErrorCause;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UninstallErrorCause;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
@@ -60,10 +60,10 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         }
 
 
-        if (result.getReason() instanceof UnInstallErrorCause)
+        if (result.getReason() instanceof UninstallErrorCause)
         {
-            UnInstallErrorCause cause = (UnInstallErrorCause) result.getTaskStatus();
-            if (cause == UnInstallErrorCause.SOME_UNINSTALL_FAILED)
+            UninstallErrorCause cause = (UninstallErrorCause) result.getTaskStatus();
+            if (cause == UninstallErrorCause.SOME_UNINSTALL_FAILED)
                 this.terminal.error("いくつかのプラグインのアンインストールに失敗しました。");
         }
 

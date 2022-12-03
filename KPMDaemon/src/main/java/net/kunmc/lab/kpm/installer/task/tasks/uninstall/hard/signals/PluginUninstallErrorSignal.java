@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallErrorCause;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UninstallErrorCause;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 
@@ -16,7 +16,7 @@ public class PluginUninstallErrorSignal extends Signal
     /**
      * エラーの原因です。
      */
-    UnInstallErrorCause cause;
+    UninstallErrorCause cause;
     /**
      * エラーが発生したプラグインのプラグイン情報ファイルです。
      */
