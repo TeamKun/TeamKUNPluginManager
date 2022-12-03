@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
 
 /**
  * アンインストールの状態を表します。

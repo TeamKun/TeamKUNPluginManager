@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

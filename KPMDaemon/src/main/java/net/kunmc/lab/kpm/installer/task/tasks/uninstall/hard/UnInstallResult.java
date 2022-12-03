@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
 
 import lombok.Getter;
 import net.kunmc.lab.kpm.installer.task.TaskResult;

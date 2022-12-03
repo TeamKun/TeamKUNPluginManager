@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;

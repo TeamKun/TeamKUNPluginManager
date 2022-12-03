@@ -1,16 +1,16 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.hook.hooks.PluginUninstallHook;
 import net.kunmc.lab.kpm.hook.hooks.RecipesUnregisteringHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginDisablingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallErrorSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUninstallingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUnloadingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.StartingGCSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginDisablingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginRegisteredRecipeSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUninstallErrorSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUninstallingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.PluginUnloadingSignal;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals.StartingGCSignal;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.utils.PluginUtil;

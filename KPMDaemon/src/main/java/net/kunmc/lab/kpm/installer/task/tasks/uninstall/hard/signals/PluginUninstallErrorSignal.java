@@ -1,8 +1,8 @@
-package net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals;
+package net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.signals;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallErrorCause;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallErrorCause;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.PluginDescriptionFile;
 

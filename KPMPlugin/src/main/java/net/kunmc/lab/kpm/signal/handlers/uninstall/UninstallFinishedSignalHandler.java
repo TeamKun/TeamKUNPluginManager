@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.InstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallErrorCause;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.hard.UnInstallErrorCause;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
