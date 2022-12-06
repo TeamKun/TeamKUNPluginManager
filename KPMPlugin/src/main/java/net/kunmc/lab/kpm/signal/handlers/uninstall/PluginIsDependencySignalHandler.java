@@ -8,7 +8,6 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class PluginIsDependencySignalHandler
@@ -31,12 +30,12 @@ public class PluginIsDependencySignalHandler
                 .collect(Collectors.joining(" ")));
         this.terminal.warn("このプラグインのアンインストールにより、これらのプラグインが動作しなくなる可能性があります。");
 
-        boolean uninstallThem = this.pollUninstallDeps(signal.getDependedBy());
+        boolean uninstallThem = this.pollUninstallDeps();
 
         signal.setForceUninstall(uninstallThem);
     }
 
-    private boolean pollUninstallDeps(List<Plugin> dependencies)
+    private boolean pollUninstallDeps()
     {
         if (this.yesForAll)
             return true;
