@@ -14,6 +14,10 @@ public enum UninstallErrorCause
      * 内部：1つのプラグインのアンインストールに成功しました。
      */
     INTERNAL_UNINSTALL_OK,
+    /**
+     * 內部：１つのプラグインの無効化に成功し、アンインストール処理を完了しました。
+     */
+    INTERNAL_DISABLE_AND_UNINSTALL_OK,
 
     /**
      * 内部：1つのプラグインの無効化に失敗しました。

@@ -4,7 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.installer.AbstractInstallerArgument;
+import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -55,6 +57,15 @@ public class UninstallArgument extends AbstractInstallerArgument
      */
     @Builder.Default
     private final boolean forceUninstall = false;
+
+    /**
+     * 被依存関係にあるプラグインが見つかった場合の処理方法のデフォルト設定です。
+     * この設定は, 関連するシグナルによって上書きされる可能性があります。
+     */
+    @Builder.Default
+    @NotNull
+    private final PluginIsDependencySignal.Operation onDependencyFound =
+            PluginIsDependencySignal.Operation.CANCEL;
 
     public static UninstallArgumentBuilder builder(Plugin plugin)
     {

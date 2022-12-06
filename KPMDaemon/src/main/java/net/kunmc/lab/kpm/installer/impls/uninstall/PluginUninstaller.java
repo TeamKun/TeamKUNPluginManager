@@ -90,28 +90,48 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
         }
         // endregion
 
+        PluginIsDependencySignal.Operation dependencyBehavior = null;
+        List<String> uninstallDependencies = new ArrayList<>();
         // region Check other plugins depends on this plugin.
         if (!argument.isSkipDependencyChecks())
         {
             for (Plugin plugin : installTargets)
             {
-                List<Plugin> dependencies = this.getAllDependencies(plugin);
-                dependencies.removeAll(installTargets);
+                List<DependencyNode> dependencies = this.getDependenciesRecursive(plugin);
+
+                // Remove plugin which is marked as dependency because it is marked to be uninstalled.
+                dependencies.removeIf(
+                        dependencyNode -> dependencyNode.getDependsOn().equalsIgnoreCase(plugin.getName())
+                );
 
                 if (dependencies.isEmpty())
                     continue;
-                PluginIsDependencySignal pluginIsDependencySignal =
+
+                PluginIsDependencySignal depSignal =
                         new PluginIsDependencySignal(plugin, dependencies);
 
-                this.postSignal(pluginIsDependencySignal);
+                this.postSignal(depSignal);
 
-                if (argument.isForceUninstall() || pluginIsDependencySignal.isForceUninstall())
-                    installTargets.addAll(dependencies);
-                else
-                    return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);
+                PluginIsDependencySignal.Operation operation =
+                        depSignal.getOperation();
+                if (operation == null)
+                    operation = argument.getOnDependencyFound();
+
+                if (operation == PluginIsDependencySignal.Operation.CANCEL)
+                    return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);  // Cancel uninstallation.
+
+                dependencyBehavior = operation;
+                installTargets.addAll(dependencies.stream().parallel()
+                        .map(dependencyNode -> Bukkit.getPluginManager().getPlugin(dependencyNode.getDependsOn()))
+                        .collect(Collectors.toList()));
+                uninstallDependencies.addAll(dependencies.stream().parallel()
+                        .map(DependencyNode::getDependsOn)
+                        .collect(Collectors.toList()));
             }
-
         }
+
+        if (dependencyBehavior == null)
+            dependencyBehavior = argument.getOnDependencyFound();  // Typically, this is set in above if statement.
         // endregion
 
         // endregion
@@ -142,6 +162,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
         Map<String, Plugin> namePluginMap = installTargets.stream().parallel()
                 .collect(Collectors.toMap(Plugin::getName, pl -> pl));
 
+        PluginIsDependencySignal.Operation finalDependencyBehavior = dependencyBehavior;  // for lambda
         UnInstallResult uninstallResult = this.submitter(
                         UnInstallTasks.COMPUTING_UNINSTALL_ORDER,
                         new DependsComputeOrderTask(this)
@@ -156,7 +177,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
                             .map(element -> namePluginMap.get(element.getPluginName()))
                             .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
 
-                    return new UninstallArgument(orderedPlugins);
+                    return new UninstallArgument(orderedPlugins, uninstallDependencies, finalDependencyBehavior);
                 })
                 .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
         // endregion
@@ -178,25 +199,27 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
         return plugin;
     }
 
-    private ArrayList<Plugin> getAllDependencies(Plugin target)
+    private ArrayList<DependencyNode> getDependenciesRecursive(Plugin target)
     {
-        ArrayList<Plugin> plugins = new ArrayList<>();
+        ArrayList<DependencyNode> dependencyPlugins = new ArrayList<>();
 
+        // Retrieve plugins that depends on target plugin.
         List<DependencyNode> dependencies =
                 this.daemon.getPluginMetaManager().getProvider().getDependedBy(target.getName());
 
+        // Loop through all dependencies to find dependency's dependency.
         for (DependencyNode depend : dependencies)
         {
             Plugin dependPlugin = this.getPlugin(depend.getPlugin());
             if (dependPlugin != null)
             {
-                plugins.add(dependPlugin);
-                plugins.addAll(this.getAllDependencies(dependPlugin));
+                dependencyPlugins.add(depend);
+                dependencyPlugins.addAll(this.getDependenciesRecursive(dependPlugin));
             }
             // if it cannot find the plugin, ignore it because it only exist in database.
             // Doesn't exist in filesystem and server plugins.
         }
 
-        return plugins;
+        return dependencyPlugins;
     }
 }
