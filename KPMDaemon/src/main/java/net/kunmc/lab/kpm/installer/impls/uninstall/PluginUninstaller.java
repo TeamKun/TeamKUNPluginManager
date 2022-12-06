@@ -51,7 +51,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
     @Override
     public InstallResult<UnInstallTasks> execute(@NotNull net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument argument) throws TaskFailedException
     {
-        List<Plugin> plugins = new ArrayList<>();
+        List<Plugin> installTargets = new ArrayList<>();
         // region Search plugin
         this.progress.setCurrentTask(UnInstallTasks.SEARCHING_PLUGIN);
 
@@ -62,12 +62,12 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
                 if (plugin == null)
                     return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
 
-                plugins.add(plugin);
+                installTargets.add(plugin);
             }
         else
         {
             assert argument.getPlugins() != null;
-            plugins.addAll(argument.getPlugins());
+            installTargets.addAll(argument.getPlugins());
         }
 
         // endregion
@@ -78,7 +78,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
         // region Check is plugin marked as ignored
         if (!argument.isSkipExcludeChecks())
         {
-            for (Plugin plugin : plugins)
+            for (Plugin plugin : installTargets)
             {
                 if (!this.isPluginIgnored(plugin.getName()))
                     continue;
@@ -93,10 +93,10 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
         // region Check other plugins depends on this plugin.
         if (!argument.isSkipDependencyChecks())
         {
-            for (Plugin plugin : plugins)
+            for (Plugin plugin : installTargets)
             {
                 List<Plugin> dependencies = this.getAllDependencies(plugin);
-                dependencies.removeAll(plugins);
+                dependencies.removeAll(installTargets);
 
                 if (dependencies.isEmpty())
                     continue;
@@ -106,7 +106,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
                 this.postSignal(pluginIsDependencySignal);
 
                 if (argument.isForceUninstall() || pluginIsDependencySignal.isForceUninstall())
-                    plugins.addAll(dependencies);
+                    installTargets.addAll(dependencies);
                 else
                     return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);
             }
@@ -116,18 +116,18 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
 
         // endregion
 
-        UninstallReadySignal uninstallReadySignal = new UninstallReadySignal(plugins);
+        UninstallReadySignal uninstallReadySignal = new UninstallReadySignal(installTargets);
         this.postSignal(uninstallReadySignal);
         if (!uninstallReadySignal.isContinueUninstall())
             return this.error(UnInstallErrorCause.CANCELLED);
 
-        plugins = uninstallReadySignal.getPlugins();
+        installTargets = uninstallReadySignal.getPlugins();
 
         // region Uninstall plugin
 
         // Before uninstall plugin, we need to compute the order of plugins to uninstall.
         // Reuse DepenedsComputeOrderTask to compute the order, so we need to map List<Plugin> to List<DependencyElement>.
-        List<DependencyElement> computeOrderTarget = plugins.stream().parallel()
+        List<DependencyElement> computeOrderTarget = installTargets.stream().parallel()
                 .map(pl -> {
                     PluginDescriptionFile descriptionFile = pl.getDescription();
                     String name = descriptionFile.getName();
@@ -139,7 +139,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
                 .collect(Collectors.toList());
 
         // Create String-Plugin map to DependencyElement doesn't have Plugin instance.
-        Map<String, Plugin> namePluginMap = plugins.stream().parallel()
+        Map<String, Plugin> namePluginMap = installTargets.stream().parallel()
                 .collect(Collectors.toMap(Plugin::getName, pl -> pl));
 
         UnInstallResult uninstallResult = this.submitter(
