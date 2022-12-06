@@ -28,6 +28,9 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <excludes>
+                        <exclude>**/lombok/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
