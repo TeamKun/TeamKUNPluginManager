@@ -54,6 +54,7 @@ import java.util.Map;
  *     <li>{@link UpgradeTasks#RETRIEVING_UPDATE_QUERY} - プラグインのアップデートクエリを取得する。</li>
  *     <li>{@link UpgradeTasks#RESOLVING_PLUGIN} - アップデートクエリを解決する。</li>
  *     <li>{@link UpgradeTasks#UNINSTALLING_PLUGIN} - プラグインをアンインストールする。</li>
+ *     <li>{@link UpgradeTasks#INSTALLING_PLUGIN} - プラグインをインストールする。</li>
  * </ol>
  * <p>
  * また、このインストーラは{@link net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller} と {@link net.kunmc.lab.kpm.installer.impls.install.PluginInstaller} を内部で呼び出します。
