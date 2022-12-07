@@ -9,6 +9,7 @@ import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
+import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InstallFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
@@ -149,6 +150,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 UninstallArgument.builder(targetPlugins.toArray(new Plugin[0]))
                         .skipExcludeChecks(true)
                         .forceUninstall(true)
+                        .onDependencyFound(PluginIsDependencySignal.Operation.DISABLE)
                         .build());
 
         Arrays.stream(uninstallResult.getRemoved()).parallel()

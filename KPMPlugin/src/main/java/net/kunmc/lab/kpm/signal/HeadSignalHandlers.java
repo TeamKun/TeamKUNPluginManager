@@ -145,10 +145,10 @@ public class HeadSignalHandlers
                 getCommonHandlers(terminal),
                 Arrays.asList(
                         new UpgradeSignalHandler(terminal, isAuto),
-                        new UpgradeFinishedSignalHandler(terminal)
+                        new UpgradeFinishedSignalHandler(terminal),
+                        new UninstallerSignalHandler(terminal)
                 ),
-                getInstallHandlers(terminal, false),
-                getUninstallHandlers(terminal, false)
+                getInstallHandlers(terminal, false)
         );
     }
 }
