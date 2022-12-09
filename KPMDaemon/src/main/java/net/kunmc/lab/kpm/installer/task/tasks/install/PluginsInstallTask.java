@@ -107,7 +107,18 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
             for (Plugin plugin : installedPlugins)
                 this.pluginMetaProvider.buildDependencyTree(plugin);
 
+            if (arguments.getPluginPath() == null)  // Dependency only mode
+                return new PluginsInstallResult(
+                        true,
+                        this.state,
+                        null,
+                        null,
+                        null, installedPlugins
+                );
+
             // Install plugin after dependencies installed
+
+            assert arguments.getPluginDescription() != null;
 
             PluginsInstallResult result =
                     this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(),

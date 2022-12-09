@@ -21,13 +21,17 @@ public class PluginsInstallArgument extends TaskArgument
 {
     /**
      * プラグインのファイルのパスです。
+     * これを {@code null} にした場合, 依存関係のみがインストールされます。
+     * また, {@code null} 以外の場合, {@link #pluginDescription} は {@code null} にできません。
      */
-    @NotNull
+    @Nullable
     Path pluginPath;
     /**
      * プラグインのプラグイン情報ファイルです。
+     * これを {@code null} にした場合, 依存関係のみがインストールされます。
+     * また, {@code null} 以外の場合, {@link #pluginPath} は {@code null} にできません。
      */
-    @NotNull
+    @Nullable
     PluginDescriptionFile pluginDescription;
     /**
      * プラグインのKPM情報ファイルです。
@@ -40,4 +44,22 @@ public class PluginsInstallArgument extends TaskArgument
      */
     @NotNull
     List<DependencyElement> dependencies;
+
+    public PluginsInstallArgument(@NotNull Path pluginPath, @NotNull PluginDescriptionFile pluginDescription, @Nullable KPMInformationFile kpmInformation, @NotNull List<DependencyElement> dependencies)
+    {
+        this.pluginPath = pluginPath;
+        this.pluginDescription = pluginDescription;
+        this.kpmInformation = kpmInformation;
+        this.dependencies = dependencies;
+    }
+
+    public PluginsInstallArgument(@NotNull List<DependencyElement> dependencies)
+    {
+        this.pluginPath = null;
+        this.pluginDescription = null;
+        this.kpmInformation = null;
+        this.dependencies = dependencies;
+    }
+
+
 }

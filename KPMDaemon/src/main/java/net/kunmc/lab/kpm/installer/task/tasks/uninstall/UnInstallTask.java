@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,13 +86,20 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
     }
 
     private final KPMDaemon daemon;
+    private final List<PluginDescriptionFile> uninstalledPlugins;
+    private final List<PluginDescriptionFile> disabledDependencyPlugins;
+    private final Map<PluginDescriptionFile, Path> unloadedPlugins;
 
     private UninstallState taskState;
 
     public UnInstallTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
+
         this.daemon = installer.getDaemon();
+        this.uninstalledPlugins = new ArrayList<>();
+        this.disabledDependencyPlugins = new ArrayList<>();
+        this.unloadedPlugins = new HashMap<>();
 
         this.taskState = UninstallState.INITIALIZED;
     }
@@ -109,11 +117,9 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
     public @NotNull UnInstallResult runTask(@NotNull UninstallArgument arguments)
     {
         List<Plugin> orderedUninstallTargets = arguments.getPlugins();
-
-        List<PluginDescriptionFile> uninstalledPlugins = new ArrayList<>();
-        List<PluginDescriptionFile> disabledDependencyPlugins = new ArrayList<>();
         List<String> argDependencies =
                 arguments.getDependencies() == null ? Collections.emptyList(): arguments.getDependencies();
+
         Map<UninstallErrorCause, PluginDescriptionFile> errors = new HashMap<>();
 
         this.taskState = UninstallState.UNINSTALLING;
@@ -137,9 +143,9 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
             UninstallErrorCause errorCause = this.uninstallOnePlugin(plugin, disableOnly);
 
             if (errorCause == UninstallErrorCause.INTERNAL_UNINSTALL_OK)
-                uninstalledPlugins.add(description);
+                this.uninstalledPlugins.add(description);
             else if (errorCause == UninstallErrorCause.INTERNAL_DISABLE_AND_UNINSTALL_OK)
-                disabledDependencyPlugins.add(description);
+                this.disabledDependencyPlugins.add(description);
             else
             {
                 this.postSignal(new PluginUninstallErrorSignal(errorCause, description));
@@ -175,7 +181,8 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
         boolean success = errors.isEmpty();
 
         return new UnInstallResult(success, this.taskState, success ? null: UninstallErrorCause.SOME_UNINSTALL_FAILED,
-                uninstalledPlugins, disabledDependencyPlugins, errors
+                this.uninstalledPlugins, this.disabledDependencyPlugins, this.unloadedPlugins,
+                errors
         );
     }
 
@@ -200,6 +207,8 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
             return UninstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
         }
 
+        this.disabledDependencyPlugins.add(plugin.getDescription());
+
         this.taskState = UninstallState.REMOVING_FROM_BUKKIT;
         PLUGINS.remove(plugin);
         LOOKUP_NAMES.remove(plugin.getName().toLowerCase(Locale.ENGLISH));
@@ -218,6 +227,8 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
 
         if (!this.unloadClasses(plugin))
             return UninstallErrorCause.INTERNAL_CLASS_UNLOAD_FAILED;
+
+        this.unloadedPlugins.put(plugin.getDescription(), PluginUtil.getFile(plugin).toPath());
 
         this.postSignal(new PluginUnloadingSignal.Post(pluginName));
 

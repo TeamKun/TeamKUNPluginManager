@@ -54,4 +54,5 @@ public enum UpgradeErrorCause
      * インストールに失敗しました。
      */
     INSTALL_FAILED,
+    DEPENDENCY_LOAD_ORDER_COMPUTE_FAILED,
 }

@@ -6,6 +6,7 @@ import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
+import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstallSucceedResult;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
@@ -17,6 +18,11 @@ import net.kunmc.lab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
 import net.kunmc.lab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.installer.task.TaskFailedException;
+import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
+import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
+import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallArgument;
+import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.lookup.LookupArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.lookup.LookupResult;
 import net.kunmc.lab.kpm.installer.task.tasks.lookup.PluginLookupTask;
@@ -38,11 +44,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * プラグインをアップグレードするインストーラーの実装です。
@@ -190,6 +198,12 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 return this.error(UpgradeErrorCause.INSTALL_FAILED);
         }
 
+        // Restore unloaded dependencies
+        PluginUninstallSucceedResult uninstallSucceedResult = (PluginUninstallSucceedResult) uninstallResult;
+        UpgradeErrorCause mayError = this.restoreUnloadedPlugin(uninstallSucceedResult.getResult().getUnloadedPlugins());
+
+        if (mayError != null)
+            return this.error(mayError);
         // endregion
 
         // region clean VM(Unlink old Plugin data)
@@ -202,6 +216,43 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         // endregion
 
         return this.success();
+    }
+
+    private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, Path> unloadedPlugins)
+    {
+        List<DependencyElement> dependencyElements = unloadedPlugins.entrySet().stream()
+                .map(entry -> {
+                    PluginDescriptionFile description = entry.getKey();
+                    Path pluginPath = entry.getValue();
+                    return new DependencyElement(
+                            description.getName(),
+                            pluginPath,
+                            description,
+                            null,
+                            null
+                    );
+                })
+                .collect(Collectors.toList());
+
+        try
+        {
+            this.submitter(
+                            UpgradeTasks.COMPUTING_DEPENDENCY_LOAD_ORDER,
+                            new DependsComputeOrderTask(this)
+                    )
+                    .then(
+                            UpgradeTasks.INSTALLING_PLUGIN,
+                            new PluginsInstallTask(this)
+                    )
+                    .bridgeArgument(result -> new PluginsInstallArgument(result.getOrder()))
+                    .submitAll(new DependsComputeOrderArgument(dependencyElements));
+        }
+        catch (TaskFailedException ignored)
+        {
+            return UpgradeErrorCause.INSTALL_FAILED;
+        }
+
+        return null;
     }
 
     private UpgradeErrorCause checkPluginMatch(Plugin plugin, SuccessResult resolveResult)

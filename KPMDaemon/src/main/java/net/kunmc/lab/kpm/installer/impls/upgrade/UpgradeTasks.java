@@ -33,4 +33,12 @@ public enum UpgradeTasks
      * プラグインのインストール中であることを示します。
      */
     INSTALLING_PLUGIN,
+    /**
+     * 無効化した依存関係のプラグインの読み込み順の再設定中であることを示します。
+     */
+    COMPUTING_DEPENDENCY_LOAD_ORDER,
+    /**
+     * 無効化した依存関係のプラグインの再有効化中であることを示します。
+     */
+    RE_LOADING_DEPENDENCIES,
 }
