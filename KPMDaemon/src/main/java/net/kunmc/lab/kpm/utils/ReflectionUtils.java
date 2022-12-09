@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.utils;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Constructor;
@@ -27,13 +28,9 @@ import java.util.Map;
  *
  * @version 1.1-PYG
  */
+@UtilityClass
 public final class ReflectionUtils
 {
-    // Prevent accidental construction
-    private ReflectionUtils()
-    {
-    }
-
     /**
      * Returns the constructor of a given class with the given parameter types
      *

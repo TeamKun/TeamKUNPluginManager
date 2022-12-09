@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.utils.http;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.TokenStore;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 /**
  * HTTP リクエストを補助するクラスです。
  */
+@UtilityClass
 public class Requests
 {
     @Setter

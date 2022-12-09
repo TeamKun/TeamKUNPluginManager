@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.utils;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
@@ -17,10 +18,12 @@ import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@UtilityClass
 public class PluginUtil
 {
 
     private static final Method pluginGetFile;
+
     static
     {
         try

@@ -1,10 +1,12 @@
 package net.kunmc.lab.kpm;
 
+import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLoadOrder;
 
+@UtilityClass
 public class Utils
 {
     public static final String STATS_FORMAT
