@@ -1,7 +1,6 @@
 package net.kunmc.lab.kpm.utils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -12,12 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -46,45 +42,6 @@ public class PluginUtil
     public static String getPluginString(Plugin plugin)
     {
         return getPluginString(plugin.getDescription());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> ms2Map(MemorySection ms)
-    {
-        try
-        {
-            Field field = MemorySection.class.getDeclaredField("map");
-            field.setAccessible(true);
-
-            LinkedHashMap<String, Object> obj = (LinkedHashMap<String, Object>) field.get(ms);
-
-            //LinkedHashMap<String, Object> tmp = obj;
-
-            obj.forEach((k, v) -> {
-                if (v instanceof MemorySection)
-                    obj.put(k, ms2Map((MemorySection) v));
-            });
-
-            return obj;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return new LinkedHashMap<>();
-        }
-    }
-
-    public static Map<String, Object> getConfig(Plugin plugin)
-    {
-        if (plugin == null)
-            return new LinkedHashMap<>();
-
-        if (!new File(plugin.getDataFolder(), "config.yml").exists())
-            return new LinkedHashMap<>();
-
-        MemorySection section = plugin.getConfig();
-
-        return ms2Map(section);
     }
 
     public static boolean isPluginLoaded(String plugin)
