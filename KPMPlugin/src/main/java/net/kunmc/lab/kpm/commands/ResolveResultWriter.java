@@ -40,7 +40,7 @@ public class ResolveResultWriter extends TerminalWriter
         if (result instanceof ErrorResult)
         {
             ErrorResult errorResult = (ErrorResult) result;
-            this.printString(ChatColor.RED + "エラー", errorResult.getMessage() + " (" + errorResult.getCause() + ")");
+            this.printStringFull(ChatColor.RED + "エラー", ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")");
         }
         else if (result instanceof SuccessResult)
         {
@@ -55,8 +55,10 @@ public class ResolveResultWriter extends TerminalWriter
             MultiResult multiResult = (MultiResult) result;
             this.printBoolean("複数", true);
 
-            for (ResolveResult subResult : multiResult.getResults())
-                this.writeRecursive(subResult, true);
+            ResolveResult[] results = multiResult.getResults();
+
+            for (int i = results.length - 1; i >= 0; i--)
+                this.writeRecursive(results[i], true);
         }
     }
 
@@ -64,7 +66,7 @@ public class ResolveResultWriter extends TerminalWriter
     {
         this.printStringOrEmpty("ファイル名", result.getFileName());
         this.printStringOrEmpty("バージョン", result.getVersion());
-        this.printString("ダウンロード", result.getDownloadUrl());
+        this.printStringFull("ダウンロード", result.getDownloadUrl());
     }
 
     private void printAdditionalInformation(ResolveResult result)
@@ -74,43 +76,48 @@ public class ResolveResultWriter extends TerminalWriter
             CurseBukkitSuccessResult curseBukkitSuccessResult = (CurseBukkitSuccessResult) result;
 
             this.printString("種類", "CURSE_FORGE");
+            this.printMarketplaceResult(curseBukkitSuccessResult);
             this.printStringOrEmpty("バージョン", curseBukkitSuccessResult.getVersion());
             this.printString("ID", curseBukkitSuccessResult.getSlug() + "#" + curseBukkitSuccessResult.getSlug());
             this.printString("説明", curseBukkitSuccessResult.getDescription());
             this.printSeparatorShort();
         }
-
-        if (result instanceof GitHubSuccessResult)
+        else if (result instanceof GitHubSuccessResult)
         {
             GitHubSuccessResult githubSuccessResult = (GitHubSuccessResult) result;
 
             this.printString("種類", "GITHUB");
-            this.printString("リポジトリ", githubSuccessResult.getOwner() + "/" + githubSuccessResult.getRepoName());
+            this.printString("リポジトリ", "https://github.com/" +
+                    githubSuccessResult.getOwner() + "/" + githubSuccessResult.getRepoName());
             this.printString("ファイルサイズ", String.valueOf(githubSuccessResult.getSize()));
             this.printString("リリース名", githubSuccessResult.getReleaseName());
             this.printString("リリースID", String.valueOf(githubSuccessResult.getReleaseId()));
             this.printString("リリース内容", githubSuccessResult.getReleaseBody());
             this.printSeparatorShort();
         }
-
-        if (result instanceof SpigotMCSuccessResult)
+        else if (result instanceof SpigotMCSuccessResult)
         {
             SpigotMCSuccessResult spigotMCSuccessResult = (SpigotMCSuccessResult) result;
 
             this.printString("種類", "SPIGOT_MC");
+            this.printMarketplaceResult(spigotMCSuccessResult);
             this.printStringFull("対応バージョン", String.join(", ", spigotMCSuccessResult.getVersions()));
             this.printSeparatorShort();
         }
-
-        if (result instanceof MarketplaceResult)
+        else if (result instanceof MarketplaceResult)
         {
             MarketplaceResult marketplaceResult = (MarketplaceResult) result;
 
-            this.printString("種類", "MARKETPLACE");
-            this.printString("タイトル", marketplaceResult.getTitle());
-            this.printString("説明", marketplaceResult.getDescription());
-            this.printString("公開先", marketplaceResult.getUrl());
+            this.printMarketplaceResult(marketplaceResult);
             this.printSeparatorShort();
         }
+    }
+
+    private void printMarketplaceResult(MarketplaceResult result)
+    {
+        this.printString("タイトル", result.getTitle());
+        this.printString("説明", result.getDescription());
+        this.printStringFull("公開先", result.getUrl());
+
     }
 }
