@@ -40,7 +40,7 @@ public class CommandInfo extends CommandBase
 
         PluginInfoWriter infoWriter = new PluginInfoWriter(this.daemon, terminal, plugin);
         terminal.info("情報を書き出し中...");
-        infoWriter.writeAllInfo();
+        infoWriter.write();
     }
 
 

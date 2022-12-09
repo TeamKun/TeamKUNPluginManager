@@ -94,7 +94,8 @@ public class PluginInfoWriter extends TerminalWriter
         return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(timeStamp));
     }
 
-    public void writeAllInfo()
+    @Override
+    public void write()
     {
         this.printSeparator();
         this.writeBaseInfo();

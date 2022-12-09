@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
-public class TerminalWriter
+public abstract class TerminalWriter
 {
     private static final int MAX_LENGTH = 50;
     private static final String SEPARATOR =
@@ -30,6 +30,8 @@ public class TerminalWriter
             ChatColor.GREEN + "%s" + ChatColor.WHITE + ": " + ChatColor.GRAY + "未設定";
 
     protected final Terminal terminal;
+
+    public abstract void write();
 
     protected void printString(String key, @NotNull String value)
     {
