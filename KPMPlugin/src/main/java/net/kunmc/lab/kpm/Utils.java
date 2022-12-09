@@ -4,7 +4,13 @@ import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginLoadOrder;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @UtilityClass
 public class Utils
@@ -53,16 +59,37 @@ public class Utils
         return String.format("%.2f %s", dSize, SIZE_UNITS[unit]);
     }
 
-    public static String loadToString(PluginLoadOrder order)
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static String getHash(Path path, String algo)
     {
-        switch (order)
+        MessageDigest md;
+        try
         {
-            case POSTWORLD:
-                return "ワールド読み込み後に起動";
-            case STARTUP:
-                return "起動直後に読み込み";
-            default:
-                return "不明";
+            md = MessageDigest.getInstance(algo);
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            return "<No such algorithm: " + algo + ">";
+        }
+
+        try (FileInputStream fis = new FileInputStream(path.toFile());
+             DigestInputStream dis = new DigestInputStream(fis, md))
+        {
+            byte[] buffer = new byte[1024];
+            while (dis.read(buffer) != -1)
+            {
+            }
+
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest)
+                sb.append(String.format("%02x", b));
+
+            return sb.toString();
+        }
+        catch (IOException e)
+        {
+            return "<IOException thrown: " + e.getMessage() + ">";
         }
     }
 }
