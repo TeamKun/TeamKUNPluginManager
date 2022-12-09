@@ -5,7 +5,6 @@ import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoadOrder;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
@@ -102,19 +101,6 @@ public class PluginUtil
         if (!(plugin.getClass().getClassLoader() instanceof PluginClassLoader))
             return false;
         return ((PluginClassLoader) plugin.getClass().getClassLoader()).getPlugin() != null;
-    }
-
-    public static String loadToString(PluginLoadOrder order)
-    {
-        switch (order)
-        {
-            case POSTWORLD:
-                return "ワールド読み込み後に起動";
-            case STARTUP:
-                return "起動直後に読み込み";
-            default:
-                return "不明";
-        }
     }
 
     public static File getFile(Plugin plugin)

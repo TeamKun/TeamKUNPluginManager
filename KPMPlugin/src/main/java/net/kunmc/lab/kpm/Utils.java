@@ -3,6 +3,7 @@ package net.kunmc.lab.kpm;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.PluginLoadOrder;
 
 public class Utils
 {
@@ -48,5 +49,18 @@ public class Utils
         }
 
         return String.format("%.2f %s", dSize, SIZE_UNITS[unit]);
+    }
+
+    public static String loadToString(PluginLoadOrder order)
+    {
+        switch (order)
+        {
+            case POSTWORLD:
+                return "ワールド読み込み後に起動";
+            case STARTUP:
+                return "起動直後に読み込み";
+            default:
+                return "不明";
+        }
     }
 }

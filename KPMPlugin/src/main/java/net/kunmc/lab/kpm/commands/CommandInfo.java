@@ -191,7 +191,7 @@ public class CommandInfo extends CommandBase
         terminal.writeLine(keyValue("名前", meta.getName()));
         terminal.writeLine(keyValue("作成者", String.join(", ", meta.getAuthors())));
         terminal.writeLine(keyValue("状態", plugin.isEnabled() ? ChatColor.DARK_GREEN + "有効": ChatColor.RED + "無効"));
-        terminal.writeLine(keyValue("読み込みタイミング", PluginUtil.loadToString(plugin.getDescription().getLoad())));
+        terminal.writeLine(keyValue("読み込みタイミング", Utils.loadToString(plugin.getDescription().getLoad())));
         terminal.writeLine(keyValueYesNo(
                 "保護",
                 TeamKunPluginManager.getPlugin().getPluginConfig().getStringList("ignore").stream().parallel()
