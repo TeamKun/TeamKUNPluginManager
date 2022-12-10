@@ -162,8 +162,6 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
             File pluginFile = PluginUtil.getFile(plugin);
             if (!isFileDel && pluginFile.exists())
                 pluginFile.delete();
-
-            this.daemon.getPluginMetaManager().onUninstalled(plugin.getName());
         }), 20L);
 
         orderedUninstallTargets.stream()
@@ -260,6 +258,7 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
         if (kpmInfo != null)
             kpmInfo.getHooks().runHook(new PluginUninstallHook.Post(plugin.getDescription(), kpmInfo));
 
+        this.daemon.getPluginMetaManager().onUninstalled(plugin.getName());
         return UninstallErrorCause.INTERNAL_UNINSTALL_OK;
     }
 
