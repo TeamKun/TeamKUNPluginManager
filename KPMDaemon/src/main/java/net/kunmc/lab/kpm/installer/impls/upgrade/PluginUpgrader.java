@@ -88,16 +88,6 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
             return this.error(UpgradeErrorCause.PLUGIN_NOT_FOUND);
         // endregion
 
-        // region Do environment check
-        this.progress.setCurrentTask(UpgradeTasks.CHECKING_ENVIRONMENT);
-        for (Plugin plugin : targetPlugins)
-        {
-            UpgradeErrorCause mayEnvErrorCause = this.checkEnvironment(plugin.getDescription());
-            if (mayEnvErrorCause != null)
-                return this.error(mayEnvErrorCause);
-        }
-        // endregion
-
         Map<Plugin, String> updateQueries;
         // region Retrieve update queries
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_METADATA);
@@ -136,6 +126,17 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         // Notify upgrade is ready or nothing to upgrade
         if (resolveResults.isEmpty())
             return this.error(UpgradeErrorCause.UP_TO_DATE);
+
+        // region Do environment check
+        this.progress.setCurrentTask(UpgradeTasks.CHECKING_ENVIRONMENT);
+        for (Plugin plugin : resolveResults.keySet())
+        {
+            UpgradeErrorCause mayEnvErrorCause = this.checkEnvironment(plugin.getDescription());
+            if (mayEnvErrorCause != null)
+                return this.error(mayEnvErrorCause);
+        }
+        // endregion
+
         resolveResults = this.notifyUpgradeReady(resolveResults);
         if (resolveResults.isEmpty())  // Cancelled
             return this.error(UpgradeErrorCause.CANCELLED);
@@ -259,14 +260,30 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
     {
         PluginDescriptionFile description = plugin.getDescription();
 
-        if (resolveResult.getVersion() == null)
-            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_NOT_DEFINED);
-
         Version currentVersion = Version.ofNullable(description.getVersion());
+        if (currentVersion == null)  // The parser failed to parse version.
+        {
+            UpgradeErrorCause excludeCause = this.excludeOrCancel(plugin,
+                    UpgradeErrorCause.PLUGIN_VERSION_FORMAT_MALFORMED, null, null
+            );
+
+            if (excludeCause != UpgradeErrorCause.PLUGIN_EXCLUDED)
+                return excludeCause;
+
+            // Cause is PLUGIN_VERSION_FORMAT_MALFORMED, but we can still upgrade
+        }
+
+
+        if (resolveResult.getVersion() == null)
+            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_NOT_DEFINED, currentVersion, null);
+
         Version newVersion = Version.ofNullable(resolveResult.getVersion());
 
-        if (currentVersion == null || newVersion == null)
-            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_NOT_DEFINED, currentVersion, newVersion);
+        if (newVersion == null)  // The parser failed to parse version.
+            return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_VERSION_FORMAT_MALFORMED, currentVersion, null);
+
+        if (currentVersion == null)
+            return null;  // Response with no error because currentVersion is not defined(or malformed), so we don't have to check version is newer or equal.
 
         if (currentVersion.isNewerThanOrEqualTo(newVersion))
             return this.excludeOrCancel(plugin, UpgradeErrorCause.PLUGIN_IS_OLDER_OR_EQUAL, currentVersion, newVersion);
@@ -274,16 +291,20 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return null;
     }
 
+    /**
+     * Ask user to exclude the plugin or cancel the upgrade.
+     *
+     * @param plugin         The plugin to exclude.
+     * @param cause          The cause of the exclusion.
+     * @param currentVersion The current version of the plugin.
+     * @param newVersion     The new version of the plugin.
+     * @return {@link UpgradeErrorCause#PLUGIN_EXCLUDED} if the plugin is excluded, or the cause if the upgrade is cancelled.
+     */
     private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause, Version currentVersion, Version newVersion)
     {
         InvalidPluginVersionSignal signal = new InvalidPluginVersionSignal(plugin, cause, currentVersion, newVersion);
         this.postSignal(signal);
-        return signal.isContinueUpgrade() ? null: UpgradeErrorCause.PLUGIN_EXCLUDED;
-    }
-
-    private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause)
-    {
-        return this.excludeOrCancel(plugin, cause, null, null);
+        return signal.isContinueUpgrade() ? UpgradeErrorCause.PLUGIN_EXCLUDED: cause;
     }
 
     @Nullable
