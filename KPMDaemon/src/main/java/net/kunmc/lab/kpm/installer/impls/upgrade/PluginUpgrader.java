@@ -29,6 +29,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.lookup.PluginLookupTask;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.kpm.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
@@ -92,17 +93,26 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         // region Retrieve update queries
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_METADATA);
         HashMap<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
-
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_UPDATE_QUERY);
-        updateQueries = pluginMetas.entrySet().stream().parallel()
-                .map(entry ->
-                        Pair.of(
-                                entry.getKey(),
-                                entry.getValue().getResolveQuery() == null ? entry.getKey().getName():
-                                        entry.getValue().getResolveQuery()
-                        )
-                )
-                .collect(KPMCollectors.toPairHashMap());
+
+        updateQueries = new HashMap<>();
+        for (Map.Entry<Plugin, PluginMeta> entry : pluginMetas.entrySet())
+        {
+            Plugin plugin = entry.getKey();
+            PluginMeta meta = entry.getValue();
+            KPMInformationFile kpmInfo = this.daemon.getKpmInfoManager().hasInfo(plugin) ?
+                    this.daemon.getKpmInfoManager().getInfo(plugin): null;
+
+            String query;
+            if (!(kpmInfo == null || kpmInfo.getUpdateQuery() == null))  // KPM info's update query is the highest priority.
+                query = kpmInfo.getUpdateQuery().toString();
+            else if (meta.getResolveQuery() != null)
+                query = meta.getResolveQuery();
+            else
+                query = meta.getName();
+
+            updateQueries.put(plugin, query);
+        }
         // endregion
 
         Map<Plugin, SuccessResult> resolveResults;
