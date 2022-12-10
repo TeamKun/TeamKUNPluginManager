@@ -93,7 +93,7 @@ public class UpgradeSignalHandler
 
         this.terminal.info("この警告を無視して強制的にアップグレードできますが、" +
                 "強制的なアップグレードは予期しない問題を引き起こす可能性があります。");
-        signal.setContinueUpgrade(SignalHandlingUtils.askContinue(this.terminal));
+        signal.setExcludePlugin(!SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler

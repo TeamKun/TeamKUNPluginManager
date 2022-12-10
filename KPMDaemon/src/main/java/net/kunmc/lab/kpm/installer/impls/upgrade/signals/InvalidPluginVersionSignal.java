@@ -51,13 +51,18 @@ public class InvalidPluginVersionSignal extends Signal
      */
     private boolean continueUpgrade;
 
+    /**
+     * プラグインを除外するかどうかを示すフラグです。
+     */
+    private boolean excludePlugin;
+
     public InvalidPluginVersionSignal(Plugin plugin, UpgradeErrorCause invalidReason)
     {
-        this(plugin, invalidReason, null, null, true);
+        this(plugin, invalidReason, null, null, true, true);
     }
 
     public InvalidPluginVersionSignal(Plugin plugin, UpgradeErrorCause invalidReason, @Nullable Version serverPluginVersion, @Nullable Version pluginVersion)
     {
-        this(plugin, invalidReason, serverPluginVersion, pluginVersion, true);
+        this(plugin, invalidReason, serverPluginVersion, pluginVersion, true, true);
     }
 }

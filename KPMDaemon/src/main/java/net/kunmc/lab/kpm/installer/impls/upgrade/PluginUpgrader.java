@@ -301,20 +301,16 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return null;
     }
 
-    /**
-     * Ask user to exclude the plugin or cancel the upgrade.
-     *
-     * @param plugin         The plugin to exclude.
-     * @param cause          The cause of the exclusion.
-     * @param currentVersion The current version of the plugin.
-     * @param newVersion     The new version of the plugin.
-     * @return {@link UpgradeErrorCause#PLUGIN_EXCLUDED} if the plugin is excluded, or the cause if the upgrade is cancelled.
-     */
     private UpgradeErrorCause excludeOrCancel(Plugin plugin, UpgradeErrorCause cause, Version currentVersion, Version newVersion)
     {
         InvalidPluginVersionSignal signal = new InvalidPluginVersionSignal(plugin, cause, currentVersion, newVersion);
         this.postSignal(signal);
-        return signal.isContinueUpgrade() ? UpgradeErrorCause.PLUGIN_EXCLUDED: cause;
+        if (!signal.isContinueUpgrade())
+            return cause;
+        else if (signal.isExcludePlugin())
+            return UpgradeErrorCause.PLUGIN_EXCLUDED;
+        else
+            return null;
     }
 
     @Nullable
