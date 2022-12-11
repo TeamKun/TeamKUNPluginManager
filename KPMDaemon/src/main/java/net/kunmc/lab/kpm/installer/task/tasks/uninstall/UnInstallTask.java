@@ -207,15 +207,14 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
 
         this.disabledDependencyPlugins.add(plugin.getDescription());
 
-        this.taskState = UninstallState.REMOVING_FROM_BUKKIT;
-        PLUGINS.remove(plugin);
-        LOOKUP_NAMES.remove(plugin.getName().toLowerCase(Locale.ENGLISH));
-
         return UninstallErrorCause.INTERNAL_UNINSTALL_OK;
     }
 
     private UninstallErrorCause unloadOnePlugin(@NotNull Plugin plugin)
     {
+        this.taskState = UninstallState.REMOVING_FROM_BUKKIT;
+        PLUGINS.remove(plugin);
+        LOOKUP_NAMES.remove(plugin.getName().toLowerCase(Locale.ENGLISH));
 
         this.taskState = UninstallState.CLASSES_UNLOADING;
         @SuppressWarnings("StringOperationCanBeSimplified")  // Backup Plugin name to unload classes
