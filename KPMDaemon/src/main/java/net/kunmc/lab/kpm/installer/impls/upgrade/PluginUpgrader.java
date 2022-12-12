@@ -151,6 +151,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         if (resolveResults.isEmpty())  // Cancelled
             return this.error(UpgradeErrorCause.CANCELLED);
 
+        Map<PluginDescriptionFile, Path> unloadedPlugins;
         // region Uninstall plugins
         this.progress.setCurrentTask(UpgradeTasks.UNINSTALLING_PLUGIN);
 
@@ -177,12 +178,22 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
         if (!uninstallResult.isSuccess())
             return this.error(UpgradeErrorCause.UNINSTALL_FAILED);
+
+        PluginUninstallSucceedResult uninstallSucceedResult = (PluginUninstallSucceedResult) uninstallResult;
+        unloadedPlugins = uninstallSucceedResult.getResult().getUnloadedPlugins();
         // endregion
+
+        Map<PluginDescriptionFile, SuccessResult> resolveResultMap = resolveResults.entrySet().stream()
+                .collect(Collectors.toMap(entry -> entry.getKey().getDescription(), Map.Entry::getValue));
 
         // region Install plugins
         this.progress.setCurrentTask(UpgradeTasks.INSTALLING_PLUGIN);
-        for (SuccessResult resolveResult : resolveResults.values())
+
+        for (Map.Entry<PluginDescriptionFile, SuccessResult> entry : resolveResultMap.entrySet())
         {
+            unloadedPlugins.remove(entry.getKey());  // unloadedPlugins will be used to restore unloaded dependencies, so we need to ignore plugins that will be installed.
+            SuccessResult resolveResult = entry.getValue();
+
             PluginInstaller installer;
             try
             {
@@ -210,20 +221,10 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         }
 
         // Restore unloaded dependencies
-        PluginUninstallSucceedResult uninstallSucceedResult = (PluginUninstallSucceedResult) uninstallResult;
-        UpgradeErrorCause mayError = this.restoreUnloadedPlugin(uninstallSucceedResult.getResult().getUnloadedPlugins());
+        UpgradeErrorCause mayError = this.restoreUnloadedPlugin(unloadedPlugins);
 
         if (mayError != null)
             return this.error(mayError);
-        // endregion
-
-        // region clean VM(Unlink old Plugin data)
-        targetPlugins.clear();
-        resolveResults.clear();
-        updateQueries.clear();
-        pluginMetas.clear();
-
-        System.gc();
         // endregion
 
         return this.success();
