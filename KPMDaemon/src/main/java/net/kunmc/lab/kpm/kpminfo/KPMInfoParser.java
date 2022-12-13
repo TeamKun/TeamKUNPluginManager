@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class KPMInfoParser
@@ -41,9 +42,11 @@ public class KPMInfoParser
 
         try (ZipFile zip = new ZipFile(file))
         {
-            InputStream stream = zip.getInputStream(zip.getEntry("kpm.yml"));
-            if (stream == null)
+            ZipEntry kpmFileEntry = zip.getEntry("kpm.yml");
+            if (kpmFileEntry == null)
                 throw new InvalidInformationFileException("kpm.yml not found in " + file.getAbsolutePath());
+
+            InputStream stream = zip.getInputStream(kpmFileEntry);
 
             return load(daemon, stream);
         }
