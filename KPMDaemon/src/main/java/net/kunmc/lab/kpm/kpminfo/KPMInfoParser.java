@@ -44,7 +44,7 @@ public class KPMInfoParser
         {
             ZipEntry kpmFileEntry = zip.getEntry("kpm.yml");
             if (kpmFileEntry == null)
-                throw new InvalidInformationFileException("kpm.yml not found in " + file.getAbsolutePath());
+                throw new FileNotFoundException("kpm.yml not found in " + file.getAbsolutePath());
 
             InputStream stream = zip.getInputStream(kpmFileEntry);
 
