@@ -8,6 +8,7 @@ import net.kunmc.lab.kpm.installer.task.TaskArgument;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,4 +73,30 @@ public class UninstallArgument extends TaskArgument
     {
         this(plugins, dependencies, false, true, true, operation);
     }
+
+    public UninstallArgument(Plugin plugin)
+    {
+        this(Collections.singletonList(plugin), null, false, true, true, null);
+    }
+
+    public UninstallArgument(Plugin plugin, @Nullable List<String> dependencies)
+    {
+        this(Collections.singletonList(plugin), dependencies, false, true, true, null);
+    }
+
+    public UninstallArgument(Plugin plugin, @Nullable List<String> dependencies, boolean disableOnly, boolean deleteFile, boolean runGC)
+    {
+        this(Collections.singletonList(plugin), dependencies, disableOnly, deleteFile, runGC, null);
+    }
+
+    public UninstallArgument(Plugin plugin, boolean disableOnly, boolean deleteFile)
+    {
+        this(Collections.singletonList(plugin), null, disableOnly, deleteFile, true, null);
+    }
+
+    public UninstallArgument(Plugin plugin, @Nullable List<String> dependencies, @Nullable PluginIsDependencySignal.Operation operation)
+    {
+        this(Collections.singletonList(plugin), dependencies, false, true, true, operation);
+    }
 }
+

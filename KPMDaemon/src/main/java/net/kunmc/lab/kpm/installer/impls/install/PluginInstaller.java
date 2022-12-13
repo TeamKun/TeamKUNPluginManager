@@ -21,6 +21,8 @@ import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallTask;
+import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
@@ -156,7 +158,8 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         // region Remove plugin if it is already installed. (only replacePlugin is true)
         if (replacePlugin)
-            this.removeOldPlugin(sameServerPlugin);
+            this.submitter(InstallTasks.REMOVING_OLD_PLUGIN, new UnInstallTask(this))
+                    .submitAll(new UninstallArgument(sameServerPlugin));
         // endregion
 
         this.progress.addPending(pluginDescription.getName());
