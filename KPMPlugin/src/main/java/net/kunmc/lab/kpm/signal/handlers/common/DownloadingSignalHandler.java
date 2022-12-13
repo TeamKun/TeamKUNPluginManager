@@ -63,6 +63,9 @@ public class DownloadingSignalHandler
         );
 
         this.currentDownload = null;
+
+        if (this.downloadProgressBar != null)
+            this.terminal.removeProgressbar("ダウンロード");
     }
 
     @SignalHandler
