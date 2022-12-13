@@ -171,7 +171,7 @@ public class GitHubURLResolver implements URLResolver
         if (mayError != null)
             return mayError;
 
-        if (tag != null)
+        if (tag != null) // When tag is specified, the response is a json object of the release, not an array.
         {
             JsonObject jsonObject = response.getAsJson().getAsJsonObject();
 
@@ -196,6 +196,8 @@ public class GitHubURLResolver implements URLResolver
                     isNoAssets = true;
                 continue;
             }
+            else if (version != null)
+                return result; // If the version is specified, return the result because it is the only result(version is must be equal).
 
             results.add(result);
         }
