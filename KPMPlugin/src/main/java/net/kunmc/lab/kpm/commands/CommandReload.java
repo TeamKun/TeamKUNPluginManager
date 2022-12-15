@@ -31,7 +31,7 @@ public class CommandReload extends CommandBase
 
         if ((plugin = Bukkit.getPluginManager().getPlugin(args[0])) == null)
         {
-            terminal.error("E: プラグイン %s は存在しません。", args[0]);
+            terminal.error("プラグイン %s は存在しません。", args[0]);
             return;
         }
 
