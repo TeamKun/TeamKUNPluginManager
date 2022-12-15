@@ -584,6 +584,25 @@ public class PluginMetaProvider
     }
 
     /**
+     * 現在管理されているプラグインの数を取得します。
+     *
+     * @return 現在管理されているプラグインの数
+     */
+    public int countPlugins()
+    {
+        try (Transaction transaction = Transaction.create(this.db, "SELECT COUNT(name) FROM plugin_meta"))
+        {
+            ResultSet resultSet = transaction.executeQuery().getResult();
+            resultSet.next();
+            return resultSet.getInt(1);
+        }
+        catch (SQLException e)
+        {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
      * 使われていない依存関係のリストを取得します。
      * <p>
      * (プラグインが依存関係であるかどうかは、plugin_meta.is_dependencyを使用して確認できます)

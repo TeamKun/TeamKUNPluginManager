@@ -61,10 +61,6 @@
                     </artifactSet>
                     <filters>
                         <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/MANIFEST.MF</exclude>
-                            </excludes>
                         </filter>
                         <filter>
                             <artifact>com.github.TeamKUN:PeyangPaperUtils</artifact>

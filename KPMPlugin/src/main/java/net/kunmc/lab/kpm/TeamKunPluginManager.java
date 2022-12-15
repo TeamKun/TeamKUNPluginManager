@@ -9,10 +9,10 @@ import net.kunmc.lab.kpm.commands.CommandInstall;
 import net.kunmc.lab.kpm.commands.CommandRegister;
 import net.kunmc.lab.kpm.commands.CommandReload;
 import net.kunmc.lab.kpm.commands.CommandResolve;
-import net.kunmc.lab.kpm.commands.CommandStatus;
 import net.kunmc.lab.kpm.commands.CommandUninstall;
 import net.kunmc.lab.kpm.commands.CommandUpdate;
 import net.kunmc.lab.kpm.commands.CommandUpgrade;
+import net.kunmc.lab.kpm.commands.CommandVersion;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
@@ -40,16 +40,16 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         commandManager.registerCommand("autoremove", new CommandAutoRemove(this));
         commandManager.registerCommand("clean", new CommandClean(this));
+        commandManager.registerCommand("debug", new CommandDebug());
         commandManager.registerCommand("info", new CommandInfo(this.daemon));
         commandManager.registerCommand("install", new CommandInstall(this), "add", "i");
         commandManager.registerCommand("register", new CommandRegister(this, this.daemon), "login");
         commandManager.registerCommand("reload", new CommandReload(this.daemon));
         commandManager.registerCommand("resolve", new CommandResolve(this.daemon));
-        commandManager.registerCommand("status", new CommandStatus(this.daemon));
         commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
         commandManager.registerCommand("upgrade", new CommandUpgrade(this));
-        commandManager.registerCommand("debug", new CommandDebug());
+        commandManager.registerCommand("version", new CommandVersion(this.daemon));
     }
 
     @Override

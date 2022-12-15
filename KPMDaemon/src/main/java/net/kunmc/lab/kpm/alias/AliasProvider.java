@@ -146,5 +146,20 @@ public class AliasProvider
         }
     }
 
+    /**
+     * エイリアスの数を取得します。
+     *
+     * @return エイリアスの数
+     */
+    public int countAliases()
+    {
+        try (Transaction transaction = Transaction.create(this.db, "SELECT COUNT(alias) FROM alias"))
+        {
+            return transaction.executeQuery().stream()
+                    .findFirst()
+                    .map(row -> row.getInt("COUNT(alias)"))
+                    .orElse(0);
+        }
+    }
 
 }
