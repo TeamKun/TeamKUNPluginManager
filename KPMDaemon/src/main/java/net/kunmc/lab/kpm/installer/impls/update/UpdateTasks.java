@@ -6,6 +6,10 @@ package net.kunmc.lab.kpm.installer.impls.update;
 public enum UpdateTasks
 {
     /**
+     * エイリアスのアップデートが初期化されたことを示します。
+     */
+    INITIALIZED,
+    /**
      * ソースのダウンロードを行います。
      */
     DOWNLOADING_SOURCES,

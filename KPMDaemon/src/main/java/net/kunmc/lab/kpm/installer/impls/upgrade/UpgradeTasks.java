@@ -6,6 +6,10 @@ package net.kunmc.lab.kpm.installer.impls.upgrade;
 public enum UpgradeTasks
 {
     /**
+     * アップグレードが初期化されたことを示します。
+     */
+    INITIALIZED,
+    /**
      * アップグレード対象の検索中であることを示します。
      */
     SEARCHING_PLUGIN,

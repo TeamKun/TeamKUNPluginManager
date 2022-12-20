@@ -58,6 +58,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     public PluginInstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
+        this.progress.setCurrentTask(InstallTasks.INITIALIZED);
     }
 
     @Override

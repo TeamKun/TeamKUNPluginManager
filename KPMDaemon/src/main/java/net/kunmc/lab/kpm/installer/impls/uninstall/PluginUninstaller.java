@@ -46,6 +46,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
     public PluginUninstaller(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
+        this.progress.setCurrentTask(UnInstallTasks.INITIALIZED);
     }
 
     @Override

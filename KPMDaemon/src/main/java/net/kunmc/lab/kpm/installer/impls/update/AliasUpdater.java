@@ -30,6 +30,7 @@ public class AliasUpdater extends AbstractInstaller<UpdateArgument, UpdateErrorC
     public AliasUpdater(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
+        this.progress.setCurrentTask(UpdateTasks.INITIALIZED);
     }
 
     @Override

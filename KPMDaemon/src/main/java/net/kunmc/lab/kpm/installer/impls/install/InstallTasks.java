@@ -7,9 +7,9 @@ package net.kunmc.lab.kpm.installer.impls.install;
 public enum InstallTasks
 {
     /**
-     * インストールが開始されたことを示します。
+     * インストーラが初期化されたことを示します。
      */
-    STARTED,
+    INITIALIZED,
     /**
      * インストーラの初期化中であることを示します。
      */

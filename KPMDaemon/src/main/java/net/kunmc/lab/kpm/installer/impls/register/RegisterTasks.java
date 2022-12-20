@@ -6,6 +6,10 @@ package net.kunmc.lab.kpm.installer.impls.register;
 public enum RegisterTasks
 {
     /**
+     * トークンの登録が初期化されたことを示します。
+     */
+    INITIALIZED,
+    /**
      * トークンの登録中であることを示します。
      */
     REGISTERING_TOKEN,

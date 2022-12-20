@@ -52,6 +52,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     public TokenRegisterer(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
+        this.progress.setCurrentTask(RegisterTasks.INITIALIZED);
     }
 
     @Override

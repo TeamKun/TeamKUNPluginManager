@@ -6,6 +6,10 @@ package net.kunmc.lab.kpm.installer.impls.uninstall;
 public enum UnInstallTasks
 {
     /**
+     * アンインストーラが初期化されたことを示します。
+     */
+    INITIALIZED,
+    /**
      * プラグインの検索中を示します。
      */
     SEARCHING_PLUGIN,

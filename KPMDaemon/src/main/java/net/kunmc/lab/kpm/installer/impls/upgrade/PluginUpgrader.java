@@ -75,6 +75,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
     public PluginUpgrader(@NotNull KPMDaemon daemon, @NotNull SignalHandleManager signalHandler) throws IOException
     {
         super(daemon, signalHandler);
+        this.progress.setCurrentTask(UpgradeTasks.INITIALIZED);
     }
 
     @Override
