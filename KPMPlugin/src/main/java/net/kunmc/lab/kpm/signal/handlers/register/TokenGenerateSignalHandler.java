@@ -89,8 +89,8 @@ public class TokenGenerateSignalHandler
         this.terminal.info("コードを再取得するには /kpm register を実行してください。");
 
         if (!this.terminal.isPlayer())
-
-            this.progressbar.hide();
+            return;
+        this.progressbar.hide();
         this.terminal.removeProgressbar("codeExpire");
     }
 
