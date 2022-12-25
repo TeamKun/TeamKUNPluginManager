@@ -150,6 +150,7 @@ public class PluginMetaManager implements Listener
     public void onUninstalled(@NotNull String pluginName)
     {
         this.provider.removePluginMeta(pluginName);
+        this.provider.deleteFromDependencyTree(pluginName);
     }
 
     /**
