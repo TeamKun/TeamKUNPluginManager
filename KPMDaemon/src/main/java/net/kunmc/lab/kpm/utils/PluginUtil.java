@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 @UtilityClass
@@ -69,27 +70,30 @@ public class PluginUtil
     public static PluginDescriptionFile loadDescription(File file) throws InvalidDescriptionException, IOException
     { // TODO: File -> Path
         if (!file.exists())
-            throw new FileNotFoundException("Not found a file.");
+            throw new FileNotFoundException("Not found the file.");
 
-        ZipFile zip = new ZipFile(file);
-        ZipEntry entry = null;
-        for (ZipEntry ent : Collections.list(zip.entries()))
-            if (ent.getName().equals("plugin.yml"))
+        try (ZipFile zip = new ZipFile(file))
+        {
+            ZipEntry entry = null;
+            for (ZipEntry ent : Collections.list(zip.entries()))
+                if (ent.getName().equals("plugin.yml"))
+                {
+                    entry = ent;
+                    break;
+                }
+
+            if (entry == null)
+                throw new InvalidDescriptionException("This file isn't plugin.");
+
+            try (InputStream is = zip.getInputStream(entry))
             {
-                entry = ent;
-                break;
+                return new PluginDescriptionFile(is);
             }
-
-        if (entry == null)
+        }
+        catch (ZipException ex)
+        {
             throw new InvalidDescriptionException("This file isn't plugin.");
-
-        InputStream is = zip.getInputStream(entry);
-
-        PluginDescriptionFile desc = new PluginDescriptionFile(is);
-        is.close();
-        zip.close();
-
-        return desc;
+        }
     }
 
 }
