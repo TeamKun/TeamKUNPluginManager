@@ -89,7 +89,7 @@ public class GitHubURLResolver implements URLResolver
         return endsWithIgn(str, suffix) || endsWithIgn(str, suffix2);
     }
 
-    private static long evalResult(GitHubSuccessResult result)
+    private static long calcReputation(GitHubSuccessResult result)
     {
         long reputation = 0;
 
@@ -136,7 +136,7 @@ public class GitHubURLResolver implements URLResolver
             if (result instanceof GitHubSuccessResult)
             {
                 GitHubSuccessResult successResult = (GitHubSuccessResult) result;
-                map.put(evalResult(successResult), successResult);
+                map.put(calcReputation(successResult), successResult);
             }
             else if (result instanceof ErrorResult)
             {
