@@ -59,6 +59,12 @@ public class UninstallArgument extends AbstractInstallerArgument
     private final boolean forceUninstall = false;
 
     /**
+     * 自動でアンインストールを行います。
+     */
+    @Builder.Default
+    private final boolean autoConfirm = false;
+
+    /**
      * 被依存関係にあるプラグインが見つかった場合の処理方法のデフォルト設定です。
      * この設定は, 関連するシグナルによって上書きされる可能性があります。
      */

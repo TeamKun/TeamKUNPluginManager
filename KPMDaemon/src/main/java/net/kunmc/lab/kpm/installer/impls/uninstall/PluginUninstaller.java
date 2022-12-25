@@ -137,7 +137,8 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
 
         // endregion
 
-        UninstallReadySignal uninstallReadySignal = new UninstallReadySignal(installTargets);
+        UninstallReadySignal uninstallReadySignal =
+                new UninstallReadySignal(installTargets, argument.isAutoConfirm());
         this.postSignal(uninstallReadySignal);
         if (!uninstallReadySignal.isContinueUninstall())
             return this.error(UnInstallErrorCause.CANCELLED);

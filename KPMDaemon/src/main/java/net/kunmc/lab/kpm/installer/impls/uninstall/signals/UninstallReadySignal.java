@@ -14,18 +14,23 @@ import java.util.List;
 public class UninstallReadySignal extends Signal
 {
     /**
-     * アンインストール対象のプラグインのリスト
+     * アンインストール対象のプラグインのリストです。
      */
     private final List<Plugin> plugins;
     /**
-     * アンインストールを続行するかどうか
+     * 自動でアンインストールを行うかどうかのフラグです。
+     */
+    private final boolean autoConfirm;
+    /**
+     * アンインストールを続行するかどうかです。
      */
     @Setter
     private boolean continueUninstall;
 
-    public UninstallReadySignal(List<Plugin> plugins)
+    public UninstallReadySignal(List<Plugin> plugins, boolean autoConfirm)
     {
         this.plugins = plugins;
+        this.autoConfirm = autoConfirm;
         this.continueUninstall = true;
     }
 }
