@@ -23,7 +23,7 @@ public class CommandUpgrade extends CommandBase
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
-        if (indicateArgsLengthInvalid(terminal, args, 0, 1))
+        if (indicateArgsLengthInvalid(terminal, args, 0))
             return;
 
         List<String> targets = null;
