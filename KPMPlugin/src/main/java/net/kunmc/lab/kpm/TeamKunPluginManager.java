@@ -100,7 +100,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
                     .autoConfirm(true)
                     .build());
-        }, 0);  // Run after all plugins are loaded
+        }, 1);  // Run after all plugins are loaded
     }
 
     @Override
