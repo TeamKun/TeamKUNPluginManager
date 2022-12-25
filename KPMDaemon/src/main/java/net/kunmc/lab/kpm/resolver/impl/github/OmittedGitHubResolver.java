@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.resolver.impl;
+package net.kunmc.lab.kpm.resolver.impl.github;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.kpm.resolver.QueryContext;

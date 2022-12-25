@@ -1,9 +1,10 @@
-package net.kunmc.lab.kpm.resolver.impl;
+package net.kunmc.lab.kpm.resolver.impl.github;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kunmc.lab.kpm.resolver.QueryContext;
+import net.kunmc.lab.kpm.resolver.impl.GitHubSuccessResult;
 import net.kunmc.lab.kpm.resolver.interfaces.URLResolver;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.MultiResult;
@@ -20,63 +21,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GitHubURLResolver implements URLResolver
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
 
-    private static final Pattern GITHUB_REPO_PATTERN = Pattern.compile("^/(?<repository>(?<owner>[a-zA-Z\\d]" +
-            "(?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38})/(?<repoName>\\w(?:\\w|-(?=\\w)){0,100}))" +
-            "(?:/(?:tags|releases(?:/(?:tag/(?<tag>[^/]+)/?$|download/(?<downloadTag>[^/]+)/" +
-            "(?<fileName>[^/]+)))?))?/?$");
-
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        Matcher matcher = this.urlMatcher(GITHUB_REPO_PATTERN, query.getQuery());
-
-        if (matcher == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
-
-        String repository = null;
-        String owner = null;
-        String tag = null;
-        String repositoryName = null;
-
-        while (matcher.find())
+        GHURLParseResult parsedURL;
+        try
         {
-            String repositoryGroup = matcher.group("repository");
-            String downloadTagGroup = matcher.group("downloadTag");
-            String tagGroup = matcher.group("tag");
-            String fileNameGroup = matcher.group("fileName");
-            String ownerGroup = matcher.group("owner");
-            String repoNameGroup = matcher.group("repoName");
-
-            if (fileNameGroup != null && !fileNameGroup.isEmpty()) // URLが自己解決。
-                return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
-
-            if (!repositoryGroup.isEmpty())
-                repository = repositoryGroup;
-
-            if (downloadTagGroup != null && !downloadTagGroup.isEmpty())
-                tag = downloadTagGroup;
-            else if (tagGroup != null && !tagGroup.isEmpty())
-                tag = tagGroup;
-
-            if (ownerGroup != null && !ownerGroup.isEmpty())
-                owner = ownerGroup;
-
-            if (repoNameGroup != null && !repoNameGroup.isEmpty())
-                repositoryName = repoNameGroup;
+            parsedURL = GHURLParser.parse(query.getQuery());
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return new ErrorResult(
+                    this,
+                    ErrorResult.ErrorCause.INVALID_QUERY,
+                    ResolveResult.Source.GITHUB
+            );
         }
 
-        if (repository == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.GITHUB);
+        if (parsedURL.getFinalName() != null)
+            // Return because of the query is directly linking to the plugin file.
+            return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
 
-        return this.processGitHubAPI(owner, repositoryName, repository, tag, query.getVersion());
+        return this.processGitHubAPI(parsedURL, query.getVersion());
     }
 
     private static boolean endsWithIgn(String str, String suffix)
@@ -154,10 +126,15 @@ public class GitHubURLResolver implements URLResolver
                 .orElse(null);
     }
 
-    private ResolveResult processGitHubAPI(String owner, String repositoryName, String repository, String tag, @Nullable Version version)
+    private ResolveResult processGitHubAPI(GHURLParseResult parsedURL, @Nullable Version version)
     {
+        String owner = parsedURL.getOwner();
+        String repositoryName = parsedURL.getRepositoryName();
+        String repository = parsedURL.getRepository();
+        String tag = parsedURL.getTag();
+
         String apiURL;
-        if (tag != null)
+        if (tag != null)  // Use different API URL to specify the release by tag name
             apiURL = String.format(GITHUB_REPO_RELEASE_NAME_URL, repository, tag);
         else
             apiURL = String.format(GITHUB_REPO_RELEASES_URL, repository);
