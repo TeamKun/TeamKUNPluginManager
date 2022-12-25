@@ -90,6 +90,11 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         targetPlugins = this.searchPlugin(argument.getTargetPlugins());
         if (targetPlugins == null)
             return this.error(UpgradeErrorCause.PLUGIN_NOT_FOUND);
+
+        if (targetPlugins.removeIf(plugin -> plugin.getName().equalsIgnoreCase("TeamKUNPluginManager")) &&
+                targetPlugins.isEmpty())
+            return this.error(UpgradeErrorCause.SELF_UPGRADE_ATTEMPTED);
+
         // endregion
 
         Map<Plugin, String> updateQueries;
