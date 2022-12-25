@@ -13,7 +13,6 @@ import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
-import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -55,7 +54,7 @@ public class UpgradeSignalHandler
     private void onInvalidPluginVersionAT(InvalidPluginVersionSignal signal)
     {
         UpgradeErrorCause reason = signal.getInvalidReason();
-        String pluginName = PluginUtil.getPluginString(signal.getPlugin());
+        String pluginName = net.kunmc.lab.kpm.utils.Utils.getPluginString(signal.getPlugin());
 
         switch (reason)
         {
@@ -75,7 +74,7 @@ public class UpgradeSignalHandler
     private void onInvalidPluginVersionMN(InvalidPluginVersionSignal signal)
     {
         UpgradeErrorCause reason = signal.getInvalidReason();
-        String pluginName = PluginUtil.getPluginString(signal.getPlugin());
+        String pluginName = net.kunmc.lab.kpm.utils.Utils.getPluginString(signal.getPlugin());
 
         switch (reason)
         {

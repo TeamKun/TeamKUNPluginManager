@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.kpm.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
-import net.kunmc.lab.kpm.utils.PluginUtil;
+import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 
@@ -21,7 +21,7 @@ public class ModifySignalHandler
     @SignalHandler
     public void onPluginModify(PluginModifiedSignal signal)
     {
-        String pluginStr = PluginUtil.getPluginString(signal.getPluginDescription());
+        String pluginStr = Utils.getPluginString(signal.getPluginDescription());
         String printMessage;
 
         switch (signal.getModifyType())

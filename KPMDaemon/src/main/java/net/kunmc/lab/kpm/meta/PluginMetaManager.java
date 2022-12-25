@@ -3,7 +3,6 @@ package net.kunmc.lab.kpm.meta;
 import lombok.Getter;
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMEnvironment;
-import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
@@ -77,7 +76,7 @@ public class PluginMetaManager implements Listener
                 this.checkNoAutoCreateMetadata(plugin))
             return;
 
-        String pluginNameFull = PluginUtil.getPluginString(plugin);
+        String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
         this.daemon.getLogger().info("プラグインの追加が検出されました: " + pluginNameFull);
 
@@ -101,7 +100,7 @@ public class PluginMetaManager implements Listener
                 this.checkNoAutoCreateMetadata(plugin))
             return;
 
-        String pluginNameFull = PluginUtil.getPluginString(plugin);
+        String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
         this.daemon.getLogger().info("プラグインの削除が検出されました: " + pluginNameFull);
 

@@ -4,7 +4,7 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySig
 import net.kunmc.lab.kpm.meta.DependType;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandler;
-import net.kunmc.lab.kpm.utils.PluginUtil;
+import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
@@ -33,7 +33,7 @@ public class PluginIsDependencySignalHandler
     @SignalHandler
     public void onPluginIsDependency(PluginIsDependencySignal signal)
     {
-        this.terminal.warn(PluginUtil.getPluginString(signal.getPlugin()) + " は以下のプラグインの依存関係です。");
+        this.terminal.warn(Utils.getPluginString(signal.getPlugin()) + " は以下のプラグインの依存関係です。");
         this.terminal.writeLine("  " + signal.getDependedBy().stream()
                 .map(PluginIsDependencySignalHandler::dependencyNameMapper)
                 .sorted()

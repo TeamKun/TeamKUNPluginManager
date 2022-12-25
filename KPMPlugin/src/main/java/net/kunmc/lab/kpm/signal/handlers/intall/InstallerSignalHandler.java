@@ -7,7 +7,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginLoadSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
-import net.kunmc.lab.kpm.utils.PluginUtil;
+import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 
@@ -43,14 +43,14 @@ public class InstallerSignalHandler
     public void onPluginLoadPre(PluginLoadSignal.Pre signal)
     {
         this.terminal.writeLine(ChatColor.GREEN +
-                PluginUtil.getPluginString(signal.getPluginDescription()) + " を読み込んでいます ...");
+                Utils.getPluginString(signal.getPluginDescription()) + " を読み込んでいます ...");
     }
 
     @SignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
         this.terminal.writeLine(ChatColor.GREEN +
-                PluginUtil.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
+                Utils.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
     }
 
     @SignalHandler

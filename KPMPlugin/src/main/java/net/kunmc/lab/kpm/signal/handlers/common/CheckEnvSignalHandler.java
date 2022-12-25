@@ -5,7 +5,7 @@ import net.kunmc.lab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
-import net.kunmc.lab.kpm.utils.PluginUtil;
+import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -25,7 +25,7 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onIncompatibleWithKPM(PluginIncompatibleWithKPMSignal signal)
     {
-        this.terminal.warn(PluginUtil.getPluginString(signal.getPluginDescription()) +
+        this.terminal.warn(Utils.getPluginString(signal.getPluginDescription()) +
                 " はこの TeamKunPluginManager と互換性がありません。");
         this.terminal.info("強制的なインストールが可能ですが、強制的な操作は予期しない問題を引き起こす可能性があります。");
 
@@ -35,7 +35,7 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onPluginIsIgnored(IgnoredPluginSignal signal)
     {
-        this.terminal.warn(PluginUtil.getPluginString(signal.getPluginDescription()) +
+        this.terminal.warn(Utils.getPluginString(signal.getPluginDescription()) +
                 " は ignore としてマークされていますが強制的な操作が可能です。");
 
         this.terminal.writeLine(ChatColor.DARK_RED + "W: 強制的な操作は予期しない問題を引き起こす可能性があります。");

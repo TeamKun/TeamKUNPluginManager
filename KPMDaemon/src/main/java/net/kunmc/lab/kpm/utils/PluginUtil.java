@@ -37,16 +37,6 @@ public class PluginUtil
         }
     }
 
-    public static String getPluginString(PluginDescriptionFile description)
-    {
-        return String.format("%s (%s)", description.getName(), description.getVersion());
-    }
-
-    public static String getPluginString(Plugin plugin)
-    {
-        return getPluginString(plugin.getDescription());
-    }
-
     public static boolean isPluginLoaded(String plugin)
     {
         if (Bukkit.getPluginManager().getPlugin(plugin) == null)
