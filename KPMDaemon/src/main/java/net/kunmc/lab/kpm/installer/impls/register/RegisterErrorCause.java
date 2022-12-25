@@ -10,6 +10,10 @@ public enum RegisterErrorCause
      */
     IO_EXCEPTION_OCCURRED,
     /**
+     * トークンが無効であることを示します。
+     */
+    INVALID_TOKEN,
+    /**
      * キャンセルされたことを示します。
      */
     GENERATE_CANCELLED,

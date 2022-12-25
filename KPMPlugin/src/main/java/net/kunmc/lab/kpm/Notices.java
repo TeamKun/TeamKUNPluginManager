@@ -9,9 +9,12 @@ public class Notices
     public static void printAllNotice(KPMDaemon daemon, Terminal terminal)
     {
         boolean print = printAutoRemovable(daemon, terminal);
-        if (print)  // If there is a notice, print a blank line
+        if (print)  // If the notice is printed, print a blank line.
             terminal.writeLine("");
         print = printTokenUnset(daemon, terminal);
+        if (print)
+            terminal.writeLine("");
+        print = printTokenDead(daemon, terminal);
     }
 
     public static boolean printAutoRemovable(KPMDaemon daemon, Terminal terminal)
@@ -40,5 +43,18 @@ public class Notices
         }
 
         return isTokenUnset;
+    }
+
+    public static boolean printTokenDead(KPMDaemon daemon, Terminal terminal)
+    {
+        boolean isTokenDead = !daemon.getTokenStore().isTokenAlive();
+
+        if (isTokenDead)
+        {
+            terminal.warn("指定されているトークンは有効期限が切れています。");
+            terminal.hint("/kpm register で新しいトークンを発行できます。");
+        }
+
+        return isTokenDead;
     }
 }

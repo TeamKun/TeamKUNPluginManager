@@ -1,5 +1,9 @@
 package net.kunmc.lab.kpm;
 
+import net.kunmc.lab.kpm.utils.http.HTTPResponse;
+import net.kunmc.lab.kpm.utils.http.RequestContext;
+import net.kunmc.lab.kpm.utils.http.RequestMethod;
+import net.kunmc.lab.kpm.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 
 import javax.crypto.Cipher;
@@ -83,6 +87,23 @@ public class TokenStore
         }
     }
 
+    private static boolean isTokenAlive(String token)
+    {
+        try (HTTPResponse apiResponse = Requests.request(RequestContext.builder()
+                .url("https://api.github.com/rate_limit")
+                .method(RequestMethod.GET)
+                .header("Authorization", "Token " + token)
+                .build()))
+        {
+            return apiResponse.isSuccessful();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private byte[] encryptToken(String token)
     {
         try
@@ -146,10 +167,14 @@ public class TokenStore
     /**
      * トークンを保存します。
      *
-     * @param token トークン
+     * @param token       トークン
+     * @param checkLiving トークンが生きているか確認するかどうか
      */
-    public void storeToken(String token) throws IOException
+    public void storeToken(String token, boolean checkLiving) throws IOException
     {
+        if (checkLiving && !isTokenAlive(token))
+            throw new IllegalStateException("Token is not available.");
+
         byte[] tokenBytes = this.encryptToken(token);
         long time = System.currentTimeMillis();
         String tokenBody = Base64.getEncoder().encodeToString(tokenBytes);
@@ -203,7 +228,7 @@ public class TokenStore
             return false;
 
         String token = new String(Files.readAllBytes(oldToken.toPath()));
-        this.storeToken(token);
+        this.storeToken(token, false);
 
         //noinspection ResultOfMethodCallIgnored
         oldToken.delete();
@@ -251,5 +276,16 @@ public class TokenStore
         String token = System.getenv("TOKEN");
         if (token != null)
             this.tokenCache = token;
+    }
+
+    /**
+     * トークンが有効かどうかを GitHub API で確認します。
+     */
+    public boolean isTokenAlive()
+    {
+        if (this.tokenCache == null)
+            return false;
+
+        return isTokenAlive(this.tokenCache);
     }
 }

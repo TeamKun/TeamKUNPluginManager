@@ -6,6 +6,7 @@ import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.register.pojos.UserVerificationCodeResponse;
 import net.kunmc.lab.kpm.installer.impls.register.pojos.VerificationSubmitPollingResponse;
+import net.kunmc.lab.kpm.installer.impls.register.signals.TokenCheckingSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.TokenGenerateStartingSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.TokenStoredSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.UserDoesntCompleteVerifySignal;
@@ -60,10 +61,10 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     {
         // region Check if token is provided in argument
         if (argument.getToken() != null)  // Token is already prepared, so register it as is.
-            if (this.registerToken(argument.getToken()))
+            if (this.registerToken(argument.getToken(), true))
                 return this.success();
             else
-                return this.error(RegisterErrorCause.IO_EXCEPTION_OCCURRED);
+                return this.error(RegisterErrorCause.INVALID_TOKEN);
         // endregion
 
         //  Token is not prepared, so request it from GitHub.
@@ -113,7 +114,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
 
         this.postSignal(new UserVerificationSuccessSignal(accessToken, tokenType, scope));
 
-        if (this.registerToken(accessToken))
+        if (this.registerToken(accessToken, false))
             return this.success();
         else
             return this.error(RegisterErrorCause.IO_EXCEPTION_OCCURRED);
@@ -281,13 +282,16 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         return json.get("error").getAsString();
     }
 
-    private boolean registerToken(@NotNull String token)
+    private boolean registerToken(@NotNull String token, boolean availableCheck)
     {
         this.progress.setCurrentTask(RegisterTasks.REGISTERING_TOKEN);
 
         try
         {
-            this.daemon.getTokenStore().storeToken(token);
+            if (availableCheck)
+                this.postSignal(new TokenCheckingSignal());
+
+            this.daemon.getTokenStore().storeToken(token, availableCheck);
             this.postSignal(new TokenStoredSignal(token));
 
             return true;
@@ -295,6 +299,10 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         catch (IOException e)
         {
             e.printStackTrace();
+            return false;
+        }
+        catch (IllegalStateException e)
+        {
             return false;
         }
     }

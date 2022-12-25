@@ -73,6 +73,16 @@ public final class TeamKunPluginManager extends JavaPlugin
         return aliasMap;
     }
 
+    private void noticeTokenDead()
+    {
+        TokenStore store = this.daemon.getTokenStore();
+        if (store.isTokenAvailable() && !store.isTokenAlive())
+        {
+            this.daemon.getLogger().warning("設定されている GitHub トークンは、有効期限が切れているか無効なトークンです。");
+            this.daemon.getLogger().info("トークンを再生成するには、 /kpm register を実行してください。");
+        }
+    }
+
     @Override
     public void onEnable()
     {
@@ -99,6 +109,8 @@ public final class TeamKunPluginManager extends JavaPlugin
         this.headInstallers = new HeadInstallers(this.daemon);
 
         this.registerCommands(this.commandManager);
+
+        this.noticeTokenDead();
     }
 
 }

@@ -4,6 +4,7 @@ import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.register.RegisterErrorCause;
 import net.kunmc.lab.kpm.installer.impls.register.RegisterTasks;
+import net.kunmc.lab.kpm.installer.impls.register.signals.TokenCheckingSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.TokenStoredSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
@@ -45,10 +46,19 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
         this.terminal.error("トークンの生成中に予期しないエラーが発生しました。");
     }
 
+    @SignalHandler
+    public void onTokenChecking(TokenCheckingSignal signal)
+    {
+        this.terminal.info("トークンの有効性を確認しています ...");
+    }
+
     private boolean handleGeneralErrors(RegisterErrorCause cause)
     {
         switch (cause)
         {
+            case INVALID_TOKEN:
+                this.terminal.error("トークンが無効です。");
+                return true;
             case GENERATE_CANCELLED:
                 this.terminal.error("トークンの生成がキャンセルされました。");
                 return true;
