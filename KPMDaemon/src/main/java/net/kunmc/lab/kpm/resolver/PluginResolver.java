@@ -30,6 +30,34 @@ public class PluginResolver
         this.allResolvers = new ArrayList<>();
     }
 
+    private static boolean isValidURLResolver(URL url, URLResolver resolver)
+    {
+        String[] hosts = resolver.getHosts();
+
+        if (hosts.length == 0)
+            return true;
+
+        for (String host : hosts)
+        {
+            if (url.getHost().equalsIgnoreCase(host))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static URL toURL(String url)
+    {
+        try
+        {
+            return new URL(url);
+        }
+        catch (MalformedURLException e)
+        {
+            return null;
+        }
+    }
+
     /**
      * リゾルバを追加します。
      *
@@ -159,34 +187,6 @@ public class PluginResolver
             return null;
 
         return resolver.resolve(queryContext);
-    }
-
-    private static boolean isValidURLResolver(URL url, URLResolver resolver)
-    {
-        String[] hosts = resolver.getHosts();
-
-        if (hosts.length == 0)
-            return true;
-
-        for (String host : hosts)
-        {
-            if (url.getHost().equalsIgnoreCase(host))
-                return true;
-        }
-
-        return false;
-    }
-
-    private static URL toURL(String url)
-    {
-        try
-        {
-            return new URL(url);
-        }
-        catch (MalformedURLException e)
-        {
-            return null;
-        }
     }
 
 }

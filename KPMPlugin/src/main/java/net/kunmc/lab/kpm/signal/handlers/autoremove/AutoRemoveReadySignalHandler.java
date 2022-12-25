@@ -32,7 +32,6 @@ public class AutoRemoveReadySignalHandler
         Utils.printInstallStatistics(this.terminal, 0, uninstallTargets.size(), 0, 0);
     }
 
-
     @SignalHandler
     public void onPluginEnumerated(PluginEnumeratedSignal signal)
     {

@@ -76,7 +76,7 @@ public class ResolverSignalHandler
                 .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
         LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
-                        e.getKey(),
+                                e.getKey(),
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )

@@ -34,6 +34,24 @@ public class CurseBukkitResolver implements URLResolver
         BUKKIT_API_VERSION = baseVersion;
     }
 
+    private static JsonObject pickUpValidVersion(JsonArray versions, @Nullable String version)
+    {
+        JsonObject file = null;
+
+        for (JsonElement projectFile : versions)
+        {
+            JsonObject projectFileObject = projectFile.getAsJsonObject();
+
+            if (version != null && projectFileObject.get("fileUrl").getAsString().endsWith(version))
+                return projectFileObject;
+
+            if (projectFileObject.get("gameVersion").getAsString().contains(BUKKIT_API_VERSION))
+                file = projectFileObject;
+        }
+
+        return file;
+    }
+
     @Override
     public ResolveResult resolve(QueryContext query)
     {
@@ -129,24 +147,6 @@ public class CurseBukkitResolver implements URLResolver
         return new CurseBukkitSuccessResult(this, downloadUrl, projectId, fileName, versionName, source, slug, name);
     }
 
-    private static JsonObject pickUpValidVersion(JsonArray versions, @Nullable String version)
-    {
-        JsonObject file = null;
-
-        for (JsonElement projectFile : versions)
-        {
-            JsonObject projectFileObject = projectFile.getAsJsonObject();
-
-            if (version != null && projectFileObject.get("fileUrl").getAsString().endsWith(version))
-                return projectFileObject;
-
-            if (projectFileObject.get("gameVersion").getAsString().contains(BUKKIT_API_VERSION))
-                file = projectFileObject;
-        }
-
-        return file;
-    }
-
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
@@ -156,7 +156,7 @@ public class CurseBukkitResolver implements URLResolver
     @Override
     public String[] getHosts()
     {
-        return new String[] {
+        return new String[]{
                 "dev.bukkit.org",
                 "www.curseforge.com",
                 "curseforge.com",

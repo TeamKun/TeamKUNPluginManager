@@ -192,9 +192,10 @@ public class Requests
 
     /**
      * URLを使用してファイルをダウンロードします。
-     * @param method リクエストメソッド
-     * @param url URL
-     * @param path ダウンロード先のパス
+     *
+     * @param method     リクエストメソッド
+     * @param url        URL
+     * @param path       ダウンロード先のパス
      * @param onProgress ダウンロードの進捗を通知するコールバック
      * @return ダウンロードしたファイルのパス
      * @throws IOException ダウンロードに失敗した場合

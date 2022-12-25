@@ -36,10 +36,10 @@ public class KPMInformationFile
      * KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
      * KPMフックは、KPMがプラグインを読み込む際や、プラグインをアンロードする際に呼び出されるフックです。
      *
+     * @serial hooks {@link HookRecipientList} KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
      * @see net.kunmc.lab.kpm.hook.KPMHook
      * @see KPMHookRecipient
      * @see net.kunmc.lab.kpm.hook.HookListener
-     * @serial hooks {@link HookRecipientList} KPMフックを受け取る {@link KPMHookRecipient} のクラス名です。
      */
     @NotNull
     HookRecipientList hooks;

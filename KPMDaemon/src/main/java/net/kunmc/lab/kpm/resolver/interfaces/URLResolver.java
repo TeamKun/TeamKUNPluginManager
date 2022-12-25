@@ -15,6 +15,11 @@ import java.util.regex.Pattern;
  */
 public interface URLResolver extends BaseResolver
 {
+    static String errorCodeWith(String message, int code)
+    {
+        return message + "(The server responded with " + code + ")";
+    }
+
     /**
      * このリゾルバが対応してるURLのホスト名を返します。
      *
@@ -47,11 +52,6 @@ public interface URLResolver extends BaseResolver
             return false;
         }
         return false;
-    }
-
-    static String errorCodeWith(String message, int code)
-    {
-        return message + "(The server responded with " + code + ")";
     }
 
     default Matcher urlMatcher(Pattern pattern, String urlString)

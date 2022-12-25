@@ -30,7 +30,6 @@ public class UninstallReadySignalHandler
         Utils.printInstallStatistics(this.terminal, 0, uninstallTargets.size(), 0, 0);
     }
 
-
     @SignalHandler
     public void onPluginsEnumerated(UninstallReadySignal signal)
     {

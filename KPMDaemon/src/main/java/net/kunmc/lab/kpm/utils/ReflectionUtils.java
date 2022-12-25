@@ -25,7 +25,6 @@ import java.util.Map;
  *
  * @author DarkBlade12
  * @author Peyang
- *
  * @version 1.1-PYG
  */
 @UtilityClass

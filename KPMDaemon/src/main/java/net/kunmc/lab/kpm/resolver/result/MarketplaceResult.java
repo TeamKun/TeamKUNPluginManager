@@ -17,6 +17,7 @@ public interface MarketplaceResult
 
     /**
      * 掲載先のURLを返します．
+     *
      * @return 掲載先のURL
      */
     @NotNull
@@ -24,6 +25,7 @@ public interface MarketplaceResult
 
     /**
      * 掲載されている紹介文を返します。
+     *
      * @return 掲載されている紹介文
      */
     @NotNull

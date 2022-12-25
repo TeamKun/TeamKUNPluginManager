@@ -45,7 +45,6 @@ public class Transaction implements AutoCloseable
 
     private TransactionRun beforeCommit;
 
-
     private Transaction(Connection connection, String query) throws SQLException
     {
         this.connection = connection;

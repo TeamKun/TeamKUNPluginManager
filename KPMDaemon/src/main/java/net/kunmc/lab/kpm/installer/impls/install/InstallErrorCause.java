@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.installer.impls.install;
 
-
 /**
  * インストールのエラーを表す列挙型です。
  */

@@ -16,7 +16,9 @@
 
 ## 概要
 
-+ TeamKUNPluginManagerは、[PlugMan](https://dev.bukkit.org/projects/plugman), [Installer](https://dev.bukkit.org/projects/plugin-installer)に並ぶ新しいプラグインマネージャです。
++
+TeamKUNPluginManagerは、[PlugMan](https://dev.bukkit.org/projects/plugman), [Installer](https://dev.bukkit.org/projects/plugin-installer)
+に並ぶ新しいプラグインマネージャです。
 + GitHubと連携し、リモートリポジトリのリリースからインストールを行うことが可能です。
 + 依存関係の解決機能を有しており`plugin.yml`に記述された依存関係がプラグインインストール時に自動でインストールされます。
 + プラグイン名の別名を自分で作成することができ、リモートで同期することが可能です。
@@ -24,4 +26,5 @@
 + SQLiteを用いて依存関係ツリーを構築します。
 
 ## 導入方法&ドキュメント
+
 + [こちら](https://github.com/TeamKun/TeamKunPluginManager/wiki)からご覧ください。

@@ -1,72 +1,72 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema#",
-  "title": "KPM Information File Schema",
-  "type": "object",
-  "definitions": {
-    "version": {
-      "type": "string",
-      "pattern": "^v?(?<major>[3-9]\\d*)\\.(?<minor>0|[1-9]\\d*)(\\.(?<patch>0|[1-9]\\d*))(-(?<preRelease>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))(?:\\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "title": "KPM Information File Schema",
+    "type": "object",
+    "definitions": {
+        "version": {
+            "type": "string",
+            "pattern": "^v?(?<major>[3-9]\\d*)\\.(?<minor>0|[1-9]\\d*)(\\.(?<patch>0|[1-9]\\d*))(-(?<preRelease>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))(?:\\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+        },
+        "query": {
+            "type": "string",
+            "pattern": "^(?<resolverName>[^>]+>)?(?<query>[^=]+)(?:==(?<version>.+))?$"
+        },
+        "namespaceORNamespacedKey": {
+            "type": "string",
+            "pattern": "^((?<namespaceORKey>[a-z0-9_.-]+)|(?<namespace>[a-z0-9_.-]+):(?<key>[a-z0-9_.-]+))$"
+        },
+        "namespacedKey": {
+            "type": "string",
+            "pattern": "^(?<namespace>[a-z0-9_.-]+):(?<key>[a-z0-9_.-]+)$"
+        }
     },
-    "query": {
-      "type": "string",
-      "pattern": "^(?<resolverName>[^>]+>)?(?<query>[^=]+)(?:==(?<version>.+))?$"
+    "properties": {
+        "kpm": {
+            "$ref": "#/definitions/version",
+            "description": "対応するKPMのバージョンです.\nこのバージョンより古いKPMではプラグインを読み込めません. ",
+            "examples": [
+                "3.0.0",
+                "v3.0-pre1"
+            ]
+        },
+        "update": {
+            "$ref": "#/definitions/query",
+            "description": "プラグインを自動更新する時に使用するクエリです. (この機能は将来的に実装される予定です)",
+            "examples": [
+                "TeamKUN/DaredemoOpPlugin",
+                "bukkit>daredemo-op-plugin"
+            ]
+        },
+        "hooks": {
+            "type": "array",
+            "description": "KPMフックを受け取るクラスの一覧です.\nKPMフックを受け取るには, このフィールドに KPMHookRecipient を実装したクラスのフルパスを指定します. \nまた, KPMフックを受け取るクラスは, 1つのKPMDaemonのみを引数にとるコンストラクタを持つ必要があります. ",
+            "items": {
+                "type": "string",
+                "examples": [
+                    "net.kunmc.lab.exampleplugin.kpmhooks.ExampleKPMHookRecipient"
+                ],
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "recipes": {
+            "type": "array",
+            "description": "プラグインが登録したレシピの名前空間または名前空間付きキーのリストです.\nこのフィールドに指定された名前空間/キーはアンインストール時にサーバから削除されます.\nまた, プラグイン名の名前空間は自動で追加されるため指定する必要はありません.",
+            "items": {
+                "$ref": "#/definitions/namespaceORNamespacedKey",
+                "examples": [
+                    "examplenamespace",
+                    "examplerecipename",
+                    "bukkit:examplecustomrecipe1"
+                ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        }
     },
-    "namespaceORNamespacedKey": {
-      "type": "string",
-      "pattern": "^((?<namespaceORKey>[a-z0-9_.-]+)|(?<namespace>[a-z0-9_.-]+):(?<key>[a-z0-9_.-]+))$"
-    },
-    "namespacedKey": {
-      "type": "string",
-      "pattern": "^(?<namespace>[a-z0-9_.-]+):(?<key>[a-z0-9_.-]+)$"
-    }
-  },
-  "properties": {
-    "kpm": {
-      "$ref": "#/definitions/version",
-      "description": "対応するKPMのバージョンです.\nこのバージョンより古いKPMではプラグインを読み込めません. ",
-      "examples": [
-        "3.0.0",
-        "v3.0-pre1"
-      ]
-    },
-    "update": {
-      "$ref": "#/definitions/query",
-      "description": "プラグインを自動更新する時に使用するクエリです. (この機能は将来的に実装される予定です)",
-      "examples": [
-        "TeamKUN/DaredemoOpPlugin",
-        "bukkit>daredemo-op-plugin"
-      ]
-    },
-    "hooks": {
-      "type": "array",
-      "description": "KPMフックを受け取るクラスの一覧です.\nKPMフックを受け取るには, このフィールドに KPMHookRecipient を実装したクラスのフルパスを指定します. \nまた, KPMフックを受け取るクラスは, 1つのKPMDaemonのみを引数にとるコンストラクタを持つ必要があります. ",
-      "items": {
-        "type": "string",
-        "examples": [
-          "net.kunmc.lab.exampleplugin.kpmhooks.ExampleKPMHookRecipient"
-        ],
-        "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$"
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    },
-    "recipes": {
-      "type": "array",
-      "description": "プラグインが登録したレシピの名前空間または名前空間付きキーのリストです.\nこのフィールドに指定された名前空間/キーはアンインストール時にサーバから削除されます.\nまた, プラグイン名の名前空間は自動で追加されるため指定する必要はありません.",
-      "items": {
-        "$ref": "#/definitions/namespaceORNamespacedKey",
-        "examples": [
-          "examplenamespace",
-          "examplerecipename",
-          "bukkit:examplecustomrecipe1"
-        ]
-      },
-      "minItems": 1,
-      "uniqueItems": true
-    }
-  },
-  "required": [
-    "kpm"
-  ],
-  "additionalProperties": true
+    "required": [
+        "kpm"
+    ],
+    "additionalProperties": true
 }

@@ -12,9 +12,8 @@ import org.apache.commons.lang.StringUtils;
 @AllArgsConstructor
 public class OmittedGitHubResolver implements BaseResolver
 {
-    private final GitHubURLResolver gitHubURLResolver;
-
     private static final String DELIMITER = "/";
+    private final GitHubURLResolver gitHubURLResolver;
 
     @Override
     public ResolveResult resolve(QueryContext query)

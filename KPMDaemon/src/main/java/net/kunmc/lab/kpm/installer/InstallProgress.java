@@ -37,11 +37,28 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
     @Getter(AccessLevel.NONE)
     private static final Path CACHE_DIRECTORY;
 
+    static
+    {
+        DAEMON = KPMDaemon.getInstance();
+        PROGRESS_CACHES = new HashMap<>();
+        CACHE_DIRECTORY = DAEMON.getEnvs().getDataDirPath().resolve(".caches");
+
+        if (!Files.exists(CACHE_DIRECTORY))
+            try
+            {
+                Files.createDirectory(CACHE_DIRECTORY);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+    }
+
     /**
      * インストーラです。
      */
     private final I installer;
-
     /**
      * アップグレードされたプラグインの名前です。
      */
@@ -62,25 +79,6 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
      * インストールに使用される仮ディレクトリです。
      */
     private final Path installTempDir;
-
-    static
-    {
-        DAEMON = KPMDaemon.getInstance();
-        PROGRESS_CACHES = new HashMap<>();
-        CACHE_DIRECTORY = DAEMON.getEnvs().getDataDirPath().resolve(".caches");
-
-        if (!Files.exists(CACHE_DIRECTORY))
-            try
-            {
-                Files.createDirectory(CACHE_DIRECTORY);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-    }
-
     /**
      * インストールに割り当てられた一意のIDです。
      */

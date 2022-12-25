@@ -43,7 +43,6 @@ public class CommandInfo extends CommandBase
         infoWriter.write();
     }
 
-
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {

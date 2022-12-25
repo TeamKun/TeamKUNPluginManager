@@ -27,30 +27,6 @@ public class GitHubURLResolver implements URLResolver
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
 
-    @Override
-    public ResolveResult resolve(QueryContext query)
-    {
-        GHURLParseResult parsedURL;
-        try
-        {
-            parsedURL = GHURLParser.parse(query.getQuery());
-        }
-        catch (IllegalArgumentException ex)
-        {
-            return new ErrorResult(
-                    this,
-                    ErrorResult.ErrorCause.INVALID_QUERY,
-                    ResolveResult.Source.GITHUB
-            );
-        }
-
-        if (parsedURL.getFinalName() != null)
-            // Return because of the query is directly linking to the plugin file.
-            return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
-
-        return this.processGitHubAPI(parsedURL, query.getVersion());
-    }
-
     private static boolean endsWithIgn(String str, String suffix)
     {
         return StringUtils.endsWithIgnoreCase(str, suffix);
@@ -96,6 +72,30 @@ public class GitHubURLResolver implements URLResolver
             reputation -= 5;
 
         return reputation;
+    }
+
+    @Override
+    public ResolveResult resolve(QueryContext query)
+    {
+        GHURLParseResult parsedURL;
+        try
+        {
+            parsedURL = GHURLParser.parse(query.getQuery());
+        }
+        catch (IllegalArgumentException ex)
+        {
+            return new ErrorResult(
+                    this,
+                    ErrorResult.ErrorCause.INVALID_QUERY,
+                    ResolveResult.Source.GITHUB
+            );
+        }
+
+        if (parsedURL.getFinalName() != null)
+            // Return because of the query is directly linking to the plugin file.
+            return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
+
+        return this.processGitHubAPI(parsedURL, query.getVersion());
     }
 
     @Override
@@ -252,6 +252,6 @@ public class GitHubURLResolver implements URLResolver
     @Override
     public String[] getHosts()
     {
-        return new String[] { "github.com", "www.github.com" };
+        return new String[]{"github.com", "www.github.com"};
     }
 }

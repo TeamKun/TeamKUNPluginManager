@@ -20,6 +20,7 @@ public interface BaseResolver
 
     /**
      * 複数のリソースを自動で一意に特定します。
+     *
      * @param multiResult リソースのリスト。
      * @return プラグイン。
      */
@@ -35,6 +36,7 @@ public interface BaseResolver
 
     /**
      * MultiResult から最初の要素を取得します。
+     *
      * @param multiResult MultiResult
      * @return 最初の要素
      */

@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 @Builder
 public class QueryContext
 {
+    private static final String resolverNameQuerySeparator = ">";
+    private static final String versionEqualQuerySeparator = "==";
     /**
      * 指定リゾルバの名前です。
      */
@@ -29,9 +31,6 @@ public class QueryContext
      */
     @Nullable
     Version version;
-
-    private static final String resolverNameQuerySeparator = ">";
-    private static final String versionEqualQuerySeparator = "==";
 
     /**
      * クエリ文字列からQueryContextを生成します。
