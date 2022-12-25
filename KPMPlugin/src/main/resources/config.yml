@@ -23,4 +23,3 @@ config:
 ignore:
   - bStats                #削除しないでください
   - TeamKunPluginManager  #削除しないでください
-  - PeyangPaperUtils      #削除しないでください
