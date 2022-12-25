@@ -1,0 +1,6 @@
+name: KPMUpdater
+version: '${project.version}'
+main: net.kunmc.lab.kpmupdater.KPMUpdater
+api-version: 1.13
+
+depend: ["TeamKunPluginManager"]

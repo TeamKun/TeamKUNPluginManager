@@ -10,6 +10,7 @@
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
+        <module>KPMUpdater</module>
     </modules>
     <packaging>pom</packaging>
 

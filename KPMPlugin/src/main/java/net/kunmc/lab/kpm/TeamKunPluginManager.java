@@ -13,10 +13,15 @@ import net.kunmc.lab.kpm.commands.CommandUninstall;
 import net.kunmc.lab.kpm.commands.CommandUpdate;
 import net.kunmc.lab.kpm.commands.CommandUpgrade;
 import net.kunmc.lab.kpm.commands.CommandVersion;
+import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
+import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
@@ -83,6 +88,21 @@ public final class TeamKunPluginManager extends JavaPlugin
         }
     }
 
+    private void uninstallUpdaterIfExist()
+    {
+        Runner.runLater(() -> {
+            Plugin updater = Bukkit.getPluginManager().getPlugin("KPMUpdater");
+
+            if (updater == null)
+                return;
+
+            Terminals.ofConsole().info("アップデート用の不要なプラグインが見つかりました。アンインストールしています ...");
+            this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
+                    .autoConfirm(true)
+                    .build());
+        }, 0);  // Run after all plugins are loaded
+    }
+
     @Override
     public void onEnable()
     {
@@ -105,12 +125,11 @@ public final class TeamKunPluginManager extends JavaPlugin
                         .sources(this.setupSources())
                         .build()
         );
-
         this.headInstallers = new HeadInstallers(this.daemon);
 
         this.registerCommands(this.commandManager);
-
         this.noticeTokenDead();
+        this.uninstallUpdaterIfExist();
     }
 
 }

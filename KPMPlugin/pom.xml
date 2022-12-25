@@ -61,8 +61,6 @@
                     </artifactSet>
                     <filters>
                         <filter>
-                        </filter>
-                        <filter>
                             <artifact>com.github.TeamKUN:PeyangPaperUtils</artifact>
                             <excludes>
                                 <exclude>plugin.yml</exclude>
@@ -83,6 +81,12 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <includes>
+                    <include>KPMUpdater-${project.version}.jar</include>
+                </includes>
+                <directory>../KPMUpdater/target</directory>
+            </resource>
         </resources>
     </build>
 
@@ -92,6 +96,12 @@
             <artifactId>KPMDaemon</artifactId>
             <version>3.0.0-pre7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMUpdater</artifactId>
+            <version>3.0.0-pre7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.TeamKUN</groupId>
