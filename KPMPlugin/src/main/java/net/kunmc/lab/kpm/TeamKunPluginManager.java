@@ -49,7 +49,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
         commandManager.registerCommand("upgrade", new CommandUpgrade(this));
-        commandManager.registerCommand("version", new CommandVersion(this.daemon));
+        commandManager.registerCommand("version", new CommandVersion(this.daemon), "v");
     }
 
     @Override
