@@ -10,6 +10,11 @@ public enum UpgradeErrorCause
      */
     PLUGIN_NOT_FOUND,
     /**
+     * KPM 自体のアップグレードをしようとしました。
+     * また、他にアップグレードできるプラグインも存在しません。
+     */
+    SELF_UPGRADE_ATTEMPTED,
+    /**
      * プラグインの解決に失敗しました。
      */
     PLUGIN_RESOLVE_FAILED,

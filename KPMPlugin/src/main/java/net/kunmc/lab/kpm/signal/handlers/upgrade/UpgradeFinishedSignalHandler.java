@@ -56,6 +56,10 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
             case UNINSTALLER_INSTANTIATION_FAILED:
                 this.terminal.error("プラグインアンインストーラの生成に失敗しました。");
                 return true;
+            case SELF_UPGRADE_ATTEMPTED:
+                this.terminal.error("KPM 自体のアップグレードを試みました。");
+                this.terminal.hint("KPM のアップグレードは、 /kpm upgrade-kpm コマンドを使用してください。");
+                return true;
             default:
                 return false;
         }
