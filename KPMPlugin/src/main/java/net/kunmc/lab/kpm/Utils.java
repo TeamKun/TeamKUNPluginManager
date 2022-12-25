@@ -15,9 +15,9 @@ import java.security.NoSuchAlgorithmException;
 @UtilityClass
 public class Utils
 {
-    public static final String STATS_FORMAT
+    private static final String STATS_FORMAT
             = ChatColor.GREEN + "%d 追加 " + ChatColor.RED + "%d 削除 " + ChatColor.YELLOW + "%d 変更 " + ChatColor.GRAY + "%d 保留";
-    public static final String[] SIZE_UNITS = {
+    private static final String[] SIZE_UNITS = {
             "B",
             "kB",
             "MB",
