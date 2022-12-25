@@ -160,7 +160,7 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
             boolean isFileDel = !isDepOnlyUnload && arguments.isDeleteFile();
 
             File pluginFile = PluginUtil.getFile(plugin);
-            if (!isFileDel && pluginFile.exists())
+            if (isFileDel && pluginFile.exists())
                 pluginFile.delete();
         }), 20L);
 
