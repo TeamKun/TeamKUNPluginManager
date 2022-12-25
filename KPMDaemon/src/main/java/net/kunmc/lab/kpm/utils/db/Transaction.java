@@ -192,9 +192,9 @@ public class Transaction implements AutoCloseable
         return this;
     }
 
-    private boolean checkPrepareCondition()
+    private boolean isPrepared()
     {
-        return this.preparedStatement != null;
+        return this.preparedStatement == null;
     }
 
     /**
@@ -206,7 +206,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, @Nullable String value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -230,7 +230,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, int value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -253,7 +253,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, boolean value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -276,7 +276,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, long value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -299,7 +299,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, double value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -322,7 +322,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, float value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -345,7 +345,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, byte value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -368,7 +368,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, short value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -391,7 +391,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction set(int index, byte[] value)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -414,7 +414,7 @@ public class Transaction implements AutoCloseable
      */
     public Transaction setNull(int index, int type)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -436,7 +436,7 @@ public class Transaction implements AutoCloseable
      */
     public int executeUpdate(boolean autoFinish)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -491,7 +491,7 @@ public class Transaction implements AutoCloseable
      */
     public <T> QueryResult<T> executeQuery()
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
@@ -605,7 +605,7 @@ public class Transaction implements AutoCloseable
      */
     public boolean isExists(boolean closeConnection)
     {
-        if (!this.checkPrepareCondition())
+        if (this.isPrepared())
             throw new IllegalStateException("This TransactionHelper is not prepared.");
 
         try
