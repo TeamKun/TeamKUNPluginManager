@@ -43,7 +43,12 @@ public class ResolverSignalHandler
         ErrorResult.ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        this.terminal.writeLine(ChatColor.RED + signal.getQuery() + " の解決に失敗しました: " + errorCause + message);
+        this.terminal.error(signal.getQuery() + " の解決に失敗しました: " + errorCause + message);
+        if (errorCause == ErrorResult.ErrorCause.INVALID_CREDENTIAL)
+        {
+            this.terminal.hint("間違ったトークンが設定されている可能性があります。");
+            this.terminal.hint("トークンを再設定するには /kpm register コマンドを使用してください。");
+        }
     }
 
     @SignalHandler
