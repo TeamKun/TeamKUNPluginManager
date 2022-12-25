@@ -34,6 +34,7 @@ public class UninstallReadySignalHandler
     public void onPluginsEnumerated(UninstallReadySignal signal)
     {
         this.printUninstallInfo(signal.getPlugins());
-        signal.setContinueUninstall(SignalHandlingUtils.askContinue(this.terminal));
+        if (!signal.isAutoConfirm())
+            signal.setContinueUninstall(SignalHandlingUtils.askContinue(this.terminal));
     }
 }
