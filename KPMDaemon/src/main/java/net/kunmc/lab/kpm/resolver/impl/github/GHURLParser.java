@@ -40,8 +40,6 @@ public class GHURLParser
         }
 
         Matcher matcher = GITHUB_REPO_PATTERN.matcher(urlObj.getPath());
-        if (!matcher.matches())
-            throw new IllegalArgumentException("Malformed GitHub URL: " + url);
 
         String repository = null;
         String owner = null;
