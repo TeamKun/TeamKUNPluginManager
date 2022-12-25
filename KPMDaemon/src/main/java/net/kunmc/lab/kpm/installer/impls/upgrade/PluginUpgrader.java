@@ -65,6 +65,8 @@ import java.util.stream.Collectors;
  *     <li>{@link UpgradeTasks#RESOLVING_PLUGIN} - アップデートクエリを解決する。</li>
  *     <li>{@link UpgradeTasks#UNINSTALLING_PLUGIN} - プラグインをアンインストールする。</li>
  *     <li>{@link UpgradeTasks#INSTALLING_PLUGIN} - プラグインをインストールする。</li>
+ *     <li>{@link UpgradeTasks#COMPUTING_DEPENDENCY_LOAD_ORDER} - 依存関係の読み込み順を計算する。</li>
+ *     <li>{@link UpgradeTasks#RE_LOADING_DEPENDENCIES} - 依存関係のプラグインを再読み込みする。</li>
  * </ol>
  * <p>
  * また、このインストーラは{@link net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller} と {@link net.kunmc.lab.kpm.installer.impls.install.PluginInstaller} を内部で呼び出します。

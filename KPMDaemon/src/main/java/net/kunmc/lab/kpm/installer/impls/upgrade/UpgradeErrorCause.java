@@ -54,5 +54,8 @@ public enum UpgradeErrorCause
      * インストールに失敗しました。
      */
     INSTALL_FAILED,
+    /**
+     * 依存関係の読み込み順序計算に失敗しました。
+     */
     DEPENDENCY_LOAD_ORDER_COMPUTE_FAILED,
 }
