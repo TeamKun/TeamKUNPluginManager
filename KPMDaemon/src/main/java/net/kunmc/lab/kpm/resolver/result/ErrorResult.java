@@ -89,6 +89,10 @@ public class ErrorResult implements ResolveResult
          */
         SERVER_RESPONSE_ERROR,
         /**
+         * サーバに接続するための資格情報が不正です。
+         */
+        INVALID_CREDENTIAL,
+        /**
          * 不明なエラーが発生しました。
          */
         UNKNOWN_ERROR

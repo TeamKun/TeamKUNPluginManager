@@ -110,6 +110,11 @@ public interface URLResolver extends BaseResolver
         {
             case 200:
                 return null;
+            case 401:
+                return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_CREDENTIAL,
+                        source,
+                        errorCodeWith("Invalid credential", code)
+                );
             case 403:
                 return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR, source,
                         errorCodeWith("Forbidden", code)
@@ -119,7 +124,8 @@ public interface URLResolver extends BaseResolver
                         , source, errorCodeWith("Not Found", code)
                 );
             case 418:
-                return new ErrorResult(this,
+                return new ErrorResult(
+                        this,
                         ErrorResult.ErrorCause.SERVER_RESPONSE_ERROR
                         , source, errorCodeWith("I'm a teapot", code)
                 );
