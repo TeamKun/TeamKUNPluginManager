@@ -12,14 +12,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public class InstallManager
 {
-    private final KPMDaemon daemon;
     private final TokenStore tokenStore;
 
     private InstallProgress<?, ?> runningInstall;
 
     public InstallManager(@NotNull KPMDaemon daemon)
     {
-        this.daemon = daemon;
         this.tokenStore = daemon.getTokenStore();
 
         this.runningInstall = null;

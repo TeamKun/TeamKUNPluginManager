@@ -8,7 +8,6 @@ import net.kunmc.lab.kpm.installer.task.tasks.alias.source.download.signals.Unsu
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadArgument;
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadResult;
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadTask;
-import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,14 +22,12 @@ import java.util.Map;
  */
 public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, SourceDownloadResult>
 {
-    private final SignalHandleManager signalHandler;
     private SourceDownloadState status;
 
     public SourceDownloadTask(@NotNull AbstractInstaller<?, ?, ?> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        this.signalHandler = installer.getProgress().getSignalHandler();
         this.status = SourceDownloadState.INITIALIZED;
     }
 
@@ -56,7 +53,7 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
 
     private HashMap<String, URL> buildURLs(Map<String, String> sources)
     {
-        HashMap<String, URL> result = new HashMap<>();
+        HashMap<String, URL> result = new HashMap<>();  // TODO: URL to URI
 
         for (String remoteName : sources.keySet())
         {

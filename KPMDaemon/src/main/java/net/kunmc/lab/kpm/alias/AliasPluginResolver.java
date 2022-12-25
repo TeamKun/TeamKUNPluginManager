@@ -1,7 +1,6 @@
 package net.kunmc.lab.kpm.alias;
 
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.resolver.PluginResolver;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
@@ -15,12 +14,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AliasPluginResolver implements BaseResolver
 {
-    private final PluginResolver resolver;
     private final AliasProvider aliasProvider;
 
     public AliasPluginResolver(@NotNull KPMDaemon daemon)
     {
-        this.resolver = daemon.getPluginResolver();
         this.aliasProvider = daemon.getAliasProvider();
     }
 
