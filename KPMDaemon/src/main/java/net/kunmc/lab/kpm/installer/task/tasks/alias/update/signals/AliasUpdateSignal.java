@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 @Data
@@ -24,14 +26,22 @@ public class AliasUpdateSignal extends Signal
     private boolean skip;
     private String alias;
 
-    public AliasUpdateSignal(@NotNull String source, @NotNull URL sourceURL, @NotNull String name,
+    public AliasUpdateSignal(@NotNull String source, @NotNull URI sourceURI, @NotNull String name,
                              @NotNull String alias)
     {
         this.source = source;
-        this.sourceURL = sourceURL;
         this.name = name;
 
         this.skip = false;
         this.alias = alias;
+
+        try
+        {
+            this.sourceURL = sourceURI.toURL();
+        }
+        catch (MalformedURLException e)
+        {
+            throw new RuntimeException("Invalid source URI", e);
+        }
     }
 }

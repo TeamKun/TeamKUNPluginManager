@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
     @Override
     public @NotNull UpdateAliasesResult runTask(@NotNull UpdateAliasesArgument arguments)
     {
-        HashMap<String, Pair<URL, Path>> sources = arguments.getSources();
+        HashMap<String, Pair<URI, Path>> sources = arguments.getSources();
 
         HashMap<String, Long> aliasesOfSources = new HashMap<>();
         long total = 0;
@@ -50,13 +50,13 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
         boolean isWarn = false;
         boolean anySuccess = false;
         this.status = UpdateAliasesState.UPDATING;
-        for (Map.Entry<String, Pair<URL, Path>> source : sources.entrySet())
+        for (Map.Entry<String, Pair<URI, Path>> source : sources.entrySet())
         {
             String aliasName = source.getKey();
-            URL url = source.getValue().getLeft();
+            URI uri = source.getValue().getLeft();
             Path path = source.getValue().getRight();
 
-            long statusOrError = this.updateAliasesFromSource(aliasName, url, path);
+            long statusOrError = this.updateAliasesFromSource(aliasName, uri, path);
 
             if (statusOrError < 0)
             {
@@ -77,13 +77,13 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
         );
     }
 
-    private long updateAliasesFromSource(String sourceName, URL url, Path source)
+    private long updateAliasesFromSource(String sourceName, URI uri, Path source)
     {
         AliasUpdater updater = this.daemon.getAliasProvider().createUpdater(
-                sourceName, url.toString()
+                sourceName, uri.toString()
         );
 
-        SourcePreparedSignal signal = new SourcePreparedSignal(sourceName, source, url.toString());
+        SourcePreparedSignal signal = new SourcePreparedSignal(sourceName, source, uri.toString());
         this.postSignal(signal);
         if (!signal.isSkip())
             return -1;
@@ -102,7 +102,7 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
                 String alias = jsonReader.nextString();
 
                 AliasUpdateSignal updateSignal = new AliasUpdateSignal(
-                        sourceName, url, aliasName, alias
+                        sourceName, uri, aliasName, alias
                 );
                 this.postSignal(updateSignal);
 
@@ -117,14 +117,14 @@ public class UpdateAliasesTask extends InstallTask<UpdateAliasesArgument, Update
         catch (JsonSyntaxException e)
         {
             this.postSignal(new InvalidSourceSignal(sourceName, source,
-                    url.toString(), InvalidSourceSignal.ErrorCause.SOURCE_FILE_MALFORMED
+                    uri.toString(), InvalidSourceSignal.ErrorCause.SOURCE_FILE_MALFORMED
             ));
             return -1;
         }
         catch (Exception e)
         {
             this.postSignal(new InvalidSourceSignal(sourceName, source,
-                    url.toString(), InvalidSourceSignal.ErrorCause.IO_ERROR
+                    uri.toString(), InvalidSourceSignal.ErrorCause.IO_ERROR
             ));
             e.printStackTrace();
             updater.cancel();

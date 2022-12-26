@@ -5,7 +5,7 @@ import lombok.Value;
 import net.kunmc.lab.kpm.installer.task.TaskArgument;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -20,5 +20,5 @@ public class UpdateAliasesArgument extends TaskArgument
      * エイリアスのソースファイルの名前とペアのマップです。
      * ペアの左辺はリモートのURL、右辺はローカルのパスです。
      */
-    HashMap<String, Pair<URL, Path>> sources;
+    HashMap<String, Pair<URI, Path>> sources;
 }

@@ -12,7 +12,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +41,10 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
     public @NotNull SourceDownloadResult runTask(@NotNull SourceDownloadArgument arguments)
     {
         this.status = SourceDownloadState.ANALYZING_URLS;
-        HashMap<String, URL> remotes = this.buildURLs(arguments.getRemotes());
+        HashMap<String, URI> remotes = this.buildURLs(arguments.getRemotes());
 
         this.status = SourceDownloadState.DOWNLOADING_SOURCES;
-        HashMap<String, Pair<URL, Path>> downloadSources = this.downloadSources(remotes);
+        HashMap<String, Pair<URI, Path>> downloadSources = this.downloadSources(remotes);
 
         if (downloadSources.isEmpty())
             return new SourceDownloadResult(false, this.status, SourceDownloadErrorCause.ALL_DOWNLOAD_FAILED);
@@ -51,51 +52,57 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
         return new SourceDownloadResult(true, this.status, downloadSources);
     }
 
-    private HashMap<String, URL> buildURLs(Map<String, String> sources)
+    private HashMap<String, URI> buildURLs(Map<String, String> sources)
     {
-        HashMap<String, URL> result = new HashMap<>();  // TODO: URL to URI
+        HashMap<String, URI> result = new HashMap<>();
 
         for (String remoteName : sources.keySet())
         {
             String remoteURL = sources.get(remoteName);
 
-            URL url;
-            if ((url = this.buildURL(remoteName, remoteURL)) != null)
+            URI url;
+            if ((url = this.buildURI(remoteName, remoteURL)) != null)
                 result.put(remoteName, url);
         }
 
         return result;
     }
 
-    private URL buildURL(String fallbackName, String urlString)
+    private URI buildURI(String fallbackName, String urlString)
     {
-        URL url;
+        URI url;
         try
         {
-            url = new URL(urlString);
+            url = new URI(urlString);
         }
-        catch (MalformedURLException e)
+        catch (URISyntaxException e)
         {
             this.postSignal(new MalformedURLSignal(fallbackName, urlString));
             return null;
         }
 
-        if (!isProtocolSupported(url.getProtocol()))
+        if (!isProtocolSupported(url.getScheme()))
         {
-            this.postSignal(new UnsupportedProtocolSignal(fallbackName, url));
+            try
+            {
+                this.postSignal(new UnsupportedProtocolSignal(fallbackName, url.toURL()));
+            }
+            catch (MalformedURLException ignored)
+            {
+            }
             return null;
         }
 
         return url;
     }
 
-    private HashMap<String, Pair<URL, Path>> downloadSources(HashMap<String, URL> remotes)
+    private HashMap<String, Pair<URI, Path>> downloadSources(HashMap<String, URI> remotes)
     {
-        HashMap<String, Pair<URL, Path>> result = new HashMap<>();
+        HashMap<String, Pair<URI, Path>> result = new HashMap<>();
 
         for (String remoteName : remotes.keySet())
         {
-            URL remoteURL = remotes.get(remoteName);
+            URI remoteURL = remotes.get(remoteName);
 
             Path path;
             if ((path = this.downloadSource(remoteName, remoteURL)) != null)
@@ -105,7 +112,7 @@ public class SourceDownloadTask extends InstallTask<SourceDownloadArgument, Sour
         return result;
     }
 
-    private Path downloadSource(String remoteName, URL remoteURL)
+    private Path downloadSource(String remoteName, URI remoteURL)
     {
         DownloadResult result = new DownloadTask(this.progress.getInstaller())
                 .runTask(new DownloadArgument(remoteURL.toString()));
