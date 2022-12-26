@@ -83,9 +83,9 @@
             </resource>
             <resource>
                 <includes>
-                    <include>KPMUpdater-${project.version}.jar</include>
+                    <include>KPMUpgrader-${project.version}.jar</include>
                 </includes>
-                <directory>../KPMUpdater/target</directory>
+                <directory>../KPMUpgrader/target</directory>
             </resource>
         </resources>
     </build>
@@ -99,7 +99,7 @@
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
-            <artifactId>KPMUpdater</artifactId>
+            <artifactId>KPMUpgrader</artifactId>
             <version>3.0.0-pre7</version>
             <scope>provided</scope>
         </dependency>

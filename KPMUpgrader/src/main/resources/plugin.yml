@@ -1,0 +1,4 @@
+name: KPMUpgrader
+version: '${project.version}'
+main: net.kunmc.lab.kpmupgrader.KPMUpgrader
+api-version: 1.13
