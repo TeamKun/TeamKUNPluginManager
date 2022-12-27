@@ -11,6 +11,7 @@ import net.kunmc.lab.kpm.signal.handlers.intall.DependenciesSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.intall.InstallFinishedSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.intall.InstallerSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.intall.ResolverSignalHandler;
+import net.kunmc.lab.kpm.signal.handlers.kpmupgrade.KPMUpgradeSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.register.TokenGenerateSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.register.TokenRegisterSignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.uninstall.PluginIsDependencySignalHandler;
@@ -149,6 +150,14 @@ public class HeadSignalHandlers
                         new UninstallerSignalHandler(terminal)
                 ),
                 getInstallHandlers(terminal, false)
+        );
+    }
+
+    public static List<Object> getKPMUpgraderHandlers(Terminal terminal)
+    {
+        return createHandlersList(
+                new ResolverSignalHandler(terminal),
+                new KPMUpgradeSignalHandler(terminal)
         );
     }
 }

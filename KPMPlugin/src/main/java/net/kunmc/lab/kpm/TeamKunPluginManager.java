@@ -12,8 +12,10 @@ import net.kunmc.lab.kpm.commands.CommandResolve;
 import net.kunmc.lab.kpm.commands.CommandUninstall;
 import net.kunmc.lab.kpm.commands.CommandUpdate;
 import net.kunmc.lab.kpm.commands.CommandUpgrade;
+import net.kunmc.lab.kpm.commands.CommandUpgradeKPM;
 import net.kunmc.lab.kpm.commands.CommandVersion;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
+import net.kunmc.lab.kpm.upgrader.KPMUpgrader;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
@@ -40,6 +42,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private KPMDaemon daemon;
 
     private HeadInstallers headInstallers;
+    private KPMUpgrader upgrader;
 
     public void registerCommands(CommandManager commandManager)
     {
@@ -54,6 +57,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");
         commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
         commandManager.registerCommand("upgrade", new CommandUpgrade(this));
+        commandManager.registerCommand("upgrade-kpm", new CommandUpgradeKPM(this));
         commandManager.registerCommand("version", new CommandVersion(this.daemon), "v");
     }
 
@@ -112,7 +116,6 @@ public final class TeamKunPluginManager extends JavaPlugin
         this.pluginConfig = this.getConfig();
         this.commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
 
-
         Path dataDir = this.getDataFolder().toPath();
 
         this.daemon = new KPMDaemon(
@@ -126,6 +129,7 @@ public final class TeamKunPluginManager extends JavaPlugin
                         .build()
         );
         this.headInstallers = new HeadInstallers(this.daemon);
+        this.upgrader = new KPMUpgrader(this, this.daemon);
 
         this.registerCommands(this.commandManager);
         this.noticeTokenDead();
