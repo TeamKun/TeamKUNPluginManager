@@ -46,7 +46,7 @@ public abstract class AbstractInstaller<A extends AbstractInstallerArgument, E e
      */
     protected void postSignal(@NotNull Signal signal)
     {
-        this.signalHandler.handleSignal(this.progress, signal);
+        this.signalHandler.handleSignal(signal);
     }
 
     /**

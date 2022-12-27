@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.file.Path;
 import java.util.Collections;
 
-public final class KPMUpgrader extends JavaPlugin
+public final class KPMUpgraderPlugin extends JavaPlugin
 {
     private static final String KPM_NAME = "TeamKunPluginManager";
 
@@ -21,7 +21,7 @@ public final class KPMUpgrader extends JavaPlugin
         if (this.getServer().getPluginManager().getPlugin(KPM_NAME) == null)
         {
             this.getLogger().severe("KPM がこのサーバーにインストールされていません。");
-            this.getLogger().info("KPMUpgrader6 は、 KPM による自動インストールでのみ使用できます。");
+            this.getLogger().info("KPMUpgrader は、 KPM による自動インストールでのみ使用できます。");
             this.getServer().getPluginManager().disablePlugin(this);
         }
     }

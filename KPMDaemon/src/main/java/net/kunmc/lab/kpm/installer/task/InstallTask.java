@@ -42,7 +42,7 @@ public abstract class InstallTask<A extends TaskArgument, R extends TaskResult<?
 
     protected void postSignal(@NotNull Signal signal)
     {
-        this.signalHandler.handleSignal(this.progress, signal);
+        this.signalHandler.handleSignal(signal);
     }
 
     protected void runSyncThrowing(@NotNull ThrowingRunnable runnable) throws Exception

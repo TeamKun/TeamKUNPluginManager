@@ -25,11 +25,11 @@ public class SignalHandleManager
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void invokeHandler(@NotNull InstallProgress<?, ?> installProgress, SignalHandlerList handler,
-                                      Signal signal)
+    private static void invokeHandler(@NotNull SignalHandlerList handler,
+                                      @NotNull Signal signal)
     {
         if (handler.isSignalType(signal.getClass()))
-            handler.onSignal(installProgress, signal);
+            handler.onSignal(signal);
     }
 
     @SuppressWarnings("unchecked")
@@ -70,14 +70,13 @@ public class SignalHandleManager
     /**
      * シグナルを受け取り、処理を行います。
      *
-     * @param installProgress インストールの進捗
-     * @param signal          シグナル
+     * @param signal シグナル
      */
-    public void handleSignal(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
+    public void handleSignal(@NotNull Signal signal)
     {
         for (SignalHandlerList<? extends Signal> handlerList : this.handlerLists)
         {
-            invokeHandler(installProgress, handlerList, signal);
+            invokeHandler(handlerList, signal);
             if (signal.isHandled())
                 break;
         }

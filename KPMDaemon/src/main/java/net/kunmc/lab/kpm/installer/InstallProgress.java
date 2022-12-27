@@ -178,10 +178,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
         this.removeFromAll(pluginDescription.getName());
 
         if (postModifiedSignal)
-            this.signalHandler.handleSignal(
-                    this,
-                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.UPGRADE)
-            );
+            this.signalHandler.handleSignal(new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.UPGRADE));
         this.upgraded.add(pluginDescription.getName());
     }
 
@@ -197,10 +194,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
         this.removeFromAll(pluginDescription.getName());
 
         if (postModifiedSignal)
-            this.signalHandler.handleSignal(
-                    this,
-                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.ADD)
-            );
+            this.signalHandler.handleSignal(new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.ADD));
         this.installed.add(pluginDescription.getName());
     }
 
@@ -216,10 +210,7 @@ public class InstallProgress<T extends Enum<T>, I extends AbstractInstaller<?, ?
         this.removeFromAll(pluginDescription.getName());
 
         if (postModifiedSignal)
-            this.signalHandler.handleSignal(
-                    this,
-                    new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.REMOVE)
-            );
+            this.signalHandler.handleSignal(new PluginModifiedSignal(pluginDescription, PluginModifiedSignal.ModifyType.REMOVE));
         this.removed.add(pluginDescription.getName());
     }
 

@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.signal;
 
-import net.kunmc.lab.kpm.installer.InstallProgress;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +52,7 @@ class SignalHandlerList<T extends Signal>
         }
     }
 
-    void onSignal(InstallProgress<?, ?> installProgress, T signal)
+    void onSignal(T signal)
     {
         synchronized (this.handlers)
         {
