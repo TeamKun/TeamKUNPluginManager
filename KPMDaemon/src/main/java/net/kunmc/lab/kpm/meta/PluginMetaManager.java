@@ -68,12 +68,19 @@ public class PluginMetaManager implements Listener
         this.preparePluginModify(plugin.getName());
     }
 
+    private boolean shouldNotManage(String pluginName)
+    {
+        if (pluginName.equalsIgnoreCase("TeamKUNPluginManager") || pluginName.equalsIgnoreCase("KPMUpgrader"))
+            return true;
+
+        return this.checkNoAutoCreateMetadata(pluginName);
+    }
+
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event)
     {
         Plugin plugin = event.getPlugin();
-        if (plugin.getName().equalsIgnoreCase("TeamKUNPluginManager") ||
-                this.checkNoAutoCreateMetadata(plugin))
+        if (this.shouldNotManage(plugin.getName()))
             return;
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
@@ -96,8 +103,7 @@ public class PluginMetaManager implements Listener
             return;  // The server is being stopped.
 
         Plugin plugin = event.getPlugin();
-        if (plugin.getName().equalsIgnoreCase("TeamKUNPluginManager") ||
-                this.checkNoAutoCreateMetadata(plugin))
+        if (this.shouldNotManage(plugin.getName()))
             return;
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
@@ -175,11 +181,11 @@ public class PluginMetaManager implements Listener
         return this.hasPluginMeta(plugin.getName());
     }
 
-    private boolean checkNoAutoCreateMetadata(Plugin plugin)
+    private boolean checkNoAutoCreateMetadata(String pluginName)
     {
         synchronized (this.exceptedPluginModifications)
         {
-            return this.exceptedPluginModifications.remove(plugin.getName());
+            return this.exceptedPluginModifications.remove(pluginName);
         }
     }
 }
