@@ -1,4 +1,9 @@
 name: KPMUpgrader
 version: '${project.version}'
-main: net.kunmc.lab.kpmupgrader.KPMUpgrader
+main: net.kunmc.lab.plugin.kpmupgrader.KPMUpgraderPlugin
 api-version: 1.13
+
+commands:
+  kpm-upgrade-internal:
+    description: Upgrade KPM
+

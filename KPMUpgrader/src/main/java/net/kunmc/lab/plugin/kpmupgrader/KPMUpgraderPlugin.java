@@ -1,52 +1,48 @@
 package net.kunmc.lab.plugin.kpmupgrader;
 
-import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.KPMEnvironment;
-import net.kunmc.lab.kpm.utils.versioning.Version;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.nio.file.Path;
-import java.util.Collections;
+import javax.annotation.Nonnull;
+import java.util.Objects;
 
-public final class KPMUpgraderPlugin extends JavaPlugin
+public final class KPMUpgraderPlugin extends JavaPlugin implements CommandExecutor
 {
-    private static final String KPM_NAME = "TeamKunPluginManager";
+    private final UpgradeImpl impl;
 
-    private KPMDaemon kpmDaemon;
-    private Version currentKPMVersion;
-
-    private void checkKPMEnabled()
+    public KPMUpgraderPlugin()
     {
-        if (this.getServer().getPluginManager().getPlugin(KPM_NAME) == null)
-        {
-            this.getLogger().severe("KPM がこのサーバーにインストールされていません。");
-            this.getLogger().info("KPMUpgrader は、 KPM による自動インストールでのみ使用できます。");
-            this.getServer().getPluginManager().disablePlugin(this);
-        }
+        this.impl = new UpgradeImpl(this);
     }
 
     @Override
     public void onEnable()
     {
-        this.checkKPMEnabled();
+        Objects.requireNonNull(this.getCommand("kpm-upgrade-internal")).setExecutor(this);
+    }
 
-        Plugin kpm = this.getServer().getPluginManager().getPlugin(KPM_NAME);
-        assert kpm != null;
+    private boolean commandError(CommandSender sender)
+    {
+        sender.sendMessage("You cannot use this command.");
+        return true;
+    }
 
-        Path dataDir = this.getDataFolder().toPath();
-        Path kpmDataFolder = kpm.getDataFolder().toPath();
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @Nonnull @NotNull String[] args)
+    {
+        if (!(sender instanceof ConsoleCommandSender))
+            return this.commandError(sender);
 
-        this.kpmDaemon = new KPMDaemon(
-                KPMEnvironment.builder(this)
-                        .tokenPath(kpmDataFolder.resolve("token.dat"))
-                        .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
-                        .metadataDBPath(dataDir.resolve("plugins.db"))
-                        .aliasesDBPath(dataDir.resolve("aliases.db"))
-                        .organizations(Collections.emptyList())
-                        .sources(Collections.emptyMap())
-                        .build()
-        );
+        if (args.length == 0)
+            return this.commandError(sender);
 
+        String toVersion = args[0];
+
+        this.impl.runUpgrade(toVersion);
+        return true;
     }
 }

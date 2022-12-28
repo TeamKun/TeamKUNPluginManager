@@ -60,6 +60,8 @@ public class KPMUpgrader
         if (!this.deployUpgrader(signalHandleManager, upgraderJar))
             return;
 
+        this.teamKUNPluginManager.getDaemon().getPluginMetaManager().preparePluginModify("KPMUpgrader");
+
         this.daemon.getPluginLoader().loadPlugin(upgraderJar);
     }
 
