@@ -9,6 +9,8 @@ import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
 import net.kunmc.lab.kpm.upgrader.signals.UpgraderDeploySignal;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +18,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -60,7 +61,7 @@ public class KPMUpgrader
         Path upgradeCacheDir;
         try
         {
-            upgradeCacheDir = Files.createTempDirectory(cachesDir, "upgrade-" + UUID.randomUUID());
+            upgradeCacheDir = Files.createTempDirectory(cachesDir, "upgrade-");
         }
         catch (IOException e)
         {
@@ -75,7 +76,10 @@ public class KPMUpgrader
 
         this.teamKUNPluginManager.getDaemon().getPluginMetaManager().preparePluginModify("KPMUpgrader");
 
-        this.daemon.getPluginLoader().loadPlugin(upgraderJar);
+        Runner.run(() -> {
+            this.daemon.getPluginLoader().loadPlugin(upgraderJar);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kpm-upgrade-internal " + this.toKPMVersion.toString());
+        });
     }
 
     private boolean checkCanUpgrade(SignalHandleManager signalHandleManager)
