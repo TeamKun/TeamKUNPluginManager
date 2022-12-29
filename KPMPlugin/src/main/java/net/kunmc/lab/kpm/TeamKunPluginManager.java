@@ -23,13 +23,16 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 @Getter
 public final class TeamKunPluginManager extends JavaPlugin
@@ -82,6 +85,24 @@ public final class TeamKunPluginManager extends JavaPlugin
         return aliasMap;
     }
 
+    private void clearCaches()
+    {
+        Path cacheParent = this.getDataFolder().toPath().resolve(".caches");
+
+        Runner.run(() -> {
+            try
+            {
+                FileUtils.deleteDirectory(cacheParent.toFile());
+                // noinspection ResultOfMethodCallIgnored
+                cacheParent.toFile().mkdirs();
+            }
+            catch (IOException e)
+            {
+                this.getLogger().log(Level.WARNING, "Failed to clear caches.", e);
+            }
+        });
+    }
+
     private void noticeTokenDead()
     {
         TokenStore store = this.daemon.getTokenStore();
@@ -131,6 +152,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         this.headInstallers = new HeadInstallers(this.daemon);
         this.upgrader = new KPMUpgrader(this, this.daemon);
 
+        this.clearCaches();
         this.registerCommands(this.commandManager);
         this.noticeTokenDead();
         this.uninstallUpdaterIfExist();
