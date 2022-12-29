@@ -48,10 +48,6 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
                                 <relocation>
-                                    <pattern>net.kunmc.lab.peyangpaperutils</pattern>
-                                    <shadedPattern>net.kunmc.lab.kpm.pyglib</shadedPattern>
-                                </relocation>
-                                <relocation>
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>net.kunmc.lab.kpm.hikari</shadedPattern>
                                 </relocation>
