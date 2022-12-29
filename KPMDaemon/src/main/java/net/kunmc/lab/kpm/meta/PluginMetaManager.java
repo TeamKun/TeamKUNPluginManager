@@ -111,10 +111,10 @@ public class PluginMetaManager implements Listener
         this.daemon.getLogger().info("プラグインの削除が検出されました: " + pluginNameFull);
 
         this.daemon.getLogger().info("プラグインのメタデータを削除しています ...");
-        this.onUninstalled(pluginNameFull);
+        this.onUninstalled(plugin.getName());
 
         this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
-        this.provider.deleteFromDependencyTree(pluginNameFull);
+        this.provider.deleteFromDependencyTree(plugin.getName());
     }
 
     /**
