@@ -85,9 +85,7 @@ public class PluginMetaManager implements Listener
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
-        this.daemon.getLogger().info("プラグインの追加が検出されました: " + pluginNameFull);
-
-        this.daemon.getLogger().info("プラグインのメタデータを作成しています ...");
+        this.daemon.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを作成しています ...");
         this.onInstalled(plugin, InstallOperator.UNKNOWN, null, false);
 
         this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
@@ -108,9 +106,7 @@ public class PluginMetaManager implements Listener
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
-        this.daemon.getLogger().info("プラグインの削除が検出されました: " + pluginNameFull);
-
-        this.daemon.getLogger().info("プラグインのメタデータを削除しています ...");
+        this.daemon.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを削除しています ...");
         this.onUninstalled(plugin.getName());
 
         this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
