@@ -17,6 +17,22 @@
     <name>TeamKunPluginManager</name>
 
     <description>Manage your plugin!</description>
+    <licenses>
+        <license>
+            <name>The MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Peyang</name>
+            <organization>TeamKUN</organization>
+            <organizationUrl>https://github.com/TeamKun</organizationUrl>
+            <email>peyang@peya.tokyo</email>
+            <url>https://peya.tokyo</url>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
