@@ -50,6 +50,10 @@ public class KPMInfoParser
 
             return load(daemon, stream);
         }
+        catch (FileNotFoundException e)
+        {
+            throw e;  // Pass to upstream
+        }
         catch (IOException e)
         {
             throw new InvalidInformationFileException("Failed to load kpm.yml from " + file.getAbsolutePath(), e);
