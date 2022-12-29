@@ -19,6 +19,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.plugin.Plugin;
@@ -184,6 +186,58 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
         );
     }
 
+    private void removePluginCommands(Plugin plugin)
+    {
+        Map<String, Command> knownCommands = COMMANDS_PATCHER.getKnownCommands();
+        Iterator<Map.Entry<String, Command>> it = knownCommands.entrySet().iterator();
+
+        while (it.hasNext())
+        {
+            Map.Entry<String, Command> entry = it.next();
+            if (entry.getValue() instanceof PluginCommand)
+            {
+                PluginCommand pluginCommand = (PluginCommand) entry.getValue();
+                if (pluginCommand.getPlugin().getName().equalsIgnoreCase(plugin.getName()))
+                {
+                    pluginCommand.unregister(COMMANDS_PATCHER.getCommandMap());
+                    it.remove();
+                }
+                continue;
+            }
+
+            Field fPlugin = Arrays.stream(entry.getValue().getClass().getDeclaredFields()).parallel()
+                    .filter(field -> field.getType().isAssignableFrom(Plugin.class))
+                    .findFirst().orElse(null);
+            if (fPlugin == null)
+                continue;
+
+            fPlugin.setAccessible(true);
+            try
+            {
+                if (!((Plugin) fPlugin.get(entry.getValue())).getName().equalsIgnoreCase(plugin.getName()))
+                    continue;
+
+                entry.getValue().unregister(COMMANDS_PATCHER.getCommandMap());
+                it.remove();
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalStateException e)
+            {
+                if (!e.getMessage().equals("zip file closed"))
+                {
+                    e.printStackTrace();
+                    continue;
+                }
+
+                entry.getValue().unregister(COMMANDS_PATCHER.getCommandMap());
+                it.remove();
+            }
+        }
+    }
+
     private UninstallErrorCause disableOnePlugin(@NotNull Plugin plugin, @Nullable KPMInformationFile kpmInfo)
     {
         this.taskState = UninstallState.RECIPES_UNREGISTERING;
@@ -191,6 +245,7 @@ public class UnInstallTask extends InstallTask<UninstallArgument, UnInstallResul
 
         this.taskState = UninstallState.COMMANDS_UNPATCHING;
         COMMANDS_PATCHER.unPatchCommand(plugin, false);
+        this.removePluginCommands(plugin);
 
         this.taskState = UninstallState.PLUGIN_DISABLING;
         try
