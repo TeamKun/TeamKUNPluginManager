@@ -13,7 +13,9 @@ import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
+import net.kunmc.lab.plugin.kpmupgrader.migrator.KPMMigrator;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
@@ -29,6 +31,7 @@ public class UpgradeImpl
     private final KPMUpgraderPlugin plugin;
     private final Logger logger;
     private final Plugin currentKPM;
+    private final Version currentKPMVersion;
 
     private KPMDaemon daemon;
 
@@ -42,7 +45,15 @@ public class UpgradeImpl
             this.logger.severe("KPM がこのサーバーにインストールされていません。");
             this.logger.info("KPMUpgrader は、 KPM による自動インストールでのみ使用できます。");
             this.destructSelf();
+            this.currentKPMVersion = null;
             this.daemon = null;
+            return;
+        }
+
+        if ((this.currentKPMVersion = Version.ofNullable(this.currentKPM.getDescription().getVersion())) == null)
+        {
+            this.logger.severe("KPM のバージョンの取得に失敗しました。");
+            this.destructSelf();
         }
     }
 
@@ -170,6 +181,14 @@ public class UpgradeImpl
 
         if (!this.removeCurrentKPM())
             return;
+
+        this.logger.info("データを移行しています ...");
+
+        assert result.getVersion() != null;
+        Version toVersion = Version.ofNullable(result.getVersion());
+
+        assert toVersion != null;
+        KPMMigrator.doMigrate(this.daemon, this.currentKPMVersion, toVersion);
 
         if (!this.installNewKPM(result))
             return;
