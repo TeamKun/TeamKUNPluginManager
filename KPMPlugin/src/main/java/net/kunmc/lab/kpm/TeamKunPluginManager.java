@@ -46,7 +46,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private HeadInstallers headInstallers;
     private KPMUpgrader upgrader;
 
-    public void registerCommands(CommandManager commandManager)
+    private void registerCommands(CommandManager commandManager)
     {
         commandManager.registerCommand("autoremove", new CommandAutoRemove(this));
         commandManager.registerCommand("clean", new CommandClean(this));
