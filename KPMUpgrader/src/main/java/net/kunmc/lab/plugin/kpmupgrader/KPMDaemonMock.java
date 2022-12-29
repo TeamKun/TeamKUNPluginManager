@@ -26,7 +26,7 @@ public class KPMDaemonMock extends KPMDaemon
 
         try
         {
-            if (this.getTokenStore().loadToken())
+            if (!this.getTokenStore().loadToken())
             {
                 String tokenEnv = System.getenv("TOKEN");
 
