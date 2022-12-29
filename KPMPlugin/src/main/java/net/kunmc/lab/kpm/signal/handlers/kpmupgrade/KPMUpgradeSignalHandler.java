@@ -8,6 +8,7 @@ import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
 import net.kunmc.lab.kpm.upgrader.signals.UpgraderDeploySignal;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import org.bukkit.ChatColor;
 
 public class KPMUpgradeSignalHandler
 {
@@ -78,6 +79,8 @@ public class KPMUpgradeSignalHandler
         Version to = signal.getToKPMVersion();
 
         this.terminal.info("TeamKUNPluginManager(" + from + ") は、 " + to + " にアップグレードします。");
+
+        this.terminal.warn(ChatColor.DARK_RED + "KPM アップグレーダは、アップグレード完了後にサーバをリロードします。");
 
         boolean isContinue = SignalHandlingUtils.askContinue(this.terminal);
         signal.setContinueUpgrade(isContinue);

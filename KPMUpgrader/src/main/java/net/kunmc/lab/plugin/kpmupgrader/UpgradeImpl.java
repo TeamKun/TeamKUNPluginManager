@@ -13,7 +13,6 @@ import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
-import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.plugin.Plugin;
 
@@ -30,7 +29,6 @@ public class UpgradeImpl
     private final KPMUpgraderPlugin plugin;
     private final Logger logger;
     private final Plugin currentKPM;
-    private final Version currentKPMVersion;
 
     private KPMDaemon daemon;
 
@@ -44,15 +42,7 @@ public class UpgradeImpl
             this.logger.severe("KPM がこのサーバーにインストールされていません。");
             this.logger.info("KPMUpgrader は、 KPM による自動インストールでのみ使用できます。");
             this.destructSelf();
-            this.currentKPMVersion = null;
             this.daemon = null;
-            return;
-        }
-
-        if ((this.currentKPMVersion = Version.ofNullable(this.currentKPM.getDescription().getVersion())) == null)
-        {
-            this.logger.severe("KPM のバージョンの取得に失敗しました。");
-            this.destructSelf();
         }
     }
 
@@ -148,7 +138,10 @@ public class UpgradeImpl
         try
         {
             InstallResult<InstallTasks> installResult = new PluginInstaller(this.daemon, signalHandleManager)
-                    .run(InstallArgument.builder(resolveResult).build());
+                    .run(InstallArgument.builder(resolveResult)
+                            .onyLocate(true)
+                            .build()
+                    );
 
             if (installResult.isSuccess())
             {
@@ -180,6 +173,9 @@ public class UpgradeImpl
 
         if (!this.installNewKPM(result))
             return;
+
+        this.logger.info("サーバをリロードしています ...");
+        this.plugin.getServer().reload();
 
         this.logger.info("KPM のアッグレートが完了しました。");
     }
