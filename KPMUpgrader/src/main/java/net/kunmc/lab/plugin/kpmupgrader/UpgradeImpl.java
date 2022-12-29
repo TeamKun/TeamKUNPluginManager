@@ -49,9 +49,8 @@ public class UpgradeImpl
 
     public void initDaemon()
     {
-        Path dataDir = this.plugin.getDataFolder().toPath();
+        Path dataDir = this.plugin.getDataFolder().getParentFile().toPath();  // plugins/<kpm>/.caches/hogefuga/
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
-        dataDir.toFile().mkdirs();
 
         this.daemon = new KPMDaemonMock(KPMEnvironment.builder(this.plugin)
                 .tokenPath(kpmDataFolder.resolve("token.dat"))

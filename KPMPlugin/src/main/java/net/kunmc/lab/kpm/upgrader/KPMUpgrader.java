@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -55,7 +56,19 @@ public class KPMUpgrader
 
         this.upgradeRunning = true;
 
-        Path upgraderJar = this.teamKUNPluginManager.getDataFolder().toPath().resolve(upgraderPath);
+        Path cachesDir = this.teamKUNPluginManager.getDataFolder().toPath().resolve(".caches");
+        Path upgradeCacheDir;
+        try
+        {
+            upgradeCacheDir = Files.createTempDirectory(cachesDir, "upgrade-" + UUID.randomUUID());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+
+        Path upgraderJar = upgradeCacheDir.resolve(upgraderPath);
 
         if (!this.deployUpgrader(signalHandleManager, upgraderJar))
             return;
