@@ -27,7 +27,6 @@ import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -89,18 +88,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         Path cacheParent = this.getDataFolder().toPath().resolve(".caches");
 
-        Runner.run(() -> {
-            try
-            {
-                FileUtils.deleteDirectory(cacheParent.toFile());
-                // noinspection ResultOfMethodCallIgnored
-                cacheParent.toFile().mkdirs();
-            }
-            catch (IOException e)
-            {
-                this.getLogger().log(Level.WARNING, "Failed to clear caches.", e);
-            }
-        });
+        Runner.run(() -> FileUtils.cleanDirectory(cacheParent.toFile()), ((e, bukkitTask) -> this.getLogger().log(Level.WARNING, "Failed to clear caches.", e)));
     }
 
     private void noticeTokenDead()
