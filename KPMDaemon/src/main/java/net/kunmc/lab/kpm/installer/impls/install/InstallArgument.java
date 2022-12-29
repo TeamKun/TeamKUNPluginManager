@@ -50,6 +50,13 @@ public class InstallArgument extends AbstractInstallerArgument
     @Builder.Default
     private final boolean forceInstall = false;
 
+    /**
+     * プラグインの配置のみのモードです。
+     * このフラグを {@code true} にした場合, プラグインの読み込みは行われません。
+     */
+    @Builder.Default
+    private final boolean onyLocate = false;
+
     public static InstallArgumentBuilder builder(@NotNull String query)
     {
         return new InstallArgumentBuilder().query(query);

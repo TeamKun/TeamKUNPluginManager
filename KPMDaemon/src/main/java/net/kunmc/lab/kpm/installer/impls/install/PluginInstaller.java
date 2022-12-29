@@ -180,7 +180,11 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                                 new PluginsInstallTask(this)
                         )
                         .bridgeArgument(result -> new PluginsInstallArgument(
-                                pluginFilePath, pluginDescription, finalKpmInfo, result.getOrder()
+                                pluginFilePath,
+                                pluginDescription,
+                                finalKpmInfo,
+                                result.getOrder(),
+                                argument.isOnyLocate()
                         ))
                         .submitAll(new DependsCollectArgument(pluginDescription));
         // endregion

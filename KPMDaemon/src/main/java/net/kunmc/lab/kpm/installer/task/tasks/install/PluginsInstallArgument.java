@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.installer.task.TaskArgument;
@@ -16,6 +17,7 @@ import java.util.List;
  * プラグインのインストール時に渡される引数です。
  */
 @Value
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class PluginsInstallArgument extends TaskArgument
 {
@@ -45,20 +47,20 @@ public class PluginsInstallArgument extends TaskArgument
     @NotNull
     List<DependencyElement> dependencies;
 
+    /**
+     * プラグインの配置のみのモードです。
+     * このフラグを {@code true} にした場合, プラグインの読み込みは行われません。
+     */
+    boolean onlyLocate;
+
     public PluginsInstallArgument(@NotNull Path pluginPath, @NotNull PluginDescriptionFile pluginDescription, @Nullable KPMInformationFile kpmInformation, @NotNull List<DependencyElement> dependencies)
     {
-        this.pluginPath = pluginPath;
-        this.pluginDescription = pluginDescription;
-        this.kpmInformation = kpmInformation;
-        this.dependencies = dependencies;
+        this(pluginPath, pluginDescription, kpmInformation, dependencies, false);
     }
 
     public PluginsInstallArgument(@NotNull List<DependencyElement> dependencies)
     {
-        this.pluginPath = null;
-        this.pluginDescription = null;
-        this.kpmInformation = null;
-        this.dependencies = dependencies;
+        this(null, null, null, dependencies, false);
     }
 
 

@@ -98,7 +98,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
                 PluginsInstallResult result =
                         this.installOne(path, pluginDescription, dependency.getKpmInfoFile(),
-                                installedPlugins, true
+                                installedPlugins, true, arguments.isOnlyLocate()
                         );
                 if (!result.isSuccess())  // installOne returns null if installation is failed
                     return result;
@@ -122,7 +122,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
             PluginsInstallResult result =
                     this.installOne(arguments.getPluginPath(), arguments.getPluginDescription(),
-                            arguments.getKpmInformation(), installedPlugins, false
+                            arguments.getKpmInformation(), installedPlugins, false, arguments.isOnlyLocate()
                     );
 
             if (result.isSuccess() && result.getInstalledPlugin() != null)
@@ -138,7 +138,9 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
     @NotNull
     private PluginsInstallResult installOne(@NotNull Path path, @NotNull PluginDescriptionFile pluginDescription,
-                                            @Nullable KPMInformationFile kpmInformationFile, @NotNull List<Plugin> installedPlugins, boolean isDependency)
+                                            @Nullable KPMInformationFile kpmInformationFile,
+                                            @NotNull List<Plugin> installedPlugins,
+                                            boolean isDependency, boolean isOnlyLocate)
     {
         // Define variables
         InstallOperator operator = isDependency ? InstallOperator.KPM_DEPENDENCY_RESOLVER: InstallOperator.SERVER_ADMIN;
@@ -165,6 +167,14 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
 
         if (mayError != null)
             return mayError;
+
+        if (isOnlyLocate)
+            return new PluginsInstallResult(true,
+                    this.state,
+                    null,
+                    null, null,
+                    installedPlugins
+            );
 
         Plugin target;
         try
