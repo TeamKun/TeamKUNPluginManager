@@ -178,8 +178,6 @@ public class UpgradeImpl
         if (!this.removeCurrentKPM())
             return;
 
-        this.logger.info("新しい KPM をインストールしています ...");
-
         if (!this.installNewKPM(result))
             return;
 
