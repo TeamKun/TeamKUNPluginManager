@@ -6,7 +6,7 @@
 
     <groupId>net.kunmc.lab</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>3.0.0-pre7</version>
+    <version>3.0.0-pre8</version>
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
