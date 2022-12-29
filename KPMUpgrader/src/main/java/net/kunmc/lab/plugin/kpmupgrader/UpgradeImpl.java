@@ -23,7 +23,7 @@ public class UpgradeImpl
     private final Plugin currentKPM;
     private final Version currentKPMVersion;
 
-    private final KPMDaemon daemon;
+    private KPMDaemon daemon;
 
     public UpgradeImpl(KPMUpgraderPlugin plugin)
     {
@@ -40,11 +40,20 @@ public class UpgradeImpl
             return;
         }
 
-        Path dataDir = plugin.getDataFolder().toPath();
+        if ((this.currentKPMVersion = Version.ofNullable(this.currentKPM.getDescription().getVersion())) == null)
+        {
+            this.logger.severe("KPM のバージョンの取得に失敗しました。");
+            this.destructSelf();
+        }
+    }
+
+    public void initDaemon()
+    {
+        Path dataDir = this.plugin.getDataFolder().toPath();
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
         dataDir.toFile().mkdirs();
 
-        this.daemon = new KPMDaemonMock(KPMEnvironment.builder(plugin)
+        this.daemon = new KPMDaemonMock(KPMEnvironment.builder(this.plugin)
                 .tokenPath(kpmDataFolder.resolve("token.dat"))
                 .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
                 .metadataDBPath(dataDir.resolve("plugins.db"))
@@ -53,14 +62,6 @@ public class UpgradeImpl
                 .sources(Collections.emptyMap())
                 .build()
         );
-
-
-        if ((this.currentKPMVersion = Version.ofNullable(this.currentKPM.getDescription().getVersion())) == null)
-        {
-            this.logger.severe("KPM のバージョンの取得に失敗しました。");
-            this.destructSelf();
-        }
-
     }
 
     private void destructSelf()

@@ -22,6 +22,7 @@ public final class KPMUpgraderPlugin extends JavaPlugin implements CommandExecut
     @Override
     public void onEnable()
     {
+        this.impl.initDaemon();
         Objects.requireNonNull(this.getCommand("kpm-upgrade-internal")).setExecutor(this);
     }
 
