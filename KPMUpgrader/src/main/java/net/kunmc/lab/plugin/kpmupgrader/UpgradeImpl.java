@@ -2,13 +2,22 @@ package net.kunmc.lab.plugin.kpmupgrader;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMEnvironment;
+import net.kunmc.lab.kpm.installer.InstallResult;
+import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
+import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
+import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
+import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
+import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
+import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.utils.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.plugin.Plugin;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -59,8 +68,11 @@ public class UpgradeImpl
                 .aliasesDBPath(dataDir.resolve("aliases.db"))
                 .organizations(Collections.emptyList())
                 .sources(Collections.emptyMap())
+                .clearExcludes()
                 .build()
         );
+
+
     }
 
     private void destructSelf()
@@ -74,12 +86,17 @@ public class UpgradeImpl
 
     private SuccessResult resolveKPM(String version)
     {
-        String query = "https://github.com/" + KPM_OWNER + "/" + KPM_NAME + "/releases/tag/" + version;
+        this.logger.info("最新の KPM を解決しています。");
+
+        String query = "$>https://github.com/" + KPM_OWNER + "/" + KPM_NAME + "/releases/tag/" + version;
 
         ResolveResult resolveResult = this.daemon.getPluginResolver().resolve(query);
 
         if (resolveResult instanceof SuccessResult)
+        {
+            this.logger.info("KPM を解決しました：" + ((SuccessResult) resolveResult).getVersion());
             return (SuccessResult) resolveResult;
+        }
 
         assert resolveResult instanceof ErrorResult;
         ErrorResult errorResult = (ErrorResult) resolveResult;
@@ -89,14 +106,82 @@ public class UpgradeImpl
         return null;
     }
 
+    private boolean removeCurrentKPM()
+    {
+        this.logger.info("現在の KPM を削除しています。");
+
+        SignalHandleManager signalHandleManager = new SignalHandleManager();
+
+        try
+        {
+            InstallResult<UnInstallTasks> uninstallResult = new PluginUninstaller(this.daemon, signalHandleManager)
+                    .run(UninstallArgument.builder(this.currentKPM)
+                            .autoConfirm(true)
+                            .forceUninstall(true)
+                            .build()
+                    );
+
+            if (uninstallResult.isSuccess())
+            {
+                this.logger.info("KPM の削除に成功しました。");
+                return true;
+            }
+
+            this.logger.warning("KPM の削除は " + uninstallResult.getProgress().getCurrentTask() + " で失敗しました。");
+            return false;
+        }
+        catch (IOException e)
+        {
+            this.logger.severe("アンインストーラの初期化に失敗しました。");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean installNewKPM(SuccessResult resolveResult)
+    {
+        this.logger.info("新しい KPM をインストールしています。");
+
+        SignalHandleManager signalHandleManager = new SignalHandleManager();
+
+        try
+        {
+            InstallResult<InstallTasks> installResult = new PluginInstaller(this.daemon, signalHandleManager)
+                    .run(InstallArgument.builder(resolveResult).build());
+
+            if (installResult.isSuccess())
+            {
+                this.logger.info("KPM のインストールに成功しました。");
+                return true;
+            }
+
+            this.logger.warning("KPM のインストールは " + installResult.getProgress().getCurrentTask() + " で失敗しました。");
+
+            return false;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void runUpgrade(String version)
     {
         this.logger.info("KPM をアッグレートしています ...");
 
-        this.logger.info("令和最新版 KPM を解決しています。");
         SuccessResult result = this.resolveKPM(version);
         if (result == null)
             return;
-        this.logger.info("KPM を解決しました：%s" + result.getVersion());
+
+        if (!this.removeCurrentKPM())
+            return;
+
+        this.logger.info("新しい KPM をインストールしています ...");
+
+        if (!this.installNewKPM(result))
+            return;
+
+        this.logger.info("KPM のアッグレートが完了しました。");
     }
 }

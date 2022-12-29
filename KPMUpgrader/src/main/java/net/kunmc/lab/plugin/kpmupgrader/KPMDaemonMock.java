@@ -20,7 +20,7 @@ public class KPMDaemonMock extends KPMDaemon
     @Override
     public void setupDaemon(@NotNull List<String> organizationNames)
     {
-        this.getPluginResolver().addResolver(new GitHubURLResolver());
+        this.getPluginResolver().addResolver(new GitHubURLResolver(), "$");
         Requests.setVersion("KPMUpdater");
         Requests.setTokenStore(this.getTokenStore());
 
