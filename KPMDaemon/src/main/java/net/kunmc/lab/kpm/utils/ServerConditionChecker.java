@@ -50,7 +50,7 @@ public class ServerConditionChecker
     {
         try
         {
-            return fIsRunning.getBoolean(oMinecraftServer);
+            return !fIsRunning.getBoolean(oMinecraftServer);
         }
         catch (IllegalAccessException e)
         {
