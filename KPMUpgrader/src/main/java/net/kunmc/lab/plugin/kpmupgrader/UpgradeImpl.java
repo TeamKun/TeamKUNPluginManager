@@ -42,6 +42,8 @@ public class UpgradeImpl
 
         Path dataDir = plugin.getDataFolder().toPath();
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
+        dataDir.toFile().mkdirs();
+
         this.daemon = new KPMDaemonMock(KPMEnvironment.builder(plugin)
                 .tokenPath(kpmDataFolder.resolve("token.dat"))
                 .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
