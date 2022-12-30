@@ -188,7 +188,7 @@ public class UpgradeImpl
         Version toVersion = Version.ofNullable(result.getVersion());
 
         assert toVersion != null;
-        KPMMigrator.doMigrate(this.daemon, this.currentKPMVersion, toVersion);
+        KPMMigrator.doMigrate(this.daemon, this.currentKPM.getDataFolder().toPath(), this.currentKPMVersion, toVersion);
 
         if (!this.installNewKPM(result))
             return;

@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.plugin.kpmupgrader.migrator.migrators.ConfigMigrator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,19 @@ public class KPMMigrator
     static
     {
         MIGRATE_ACTIONS = new ArrayList<>();
+        MIGRATE_ACTIONS.add(new ConfigMigrator());
     }
 
-    public static void doMigrate(@NotNull KPMDaemon daemon, @NotNull Version fromVersion, @NotNull Version toVersion)
+    public static void doMigrate(@NotNull KPMDaemon daemon, @NotNull Path kpmDataFolder,
+                                 @NotNull Version fromVersion, @NotNull Version toVersion)
     {
         for (KPMMigrateAction action : MIGRATE_ACTIONS)
         {
             if (action.isMigrateNeeded(fromVersion, toVersion))
-                action.migrate(daemon);
+            {
+                daemon.getLogger().info("必要な移行処理を実行します: " + action.getClass().getSimpleName());
+                action.migrate(daemon, kpmDataFolder);
+            }
         }
     }
 }

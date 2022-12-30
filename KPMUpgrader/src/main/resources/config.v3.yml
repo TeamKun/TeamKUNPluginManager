@@ -1,4 +1,4 @@
-# @project      ${project.name} ${project.version}
+# @project      TeamKUNPluginManager
 # @author       Peyang <https://peya.tokyo>
 # @license      The MIT License (MIT) <https://opensource.org/licenses/MIT>
 
@@ -13,7 +13,7 @@ paths:
     # プラグインのメタデータを保存するデータベースのパスです。
     metadata: "plugins.db"
     # プラグインのエイリアスを保存するデータベースのパスです。
-    aliases: "alias.db"
+    aliases: "aliases.db"
 
   # GitHub の API にアクセスするためのトークンを保存するファイルのパスです。
   # 注意：このファイルの権限は、他のユーザから読み取りできないように設定することをおすすめします。
@@ -35,7 +35,7 @@ http:
   timeout: 10000
   # リダイレクトの最大回数です。0 にするとリダイレクトを無効化します。-1 にすると無限にリダイレクトします。
   # 注意： 無限のリダイレクトは、サーバないし KPM がハングする可能性があります。
-  maxRedirects: 15
+  maxRedirects: $redirectLimit$
 
 # ----------------------[ プラグイン解決設定 ]-------------
 # プラグインの解決の設定を定義します。
@@ -45,17 +45,12 @@ resolve:
   # プラグインの解決に使用する GitHub のユーザー名です。
   # ここに指定されたユーザないし組織は、その名前を省略できます。
   # TeamKUN と指定した場合、 TeamKUN/ExamplePlugin を ExamplePlugin と指定できます。
-  githubUsers:
-    - "TeamKUN"
+  githubUsers: $gitHubName$
 
   # KPM のプラグイン解決に使用されるエイリアスの設定を定義します。
   aliases:
     # エイリアスの取得元（データソース）を定義します。
-    sources:
-      # エイリアスデータソースの名前です。
-      - name: "TeamKun HUB"
-        # エイリアスデータソースの URL です。
-        url: "https://raw.githubusercontent.com/TeamKun/PluginManagerRepository/main/database.json"
+    sources: $config$
 
 # ----------------------[ 除外設定 ]----------------------
 # KPM による管理や、アンインストールやアップグレード等から除外するプラグインを定義します。
@@ -63,9 +58,7 @@ resolve:
 # ------------------------------------------------------
 excludes:
   # 除外するプラグインの名前を定義します。
-  pluginNames:
-  # - "ProtocolLib"
-  # - "YourExcludedPlugin"
+  pluginNames: $ignore$
 
 # ----------------------[ 製品設定 ]------------------
 # これ以下は変更しないでください。

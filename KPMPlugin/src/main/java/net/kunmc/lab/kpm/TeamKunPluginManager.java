@@ -26,11 +26,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 @Getter
@@ -45,6 +49,40 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     private HeadInstallers headInstallers;
     private KPMUpgrader upgrader;
+
+    @NotNull
+    private static String getStringNonNull(FileConfiguration config, String name)
+    {
+        return Objects.requireNonNull(config.getString(name));
+    }
+
+    private static KPMEnvironment buildEnvironment(Plugin plugin, FileConfiguration config)
+    {
+        Path dataFolder = plugin.getDataFolder().toPath();
+
+        return KPMEnvironment.builder(plugin)
+                .tokenPath(dataFolder.resolve(getStringNonNull(config, "paths.token.body")))
+                .tokenKeyPath(dataFolder.resolve(getStringNonNull(config, "paths.token.decryptionKey")))
+                .metadataDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.metadata")))
+                .aliasesDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.aliases")))
+                .excludes(config.getStringList("excludes.pluginNames"))
+                .organizations(config.getStringList("resolve.githubUsers"))
+                .sources(setupSources(config))
+                .build();
+    }
+
+    private static HashMap<String, String> setupSources(FileConfiguration config)
+    {
+        List<Map<?, ?>> aliasSources = config.getMapList("resolve.aliases.sources");
+
+        @SuppressWarnings("unchecked")
+        HashMap<String, String> aliasMap = aliasSources.stream()
+                .map(map -> (Map<String, ?>) map)
+                .map(map -> new Pair<>((String) map.get("name"), (String) map.get("url")))
+                .collect(HashMap::new, (map, pair) -> map.put(pair.getLeft(), pair.getRight()), HashMap::putAll);
+
+        return aliasMap;
+    }
 
     private void registerCommands(CommandManager commandManager)
     {
@@ -68,20 +106,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         PeyangPaperUtils.dispose();
         this.daemon.shutdown();
-    }
-
-    private HashMap<String, String> setupSources()
-    {
-        List<Map<?, ?>> aliasSources =
-                TeamKunPluginManager.getPlugin().getPluginConfig().getMapList("config");
-
-        @SuppressWarnings("unchecked")
-        HashMap<String, String> aliasMap = aliasSources.stream()
-                .map(map -> (Map<String, ?>) map)
-                .map(map -> new Pair<>((String) map.get("name"), (String) map.get("url")))
-                .collect(HashMap::new, (map, pair) -> map.put(pair.getLeft(), pair.getRight()), HashMap::putAll);
-
-        return aliasMap;
     }
 
     private void clearCaches()
@@ -116,27 +140,40 @@ public final class TeamKunPluginManager extends JavaPlugin
         }, 1);  // Run after all plugins are loaded
     }
 
+    private void deleteOldConfig(FileConfiguration config)
+    {
+        boolean isOld = !config.contains("kpm");
+
+        if (isOld)
+        {
+            this.getLogger().info("古い設定ファイルを削除しています ...");
+            Path oldConfig = this.getDataFolder().toPath().resolve("config.yml");
+            try
+            {
+                Files.delete(oldConfig);
+            }
+            catch (IOException e)
+            {
+                this.getLogger().log(Level.WARNING, "古い設定ファイルの削除に失敗しました。", e);
+            }
+
+            this.saveDefaultConfig();
+            this.reloadConfig();
+        }
+    }
+
     @Override
     public void onEnable()
     {
+        plugin = this;
+
         PeyangPaperUtils.init(this);
         this.saveDefaultConfig();
-        plugin = this;
+        this.deleteOldConfig(this.getConfig());
+
         this.pluginConfig = this.getConfig();
         this.commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
-
-        Path dataDir = this.getDataFolder().toPath();
-
-        this.daemon = new KPMDaemon(
-                KPMEnvironment.builder(plugin)
-                        .tokenPath(dataDir.resolve("token.dat"))
-                        .tokenKeyPath(dataDir.resolve("token_key.dat"))
-                        .metadataDBPath(dataDir.resolve("plugins.db"))
-                        .aliasesDBPath(dataDir.resolve("aliases.db"))
-                        .organizations(this.getPluginConfig().getStringList("gitHubName"))
-                        .sources(this.setupSources())
-                        .build()
-        );
+        this.daemon = new KPMDaemon(buildEnvironment(this, this.pluginConfig));
         this.headInstallers = new HeadInstallers(this.daemon);
         this.upgrader = new KPMUpgrader(this, this.daemon);
 
