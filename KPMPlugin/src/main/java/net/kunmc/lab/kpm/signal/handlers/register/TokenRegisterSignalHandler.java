@@ -49,7 +49,7 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
     @SignalHandler
     public void onTokenChecking(TokenCheckingSignal signal)
     {
-        this.terminal.info("トークンの有効性を確認しています ...");
+        this.terminal.info("トークンの有効性を確認しています …");
     }
 
     private boolean handleGeneralErrors(RegisterErrorCause cause)

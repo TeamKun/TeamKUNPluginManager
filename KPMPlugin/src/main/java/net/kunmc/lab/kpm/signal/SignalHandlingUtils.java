@@ -10,13 +10,13 @@ public class SignalHandlingUtils
     {
         try
         {
-            QuestionResult result = terminal.getInput().showYNQuestion("続行しますか?").waitAndGetResult();
+            QuestionResult result = terminal.getInput().showYNQuestion("続行しますか？").waitAndGetResult();
             return result.test(QuestionAttribute.YES);
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
-            terminal.error("不明なエラーが発生しました: " + e.getMessage());
+            terminal.error("不明なエラーが発生しました： %s", e.getMessage());
             return false;
         }
     }

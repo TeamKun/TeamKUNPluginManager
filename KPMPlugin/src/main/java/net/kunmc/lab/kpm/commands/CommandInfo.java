@@ -29,7 +29,7 @@ public class CommandInfo extends CommandBase
         if (indicateArgsLengthInvalid(terminal, args, 1))
             return;
 
-        terminal.info("プラグイン情報を読み込み中...");
+        terminal.info("プラグイン情報を読み込み中…");
         Plugin plugin = Bukkit.getPluginManager().getPlugin(args[0]);
 
         if (plugin == null)
@@ -39,7 +39,7 @@ public class CommandInfo extends CommandBase
         }
 
         PluginInfoWriter infoWriter = new PluginInfoWriter(this.daemon, terminal, plugin);
-        terminal.info("結果を出力しています...");
+        terminal.info("結果を出力しています…");
         infoWriter.write();
     }
 

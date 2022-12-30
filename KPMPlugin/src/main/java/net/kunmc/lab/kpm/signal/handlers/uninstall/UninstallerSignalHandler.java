@@ -8,7 +8,6 @@ import net.kunmc.lab.kpm.installer.task.tasks.uninstall.signals.PluginUnloadingS
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 
 public class UninstallerSignalHandler
 {
@@ -37,7 +36,7 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onPluginUninstall(PluginUninstallingSignal signal)
     {
-        this.terminal.writeLine(ChatColor.RED + Utils.getPluginString(signal.getPlugin()) + " をアンインストールしています ...");
+        this.terminal.infoImplicit("%s をアンインストールしています …", Utils.getPluginString(signal.getPlugin()));
     }
 
     @SignalHandler
@@ -45,7 +44,7 @@ public class UninstallerSignalHandler
     {
         if (!this.oneRecipeRemoved)
         {
-            this.terminal.writeLine(ChatColor.RED + Utils.getPluginString(signal.getPlugin()) + " のレシピを削除しています ...");
+            this.terminal.infoImplicit("%s のレシピを削除しています …", Utils.getPluginString(signal.getPlugin()));
             this.oneRecipeRemoved = true;
         }
     }
@@ -53,21 +52,22 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onDisabling(PluginDisablingSignal.Pre signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN + Utils.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
+        this.terminal.infoImplicit("%s のトリガを処理しています …", Utils.getPluginString(signal.getPlugin()));
     }
 
     @SignalHandler
     public void onUnloading(PluginUnloadingSignal.Pre signal)
     {
-        this.terminal.writeLine(ChatColor.RED + Utils.getPluginString(signal.getPlugin()) + " を削除しています ...");
+        this.terminal.infoImplicit(" を削除しています …", Utils.getPluginString(signal.getPlugin()));
     }
 
     @SignalHandler
     public void onError(PluginUninstallErrorSignal signal)
     {
         this.terminal.error(
-                ChatColor.GREEN + Utils.getPluginString(signal.getDescription()) + " のアンインストールに失敗しました: ",
-                getErrorCauseMessage(signal)
+                "%s のアンインストールに失敗しました： %s",
+                getErrorCauseMessage(signal),
+                Utils.getPluginString(signal.getDescription())
         );
     }
 }

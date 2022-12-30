@@ -39,66 +39,62 @@ public class UpgradeSignalHandler
         if (signal instanceof ResolveFailedSignal)
             return;  // implemented in #onResolveFailed(ResolveFailedSignal)
 
-        this.terminal.warn("プラグイン " + signal.getSpecifiedPluginName() + " が見つかりませんでした。");
+        this.terminal.warn("プラグイン %s が見つかりませんでした。", signal.getSpecifiedPluginName());
     }
 
     @SignalHandler
     public void onInvalidPluginVersion(InvalidPluginVersionSignal signal)
     {
         if (this.isAuto)
-            this.onInvalidPluginVersionAT(signal);
+            this.logErrorMessage(signal, true);
         else
             this.onInvalidPluginVersionMN(signal);
     }
 
-    private void onInvalidPluginVersionAT(InvalidPluginVersionSignal signal)
+    private void logErrorMessage(InvalidPluginVersionSignal signal, boolean isAuto)
     {
         UpgradeErrorCause reason = signal.getInvalidReason();
         String pluginName = net.kunmc.lab.kpm.utils.Utils.getPluginString(signal.getPlugin());
 
+        String message;
+
         switch (reason)
         {
             case PLUGIN_IS_OLDER_OR_EQUAL:
-                this.terminal.info("プラグイン " + pluginName + " は最新です。 " +
-                        "( 取得バージョン：" + signal.getPluginVersion() + " )");
+                message = String.format(
+                        "プラグイン %s は最新です（取得されたバージョン： %s ）。",
+                        pluginName,
+                        signal.getPluginVersion()
+                );
                 break;
             case PLUGIN_EXCLUDED:
-                this.terminal.info("プラグイン " + pluginName + " は除外されています。");
+                message = String.format("プラグイン %s は除外されています。", pluginName);
                 break;
             case PLUGIN_VERSION_NOT_DEFINED:
-                this.terminal.info("プラグイン " + pluginName + " は自動アップグレードに対応していません。");
+                message = String.format("プラグイン %s は自動アップグレードに対応していません。", pluginName);
                 break;
+            default:
+                message = String.format("プラグイン %s のアップグレードに失敗しました。", pluginName);
         }
+
+        if (isAuto)
+            this.terminal.info(message);
+        else
+            this.terminal.warn(message);
     }
 
     private void onInvalidPluginVersionMN(InvalidPluginVersionSignal signal)
     {
-        UpgradeErrorCause reason = signal.getInvalidReason();
-        String pluginName = net.kunmc.lab.kpm.utils.Utils.getPluginString(signal.getPlugin());
+        this.logErrorMessage(signal, false);
 
-        switch (reason)
-        {
-            case PLUGIN_IS_OLDER_OR_EQUAL:
-                this.terminal.warn("プラグイン " + pluginName + " は最新です。 " +
-                        "( 取得バージョン：" + signal.getPluginVersion() + ")");
-                break;
-            case PLUGIN_EXCLUDED:
-                this.terminal.warn("プラグイン " + pluginName + " は除外されています。");
-                break;
-            case PLUGIN_VERSION_NOT_DEFINED:
-                this.terminal.warn("プラグイン " + pluginName + " のバージョンを読み取れませんでした。");
-                break;
-        }
-
-        this.terminal.info("この警告を無視して強制的にアップグレードできますが、" +
-                "強制的なアップグレードは予期しない問題を引き起こす可能性があります。");
+        this.terminal.info("この警告を無視して強制的にアップグレードできますが、強制的なアップグレードは予期しない問題を引き起こす可能性があります。");
         signal.setExcludePlugin(!SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler
     public void onMultiResolved(MultiplePluginResolvedSignal signal)
     {
-        this.terminal.info("複数のプラグインが解決されたため, 自動選択を行います。");
+        this.terminal.info("複数のプラグインが解決されたため、自動選択を行います。");
 
         ResolveResult result = signal.getResults().getResolver().autoPickOnePlugin(signal.getResults());
 
@@ -109,11 +105,7 @@ public class UpgradeSignalHandler
     @SignalHandler
     public void onUpgradeReady(UpgradeReadySignal signal)
     {
-        this.terminal.writeLine(
-                ChatColor.GREEN + "以下のプラグインは「" +
-                        ChatColor.YELLOW + "アップグレード" +
-                        ChatColor.GREEN + "」されます。"
-        );
+        this.terminal.infoImplicit("以下のプラグインは「" + ChatColor.YELLOW + "アップグレード" + ChatColor.RESET + "」されます。");
 
         this.terminal.writeLine("  " + signal.getPlugins().stream()
                 .map(element -> {
@@ -141,8 +133,10 @@ public class UpgradeSignalHandler
     {
         InstallFailedInstallResult<?, ?, ?> result = (InstallFailedInstallResult<?, ?, ?>) signal.getFailedResult();
 
-        this.terminal.warn("プラグイン(不明) のアップグレードは " +
-                result.getTaskStatus() + " で " + result.getReason() +
-                "により失敗しました。");
+        this.terminal.warn(
+                "プラグイン(不明) のアップグレードは %s で %sにより失敗しました。",
+                result.getTaskStatus(),
+                result.getReason()
+        );
     }
 }

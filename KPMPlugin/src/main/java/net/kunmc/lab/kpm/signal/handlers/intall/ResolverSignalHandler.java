@@ -10,7 +10,6 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
-import org.bukkit.ChatColor;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolving(PluginResolvingSignal signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN + signal.getQuery() + " を解決しています ...");
+        this.terminal.info("%s を解決しています …", signal.getQuery());
     }
 
     @SignalHandler
@@ -43,7 +42,7 @@ public class ResolverSignalHandler
         ErrorResult.ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        this.terminal.error(signal.getQuery() + " の解決に失敗しました: " + errorCause + message);
+        this.terminal.error("%s の解決に失敗しました： %s%s", signal.getQuery(), errorCause, message);
         if (errorCause == ErrorResult.ErrorCause.INVALID_CREDENTIAL)
         {
             this.terminal.hint("間違ったトークンが設定されている可能性があります。");
@@ -61,8 +60,11 @@ public class ResolverSignalHandler
             if (signal.getSpecifiedResult() instanceof SuccessResult)
             {
                 SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
-                this.terminal.info("プラグイン " + specifiedResult.getFileName() + "(" +
-                        specifiedResult.getVersion() + ") が選択されました。");
+                this.terminal.info(
+                        "プラグイン %s(%s) が選択されました。",
+                        specifiedResult.getFileName(),
+                        specifiedResult.getVersion()
+                );
             }
 
             return;
@@ -93,7 +95,7 @@ public class ResolverSignalHandler
 
             if (result.test(QuestionAttribute.CANCELLABLE))
             {
-                this.terminal.error(ChatColor.RED + "解決をキャンセルしました。");
+                this.terminal.error("解決をキャンセルしました。");
                 signal.setCancel(true);
                 return;
             }
@@ -109,7 +111,11 @@ public class ResolverSignalHandler
                 return;
             }
 
-            this.terminal.writeLine(ChatColor.GREEN + selected.getFileName() + "(" + selected.getVersion() + ") が解決されました。");
+            this.terminal.success(
+                    "%s(%s) が解決されました。",
+                    selected.getFileName(),
+                    selected.getVersion()
+            );
             signal.setSpecifiedResult(selected);
         }
         catch (InterruptedException ex)

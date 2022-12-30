@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.signal.handlers.update;
 
+import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.impls.update.signals.UpdateFinishedSignal;
 import net.kunmc.lab.kpm.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.source.download.signals.MalformedURLSignal;
@@ -19,8 +20,8 @@ public class UpdateAliasesSignalHandler
     @SignalHandler
     public void onUpdateAliases(UpdateFinishedSignal signal)
     {
-        this.terminal.success("エイリアスが更新されました。");
-        this.terminal.success("登録数：%d", signal.getAliases());
+        this.terminal.info("エイリアスが更新されました。");
+        this.terminal.info("登録数：%d", signal.getAliases());
     }
 
     @SignalHandler
@@ -51,7 +52,11 @@ public class UpdateAliasesSignalHandler
         if (signal.getResult().isSuccess())
             this.terminal.success("エイリアスの更新に成功しました。");
         else
-            this.terminal.warn("エイリアスの更新に失敗しました。");
+        {
+            InstallFailedInstallResult<?, ?, ?> result = (InstallFailedInstallResult<?, ?, ?>) signal.getResult();
+
+            this.terminal.warn("エイリアスの更新は %s で失敗しました。", result.getReason());
+        }
     }
 
 }

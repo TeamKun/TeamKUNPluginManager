@@ -25,11 +25,11 @@ public class CommandResolve extends CommandBase
 
         String query = args[0];
 
-        terminal.info("プラグインの名前解決をしています...");
+        terminal.info("プラグインの名前解決をしています…");
         ResolveResult result = this.daemon.getPluginResolver().resolve(query);
 
         ResolveResultWriter writer = new ResolveResultWriter(terminal, result);
-        terminal.info("結果を出力しています...");
+        terminal.info("結果を出力しています…");
         writer.write();
     }
 

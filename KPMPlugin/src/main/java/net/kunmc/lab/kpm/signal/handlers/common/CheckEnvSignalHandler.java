@@ -25,8 +25,10 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onIncompatibleWithKPM(PluginIncompatibleWithKPMSignal signal)
     {
-        this.terminal.warn(Utils.getPluginString(signal.getPluginDescription()) +
-                " はこの TeamKunPluginManager と互換性がありません。");
+        this.terminal.warn(
+                "%s はこの TeamKUNPluginManager と互換性がありません。",
+                Utils.getPluginString(signal.getPluginDescription())
+        );
         this.terminal.info("強制的なインストールが可能ですが、強制的な操作は予期しない問題を引き起こす可能性があります。");
 
         signal.setForceInstall(SignalHandlingUtils.askContinue(this.terminal));
@@ -35,10 +37,12 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onPluginIsIgnored(IgnoredPluginSignal signal)
     {
-        this.terminal.warn(Utils.getPluginString(signal.getPluginDescription()) +
-                " は ignore としてマークされていますが強制的な操作が可能です。");
+        this.terminal.warn(
+                "%s は ignore としてマークされていますが強制的な操作が可能です。",
+                Utils.getPluginString(signal.getPluginDescription())
+        );
 
-        this.terminal.writeLine(ChatColor.DARK_RED + "W: 強制的な操作は予期しない問題を引き起こす可能性があります。");
+        this.terminal.warn(ChatColor.DARK_RED + "強制的な操作は予期しない問題を引き起こす可能性があります。");
 
         signal.setContinueInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
@@ -58,10 +62,10 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onPluginIsDuplicated(AlreadyInstalledPluginSignal signal)
     {
-        this.terminal.warn(signal.getInstalledPlugin().getName() + " は既にインストールされています。");
-        this.terminal.writeLine(ChatColor.BLUE + "== 既にインストールされているプラグイン ==");
+        this.terminal.warn("%s は既にインストールされています。", signal.getInstalledPlugin().getName());
+        this.terminal.infoImplicit("== 既にインストールされているプラグイン ==");
         this.printPluginInfo(signal.getInstalledPlugin());
-        this.terminal.writeLine(ChatColor.BLUE + "== インストールしようとしているプラグイン ==");
+        this.terminal.infoImplicit("== インストールしようとしているプラグイン ==");
         this.printPluginInfo(signal.getInstallingPlugin());
 
         signal.setReplacePlugin(SignalHandlingUtils.askContinue(this.terminal));

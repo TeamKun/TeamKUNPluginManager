@@ -21,11 +21,8 @@ public class AutoRemoveReadySignalHandler
 
     private void printUninstallInfo(List<String> uninstallTargets)
     {
-        this.terminal.writeLine(
-                ChatColor.GREEN + "以下のプラグインが自動でインストールされましたが、もう必要とされていません：");
-        this.terminal.writeLine(
-                ChatColor.GREEN + "以下のプラグインは「"
-                        + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
+        this.terminal.successImplicit("以下のプラグインが自動でインストールされましたが、もう必要とされていません：");
+        this.terminal.successImplicit("以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
         this.terminal.writeLine("  " + uninstallTargets.stream()
                 .sorted()
                 .collect(Collectors.joining(" ")));

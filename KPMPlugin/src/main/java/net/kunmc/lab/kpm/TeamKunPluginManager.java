@@ -133,7 +133,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             if (updater == null)
                 return;
 
-            Terminals.ofConsole().info("アップデート用の不要なプラグインが見つかりました。アンインストールしています ...");
+            Terminals.ofConsole().info("アップデート用の不要なプラグインが見つかりました。アンインストールしています …");
             this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
                     .autoConfirm(true)
                     .build());
@@ -146,7 +146,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         if (isOld)
         {
-            this.getLogger().info("古い設定ファイルを削除しています ...");
+            this.getLogger().info("古い設定ファイルを削除しています …");
             Path oldConfig = this.getDataFolder().toPath().resolve("config.yml");
             try
             {

@@ -102,9 +102,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     private void handleDependsCollectError(DependsCollectErrorCause cause)
     {
         if (cause == DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED)
-        {
             this.terminal.error("いくつかの依存関係の解決に失敗しました。");
-        }
     }
 
     private void handleInstallError(PluginsInstallErrorCause cause)
@@ -121,7 +119,8 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("不正なプラグイン情報ファイルが含まれています。");
                 break;
             case INCOMPATIBLE_WITH_BUKKIT_VERSION:
-                this.terminal.error("指定されたプラグインは、このサーバのバージョンと互換性がありません(プラグインのapi-versionがより新しい可能性があります)。");
+                this.terminal.error("指定されたプラグインは、このサーバのバージョンと互換性がありません。");
+                this.terminal.hint("プラグインのapi-versionがより新しい可能性があります。");
                 break;
             case INCOMPATIBLE_WITH_KPM_VERSION:
                 this.terminal.error("指定されたプラグインは、この KPM のバージョンと互換性がありません。");

@@ -43,7 +43,7 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onVerificationCodeRequesting(VerificationCodeRequestingSignal signal)
     {
-        this.terminal.info("サーバに接続しています ...");
+        this.terminal.info("サーバに接続しています …");
     }
 
     @SignalHandler
@@ -51,7 +51,11 @@ public class TokenGenerateSignalHandler
     {
         this.terminal.removeProgressbar("codeExpire");
 
-        this.terminal.error("検証コードの取得に失敗しました：" + signal.getHttpStatusCode() + " " + signal.getErrorMessage());
+        this.terminal.error(
+                "検証コードの取得に失敗しました：%s %s",
+                signal.getHttpStatusCode(),
+                signal.getErrorMessage()
+        );
     }
 
     @SignalHandler
@@ -62,11 +66,12 @@ public class TokenGenerateSignalHandler
         long expiresInSec = signal.getExpiresIn();
         int expiresInMin = (int) (expiresInSec / 60);
 
-        this.terminal.writeLine(
-                ChatColor.DARK_GREEN + "このリンクからコードを有効化してください：" +
-                        ChatColor.BLUE + ChatColor.UNDERLINE + verificationUrl);
-        this.terminal.writeLine(ChatColor.DARK_GREEN + "コード： " + ChatColor.WHITE + userCode);
-        this.terminal.info("このコードは " + expiresInMin + " 分で失効します。");
+        this.terminal.successImplicit(
+                "このリンクからコードを有効化してください：" + ChatColor.BLUE + ChatColor.UNDERLINE + "%s",
+                verificationUrl
+        );
+        this.terminal.successImplicit("コード：" + ChatColor.WHITE + " %s", userCode);
+        this.terminal.info("このコードは %d 分で失効します。", expiresInMin);
 
         int expiresInSecInt = (int) expiresInSec;
 
@@ -85,7 +90,7 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onVerificationCodeExpired(VerificationCodeExpiredSignal signal)
     {
-        this.terminal.error("コードが失効しました： " + signal.getUserCode());
+        this.terminal.error("コードが失効しました： %s", signal.getUserCode());
         this.terminal.info("コードを再取得するには /kpm register を実行してください。");
 
         if (!this.terminal.isPlayer())

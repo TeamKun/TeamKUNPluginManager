@@ -115,7 +115,7 @@ public class PluginInfoWriter extends TerminalWriter
         this.printSeparatorShort();
 
         boolean hasKPMInfoFile = this.infoFile != null;
-        this.printBoolean("KPM情報ファイル", hasKPMInfoFile);
+        this.printBoolean("KPM 情報ファイル", hasKPMInfoFile);
         if (hasKPMInfoFile)
             this.writeKPMInfo();
 
@@ -202,12 +202,12 @@ public class PluginInfoWriter extends TerminalWriter
             throw new IllegalStateException("Unable to find the plugin meta for " + this.plugin.getName());
 
         this.terminal.write(
-                Component.text(ChatColor.GREEN + "依存関係" + ChatColor.WHITE + ": ")
+                Component.text(ChatColor.GREEN + "依存関係" + ChatColor.WHITE + "：")
                         .append(this.getDependencyComponents(meta.getDependedBy(), true))
         );
 
         this.terminal.write(
-                Component.text(ChatColor.GREEN + "被依存関係" + ChatColor.WHITE + ": ")
+                Component.text(ChatColor.GREEN + "被依存関係" + ChatColor.WHITE + "：")
                         .append(this.getDependencyComponents(meta.getDependsOn(), false))
         );
     }

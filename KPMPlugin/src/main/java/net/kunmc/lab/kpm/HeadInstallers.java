@@ -65,7 +65,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -85,7 +85,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -105,7 +105,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -125,7 +125,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -145,7 +145,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -165,7 +165,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 
@@ -188,7 +188,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：" + e.getMessage());
+            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
             return;
         }
 

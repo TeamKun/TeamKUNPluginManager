@@ -9,7 +9,6 @@ import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
 import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 
 /**
  * インストーラのシグナルをハンドルするハンドラです.
@@ -28,38 +27,43 @@ public class InstallerSignalHandler
     @SignalHandler
     public void onPluginInstallStart(PluginInstallingSignal signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN + signal.getPluginDescription().getName() + " をインストールする準備をしています ...");
+        this.terminal.infoImplicit("%s をインストールする準備をしています …", signal.getPluginDescription().getName());
     }
 
     @SignalHandler
     public void onPluginRelocating(PluginRelocatingSignal signal)
     {
-        String src = ".../" + signal.getSource().getFileName();
-        String dest = ".../" + signal.getTarget().getFileName();
-        this.terminal.writeLine(ChatColor.GREEN + src + " を " + dest + " に再配置しています ...");
+        String src = "…/" + signal.getSource().getFileName();
+        String dest = "…/" + signal.getTarget().getFileName();
+        this.terminal.infoImplicit(
+                "%s を %s に再配置しています …",
+                src,
+                dest
+        );
     }
 
     @SignalHandler
     public void onPluginLoadPre(PluginLoadSignal.Pre signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN +
-                Utils.getPluginString(signal.getPluginDescription()) + " を読み込んでいます ...");
+        this.terminal.infoImplicit("%s を読み込んでいます …", Utils.getPluginString(signal.getPluginDescription()));
     }
 
     @SignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
-        this.terminal.writeLine(ChatColor.GREEN +
-                Utils.getPluginString(signal.getPlugin()) + " のトリガを処理しています ...");
+        this.terminal.infoImplicit("%s のトリガを処理しています …", Utils.getPluginString(signal.getPlugin()));
     }
 
     @SignalHandler
     public void onInvalidKPMInfoFile(InvalidKPMInfoFileSignal signal)
     {
-        this.terminal.warn("プラグイン " + signal.getDescriptionFile().getName() + " はKPM情報ファイル (kpm.yml) を持っていますが、" +
-                "KPMが理解できる形式ではありません。");
-        this.terminal.info(ChatColor.GRAY + "このファイルを無視して強制的にインストールできますが、" +
-                "強制的な操作は予期しない問題を引き起こす可能性があります。");
+        this.terminal.warn(
+                "プラグイン %s は KPM 情報ファイル (kpm.yml) を持っていますが、KPMが理解できる形式ではありません。",
+                signal.getDescriptionFile().getName()
+        );
+        this.terminal.hint(
+                "このファイルを無視して強制的にインストールできますが、強制的な操作は予期しない問題を引き起こす可能性があります。"
+        );
 
         signal.setIgnore(SignalHandlingUtils.askContinue(this.terminal));
     }

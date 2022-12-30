@@ -33,7 +33,7 @@ public class PluginIsDependencySignalHandler
     @SignalHandler
     public void onPluginIsDependency(PluginIsDependencySignal signal)
     {
-        this.terminal.warn(Utils.getPluginString(signal.getPlugin()) + " は以下のプラグインの依存関係です。");
+        this.terminal.warn("%s は以下のプラグインの依存関係です。", Utils.getPluginString(signal.getPlugin()));
         this.terminal.writeLine("  " + signal.getDependedBy().stream()
                 .map(PluginIsDependencySignalHandler::dependencyNameMapper)
                 .sorted()
@@ -68,14 +68,14 @@ public class PluginIsDependencySignalHandler
             if (selection.equalsIgnoreCase("c"))  // Special bypass for cancel (it is easy to type "c" than "cancel")
                 return PluginIsDependencySignal.Operation.CANCEL;
 
-            // Value is validated by the terminal so it's safe to use valueOf
+            // Value is validated by the terminal, so it's safe to use valueOf
             this.lastOperation = PluginIsDependencySignal.Operation.valueOf(selection.toUpperCase());
             return this.lastOperation;
         }
         catch (InterruptedException e)
         {
             e.printStackTrace();
-            this.terminal.error("不明なエラーが発生しました: " + e.getMessage());
+            this.terminal.error("不明なエラーが発生しました： %s", e.getMessage());
             return PluginIsDependencySignal.Operation.CANCEL;
         }
     }

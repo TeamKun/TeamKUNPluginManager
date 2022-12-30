@@ -22,7 +22,7 @@ public class UninstallReadySignalHandler
 
     private void printUninstallInfo(List<Plugin> uninstallTargets)
     {
-        this.terminal.writeLine(ChatColor.GREEN + "以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.GREEN + "」されます。");
+        this.terminal.successImplicit("以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
         this.terminal.writeLine("  " + uninstallTargets.stream()
                 .map(Plugin::getName)
                 .sorted()

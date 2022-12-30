@@ -36,7 +36,7 @@ public class CommandReload extends CommandBase
         }
 
         Runner.runAsync(() -> {
-            terminal.info("プラグイン %s を再読み込み中...", args[0]);
+            terminal.info("プラグイン %s を再読み込み中…", args[0]);
             this.daemon.getPluginLoader().reloadPlugin(plugin);
             terminal.success("プラグイン %s を正常に再読み込み中しました。", args[0]);
         });

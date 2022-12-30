@@ -44,7 +44,11 @@ public class DownloadingSignalHandler
     private void addDownloadArtifact(String url, long size)
     {
         this.downloadTotalSize += size;
-        this.terminal.writeLine(ChatColor.GREEN + "取得 " + url + " [" + Utils.roundSizeUnit(size) + "]");
+        this.terminal.infoImplicit(
+                "取得 %s [%s]",
+                url,
+                Utils.roundSizeUnit(size)
+        );
     }
 
     private void endDownloads()
@@ -54,12 +58,12 @@ public class DownloadingSignalHandler
         if (elapsedSec == 0)
             elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
-        this.terminal.writeLine(
-                ChatColor.GREEN + Utils.roundSizeUnit(this.downloadTotalSize) + " を " +
-                        ChatColor.YELLOW + elapsedSec + "秒" +
-                        ChatColor.GREEN + "で取得しました (" +
-                        ChatColor.YELLOW + Utils.roundSizeUnit(bytesPerSec) + "/s" +
-                        ChatColor.GREEN + ")"
+        this.terminal.success(
+                "%s を " + ChatColor.YELLOW + "%d秒" + ChatColor.RESET + "で取得しました (" +
+                        ChatColor.YELLOW + "%s/s" + ChatColor.RESET + ")",
+                Utils.roundSizeUnit(this.downloadTotalSize),
+                elapsedSec,
+                Utils.roundSizeUnit(bytesPerSec)
         );
 
         this.currentDownload = null;
@@ -87,9 +91,12 @@ public class DownloadingSignalHandler
     @SignalHandler
     public void onDownloadFailed(DownloadErrorSignal signal)
     {
-        this.terminal.writeLine(String.format(ChatColor.RED + "失敗 %s: %s(%s)",
-                signal.getUrl(), signal.getCause(), signal.getValue()
-        ));
+        this.terminal.errorImplicit(
+                "失敗 %s： %s(%s)",
+                signal.getUrl(),
+                signal.getCause(),
+                signal.getValue()
+        );
     }
 
     @SignalHandler
