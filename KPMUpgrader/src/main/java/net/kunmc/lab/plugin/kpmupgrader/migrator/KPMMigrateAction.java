@@ -1,7 +1,7 @@
 package net.kunmc.lab.plugin.kpmupgrader.migrator;
 
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.kunmc.lab.kpm.signal.Signal;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 
 @Getter
 @AllArgsConstructor

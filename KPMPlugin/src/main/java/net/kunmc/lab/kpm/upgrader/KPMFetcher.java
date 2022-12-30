@@ -7,7 +7,7 @@ import net.kunmc.lab.kpm.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 
 @UtilityClass
 public class KPMFetcher

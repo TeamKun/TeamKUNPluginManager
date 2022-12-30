@@ -1,14 +1,14 @@
 package net.kunmc.lab.kpm.installer.task.tasks.download;
 
+import net.kunmc.lab.kpm.http.DownloadProgress;
+import net.kunmc.lab.kpm.http.RequestMethod;
+import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadErrorSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadStartingSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadSucceedSignal;
-import net.kunmc.lab.kpm.utils.http.DownloadProgress;
-import net.kunmc.lab.kpm.utils.http.RequestMethod;
-import net.kunmc.lab.kpm.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

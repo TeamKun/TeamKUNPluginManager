@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.utils.versioning;
 
+import net.kunmc.lab.kpm.versioning.Version;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

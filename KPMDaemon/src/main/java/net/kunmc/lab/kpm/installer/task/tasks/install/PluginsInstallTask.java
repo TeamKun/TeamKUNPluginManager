@@ -17,7 +17,7 @@ import net.kunmc.lab.kpm.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.meta.PluginMetaProvider;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;

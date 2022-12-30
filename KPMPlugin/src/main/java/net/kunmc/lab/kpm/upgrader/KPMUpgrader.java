@@ -8,7 +8,7 @@ import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
 import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
 import net.kunmc.lab.kpm.upgrader.signals.UpgraderDeploySignal;
 import net.kunmc.lab.kpm.utils.PluginUtil;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 

@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.kpminfo;
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.hook.HookRecipientList;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.Yaml;

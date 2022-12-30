@@ -7,7 +7,7 @@ import net.kunmc.lab.kpm.upgrader.signals.AlreadyUpgradingSignal;
 import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
 import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
 import net.kunmc.lab.kpm.upgrader.signals.UpgraderDeploySignal;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 

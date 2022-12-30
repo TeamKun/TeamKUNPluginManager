@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeErrorCause;
 import net.kunmc.lab.kpm.signal.Signal;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nullable;

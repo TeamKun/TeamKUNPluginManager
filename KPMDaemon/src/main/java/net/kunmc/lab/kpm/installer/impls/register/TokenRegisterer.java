@@ -2,6 +2,10 @@ package net.kunmc.lab.kpm.installer.impls.register;
 
 import com.google.gson.JsonObject;
 import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.http.HTTPResponse;
+import net.kunmc.lab.kpm.http.RequestContext;
+import net.kunmc.lab.kpm.http.RequestMethod;
+import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.register.pojos.UserVerificationCodeResponse;
@@ -18,10 +22,6 @@ import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeReques
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
 import net.kunmc.lab.kpm.installer.task.TaskFailedException;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
-import net.kunmc.lab.kpm.utils.http.HTTPResponse;
-import net.kunmc.lab.kpm.utils.http.RequestContext;
-import net.kunmc.lab.kpm.utils.http.RequestMethod;
-import net.kunmc.lab.kpm.utils.http.Requests;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

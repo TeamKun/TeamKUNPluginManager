@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.upgrader.signals;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

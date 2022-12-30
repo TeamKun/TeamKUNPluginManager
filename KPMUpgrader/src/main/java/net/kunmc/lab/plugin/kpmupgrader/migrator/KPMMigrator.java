@@ -3,7 +3,7 @@ package net.kunmc.lab.plugin.kpmupgrader.migrator;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.utils.versioning.Version;
+import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.migrators.ConfigMigrator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
