@@ -1,7 +1,6 @@
 package net.kunmc.lab.kpm.installer.task.tasks.install;
 
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.hook.hooks.PluginInstalledHook;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
@@ -12,6 +11,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginInstallingSi
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginLoadSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginRelocatingSignal;
+import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.meta.InstallOperator;

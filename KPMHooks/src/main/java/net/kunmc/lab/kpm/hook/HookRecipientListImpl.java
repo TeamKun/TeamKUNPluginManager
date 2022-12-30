@@ -1,10 +1,14 @@
 package net.kunmc.lab.kpm.hook;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
+import net.kunmc.lab.kpm.interfaces.hook.HookRecipientList;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,38 +16,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-/**
- * KPMフックの受け取りを行うクラスを管理するクラスです。
- */
-public class HookRecipientList extends ArrayList<KPMHookRecipient>
+public class HookRecipientListImpl extends ArrayList<KPMHookRecipient> implements HookRecipientList
 {
     @Getter
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
     @Getter
     private final HookExecutor executor;
 
     @Getter
     private final List<String> reservedHookClasses;
 
-    public HookRecipientList(@NotNull KPMDaemon daemon, @NotNull HookExecutor executor)
+    public HookRecipientListImpl(@NotNull KPMRegistry registry, @NotNull HookExecutor executor)
     {
-        this.daemon = daemon;
+        this.registry = registry;
         this.executor = executor;
         this.reservedHookClasses = new ArrayList<>();
     }
 
-    /**
-     * フックを実行します。
-     *
-     * @param hook フック
-     */
+    @Override
     public void runHook(KPMHook hook)
     {
         if (!this.reservedHookClasses.isEmpty())
         {
             try
             {
-                this.bakeHooks(this.daemon);
+                this.bakeHooks(this.registry);
             }
             catch (InvalidInformationFileException e)
             {
@@ -55,18 +52,14 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
             this.executor.runHook(recipient, hook);
     }
 
+    @Override
     public void add(@NotNull String className)
     {
         this.reservedHookClasses.add(className);
     }
 
-    /**
-     * 予約クラス名からフックを作成します。
-     *
-     * @param daemon KPMデーモンのインスタンス
-     * @throws InvalidInformationFileException 予約クラス名が無効な場合
-     */
-    public void bakeHooks(@NotNull KPMDaemon daemon) throws InvalidInformationFileException
+    @Override
+    public void bakeHooks(@Nonnull KPMRegistry registry) throws InvalidInformationFileException
     {
         Iterator<String> iterator = this.reservedHookClasses.iterator();
         while (iterator.hasNext())
@@ -75,17 +68,17 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
 
             try
             {
-                this.daemon.getLogger().setLevel(Level.OFF);
+                this.registry.getLogger().setLevel(Level.OFF);
                 Class<?> hookClass = Class.forName(className);
-                this.daemon.getLogger().setLevel(Level.INFO);
+                this.registry.getLogger().setLevel(Level.INFO);
 
                 if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
                     throw new InvalidInformationFileException("Class " + className + " is not a KPMHookRecipient.");
 
                 Constructor<? extends KPMHookRecipient> constructor =
-                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMDaemon.class);
+                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMRegistry.class);
 
-                this.add(constructor.newInstance(daemon));
+                this.add(constructor.newInstance(this.registry));
             }
             catch (ClassNotFoundException e)
             {
@@ -103,7 +96,7 @@ public class HookRecipientList extends ArrayList<KPMHookRecipient>
             }
             finally
             {
-                this.daemon.getLogger().setLevel(Level.INFO);
+                this.registry.getLogger().setLevel(Level.INFO);
 
                 iterator.remove();
             }

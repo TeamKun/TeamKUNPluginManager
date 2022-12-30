@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.hook.hooks;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kunmc.lab.kpm.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;

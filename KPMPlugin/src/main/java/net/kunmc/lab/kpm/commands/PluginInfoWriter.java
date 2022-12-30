@@ -2,8 +2,8 @@ package net.kunmc.lab.kpm.commands;
 
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.Utils;
+import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
-import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.meta.InstallOperator;

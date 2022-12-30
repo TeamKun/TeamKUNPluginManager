@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.hook;
+package net.kunmc.lab.kpm.interfaces.hook;
 
 /**
  * KPMフックのインタフェースです。

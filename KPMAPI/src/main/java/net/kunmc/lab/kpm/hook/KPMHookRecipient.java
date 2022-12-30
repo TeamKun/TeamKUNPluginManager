@@ -2,7 +2,8 @@ package net.kunmc.lab.kpm.hook;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 
 import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Method;
@@ -18,13 +19,13 @@ public abstract class KPMHookRecipient
      * KPMデーモンのインスタンスです。
      */
     @Getter(AccessLevel.PROTECTED)
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     private final HashMap<Method, Class<? extends KPMHook>> hooks;
 
-    public KPMHookRecipient(KPMDaemon daemon)
+    public KPMHookRecipient(KPMRegistry registry)
     {
-        this.daemon = daemon;
+        this.registry = registry;
         this.hooks = new HashMap<>();
 
         this.bakeAll();

@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.hook.hooks;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import net.kunmc.lab.kpm.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

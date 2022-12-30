@@ -3,12 +3,11 @@ package net.kunmc.lab.kpm;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
-import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.InstallManager;
+import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
-import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.PluginLoader;
 import net.kunmc.lab.kpm.meta.InstallOperator;
@@ -62,11 +61,6 @@ public class KPMDaemon
     private final Logger logger;
 
     /**
-     * プラグインのKPM情報ファイルを管理するクラスです。
-     */
-    @NotNull
-    private final KPMInfoManager kpmInfoManager;
-    /**
      * トークンを保管しセキュアに管理するクラスです。
      */
     @NotNull
@@ -86,11 +80,6 @@ public class KPMDaemon
      */
     @NotNull
     private final PluginLoader pluginLoader;
-    /**
-     * フックを実行するクラスです。
-     */
-    @NotNull
-    private final HookExecutor hookExecutor;
 
     /**
      * サーバの状態を判定するクラスです。
@@ -107,12 +96,10 @@ public class KPMDaemon
         this.envs = env;
         this.logger = env.getLogger();
         this.registry = new KPMRegistryImpl(env);
-        this.kpmInfoManager = new KPMInfoManager(this);
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
-        this.hookExecutor = new HookExecutor(this);
         this.serverConditionChecker = new ServerConditionChecker();
 
         this.setupDaemon(env.getOrganizations());
@@ -144,7 +131,7 @@ public class KPMDaemon
 
             this.logger.info("Loading KPM information from plugins...");
 
-            KPMInfoManager kpmInfoManager = this.getKpmInfoManager();
+            KPMInfoManager kpmInfoManager = this.registry.getKpmInfoManager();
             Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 
             int loaded = 0;

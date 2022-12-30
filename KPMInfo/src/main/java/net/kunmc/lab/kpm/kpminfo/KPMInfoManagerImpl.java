@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.kpminfo;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -12,73 +13,46 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.zip.ZipFile;
 
-/**
- * KPM情報ファイルを管理するクラスです。
- */
-public class KPMInfoManager
+public class KPMInfoManagerImpl implements KPMInfoManager
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
     private final HashMap<String, KPMInformationFile> lookupNames;
 
-    public KPMInfoManager(KPMDaemon daemon)
+    public KPMInfoManagerImpl(KPMRegistry registry)
     {
-        this.daemon = daemon;
+        this.registry = registry;
         this.lookupNames = new HashMap<>();
     }
 
-    /**
-     * KPM情報ファイルを読み込み追加します。
-     *
-     * @param path            KPM情報ファイルのパス
-     * @param descriptionFile プラグインの説明ファイル
-     * @return 読み込みに成功した場合はKPM情報ファイル、失敗した場合はnull
-     * @throws InvalidInformationFileException KPM情報ファイルが不正な場合
-     * @throws FileNotFoundException           KPM情報ファイルが見つからない場合
-     */
+    @Override
     @Nullable
     public KPMInformationFile loadInfo(@NotNull Path path, @NotNull PluginDescriptionFile descriptionFile) throws
             FileNotFoundException, InvalidInformationFileException
     {
-        KPMInformationFile info = KPMInfoParser.load(this.daemon, path);
+        KPMInformationFile info = KPMInfoParser.load(this.registry, path);
         this.lookupNames.put(descriptionFile.getName(), info);
 
         if (PluginUtil.isPluginLoaded(descriptionFile.getName()))
-            info.getHooks().bakeHooks(this.daemon);
+            info.getHooks().bakeHooks(this.registry);
 
         return info;
     }
 
-    /**
-     * プラグインのKPM情報ファイルを取得します。
-     *
-     * @param plugin プラグイン
-     * @return プラグインのKPM情報ファイル
-     */
+    @Override
     @Nullable
     public KPMInformationFile getInfo(@NotNull Plugin plugin)
     {
         return this.lookupNames.get(plugin.getDescription().getName());
     }
 
-    /**
-     * プラグインのKPM情報ファイルを取得します。
-     *
-     * @param pluginName プラグイン名
-     * @return プラグインのKPM情報ファイル
-     */
-
+    @Override
     @Nullable
     public KPMInformationFile getInfo(@NotNull String pluginName)
     {
         return this.lookupNames.get(pluginName);
     }
 
-    /**
-     * プラグインのKPM情報ファイルを取得するか読み込みます。
-     *
-     * @param plugin プラグイン
-     * @return プラグインのKPM情報ファイル
-     */
+    @Override
     @Nullable
     public KPMInformationFile getOrLoadInfo(@NotNull Plugin plugin)
     {
@@ -100,12 +74,7 @@ public class KPMInfoManager
         }
     }
 
-    /**
-     * プラグインが KPM情報ファイルを持っているかどうかを取得します。
-     *
-     * @param plugin プラグイン名
-     * @return プラグインが KPM情報ファイルを持っているかどうか
-     */
+    @Override
     public boolean hasInfo(@NotNull Plugin plugin)
     {
         if (this.lookupNames.containsKey(plugin.getDescription().getName()))
@@ -114,12 +83,7 @@ public class KPMInfoManager
         return this.hasInfo(PluginUtil.getFile(plugin).toPath());
     }
 
-    /**
-     * プラグインが KPM情報ファイルを持っているかどうかを取得します。
-     *
-     * @param pluginFile プラグインのファイル
-     * @return プラグインが KPM情報ファイルを持っているかどうか
-     */
+    @Override
     public boolean hasInfo(@NotNull Path pluginFile)
     {
         try (ZipFile zipFile = new ZipFile(pluginFile.toFile()))
@@ -132,11 +96,7 @@ public class KPMInfoManager
         }
     }
 
-    /**
-     * プラグインのKPM情報ファイルを削除します。
-     *
-     * @param plugin プラグイン
-     */
+    @Override
     public void removeInfo(@NotNull Plugin plugin)
     {
         this.lookupNames.remove(plugin.getDescription().getName());

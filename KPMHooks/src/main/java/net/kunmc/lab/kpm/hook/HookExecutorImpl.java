@@ -1,30 +1,24 @@
 package net.kunmc.lab.kpm.hook;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
+import net.kunmc.lab.kpm.interfaces.hook.HookRecipientList;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-/**
- * KPMフックを実行するクラスです。
- */
-public class HookExecutor
+public class HookExecutorImpl implements HookExecutor
 {
     @Getter
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
-    public HookExecutor(KPMDaemon daemon)
+    public HookExecutorImpl(KPMRegistry registry)
     {
-        this.daemon = daemon;
+        this.registry = registry;
     }
 
-    /**
-     * フックを実行します。
-     *
-     * @param recipient フックを受け取るクラス
-     * @param hook      フック
-     */
+    @Override
     public void runHook(KPMHookRecipient recipient, KPMHook hook)
     {
         Method hookMethod = recipient.getHookListener(hook.getClass());
@@ -42,13 +36,8 @@ public class HookExecutor
         }
     }
 
-    /**
-     * フックを実行します。
-     *
-     * @param recipients フックを受け取るクラスのリスト
-     * @param hook       フック
-     */
-    public void runHook(List<KPMHookRecipient> recipients, KPMHook hook)
+    @Override
+    public void runHook(HookRecipientList recipients, KPMHook hook)
     {
         for (KPMHookRecipient recipient : recipients)
             this.runHook(recipient, hook);

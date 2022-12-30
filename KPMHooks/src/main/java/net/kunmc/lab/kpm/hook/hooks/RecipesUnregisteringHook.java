@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.hook.hooks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 

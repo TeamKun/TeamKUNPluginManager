@@ -1,7 +1,8 @@
 package net.kunmc.lab.kpm.kpminfo;
 
-import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.hook.HookRecipientList;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.hook.HookRecipientListImpl;
+import net.kunmc.lab.kpm.interfaces.hook.HookRecipientList;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
@@ -28,47 +29,14 @@ public class KPMInfoParser
     }
 
     @NotNull
-    public static KPMInformationFile load(@NotNull KPMDaemon daemon, @NotNull InputStream stream) throws InvalidInformationFileException
-    {
-        return loadFromMap(daemon, YAML_PARSER.load(stream));
-    }
-
-    @NotNull
-    public static KPMInformationFile load(@NotNull KPMDaemon daemon, @NotNull Path jarFile) throws InvalidInformationFileException, FileNotFoundException
-    {
-        File file = jarFile.toFile();
-        if (!file.exists())
-            throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
-
-        try (ZipFile zip = new ZipFile(file))
-        {
-            ZipEntry kpmFileEntry = zip.getEntry("kpm.yml");
-            if (kpmFileEntry == null)
-                throw new FileNotFoundException("kpm.yml not found in " + file.getAbsolutePath());
-
-            InputStream stream = zip.getInputStream(kpmFileEntry);
-
-            return load(daemon, stream);
-        }
-        catch (FileNotFoundException e)
-        {
-            throw e;  // Pass to upstream
-        }
-        catch (IOException e)
-        {
-            throw new InvalidInformationFileException("Failed to load kpm.yml from " + file.getAbsolutePath(), e);
-        }
-    }
-
-    @NotNull
-    private static KPMInformationFile loadFromMap(@NotNull KPMDaemon daemon, Map<?, ?> map) throws InvalidInformationFileException
+    private static KPMInformationFile loadFromMap(@NotNull KPMRegistry registry, Map<?, ?> map) throws InvalidInformationFileException
     {
         if (map == null)
             throw new InvalidInformationFileException("Information file is empty.");
 
         Version version = parseVersion(map); // Parse kpm => kpmVersion [required]
         QueryContext updateQuery = parseUpdateQuery(map); // Parse update => updateQuery [required]
-        HookRecipientList hooks = parseHooks(daemon, map); // Parse hooks [optional]
+        HookRecipientList hooks = parseHooks(registry, map); // Parse hooks [optional]
         String[] recipes = parseRecipes(map); // Parse recipes [optional]
 
         return new KPMInformationFile(version, updateQuery, hooks, recipes);
@@ -103,9 +71,9 @@ public class KPMInfoParser
     }
 
     @NotNull
-    private static HookRecipientList parseHooks(KPMDaemon daemon, Map<?, ?> map) throws InvalidInformationFileException
+    private static HookRecipientList parseHooks(KPMRegistry registry, Map<?, ?> map) throws InvalidInformationFileException
     {
-        HookRecipientList result = new HookRecipientList(daemon, daemon.getHookExecutor());
+        HookRecipientList result = new HookRecipientListImpl(registry, registry.getHookExecutor());
 
         if (!map.containsKey("hooks"))
             return result;
@@ -151,5 +119,37 @@ public class KPMInfoParser
         return result;
     }
 
+    @NotNull
+    public static KPMInformationFile load(@NotNull KPMRegistry registry, @NotNull InputStream stream) throws InvalidInformationFileException
+    {
+        return KPMInfoParser.loadFromMap(registry, KPMInfoParser.YAML_PARSER.load(stream));
+    }
+
+    @NotNull
+    public static KPMInformationFile load(@NotNull KPMRegistry registry, @NotNull Path jarFile) throws InvalidInformationFileException, FileNotFoundException
+    {
+        File file = jarFile.toFile();
+        if (!file.exists())
+            throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
+
+        try (ZipFile zip = new ZipFile(file))
+        {
+            ZipEntry kpmFileEntry = zip.getEntry("kpm.yml");
+            if (kpmFileEntry == null)
+                throw new FileNotFoundException("kpm.yml not found in " + file.getAbsolutePath());
+
+            InputStream stream = zip.getInputStream(kpmFileEntry);
+
+            return load(registry, stream);
+        }
+        catch (FileNotFoundException e)
+        {
+            throw e;  // Pass to upstream
+        }
+        catch (IOException e)
+        {
+            throw new InvalidInformationFileException("Failed to load kpm.yml from " + file.getAbsolutePath(), e);
+        }
+    }
 
 }

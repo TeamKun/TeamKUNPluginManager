@@ -16,6 +16,8 @@
         <module>KPMResolver</module>
         <module>KPMAlias</module>
         <module>KPMMeta</module>
+        <module>KPMInfo</module>
+        <module>KPMHooks</module>
     </modules>
     <packaging>pom</packaging>
 
