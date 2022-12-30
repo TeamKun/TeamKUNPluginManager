@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.utils.db;
+package net.kunmc.lab.kpm.db;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

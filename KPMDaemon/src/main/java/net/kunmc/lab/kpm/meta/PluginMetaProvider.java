@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.utils.db.Transaction;
+import net.kunmc.lab.kpm.db.Transaction;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;

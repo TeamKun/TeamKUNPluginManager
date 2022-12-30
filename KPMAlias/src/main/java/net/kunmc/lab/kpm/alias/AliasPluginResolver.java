@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.alias;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
 import net.kunmc.lab.kpm.resolver.result.ErrorResult;
@@ -16,9 +17,9 @@ public class AliasPluginResolver implements BaseResolver
 {
     private final AliasProvider aliasProvider;
 
-    public AliasPluginResolver(@NotNull KPMDaemon daemon)
+    public AliasPluginResolver(@NotNull KPMRegistry registry)
     {
-        this.aliasProvider = daemon.getAliasProvider();
+        this.aliasProvider = registry.getAliasProvider();
     }
 
     @Override

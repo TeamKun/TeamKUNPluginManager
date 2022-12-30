@@ -3,23 +3,21 @@ package net.kunmc.lab.kpm.alias;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.kunmc.lab.kpm.utils.db.ResultRow;
-import net.kunmc.lab.kpm.utils.db.Transaction;
+import net.kunmc.lab.kpm.db.ResultRow;
+import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.sql.Statement;
 
-/**
- * プラグインのエイリアスを提供するクラスです。
- */
-public class AliasProvider
+public class AliasProviderImpl implements AliasProvider
 {
     @Getter(AccessLevel.PACKAGE)
     private final HikariDataSource db;
 
-    public AliasProvider(@NotNull Path path)
+    public AliasProviderImpl(@NotNull Path path)
     {
         this.db = Transaction.createDataSource(path);
 
@@ -46,24 +44,16 @@ public class AliasProvider
                 });
     }
 
-    /**
-     * このクラスを破棄します。
-     */
+    @Override
     public void close()
     {
         this.db.close();
     }
 
-    /**
-     * アップデータを作成します。
-     *
-     * @param sourceName ソースの名前
-     * @param sourceURL  ソースのURL
-     * @return アップデータ
-     */
-    public AliasUpdater createUpdater(@NotNull String sourceName, @NotNull String sourceURL)
+    @Override
+    public AliasUpdaterImpl createUpdater(@NotNull String sourceName, @NotNull String sourceURL)
     {
-        return new AliasUpdater(sourceName, sourceURL, this);
+        return new AliasUpdaterImpl(sourceName, sourceURL, this);
     }
 
     /**
@@ -72,6 +62,7 @@ public class AliasProvider
      * @param query エイリアス対象のkueri
      * @return エイリアスが存在するかどうか
      */
+    @Override
     public boolean hasAlias(@NotNull String query)
 
     {
@@ -80,12 +71,7 @@ public class AliasProvider
                 .isExists();
     }
 
-    /**
-     * ソースが存在するかどうかを返します。
-     *
-     * @param id ソースのID
-     * @return ソースが存在するかどうか
-     */
+    @Override
     public boolean hasSource(String id)
     {
         return Transaction.create(this.db, "SELECT COUNT(*) FROM source WHERE name = ?")
@@ -93,12 +79,7 @@ public class AliasProvider
                 .isExists();
     }
 
-    /**
-     * ソースを取得します。
-     *
-     * @param id ソースのID
-     * @return ソース
-     */
+    @Override
     public AliasSource getSource(String id)
     {
         try (Transaction transaction = Transaction.create(this.db, "SELECT * FROM source WHERE name = ?")
@@ -114,17 +95,12 @@ public class AliasProvider
             return new AliasSource(
                     row.getString("name"),
                     row.getString("source"),
-                    AliasSource.SourceType.valueOf(row.getString("type"))
+                    AliasSourceType.valueOf(row.getString("type"))
             );
         }
     }
 
-    /**
-     * エイリアスからクエリを取得します。
-     *
-     * @param alias エイリアス
-     * @return 名前
-     */
+    @Override
     @Nullable
     public Alias getQueryByAlias(String alias)
     {
@@ -146,11 +122,7 @@ public class AliasProvider
         }
     }
 
-    /**
-     * エイリアスの数を取得します。
-     *
-     * @return エイリアスの数
-     */
+    @Override
     public int countAliases()
     {
         try (Transaction transaction = Transaction.create(this.db, "SELECT COUNT(alias) FROM alias"))

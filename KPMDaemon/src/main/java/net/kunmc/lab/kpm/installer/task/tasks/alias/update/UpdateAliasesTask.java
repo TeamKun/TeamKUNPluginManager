@@ -4,12 +4,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.alias.AliasUpdater;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.task.InstallTask;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.update.signals.AliasUpdateSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.update.signals.InvalidSourceSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.update.signals.SourcePreparedSignal;
+import net.kunmc.lab.kpm.interfaces.alias.AliasUpdater;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 

@@ -3,10 +3,11 @@ package net.kunmc.lab.kpm;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
-import net.kunmc.lab.kpm.alias.AliasProvider;
+import net.kunmc.lab.kpm.alias.AliasProviderImpl;
 import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.InstallManager;
+import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.PluginLoader;
@@ -45,6 +46,11 @@ public class KPMDaemon
     @Getter(AccessLevel.NONE)
     @NotNull
     private static KPMDaemon INSTANCE;
+
+    /**
+     * KPM のレジストリです。
+     */
+    private final KPMRegistry registry;
 
     /**
      * KPMの環境です。
@@ -112,11 +118,12 @@ public class KPMDaemon
     {
         this.envs = env;
         this.logger = env.getLogger();
+        this.registry = new KPMRegistryImpl(env);
         this.pluginMetaManager = new PluginMetaManager(this, env);
         this.kpmInfoManager = new KPMInfoManager(this);
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
-        this.aliasProvider = new AliasProvider(env.getAliasesDBPath());
+        this.aliasProvider = new AliasProviderImpl(env.getAliasesDBPath());
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
         this.hookExecutor = new HookExecutor(this);
@@ -213,7 +220,7 @@ public class KPMDaemon
     private void setupPluginResolvers(List<String> organizationNames)
     {
         GitHubURLResolver githubResolver = new GitHubURLResolver();
-        this.pluginResolver.addResolver(new AliasPluginResolver(this), "local", "alias");
+        this.pluginResolver.addResolver(new AliasPluginResolver(this.registry), "local", "alias");
         this.pluginResolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         this.pluginResolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
         this.pluginResolver.addResolver(new OmittedGitHubResolver(githubResolver), "github", "gh");

@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.meta;
 
-import net.kunmc.lab.kpm.utils.db.Transaction;
+import net.kunmc.lab.kpm.db.Transaction;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,12 +1,9 @@
 package net.kunmc.lab.kpm.alias;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.utils.db.Transaction;
+import net.kunmc.lab.kpm.db.Transaction;
 
-/**
- * エイリアスを更新するトランザクションを補助するクラスです。
- */
-public class AliasUpdater
+public class AliasUpdaterImpl implements net.kunmc.lab.kpm.interfaces.alias.AliasUpdater
 {
     private final String sourceName;
     private final String sourceURL;
@@ -15,7 +12,7 @@ public class AliasUpdater
     @Getter
     private long aliasesCount;
 
-    public AliasUpdater(String sourceName, String sourceURL, AliasProvider provider)
+    public AliasUpdaterImpl(String sourceName, String sourceURL, AliasProviderImpl provider)
     {
         this.sourceName = sourceName;
         this.sourceURL = sourceURL;
@@ -39,12 +36,7 @@ public class AliasUpdater
                 .executeUpdate(false);
     }
 
-    /**
-     * エイリアスのアップデートを行います。
-     *
-     * @param alias エイリアス
-     * @param query クエリ
-     */
+    @Override
     public void update(String alias, String query)
     {
         this.transaction.renew("INSERT OR REPLACE INTO alias (alias, query, source_id) VALUES (?, ?, ?)")
@@ -64,15 +56,13 @@ public class AliasUpdater
                 .executeUpdate(false);
     }
 
-    /**
-     * すべてのアップデートを終了し、データベースの更新を行います。
-     */
+    @Override
     public void done()
     {
         this.transaction.renew("INSERT OR REPLACE INTO source (name, source, type) VALUES (?, ?, ?)")
                 .set(1, this.sourceName)
                 .set(2, this.sourceURL)
-                .set(3, AliasSource.SourceType.WEB_SERVER.name())
+                .set(3, AliasSourceType.WEB_SERVER.name())
                 .executeUpdate(false);
 
         this.deleteRemovedAlias();
@@ -80,9 +70,7 @@ public class AliasUpdater
         this.transaction.finishManually();
     }
 
-    /**
-     * アップデートをキャンセルし、データベースをロールバックします。
-     */
+    @Override
     public void cancel()
     {
         this.transaction.abortManually();
