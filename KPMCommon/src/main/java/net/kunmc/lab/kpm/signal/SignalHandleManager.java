@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.signal;
 
-import net.kunmc.lab.kpm.installer.InstallProgress;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
  * シグナルを受け取り、処理を行うクラスです。
  * シグナルは、{@link SignalHandler}アノテーションを付与したメソッドによって処理され、以下のシグニチャを持つ必要があります。
  * <pre>
- *     public void methodName({@link InstallProgress<>}, {@link Signal})
+ *     public void methodName({@link Signal})
  * </pre>
  */
 public class SignalHandleManager
