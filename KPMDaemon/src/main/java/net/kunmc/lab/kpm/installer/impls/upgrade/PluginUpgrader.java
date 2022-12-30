@@ -31,7 +31,7 @@ import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.meta.PluginMetaProvider;
+import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
 import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
@@ -354,7 +354,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
     private HashMap<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
     {
-        PluginMetaProvider metaProvider = this.daemon.getPluginMetaManager().getProvider();
+        PluginMetaProviderImpl metaProvider = this.daemon.getPluginMetaManager().getProvider();
         return targets.stream()
                 .map(plugin -> Pair.of(plugin, metaProvider.getPluginMeta(plugin.getName())))
                 .collect(KPMCollectors.toPairHashMap());

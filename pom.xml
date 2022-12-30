@@ -15,6 +15,7 @@
         <module>KPMCommon</module>
         <module>KPMResolver</module>
         <module>KPMAlias</module>
+        <module>KPMMeta</module>
     </modules>
     <packaging>pom</packaging>
 

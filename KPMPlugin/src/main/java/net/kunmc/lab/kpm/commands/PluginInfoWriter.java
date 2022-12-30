@@ -1,13 +1,13 @@
 package net.kunmc.lab.kpm.commands;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.Utils;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.kpm.utils.TerminalWriter;
@@ -39,13 +39,13 @@ public class PluginInfoWriter extends TerminalWriter
     @Nullable
     private final KPMInformationFile infoFile;
 
-    public PluginInfoWriter(@NotNull KPMDaemon daemon, @NotNull Terminal terminal, @NotNull Plugin plugin)
+    public PluginInfoWriter(@NotNull KPMRegistry registry, @NotNull Terminal terminal, @NotNull Plugin plugin)
     {
         super(terminal);
 
         this.plugin = plugin;
 
-        PluginMetaManager metaManager = daemon.getPluginMetaManager();
+        PluginMetaManager metaManager = registry.getPluginMetaManager();
         if (metaManager.hasPluginMeta(plugin))
             this.meta = metaManager.getProvider().getPluginMeta(plugin.getName());
         else

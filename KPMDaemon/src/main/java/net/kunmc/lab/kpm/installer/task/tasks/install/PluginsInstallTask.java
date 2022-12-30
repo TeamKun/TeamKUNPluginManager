@@ -15,8 +15,8 @@ import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginRelocatingSi
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.meta.InstallOperator;
-import net.kunmc.lab.kpm.meta.PluginMetaManager;
-import net.kunmc.lab.kpm.meta.PluginMetaProvider;
+import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
+import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
@@ -56,8 +56,8 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
         COMMANDS_PATCHER = new CommandsPatcher();
     }
 
-    private final PluginMetaManager pluginMetaManager;
-    private final PluginMetaProvider pluginMetaProvider;
+    private final PluginMetaManagerImpl pluginMetaManager;
+    private final PluginMetaProviderImpl pluginMetaProvider;
     private final HookExecutor hookExecutor;
     private PluginsInstallState state;
 
@@ -65,7 +65,7 @@ public class PluginsInstallTask extends InstallTask<PluginsInstallArgument, Plug
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        PluginMetaManager pluginMetaManager = installer.getDaemon().getPluginMetaManager();
+        PluginMetaManagerImpl pluginMetaManager = installer.getDaemon().getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;
         this.pluginMetaProvider = pluginMetaManager.getProvider();
         this.hookExecutor = installer.getDaemon().getHookExecutor();

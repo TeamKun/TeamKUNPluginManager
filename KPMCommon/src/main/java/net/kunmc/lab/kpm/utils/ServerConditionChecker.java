@@ -1,13 +1,9 @@
 package net.kunmc.lab.kpm.utils;
 
-import net.kunmc.lab.kpm.KPMDaemon;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 
-/**
- * サーバの状態を判定するクラスです。
- */
 public class ServerConditionChecker
 {
     private static final Field fReloadCount;  // Lorg/craftbukkit/<version>/CraftServer; -> reloadCount:I
@@ -33,7 +29,7 @@ public class ServerConditionChecker
 
     private final long currentSessionReloadCount;
 
-    public ServerConditionChecker(KPMDaemon daemon)
+    public ServerConditionChecker()
     {
         try
         {
@@ -41,7 +37,6 @@ public class ServerConditionChecker
         }
         catch (IllegalAccessException e)
         {
-            daemon.getLogger().warning("Failed to initialize ServerReloadDetector.");
             throw new RuntimeException(e);
         }
     }
@@ -59,11 +54,6 @@ public class ServerConditionChecker
         }
     }
 
-    /**
-     * サーバがリロード中かどうかを返します。
-     *
-     * @return サーバがリロード中かどうか
-     */
     public boolean isReloading()
     {
         try

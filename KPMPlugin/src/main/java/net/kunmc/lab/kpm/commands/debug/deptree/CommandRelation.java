@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.kpm.meta.DependType;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.meta.PluginMetaProvider;
+import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.TextComponent;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommandRelation extends CommandBase
 {
-    private final PluginMetaProvider provider;
+    private final PluginMetaProviderImpl provider;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)

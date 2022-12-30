@@ -1,13 +1,14 @@
 package net.kunmc.lab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -19,35 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * プラグインのメタデータを提供するクラスです。
- */
 @SuppressWarnings("unused")
-public class PluginMetaProvider
+public class PluginMetaProviderImpl implements PluginMetaProvider
 {
     private final HikariDataSource db;
 
-    public PluginMetaProvider(@NotNull Plugin plugin, @NotNull Path databasePath)
+    public PluginMetaProviderImpl(@NotNull Plugin plugin, @NotNull Path databasePath)
     {
         this.db = Transaction.createDataSource(databasePath);
 
         this.initializeTables();
     }
 
-    /**
-     * このクラスを破棄します。
-     */
+    @Override
     public void close()
     {
         this.db.close();
     }
 
-    /**
-     * プラグインが依存(depend)しているプラグインのリストを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存しているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getDependOn(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("depend", pluginName, "dependency",
@@ -55,12 +46,7 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインが依存(soft_depend)しているプラグインのリストを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存しているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getSoftDependOn(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
@@ -68,13 +54,7 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインを依存(load_before)しているプラグインのリストを取得します。
-     * load_before は特殊な依存で, 依存しているプラグインを先に読み込むようにします。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存しているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getLoadBefore(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("load_before", pluginName, "load_before",
@@ -82,12 +62,7 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインが依存(depend)されているプラグインのリストを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存されているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getDependedBy(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("depend", pluginName, "dependency",
@@ -95,12 +70,7 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインが依存(soft_depend)されているプラグインのリストを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存されているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getSoftDependedBy(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("soft_depend", pluginName, "soft_dependency",
@@ -108,13 +78,7 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインが依存(load_before)されているプラグインのリストを取得します。
-     * load_before は特殊な依存で, 依存しているプラグインを先に読み込むようにします。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存されているプラグインのリスト
-     */
+    @Override
     public List<DependencyNode> getLoadBeforeBy(@NotNull String pluginName)
     {
         return this.getDependDataFromTable("load_before", pluginName, "load_before",
@@ -122,34 +86,19 @@ public class PluginMetaProvider
         );
     }
 
-    /**
-     * プラグインの作者を取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return プラグインの作者
-     */
+    @Override
     public List<String> getAuthors(@NotNull String pluginName)
     {
         return MetaSQLUtil.getListFromTable(this.db, "plugin_author", pluginName, "name", "author");
     }
 
-    /**
-     * プラグインの作者からプラグインのリストを取得します。
-     *
-     * @param author プラグインの作者
-     * @return プラグインのリスト
-     */
+    @Override
     public List<String> getPluginsByAuthor(@NotNull String author)
     {
         return MetaSQLUtil.getListFromTable(this.db, "plugin_author", author, "author", "name");
     }
 
-    /**
-     * プラグインが誰によってインストールされたかを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return プラグインのインストール者
-     */
+    @Override
     public InstallOperator getInstalledBy(@NotNull String pluginName)
     {
         try (Connection con = this.db.getConnection())
@@ -170,13 +119,7 @@ public class PluginMetaProvider
         }
     }
 
-    /**
-     * プラグインが依存関係かどうかを取得します。
-     * 依存関係としてマークされている場合, 自動削除等の機能の対象になります。
-     *
-     * @param pluginName プラグインの名前
-     * @return 依存関係かどうか
-     */
+    @Override
     public boolean isDependency(@NotNull String pluginName)
     {
         try (Connection con = this.db.getConnection())
@@ -198,12 +141,7 @@ public class PluginMetaProvider
         }
     }
 
-    /**
-     * プラグインが依存関係かどうかを設定します。
-     *
-     * @param pluginName   プラグインの名前
-     * @param isDependency 依存関係かどうか
-     */
+    @Override
     public void setDependencyFlag(@NotNull String pluginName, boolean isDependency)
     {
         Transaction.create(this.db, "UPDATE plugin_meta SET is_dependency = ? WHERE name = ?")
@@ -213,12 +151,7 @@ public class PluginMetaProvider
 
     }
 
-    /**
-     * プラグインの解決クエリを更新します。
-     *
-     * @param pluginName プラグインの名前
-     * @param query      解決クエリ
-     */
+    @Override
     public void updateResolveQuery(@NotNull String pluginName, @NotNull String query)
     {
         Transaction transaction = Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
@@ -260,8 +193,7 @@ public class PluginMetaProvider
         }
         catch (SQLException e)
         {
-            KPMDaemon.getInstance().getLogger()
-                    .warning("Failed to save plugin author data: " + name + " by " + authors);
+            LoggerFactory.getLogger(this.getClass()).warn("Failed to save plugin author data: " + name + " by " + authors);
         }
 
         statement = connection.prepareStatement("INSERT INTO depend(name, dependency) VALUES(?, ?)");
@@ -325,12 +257,7 @@ public class PluginMetaProvider
                 .executeUpdate(false);
     }
 
-    /**
-     * プラグインのメタデータが存在しているかどうかを返します。
-     *
-     * @param pluginName プラグインの名前
-     * @return プラグインのメタデータが存在しているかどうか
-     */
+    @Override
     public boolean isPluginMetaExists(@NotNull String pluginName)
     {
         return Transaction.create(this.db, "SELECT * FROM plugin_meta WHERE name = ?")
@@ -338,15 +265,7 @@ public class PluginMetaProvider
                 .isExists();
     }
 
-    /**
-     * プラグインのメタデータを保存します。
-     *
-     * @param plugin       プラグイン
-     * @param installedBy  プラグインのインストール者
-     * @param installedAt  プラグインのインストール日時
-     * @param resolveQuery プラグインの解決クエリ
-     * @param isDependency プラグインが依存関係かどうか
-     */
+    @Override
     public void savePluginMeta(@NotNull Plugin plugin,
                                @NotNull InstallOperator installedBy,
                                long installedAt,
@@ -371,6 +290,7 @@ public class PluginMetaProvider
                 .executeUpdate();
     }
 
+    @Override
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
         Transaction.create(
@@ -388,11 +308,7 @@ public class PluginMetaProvider
                 .executeUpdate();
     }
 
-    /**
-     * プラグインのメタデータを削除します。
-     *
-     * @param pluginName プラグインの名前
-     */
+    @Override
     public void removePluginMeta(@NotNull String pluginName)
     {
         Transaction.create(this.db, "DELETE FROM plugin_meta WHERE name = ?")
@@ -433,13 +349,7 @@ public class PluginMetaProvider
         statement.execute();
     }
 
-    /**
-     * プラグインのメタデータを取得します。
-     *
-     * @param pluginName          プラグインの名前
-     * @param includeDependencies 依存関係を含めるかどうか
-     * @return プラグインのメタデータ
-     */
+    @Override
     public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName, boolean includeDependencies, boolean includeAuthors)
     {
         try (Connection con = this.db.getConnection())
@@ -498,22 +408,13 @@ public class PluginMetaProvider
         }
     }
 
-    /**
-     * プラグインのメタデータを取得します。
-     *
-     * @param pluginName プラグインの名前
-     * @return プラグインのメタデータ
-     */
+    @Override
     public @NotNull PluginMeta getPluginMeta(@NotNull String pluginName)
     {
         return this.getPluginMeta(pluginName, true, true);
     }
 
-    /**
-     * 依存関係ツリーを保存します。
-     *
-     * @param dependencyNodes 依存関係ツリー
-     */
+    @Override
     public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
     {
         Transaction transaction = Transaction.create(
@@ -533,21 +434,13 @@ public class PluginMetaProvider
         transaction.finishManually();
     }
 
-    /**
-     * 依存関係ツリーを構築します。
-     *
-     * @param plugin プラグイン
-     */
+    @Override
     public void buildDependencyTree(@NotNull Plugin plugin)
     {
         this.buildDependencyTree(plugin.getName());
     }
 
-    /**
-     * 依存関係ツリーを構築します。
-     *
-     * @param pluginName プラグイン
-     */
+    @Override
     public void buildDependencyTree(@NotNull String pluginName)
     {
         List<DependencyNode> dependencies = this.getDependOn(pluginName);
@@ -560,11 +453,7 @@ public class PluginMetaProvider
         this.saveDependencyTree(dependencies);
     }
 
-    /**
-     * 依存関係ツリーを間引きします。
-     *
-     * @param pluginName プラグインの名前
-     */
+    @Override
     public void deleteFromDependencyTree(@NotNull String pluginName)
     {
         Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
@@ -572,22 +461,14 @@ public class PluginMetaProvider
                 .executeUpdate();
     }
 
-    /**
-     * PluginMeta のイテレータを取得します。
-     *
-     * @return PluginMeta のイテレータ
-     */
+    @Override
     @NotNull
-    public PluginMetaIterator getPluginMetaIterator()
+    public PluginMetaIteratorImpl getPluginMetaIterator()
     {
-        return new PluginMetaIterator(this, Transaction.create(this.db));
+        return new PluginMetaIteratorImpl(this, Transaction.create(this.db));
     }
 
-    /**
-     * 現在管理されているプラグインの数を取得します。
-     *
-     * @return 現在管理されているプラグインの数
-     */
+    @Override
     public int countPlugins()
     {
         try (Transaction transaction = Transaction.create(this.db, "SELECT COUNT(name) FROM plugin_meta"))
@@ -602,42 +483,7 @@ public class PluginMetaProvider
         }
     }
 
-    /**
-     * 使われていない依存関係のリストを取得します。
-     * <p>
-     * (プラグインが依存関係であるかどうかは、plugin_meta.is_dependencyを使用して確認できます)
-     * 関係はdependency_treeテーブルに格納されています。
-     * </p>
-     *
-     * <p>
-     * 例：サーバにインストールされているプラグイン：
-     * PluginAは依存関係
-     * PluginBは依存関係
-     * PluginCは依存関係ではない
-     * </p>
-     *
-     * <p>
-     * 例1：
-     * <ul>
-     *     <li>PluginAはPluginBに依存している</li>
-     *     <li>PluginBとPluginCの間には依存関係はない</li>
-     * </ul>
-     * この場合、このメソッドはPluginAとPluginBを返します。
-     * なぜなら、PluginBはPluginAによって使用されていますが、PluginAはどのプラグインにも使用されていないからです。
-     * </p>
-     *
-     * <p>
-     * 例2：
-     * <ul>
-     *     <li>PluginCはPluginAに依存している</li>
-     *     <li>PluginAはPluginBに依存している</li>
-     * </ul>
-     * この場合、このメソッドはどのプラグインも返しません。
-     * なぜなら、PluginAはPluginCによって使用されていますが、PluginCは依存関係ではなく、サーバがこのプラグインを使用しているためです。
-     * </p>
-     *
-     * @return 使用されていないプラグインのリスト
-     */
+    @Override
     public List<String> getUnusedPlugins()
     {
         List<String> unusedPlugins = new ArrayList<>();

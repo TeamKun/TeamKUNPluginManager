@@ -3,18 +3,16 @@ package net.kunmc.lab.kpm;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
-import net.kunmc.lab.kpm.alias.AliasProviderImpl;
 import net.kunmc.lab.kpm.hook.HookExecutor;
 import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.InstallManager;
-import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.loader.PluginLoader;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.meta.PluginMetaIterator;
-import net.kunmc.lab.kpm.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.resolver.PluginResolver;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
@@ -64,11 +62,6 @@ public class KPMDaemon
     private final Logger logger;
 
     /**
-     * プラグインのメタデータを管理するクラスです。
-     */
-    @NotNull
-    private final PluginMetaManager pluginMetaManager;
-    /**
      * プラグインのKPM情報ファイルを管理するクラスです。
      */
     @NotNull
@@ -88,11 +81,6 @@ public class KPMDaemon
      */
     @NotNull
     private final InstallManager installManager;
-    /**
-     * エイリアスを管理するクラスです。
-     */
-    @NotNull
-    private final AliasProvider aliasProvider;
     /**
      * プラグインをロード/アンロードするためのクラスです。
      */
@@ -119,15 +107,13 @@ public class KPMDaemon
         this.envs = env;
         this.logger = env.getLogger();
         this.registry = new KPMRegistryImpl(env);
-        this.pluginMetaManager = new PluginMetaManager(this, env);
         this.kpmInfoManager = new KPMInfoManager(this);
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.pluginResolver = new PluginResolver();
-        this.aliasProvider = new AliasProviderImpl(env.getAliasesDBPath());
         this.pluginLoader = new PluginLoader(this);
         this.installManager = new InstallManager(this);
         this.hookExecutor = new HookExecutor(this);
-        this.serverConditionChecker = new ServerConditionChecker(this);
+        this.serverConditionChecker = new ServerConditionChecker();
 
         this.setupDaemon(env.getOrganizations());
     }
@@ -177,14 +163,14 @@ public class KPMDaemon
     {
         this.logger.info("Loading plugin meta data ...");
 
+        PluginMetaManager metaManager = this.getRegistry().getPluginMetaManager();
         List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
         List<String> pluginNames = plugins.stream().parallel()
                 .map(Plugin::getName)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
 
-
-        try (PluginMetaIterator iterator = this.pluginMetaManager.getProvider().getPluginMetaIterator())
+        try (PluginMetaIterator iterator = metaManager.getProvider().getPluginMetaIterator())
         {
             while (iterator.hasNext())
             {
@@ -200,10 +186,10 @@ public class KPMDaemon
 
         for (Plugin plugin : plugins)
         {
-            if (this.pluginMetaManager.hasPluginMeta(plugin))
+            if (metaManager.hasPluginMeta(plugin))
                 continue;
 
-            this.pluginMetaManager.getProvider().savePluginMeta(
+            metaManager.getProvider().savePluginMeta(
                     plugin,
                     InstallOperator.UNKNOWN,
                     System.currentTimeMillis(),
@@ -212,7 +198,7 @@ public class KPMDaemon
             );
             this.logger.log(Level.INFO, "Plugin {0} is not managed by KPM. Adding to database ...", plugin.getName());
 
-            this.pluginMetaManager.getProvider().buildDependencyTree(plugin);
+            metaManager.getProvider().buildDependencyTree(plugin);
         }
 
     }
@@ -266,8 +252,8 @@ public class KPMDaemon
 
     public void shutdown()
     {
-        this.pluginMetaManager.getProvider().close();
-        this.aliasProvider.close();
+        this.registry.getPluginMetaManager().getProvider().close();
+        this.registry.getAliasProvider().close();
     }
 
     public Version getVersion()

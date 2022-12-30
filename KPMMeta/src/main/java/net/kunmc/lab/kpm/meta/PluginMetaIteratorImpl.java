@@ -1,17 +1,17 @@
 package net.kunmc.lab.kpm.meta;
 
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
+public class PluginMetaIteratorImpl implements PluginMetaIterator
 {
-    private final PluginMetaProvider provider;
+    private final PluginMetaProviderImpl provider;
     private final Transaction transaction;
     private final Transaction.QueryResult<PluginMeta> results;
     private final List<String> removeTargets;
@@ -19,7 +19,7 @@ public class PluginMetaIterator implements Iterator<PluginMeta>, AutoCloseable
     private boolean hasNextCalled;
     private boolean lastHasNextResult;
 
-    public PluginMetaIterator(@NotNull PluginMetaProvider metaProvider, @NotNull Transaction transaction)
+    public PluginMetaIteratorImpl(@NotNull PluginMetaProviderImpl metaProvider, @NotNull Transaction transaction)
     {
         this.provider = metaProvider;
         this.transaction = transaction.renew("SELECT * FROM plugin_meta");
