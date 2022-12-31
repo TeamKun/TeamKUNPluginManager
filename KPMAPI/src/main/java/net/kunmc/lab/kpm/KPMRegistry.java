@@ -21,6 +21,11 @@ public interface KPMRegistry
     Logger getLogger();
 
     /**
+     * KPM 環境を取得します。
+     */
+    KPMEnvironment getEnvironment();
+
+    /**
      * エイリアスを管理するクラスです。
      */
     AliasProvider getAliasProvider();

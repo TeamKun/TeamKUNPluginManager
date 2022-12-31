@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 class KPMRegistryImpl implements KPMRegistry
 {
     private final Logger logger;
+    private final KPMEnvironment environment;
     private final AliasProvider aliasProvider;
     private final PluginMetaManager pluginMetaManager;
     private final KPMInfoManager kpmInfoManager;
@@ -35,6 +36,7 @@ class KPMRegistryImpl implements KPMRegistry
     public KPMRegistryImpl(@NotNull KPMEnvironment env)
     {
         this.logger = env.getLogger();
+        this.environment = env;
         this.pluginMetaManager = new PluginMetaManagerImpl(
                 this,
                 env.getMetadataDBPath(),

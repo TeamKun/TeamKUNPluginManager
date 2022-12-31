@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 /**
  * KPM の実行環境を表すクラスです。
  */
-@Builder
 @Getter
-public class KPMEnvironment
+@Builder
+public class KPMEnvironmentImpl implements KPMEnvironment
 {
     /**
      * KPMのプラグインです。
@@ -82,9 +82,9 @@ public class KPMEnvironment
     @Singular("sources")
     private final Map<String, String> sources;
 
-    public static KPMEnvironmentBuilder builder(@NotNull Plugin plugin, @NotNull Logger logger, @NotNull Path dataDirPath)
+    public static KPMEnvironmentImplBuilder builder(@NotNull Plugin plugin, @NotNull Logger logger, @NotNull Path dataDirPath)
     {
-        return new KPMEnvironmentBuilder()
+        return new KPMEnvironmentImplBuilder()
                 .plugin(plugin)
                 .logger(logger)
                 .dataDirPath(dataDirPath)
@@ -92,7 +92,7 @@ public class KPMEnvironment
                 .excludePlugin("bStats");
     }
 
-    public static KPMEnvironmentBuilder builder(@NotNull Plugin plugin)
+    public static KPMEnvironmentImplBuilder builder(@NotNull Plugin plugin)
     {
         return builder(plugin, plugin.getLogger(), plugin.getDataFolder().toPath());
     }

@@ -195,7 +195,7 @@ public abstract class AbstractInstaller<A extends InstallerArgument, E extends E
      */
     protected boolean isPluginIgnored(@NotNull String pluginName)
     {
-        return this.getRegistry().getEnvs().getExcludes().stream()
+        return this.getRegistry().getEnvironment().getExcludes().stream()
                 .parallel()
                 .anyMatch(s -> s.equalsIgnoreCase(pluginName));
     }

@@ -17,7 +17,7 @@ public class InstallManagerImpl implements net.kunmc.lab.kpm.interfaces.installe
 
     public InstallManagerImpl(@NotNull TokenStore store)
     {
-        this.tokenStore = store
+        this.tokenStore = store;
 
         this.runningInstall = null;
     }

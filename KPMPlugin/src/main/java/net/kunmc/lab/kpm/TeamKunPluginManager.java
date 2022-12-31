@@ -60,7 +60,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         Path dataFolder = plugin.getDataFolder().toPath();
 
-        return KPMEnvironment.builder(plugin)
+        return KPMEnvironmentImpl.builder(plugin)
                 .tokenPath(dataFolder.resolve(getStringNonNull(config, "paths.token.body")))
                 .tokenKeyPath(dataFolder.resolve(getStringNonNull(config, "paths.token.decryptionKey")))
                 .metadataDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.metadata")))

@@ -1,7 +1,7 @@
 package net.kunmc.lab.plugin.kpmupgrader;
 
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.KPMEnvironment;
+import net.kunmc.lab.kpm.KPMEnvironmentImpl;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
@@ -63,7 +63,7 @@ public class UpgradeImpl
         Path dataDir = this.plugin.getDataFolder().getParentFile().toPath();  // plugins/<kpm>/.caches/hogefuga/
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
 
-        this.daemon = new KPMDaemonMock(KPMEnvironment.builder(this.plugin)
+        this.daemon = new KPMDaemonMock(KPMEnvironmentImpl.builder(this.plugin)
                 .dataDirPath(kpmDataFolder)
                 .tokenPath(kpmDataFolder.resolve("token.dat"))
                 .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
