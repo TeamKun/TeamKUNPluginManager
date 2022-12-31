@@ -13,9 +13,9 @@ import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.impl.GitHubSuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.resolver.utils.URLResolveUtil;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.apache.commons.lang.StringUtils;
@@ -97,7 +97,7 @@ public class GitHubURLResolver implements URLResolver
 
         if (parsedURL.getFinalName() != null)
             // Return because of the query is directly linking to the plugin file.
-            return new SuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
+            return new AbstractSuccessResult(this, query.getQuery(), ResolveResult.Source.GITHUB);
 
         return this.processGitHubAPI(parsedURL, query.getVersion());
     }

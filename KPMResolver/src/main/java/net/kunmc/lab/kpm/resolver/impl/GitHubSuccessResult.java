@@ -3,14 +3,14 @@ package net.kunmc.lab.kpm.resolver.impl;
 import lombok.Getter;
 import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
 @Getter
-public class GitHubSuccessResult extends SuccessResult implements MarketplaceResult
+public class GitHubSuccessResult extends AbstractSuccessResult implements MarketplaceResult
 {
     /**
      * リポジトリ(プラグイン)のオーナー

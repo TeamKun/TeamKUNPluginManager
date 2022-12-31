@@ -4,14 +4,14 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.VersionedResult;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 @Getter
-public class SpigotMCSuccessResult extends SuccessResult implements MarketplaceResult, VersionedResult
+public class SpigotMCSuccessResult extends AbstractSuccessResult implements MarketplaceResult, VersionedResult
 {
     @NotNull
     private final String title;

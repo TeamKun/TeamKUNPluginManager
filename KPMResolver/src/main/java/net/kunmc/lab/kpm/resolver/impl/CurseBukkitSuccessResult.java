@@ -5,7 +5,7 @@ import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ import java.io.IOException;
  * CurseForge または Bukkit.org の成功結果を表すクラス
  */
 @Getter
-public class CurseBukkitSuccessResult extends SuccessResult implements MarketplaceResult
+public class CurseBukkitSuccessResult extends AbstractSuccessResult implements MarketplaceResult
 {
     @NotNull
     private final String title;
