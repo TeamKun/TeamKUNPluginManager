@@ -15,6 +15,7 @@ import net.kunmc.lab.kpm.kpminfo.KPMInfoManagerImpl;
 import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
 import net.kunmc.lab.kpm.resolver.PluginResolverImpl;
 import net.kunmc.lab.kpm.task.PluginLoaderImpl;
+import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,7 @@ class KPMRegistryImpl implements KPMRegistry
     private final InstallManager installManager;
     private final PluginLoader pluginLoader;
     private final PluginResolver pluginResolver;
+    private final ServerConditionChecker serverConditionChecker;
 
     public KPMRegistryImpl(@NotNull KPMEnvironment env)
     {
@@ -50,6 +52,7 @@ class KPMRegistryImpl implements KPMRegistry
         this.installManager = new InstallManagerImpl(this.tokenStore);
         this.pluginLoader = new PluginLoaderImpl(this);
         this.pluginResolver = new PluginResolverImpl();
+        this.serverConditionChecker = new ServerConditionChecker();
     }
 
     public Version getVersion()

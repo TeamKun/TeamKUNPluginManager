@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -317,7 +318,8 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                 .executeUpdate();
     }
 
-    void removePluginMeta(String pluginName, Transaction transaction)
+    @Override
+    public void removePluginMeta(String pluginName, Transaction transaction)
     {
         transaction.renew("DELETE FROM plugin_meta WHERE name = ?")
                 .set(1, pluginName)
@@ -325,7 +327,8 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                 .executeUpdate(false);
     }
 
-    void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
+    @Override
+    public void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
         PreparedStatement statement =
                 connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
@@ -463,7 +466,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
 
     @Override
     @NotNull
-    public PluginMetaIteratorImpl getPluginMetaIterator()
+    public PluginMetaIterator getPluginMetaIterator()
     {
         return new PluginMetaIteratorImpl(this, Transaction.create(this.db));
     }

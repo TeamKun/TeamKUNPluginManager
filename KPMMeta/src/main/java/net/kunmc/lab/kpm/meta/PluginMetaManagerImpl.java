@@ -69,10 +69,10 @@ public class PluginMetaManagerImpl implements PluginMetaManager
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
-        this.daemon.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを作成しています ...");
+        this.registry.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを作成しています ...");
         this.onInstalled(plugin, InstallOperator.UNKNOWN, null, false);
 
-        this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
+        this.registry.getLogger().info("依存関係ツリーを構築しています ...");
         this.provider.buildDependencyTree(plugin);
 
     }
@@ -80,7 +80,7 @@ public class PluginMetaManagerImpl implements PluginMetaManager
     @EventHandler
     public void onDisable(PluginDisableEvent event)
     {
-        ServerConditionChecker conditions = this.daemon.getServerConditionChecker();
+        ServerConditionChecker conditions = this.registry.getServerConditionChecker();
         if (conditions.isStopping() || conditions.isReloading())
             return;  // The server is being stopped.
 
@@ -90,10 +90,10 @@ public class PluginMetaManagerImpl implements PluginMetaManager
 
         String pluginNameFull = plugin.getName() + " (" + plugin.getDescription().getVersion() + ")";
 
-        this.daemon.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを削除しています ...");
+        this.registry.getLogger().info("プラグイン " + pluginNameFull + " のメタデータを削除しています ...");
         this.onUninstalled(plugin.getName());
 
-        this.daemon.getLogger().info("依存関係ツリーを構築しています ...");
+        this.registry.getLogger().info("依存関係ツリーを構築しています ...");
         this.provider.deleteFromDependencyTree(plugin.getName());
     }
 

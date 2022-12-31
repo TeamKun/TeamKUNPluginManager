@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.interfaces.meta;
 
+import net.kunmc.lab.kpm.db.Transaction;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
@@ -7,6 +8,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -149,6 +152,22 @@ public interface PluginMetaProvider
      * @param pluginName プラグインの名前
      */
     void removePluginMeta(@NotNull String pluginName);
+
+    /**
+     * プラグインのメタデータを削除します。
+     *
+     * @param pluginName  プラグインの名前
+     * @param transaction 使用するトランザクション
+     */
+    void removePluginMeta(String pluginName, Transaction transaction);
+
+    /**
+     * プラグインの依存データを削除します。
+     *
+     * @param connection 使用するコネクション
+     * @param pluginName プラグインの名前
+     */
+    void removePluginRelationalData(Connection connection, String pluginName) throws SQLException;
 
     /**
      * プラグインのメタデータを取得します。

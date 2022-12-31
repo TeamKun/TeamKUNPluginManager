@@ -7,6 +7,7 @@ import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
+import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.kpm.versioning.Version;
 
 import java.util.logging.Logger;
@@ -70,4 +71,9 @@ public interface KPMRegistry
      * プラグインクエリを解決するクラスです。
      */
     PluginResolver getPluginResolver();
+
+    /**
+     * サーバの状態を取得するクラスです。
+     */
+    ServerConditionChecker getServerConditionChecker();
 }
