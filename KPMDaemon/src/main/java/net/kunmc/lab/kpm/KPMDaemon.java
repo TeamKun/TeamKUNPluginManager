@@ -1,22 +1,32 @@
 package net.kunmc.lab.kpm;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
+import net.kunmc.lab.kpm.alias.AliasProviderImpl;
+import net.kunmc.lab.kpm.hook.HookExecutorImpl;
 import net.kunmc.lab.kpm.http.Requests;
+import net.kunmc.lab.kpm.installer.InstallManagerImpl;
+import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
+import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
+import net.kunmc.lab.kpm.interfaces.installer.InstallManager;
+import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
+import net.kunmc.lab.kpm.kpminfo.KPMInfoManagerImpl;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
+import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
+import net.kunmc.lab.kpm.resolver.PluginResolverImpl;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
 import net.kunmc.lab.kpm.resolver.impl.github.BruteforceGitHubResolver;
 import net.kunmc.lab.kpm.resolver.impl.github.GitHubURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.github.OmittedGitHubResolver;
+import net.kunmc.lab.kpm.task.PluginLoaderImpl;
 import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -35,58 +45,39 @@ import java.util.stream.Collectors;
  * KPMのデーモンです。
  */
 @Getter
-public class KPMDaemon
+public class KPMDaemon implements KPMRegistry
 {
-    @SuppressWarnings("NotNullFieldNotInitialized")
-    @Getter(AccessLevel.NONE)
-    @NotNull
-    private static KPMDaemon INSTANCE;
-
-    /**
-     * KPM のレジストリです。
-     */
-    private final KPMRegistry registry;
-
-    /**
-     * KPMの環境です。
-     */
-    @NotNull
-    private final KPMEnvironment envs;
-    /**
-     * KPMのロガーです。
-     */
-    @NotNull
     private final Logger logger;
-
-    /**
-     * サーバの状態を判定するクラスです。
-     */
-    @NotNull
+    private final KPMEnvironment environment;
+    private final AliasProvider aliasProvider;
+    private final PluginMetaManager pluginMetaManager;
+    private final KPMInfoManager kpmInfoManager;
+    private final HookExecutor hookExecutor;
+    private final TokenStore tokenStore;
+    private final InstallManager installManager;
+    private final PluginLoader pluginLoader;
+    private final PluginResolver pluginResolver;
     private final ServerConditionChecker serverConditionChecker;
-
-    {
-        INSTANCE = this;
-    }
 
     public KPMDaemon(@NotNull KPMEnvironment env)
     {
-        this.envs = env;
         this.logger = env.getLogger();
-        this.registry = new KPMRegistryImpl(env);
+        this.environment = env;
+        this.pluginMetaManager = new PluginMetaManagerImpl(
+                this,
+                env.getMetadataDBPath(),
+                env.getPlugin()
+        );
+        this.aliasProvider = new AliasProviderImpl(env.getAliasesDBPath());
+        this.kpmInfoManager = new KPMInfoManagerImpl(this);
+        this.hookExecutor = new HookExecutorImpl(this);
+        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
+        this.installManager = new InstallManagerImpl(this.tokenStore);
+        this.pluginLoader = new PluginLoaderImpl(this);
+        this.pluginResolver = new PluginResolverImpl();
         this.serverConditionChecker = new ServerConditionChecker();
 
         this.setupDaemon(env.getOrganizations());
-    }
-
-    /**
-     * KPMのインスタンスを取得します。
-     *
-     * @return KPMのインスタンス
-     */
-    @NotNull
-    public static KPMDaemon getInstance()
-    {
-        return INSTANCE;
     }
 
     public void setupDaemon(@NotNull List<String> organizationNames)
@@ -104,7 +95,7 @@ public class KPMDaemon
 
             this.logger.info("Loading KPM information from plugins...");
 
-            KPMInfoManager kpmInfoManager = this.registry.getKpmInfoManager();
+            KPMInfoManager kpmInfoManager = this.getKpmInfoManager();
             Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 
             int loaded = 0;
@@ -123,7 +114,7 @@ public class KPMDaemon
     {
         this.logger.info("Loading plugin meta data ...");
 
-        PluginMetaManager metaManager = this.getRegistry().getPluginMetaManager();
+        PluginMetaManager metaManager = this.getPluginMetaManager();
         List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
         List<String> pluginNames = plugins.stream().parallel()
                 .map(Plugin::getName)
@@ -165,10 +156,10 @@ public class KPMDaemon
 
     private void setupPluginResolvers(List<String> organizationNames)
     {
-        PluginResolver resolver = this.registry.getPluginResolver();
+        PluginResolver resolver = this.getPluginResolver();
 
         GitHubURLResolver githubResolver = new GitHubURLResolver();
-        resolver.addResolver(new AliasPluginResolver(this.registry), "local", "alias");
+        resolver.addResolver(new AliasPluginResolver(this), "local", "alias");
         resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
         resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
         resolver.addResolver(new OmittedGitHubResolver(githubResolver), "github", "gh");
@@ -184,7 +175,7 @@ public class KPMDaemon
 
     private void setupToken()
     {
-        TokenStore tokenStore = this.registry.getTokenStore();
+        TokenStore tokenStore = this.getTokenStore();
 
         try
         {
@@ -212,17 +203,19 @@ public class KPMDaemon
     private void initializeRequests()
     {
         Requests.setVersion(this.getVersion().toString());
-        Requests.setTokenStore(this.registry.getTokenStore());
+        Requests.setTokenStore(this.getTokenStore());
     }
 
     public void shutdown()
     {
-        this.registry.getPluginMetaManager().getProvider().close();
-        this.registry.getAliasProvider().close();
+        this.getPluginMetaManager().getProvider().close();
+        this.getAliasProvider().close();
     }
 
     public Version getVersion()
     {
-        return Version.of(this.getEnvs().getPlugin().getDescription().getVersion());
+        return Version.of(this.getEnvironment().getPlugin().getDescription().getVersion());
     }
+
+
 }
