@@ -19,11 +19,12 @@ import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSig
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElementImpl;
 import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import net.kunmc.lab.kpm.task.tasks.install.PluginsInstallArgument;
@@ -244,7 +245,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 .map(entry -> {
                     PluginDescriptionFile description = entry.getKey();
                     Path pluginPath = entry.getValue();
-                    return new DependencyElement(
+                    return new DependencyElementImpl(
                             description.getName(),
                             pluginPath,
                             description,

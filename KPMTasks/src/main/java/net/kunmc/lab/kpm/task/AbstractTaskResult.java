@@ -2,6 +2,7 @@ package net.kunmc.lab.kpm.task;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import net.kunmc.lab.kpm.interfaces.task.TaskResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

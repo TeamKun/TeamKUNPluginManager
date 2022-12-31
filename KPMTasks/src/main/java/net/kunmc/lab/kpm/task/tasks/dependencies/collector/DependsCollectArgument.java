@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.task.tasks.dependencies.collector;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;

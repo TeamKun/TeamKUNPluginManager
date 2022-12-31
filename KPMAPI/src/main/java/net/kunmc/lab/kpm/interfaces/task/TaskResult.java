@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.task;
+package net.kunmc.lab.kpm.interfaces.task;
 
 /**
  * 実行したタスクの結果を表します。

@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.task.tasks.lookup;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
 import org.jetbrains.annotations.NotNull;
 
 /**

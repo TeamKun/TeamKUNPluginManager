@@ -2,8 +2,8 @@ package net.kunmc.lab.kpm.task.tasks.dependencies.computer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.kunmc.lab.kpm.task.TaskArgument;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 
 import java.util.List;
 

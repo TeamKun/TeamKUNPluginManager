@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector;
 
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

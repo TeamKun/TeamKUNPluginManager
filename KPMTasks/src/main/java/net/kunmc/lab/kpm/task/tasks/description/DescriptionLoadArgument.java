@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.task.tasks.description;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;

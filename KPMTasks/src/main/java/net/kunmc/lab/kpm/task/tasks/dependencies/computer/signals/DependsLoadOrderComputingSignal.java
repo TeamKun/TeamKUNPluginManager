@@ -2,8 +2,8 @@ package net.kunmc.lab.kpm.task.tasks.dependencies.computer.signals;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.signal.Signal;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;

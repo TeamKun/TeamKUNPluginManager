@@ -6,11 +6,12 @@ import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElementImpl;
 import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
 import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyDownloadFailedSignal;
 import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
@@ -237,7 +238,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
             else
                 query = pluginDescriptionFile.getName();
 
-            dependencyElements.put(entry.getKey(), new DependencyElement(
+            dependencyElements.put(entry.getKey(), new DependencyElementImpl(
                     pluginDescriptionFile.getName(), entry.getValue().getPath(),
                     pluginDescriptionFile, kpmInfoFile, query
             ));

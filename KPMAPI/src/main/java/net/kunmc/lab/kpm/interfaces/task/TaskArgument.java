@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.task;
+package net.kunmc.lab.kpm.interfaces.task;
 
 /**
  * タスクの引数の基底クラスです。

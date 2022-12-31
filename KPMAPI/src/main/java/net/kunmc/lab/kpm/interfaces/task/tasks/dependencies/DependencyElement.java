@@ -1,46 +1,37 @@
-package net.kunmc.lab.kpm.task.tasks.dependencies;
+package net.kunmc.lab.kpm.interfaces.task.tasks.dependencies;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
 /**
  * 依存関係 系のタスクで使用される、概念的な依存関係を表すクラスです。
  */
-@Value
-@AllArgsConstructor
-public class DependencyElement
+public interface DependencyElement
 {
     /**
      * 依存関係の名前です。
      */
-    @NotNull
-    String pluginName;
+    String getPluginName();
+
     /**
      * 依存関係プラグインがあるのパスです。
      */
-    @NotNull
-    Path pluginPath;
+    Path getPluginPath();
 
     /**
      * 依存関係のプラグイン情報ファイルです。
      */
-    @NotNull
-    PluginDescriptionFile pluginDescription;
+    PluginDescriptionFile getPluginDescription();
+
     /**
      * 依存関係のKPM情報ファイルです。
      */
-    @Nullable
-    KPMInformationFile kpmInfoFile;
+    KPMInformationFile getKpmInfoFile();
 
     /**
      * 依存関係の解決に使用したクエリです。
      */
-    @Nullable
-    String query;
+    String getQuery();
 }

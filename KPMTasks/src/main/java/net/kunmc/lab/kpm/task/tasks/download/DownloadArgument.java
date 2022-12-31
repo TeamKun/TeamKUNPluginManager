@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.task.tasks.download;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,12 +26,6 @@ public class DownloadArgument implements TaskArgument
      */
     @Nullable
     Path path;
-
-    public DownloadArgument(@NotNull String url, @Nullable Path path)
-    {
-        this.url = url;
-        this.path = path;
-    }
 
     public DownloadArgument(@NotNull String url)
     {

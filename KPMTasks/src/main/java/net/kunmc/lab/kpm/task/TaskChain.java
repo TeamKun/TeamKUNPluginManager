@@ -4,6 +4,9 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
+import net.kunmc.lab.kpm.interfaces.task.InstallTask;
+import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
+import net.kunmc.lab.kpm.interfaces.task.TaskResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

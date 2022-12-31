@@ -6,10 +6,11 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.signals.SearchingPluginSignal
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElementImpl;
 import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
 import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallResult;
@@ -155,7 +156,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                     Path path = PluginUtil.getFile(pl).toPath();
 
                     // Dummy element
-                    return new DependencyElement(name, path, descriptionFile, null, null);
+                    return new DependencyElementImpl(name, path, descriptionFile, null, null);
                 })
                 .collect(Collectors.toList());
 

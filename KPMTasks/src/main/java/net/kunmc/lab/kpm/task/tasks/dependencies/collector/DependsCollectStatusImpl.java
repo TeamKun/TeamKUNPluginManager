@@ -7,8 +7,8 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
-import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
