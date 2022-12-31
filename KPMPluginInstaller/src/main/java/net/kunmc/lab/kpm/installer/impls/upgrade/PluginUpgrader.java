@@ -16,12 +16,11 @@ import net.kunmc.lab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
-import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;
 import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
@@ -201,7 +200,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         for (Map.Entry<PluginDescriptionFile, SuccessResult> entry : resolveResultMap.entrySet())
         {
             unloadedPlugins.remove(entry.getKey());  // unloadedPlugins will be used to restore unloaded dependencies, so we need to ignore plugins that will be installed.
-            AbstractSuccessResult resolveResult = entry.getValue();
+            SuccessResult resolveResult = entry.getValue();
 
             PluginInstaller installer;
             try
@@ -355,7 +354,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
 
     private HashMap<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
     {
-        PluginMetaProviderImpl metaProvider = this.daemon.getPluginMetaManager().getProvider();
+        PluginMetaProvider metaProvider = this.registry.getPluginMetaManager().getProvider();
         return targets.stream()
                 .map(plugin -> Pair.of(plugin, metaProvider.getPluginMeta(plugin.getName())))
                 .collect(KPMCollectors.toPairHashMap());

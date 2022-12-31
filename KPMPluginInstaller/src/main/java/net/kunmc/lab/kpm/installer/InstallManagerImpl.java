@@ -3,13 +3,14 @@ package net.kunmc.lab.kpm.installer;
 import net.kunmc.lab.kpm.TokenStore;
 import net.kunmc.lab.kpm.installer.exceptions.InstallerRunningException;
 import net.kunmc.lab.kpm.installer.exceptions.TokenNotAvailableException;
+import net.kunmc.lab.kpm.interfaces.installer.InstallManager;
 import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.jetbrains.annotations.NotNull;
 
-public class InstallManagerImpl implements net.kunmc.lab.kpm.interfaces.installer.InstallManager
+public class InstallManagerImpl implements InstallManager
 {
     private final TokenStore tokenStore;
 

@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.installer.impls.clean;
 
-import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
@@ -33,12 +32,6 @@ import java.util.stream.Collectors;
  */
 public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorCause, CleanTasks>
 {
-    private static final Path PLUGIN_DIR;
-
-    static
-    {
-        PLUGIN_DIR = KPMDaemon.getInstance().getEnvs().getDataDirPath().getParent();
-    }
 
     public GarbageCleaner(@NotNull KPMRegistry registry, @NotNull SignalHandleManager signalHandler) throws IOException
     {
@@ -48,8 +41,9 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
     @Override
     public InstallResult<CleanTasks> execute(@NotNull CleanArgument argument) throws TaskFailedException
     {
+        Path pluginsDir = this.registry.getEnvironment().getPlugin().getDataFolder().getParentFile().toPath();
         List<String> excludeDataNames = argument.getExcludeDataNames();
-        excludeDataNames.addAll(KPMDaemon.getInstance().getEnvs().getExcludes());
+        excludeDataNames.addAll(this.registry.getEnvironment().getExcludes());
         List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
                 .map(Plugin::getName)
                 .collect(Collectors.toList());
@@ -64,7 +58,7 @@ public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorC
                 )
                 .bridgeArgument(searchResult ->
                         new GarbageCleanArgument(searchResult.getGarbageFiles()))
-                .submitAll(new GarbageSearchArgument(excludeDataNames, PLUGIN_DIR, plugins));
+                .submitAll(new GarbageSearchArgument(excludeDataNames, pluginsDir, plugins));
 
         List<Path> deleted = new ArrayList<>();
         List<Path> failed = new ArrayList<>();

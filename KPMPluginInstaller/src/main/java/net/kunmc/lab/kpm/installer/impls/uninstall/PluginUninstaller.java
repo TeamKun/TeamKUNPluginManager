@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  *     <li>{@link UnInstallTasks#UNINSTALLING_PLUGINS} - プラグインをアンインストールする。</li>
  * </ol>
  */
-public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument, UnInstallErrorCause, UnInstallTasks>
+public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnInstallErrorCause, UnInstallTasks>
 {
     public PluginUninstaller(@NotNull KPMRegistry registry, @NotNull SignalHandleManager signalHandler) throws IOException
     {
@@ -49,7 +49,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
     }
 
     @Override
-    public InstallResult<UnInstallTasks> execute(@NotNull net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument argument) throws TaskFailedException
+    public InstallResult<UnInstallTasks> execute(@NotNull UninstallArgument argument) throws TaskFailedException
     {
         List<Plugin> installTargets = new ArrayList<>();
         // region Search plugin
