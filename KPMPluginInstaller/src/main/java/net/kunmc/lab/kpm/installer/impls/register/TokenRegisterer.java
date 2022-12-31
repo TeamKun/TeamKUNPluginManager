@@ -19,9 +19,9 @@ import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeExpire
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeReceivedSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeRequestFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
-import net.kunmc.lab.kpm.installer.task.TaskFailedException;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.task.TaskFailedException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

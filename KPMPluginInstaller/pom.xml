@@ -44,5 +44,11 @@
             <version>3.0.0-pre8</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMTasks</artifactId>
+            <version>3.0.0-pre8</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

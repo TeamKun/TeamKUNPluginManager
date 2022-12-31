@@ -8,10 +8,10 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstallSucceedResult;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
-import net.kunmc.lab.kpm.installer.task.TaskFailedException;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.task.TaskFailedException;
+import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallResult;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 

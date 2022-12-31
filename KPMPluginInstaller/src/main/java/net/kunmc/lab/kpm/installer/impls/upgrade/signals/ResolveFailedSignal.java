@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveState;
+import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveErrorCause;
+import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveState;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 

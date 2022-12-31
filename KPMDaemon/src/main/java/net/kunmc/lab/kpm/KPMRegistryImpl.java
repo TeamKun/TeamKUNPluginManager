@@ -4,7 +4,7 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasProviderImpl;
 import net.kunmc.lab.kpm.hook.HookExecutorImpl;
 import net.kunmc.lab.kpm.installer.InstallManagerImpl;
-import net.kunmc.lab.kpm.installer.loader.PluginLoaderImpl;
+import net.kunmc.lab.kpm.installer.PluginLoaderImpl;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.installer.InstallManager;

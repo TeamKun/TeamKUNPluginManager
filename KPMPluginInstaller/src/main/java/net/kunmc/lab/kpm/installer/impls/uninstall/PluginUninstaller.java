@@ -5,16 +5,16 @@ import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.SearchingPluginSignal;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
-import net.kunmc.lab.kpm.installer.task.TaskFailedException;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.DependencyElement;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderArgument;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.DependsComputeOrderTask;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UnInstallTask;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.task.TaskFailedException;
+import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
+import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
+import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
+import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallResult;
+import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallTask;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import org.bukkit.Bukkit;
@@ -178,7 +178,7 @@ public class PluginUninstaller extends AbstractInstaller<net.kunmc.lab.kpm.insta
                             .map(element -> namePluginMap.get(element.getPluginName()))
                             .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
 
-                    return new net.kunmc.lab.kpm.installer.task.tasks.uninstall.UninstallArgument(orderedPlugins, uninstallDependencies, finalDependencyBehavior);
+                    return new net.kunmc.lab.kpm.task.tasks.uninstall.UninstallArgument(orderedPlugins, uninstallDependencies, finalDependencyBehavior);
                 })
                 .submitAll(new DependsComputeOrderArgument(computeOrderTarget));
         // endregion

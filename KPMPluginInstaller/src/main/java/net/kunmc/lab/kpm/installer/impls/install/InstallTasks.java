@@ -1,5 +1,12 @@
 package net.kunmc.lab.kpm.installer.impls.install;
 
+import net.kunmc.lab.kpm.task.AbstractInstallTask;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.DependsCollectTask;
+import net.kunmc.lab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
+import net.kunmc.lab.kpm.task.tasks.description.DescriptionLoadTask;
+import net.kunmc.lab.kpm.task.tasks.download.DownloadTask;
+import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveTask;
+
 /**
  * インストールに必要なタスクをまとめた列挙型です。
  * デバッグ用に使用されることがあります。
@@ -18,20 +25,20 @@ public enum InstallTasks
     /**
      * プラグイン・クエリの解決中であることを示します。
      *
-     * @see net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveTask
+     * @see PluginResolveTask
      */
     RESOLVING_QUERY,
     /**
      * プラグインのダウンロード中であることを示します。
      *
-     * @see net.kunmc.lab.kpm.installer.task.tasks.download.DownloadTask
+     * @see DownloadTask
      */
     DOWNLOADING,
     /**
      * プラグイン情報の読み込み中であることを示します。
      *
      * @see org.bukkit.plugin.PluginDescriptionFile
-     * @see net.kunmc.lab.kpm.installer.task.tasks.description.DescriptionLoadTask
+     * @see DescriptionLoadTask
      */
     LOADING_PLUGIN_DESCRIPTION,
     /**
@@ -48,19 +55,19 @@ public enum InstallTasks
     /**
      * 依存関係のインストール中であることを示します。
      *
-     * @see net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.DependsCollectTask
+     * @see DependsCollectTask
      */
     COLLECTING_DEPENDENCIES,
     /**
      * プラグインの読み込み順序を計算中であることを示します。
      *
-     * @see net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal
+     * @see DependsLoadOrderComputingSignal
      */
     COMPUTING_LOAD_ORDER,
     /**
      * プラグインのインストール中であることを示します。
      *
-     * @see net.kunmc.lab.kpm.installer.task.InstallTask
+     * @see AbstractInstallTask
      */
     INSTALLING_PLUGINS,
 }

@@ -2,11 +2,6 @@ package net.kunmc.lab.kpm.installer;
 
 import lombok.Getter;
 import net.kunmc.lab.kpm.KPMRegistry;
-import net.kunmc.lab.kpm.installer.task.InstallTask;
-import net.kunmc.lab.kpm.installer.task.TaskArgument;
-import net.kunmc.lab.kpm.installer.task.TaskChain;
-import net.kunmc.lab.kpm.installer.task.TaskFailedException;
-import net.kunmc.lab.kpm.installer.task.TaskResult;
 import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
@@ -14,6 +9,11 @@ import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
+import net.kunmc.lab.kpm.task.InstallTask;
+import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.task.TaskChain;
+import net.kunmc.lab.kpm.task.TaskFailedException;
+import net.kunmc.lab.kpm.task.TaskResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
