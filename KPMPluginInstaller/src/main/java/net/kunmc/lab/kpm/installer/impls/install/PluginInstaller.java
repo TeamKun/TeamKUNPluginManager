@@ -6,9 +6,9 @@ import net.kunmc.lab.kpm.installer.impls.install.signals.AlreadyInstalledPluginS
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;
 import net.kunmc.lab.kpm.task.TaskResult;

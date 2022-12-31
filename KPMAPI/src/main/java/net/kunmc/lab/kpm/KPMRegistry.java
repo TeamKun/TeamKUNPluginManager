@@ -7,6 +7,7 @@ import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
+import net.kunmc.lab.kpm.versioning.Version;
 
 import java.util.logging.Logger;
 
@@ -19,6 +20,11 @@ public interface KPMRegistry
      * ロガーを取得します。
      */
     Logger getLogger();
+
+    /**
+     * デーモンのバージョンを取得します。
+     */
+    Version getVersion();
 
     /**
      * KPM 環境を取得します。

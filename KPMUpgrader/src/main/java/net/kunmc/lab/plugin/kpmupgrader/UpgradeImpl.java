@@ -11,8 +11,9 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -87,7 +88,7 @@ public class UpgradeImpl
         ));
     }
 
-    private SuccessResult resolveKPM(String version)
+    private AbstractSuccessResult resolveKPM(String version)
     {
         this.logger.info("最新の KPM を解決しています。");
 
@@ -95,10 +96,10 @@ public class UpgradeImpl
 
         ResolveResult resolveResult = this.daemon.getPluginResolver().resolve(query);
 
-        if (resolveResult instanceof SuccessResult)
+        if (resolveResult instanceof AbstractSuccessResult)
         {
             this.logger.info("KPM を解決しました：" + ((SuccessResult) resolveResult).getVersion());
-            return (SuccessResult) resolveResult;
+            return (AbstractSuccessResult) resolveResult;
         }
 
         assert resolveResult instanceof ErrorResultImpl;
@@ -141,7 +142,7 @@ public class UpgradeImpl
         }
     }
 
-    private boolean installNewKPM(SuccessResult resolveResult)
+    private boolean installNewKPM(AbstractSuccessResult resolveResult)
     {
         this.logger.info("新しい KPM をインストールしています。");
 
@@ -176,7 +177,7 @@ public class UpgradeImpl
     {
         this.logger.info("KPM をアッグレートしています ...");
 
-        SuccessResult result = this.resolveKPM(version);
+        AbstractSuccessResult result = this.resolveKPM(version);
         if (result == null)
             return;
 

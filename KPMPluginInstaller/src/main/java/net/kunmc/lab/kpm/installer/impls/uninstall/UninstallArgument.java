@@ -2,8 +2,8 @@ package net.kunmc.lab.kpm.installer.impls.uninstall;
 
 import lombok.Builder;
 import lombok.Data;
-import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

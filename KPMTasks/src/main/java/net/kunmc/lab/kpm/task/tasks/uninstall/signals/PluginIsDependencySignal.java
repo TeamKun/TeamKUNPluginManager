@@ -1,8 +1,7 @@
-package net.kunmc.lab.kpm.installer.impls.uninstall.signals;
+package net.kunmc.lab.kpm.task.tasks.uninstall.signals;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
@@ -32,7 +31,6 @@ public class PluginIsDependencySignal extends Signal
 
     /**
      * どのように依存関係を処理するかを設定します。
-     * この値を設定しない場合, {@link UninstallArgument#getOnDependencyFound()} が使用されます。
      */
     @Nullable
     private PluginIsDependencySignal.Operation operation;

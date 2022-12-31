@@ -3,7 +3,8 @@ package net.kunmc.lab.kpm.installer.impls.install;
 import lombok.Builder;
 import lombok.Data;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +61,7 @@ public class InstallArgument implements InstallerArgument
         return new InstallArgumentBuilder().query(query);
     }
 
-    public static InstallArgumentBuilder builder(@NotNull SuccessResult result)
+    public static InstallArgumentBuilder builder(@NotNull AbstractSuccessResult result)
     {
         return new InstallArgumentBuilder().resolveResult(result);
     }

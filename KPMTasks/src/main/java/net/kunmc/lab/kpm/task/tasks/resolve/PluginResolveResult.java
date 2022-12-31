@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.task.tasks.resolve;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.task.AbstractTaskResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

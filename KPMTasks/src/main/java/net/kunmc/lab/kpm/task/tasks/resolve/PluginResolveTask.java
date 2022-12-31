@@ -3,10 +3,10 @@ package net.kunmc.lab.kpm.task.tasks.resolve;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
-import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
-import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
 import net.kunmc.lab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
@@ -31,7 +31,7 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
         this.taskState = PluginResolveState.INITIALIZED;
     }
 
-    private @Nullable ResolveResult resolveMultipleResults(@NotNull String query, @NotNull MultiResultImpl results)
+    private @Nullable ResolveResult resolveMultipleResults(@NotNull String query, @NotNull MultiResult results)
     {
         if (results.getResults().length < 1)
             throw new IllegalStateException("MultiResult with no results.");
@@ -60,18 +60,18 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
 
         this.taskState = PluginResolveState.PRE_RESOLVE_FINISHED;
 
-        if (queryResolveResult instanceof ErrorResultImpl)
+        if (queryResolveResult instanceof ErrorResult)
         {
-            this.postSignal(new PluginResolveErrorSignal((ErrorResultImpl) queryResolveResult, query));
+            this.postSignal(new PluginResolveErrorSignal((ErrorResult) queryResolveResult, query));
             return new PluginResolveResult(false, this.taskState,
                     PluginResolveErrorCause.GOT_ERROR_RESULT, null
             );
         }
-        else if (queryResolveResult instanceof MultiResultImpl)
+        else if (queryResolveResult instanceof MultiResult)
         {
             this.taskState = PluginResolveState.MULTI_RESOLVING;
 
-            MultiResultImpl multiResult = (MultiResultImpl) queryResolveResult;
+            MultiResult multiResult = (MultiResult) queryResolveResult;
             ResolveResult actualResolveResult = this.resolveMultipleResults(arguments.getQuery(), multiResult);
 
             if (actualResolveResult == null)
@@ -79,10 +79,10 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
                         PluginResolveErrorCause.CANCELLED, null
                 );
 
-            if (actualResolveResult instanceof ErrorResultImpl)
+            if (actualResolveResult instanceof ErrorResult)
             {
                 // MultiResult has been resolved, but the actual result is an error
-                this.postSignal(new PluginResolveErrorSignal((ErrorResultImpl) actualResolveResult, query));
+                this.postSignal(new PluginResolveErrorSignal((ErrorResult) actualResolveResult, query));
                 return new PluginResolveResult(false, this.taskState, PluginResolveErrorCause.GOT_ERROR_RESULT, null);
             }
 

@@ -1,16 +1,16 @@
 package net.kunmc.lab.kpm.task.tasks.install;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.hook.hooks.PluginInstalledHook;
-import net.kunmc.lab.kpm.installer.loader.CommandsPatcher;
 import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.InstallOperator;
-import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
-import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
+import net.kunmc.lab.kpm.task.CommandsPatcher;
 import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.task.tasks.install.signals.PluginEnablingSignal;
 import net.kunmc.lab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
@@ -46,19 +46,12 @@ import java.util.List;
  */
 public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgument, PluginsInstallResult>
 {
-    private static final Path PLUGIN_DIR;
-    private static final PluginManager PLUGIN_MANAGER;
-    private static final CommandsPatcher COMMANDS_PATCHER;
+    private final Path pluginDir;
+    private final PluginManager pluginManager;
+    private final CommandsPatcher commandsPatcher;
 
-    static
-    {
-        PLUGIN_DIR = KPMDaemon.getInstance().getEnvs().getDataDirPath().getParent();
-        PLUGIN_MANAGER = Bukkit.getPluginManager();
-        COMMANDS_PATCHER = new CommandsPatcher();
-    }
-
-    private final PluginMetaManagerImpl pluginMetaManager;
-    private final PluginMetaProviderImpl pluginMetaProvider;
+    private final PluginMetaManager pluginMetaManager;
+    private final PluginMetaProvider pluginMetaProvider;
     private final HookExecutor hookExecutor;
     private PluginsInstallState state;
 
@@ -66,17 +59,23 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        PluginMetaManagerImpl pluginMetaManager = installer.getDaemon().getPluginMetaManager();
+        KPMRegistry registry = installer.getRegistry();
+
+        this.pluginDir = registry.getEnvironment().getDataDirPath().getParent();
+        this.pluginManager = Bukkit.getPluginManager();
+        this.commandsPatcher = new CommandsPatcher();
+
+        PluginMetaManager pluginMetaManager = registry.getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;
         this.pluginMetaProvider = pluginMetaManager.getProvider();
-        this.hookExecutor = installer.getDaemon().getHookExecutor();
+        this.hookExecutor = registry.getHookExecutor();
 
         this.state = PluginsInstallState.INITIALIZED;
     }
 
-    private static void patchPluginCommands(List<Plugin> targets)
+    private void patchPluginCommands(List<Plugin> targets)
     {
-        targets.forEach(plugin -> COMMANDS_PATCHER.patchCommand(plugin, false));
+        targets.forEach(plugin -> this.commandsPatcher.patchCommand(plugin, false));
 
         Bukkit.getOnlinePlayers().forEach(Player::updateCommands);
     }
@@ -133,7 +132,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         finally
         {
-            Runner.runLater(() -> patchPluginCommands(installedPlugins), 1L);
+            Runner.runLater(() -> this.patchPluginCommands(installedPlugins), 1L);
         }
     }
 
@@ -162,7 +161,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
 
         // Relocate plugin
         String fileName = pluginDescription.getName() + "-" + pluginDescription.getVersion() + ".jar";
-        Path targetPath = PLUGIN_DIR.resolve(fileName);
+        Path targetPath = this.pluginDir.resolve(fileName);
 
         PluginsInstallResult mayError = this.movePlugin(path, targetPath);
 
@@ -183,7 +182,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
             // Load plugin
             this.state = PluginsInstallState.PLUGIN_LOADING;
             this.postSignal(new PluginLoadSignal.Pre(path, pluginDescription));
-            target = this.runSyncThrowing(() -> PLUGIN_MANAGER.loadPlugin(targetPath.toFile()));
+            target = this.runSyncThrowing(() -> this.pluginManager.loadPlugin(targetPath.toFile()));
             this.postSignal(new PluginLoadSignal.Post(path, pluginDescription, target));
 
             this.progress.addPending(target.getName());
@@ -215,7 +214,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         this.pluginMetaManager.preparePluginModify(target);
         this.state = PluginsInstallState.PLUGIN_ENABLING;
         this.postSignal(new PluginEnablingSignal.Pre(target));
-        this.runSync(() -> PLUGIN_MANAGER.enablePlugin(target));
+        this.runSync(() -> this.pluginManager.enablePlugin(target));
         if (!target.isEnabled())
         {
             this.postSignal(new PluginEnablingSignal.Failed(target));
@@ -328,7 +327,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         if (kpmInformation == null)
             return null;
 
-        Version daemonVersion = this.progress.getInstaller().getDaemon().getVersion();
+        Version daemonVersion = this.progress.getInstaller().getRegistry().getVersion();
 
         if (kpmInformation.getKpmVersion().isNewerThan(daemonVersion))
         {

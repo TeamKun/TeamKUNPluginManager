@@ -30,7 +30,6 @@ public class GarbageSearchTask extends AbstractInstallTask<GarbageSearchArgument
     @Override
     public @NotNull GarbageSearchResult runTask(@NotNull GarbageSearchArgument arguments)
     {
-
         List<String> excludeList = arguments.getExcludes().stream().parallel()
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());

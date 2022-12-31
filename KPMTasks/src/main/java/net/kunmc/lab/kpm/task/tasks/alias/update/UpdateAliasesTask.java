@@ -80,7 +80,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
 
     private long updateAliasesFromSource(String sourceName, URI uri, Path source)
     {
-        AliasUpdater updater = this.daemon.getAliasProvider().createUpdater(
+        AliasUpdater updater = this.registry.getAliasProvider().createUpdater(
                 sourceName, uri.toString()
         );
 

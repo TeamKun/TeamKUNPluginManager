@@ -3,7 +3,8 @@ package net.kunmc.lab.kpm.installer.impls.upgrade.signals;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.bukkit.plugin.Plugin;
 
@@ -47,7 +48,7 @@ public class UpgradeReadySignal extends Signal
 
         private boolean continueUpgrade;
 
-        public ResolvedPluginElement(Plugin plugin, SuccessResult resolveResult)
+        public ResolvedPluginElement(Plugin plugin, AbstractSuccessResult resolveResult)
         {
             this(plugin, resolveResult, true);
         }

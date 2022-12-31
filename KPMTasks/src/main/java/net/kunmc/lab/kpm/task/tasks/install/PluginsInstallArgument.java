@@ -53,15 +53,8 @@ public class PluginsInstallArgument implements TaskArgument
      */
     boolean onlyLocate;
 
-    public PluginsInstallArgument(@NotNull Path pluginPath, @NotNull PluginDescriptionFile pluginDescription, @Nullable KPMInformationFile kpmInformation, @NotNull List<DependencyElement> dependencies)
-    {
-        this(pluginPath, pluginDescription, kpmInformation, dependencies, false);
-    }
-
     public PluginsInstallArgument(@NotNull List<DependencyElement> dependencies)
     {
         this(null, null, null, dependencies, false);
     }
-
-
 }

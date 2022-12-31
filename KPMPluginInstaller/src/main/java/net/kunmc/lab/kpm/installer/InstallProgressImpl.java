@@ -8,9 +8,10 @@ import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.signals.PluginModifiedSignal;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
-import net.kunmc.lab.kpm.task.tasks.dependencies.collector.DependsCollectStatus;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.DependsCollectStatusImpl;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -129,7 +130,7 @@ public class InstallProgressImpl<T extends Enum<T>, I extends PluginInstaller<?,
                 this.getInstallActionID()
         );
 
-        this.dependsCollectStatus = new DependsCollectStatus((InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
+        this.dependsCollectStatus = new DependsCollectStatusImpl((InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
 
         this.finished = false;
 

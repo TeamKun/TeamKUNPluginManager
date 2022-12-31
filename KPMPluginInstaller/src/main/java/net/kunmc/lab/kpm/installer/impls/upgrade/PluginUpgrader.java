@@ -9,7 +9,6 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstallSucceedResult;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
-import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InstallFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
@@ -18,10 +17,11 @@ import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
 import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.kpm.meta.PluginMetaProviderImpl;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;
 import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
@@ -35,6 +35,7 @@ import net.kunmc.lab.kpm.task.tasks.lookup.PluginLookupTask;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
@@ -200,7 +201,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         for (Map.Entry<PluginDescriptionFile, SuccessResult> entry : resolveResultMap.entrySet())
         {
             unloadedPlugins.remove(entry.getKey());  // unloadedPlugins will be used to restore unloaded dependencies, so we need to ignore plugins that will be installed.
-            SuccessResult resolveResult = entry.getValue();
+            AbstractSuccessResult resolveResult = entry.getValue();
 
             PluginInstaller installer;
             try

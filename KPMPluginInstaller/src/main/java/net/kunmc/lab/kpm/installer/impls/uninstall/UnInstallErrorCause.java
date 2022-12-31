@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.uninstall;
 
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 
 /**
  * アンインストールのエラーを表す列挙型です。
@@ -18,7 +19,7 @@ public enum UnInstallErrorCause
     PLUGIN_IGNORED,
     /**
      * 指定されたプラグインが他のプラグインの依存関係に含まれており、
-     * {@link net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal} でも強制アンインストールが選択されませんでした。
+     * {@link PluginIsDependencySignal} でも強制アンインストールが選択されませんでした。
      */
     PLUGIN_IS_DEPENDENCY,
     /**

@@ -1,13 +1,14 @@
 package net.kunmc.lab.kpm.task.tasks.dependencies.collector;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
 import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
@@ -55,7 +56,7 @@ import java.util.stream.Collectors;
  */
 public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgument, DependsCollectResult>
 {  // TODO: きれいに
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
     private final DependsCollectStatus status;
 
     private DependsCollectState taskState;
@@ -64,7 +65,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
-        this.daemon = installer.getDaemon();
+        this.registry = installer.getRegistry();
         this.status = this.progress.getDependsCollectStatus();
 
         this.taskState = DependsCollectState.INITIALIZED;
@@ -216,7 +217,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
             KPMInformationFile kpmInfoFile = null;
             try
             {
-                kpmInfoFile = this.daemon.getKpmInfoManager().loadInfo(entry.getValue().getPath(), pluginDescriptionFile);
+                kpmInfoFile = this.registry.getKpmInfoManager().loadInfo(entry.getValue().getPath(), pluginDescriptionFile);
             }
             catch (InvalidInformationFileException ex)
             {

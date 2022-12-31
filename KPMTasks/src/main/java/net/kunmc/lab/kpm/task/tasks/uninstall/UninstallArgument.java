@@ -3,8 +3,8 @@ package net.kunmc.lab.kpm.task.tasks.uninstall;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.task.TaskArgument;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 

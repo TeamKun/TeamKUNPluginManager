@@ -3,8 +3,9 @@ package net.kunmc.lab.kpm.signal.handlers.intall;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolvingSignal;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.resolver.ErrorCause;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
@@ -57,7 +58,7 @@ public class ResolverSignalHandler
 
         if (signal.getSpecifiedResult() != null)
         {
-            if (signal.getSpecifiedResult() instanceof SuccessResult)
+            if (signal.getSpecifiedResult() instanceof AbstractSuccessResult)
             {
                 SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
                 this.terminal.info(
@@ -73,7 +74,7 @@ public class ResolverSignalHandler
         AtomicLong index = new AtomicLong(0);
 
         LinkedHashMap<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
-                .filter(r -> r instanceof SuccessResult)
+                .filter(r -> r instanceof AbstractSuccessResult)
                 .map(r -> (SuccessResult) r)
                 .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
         LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()

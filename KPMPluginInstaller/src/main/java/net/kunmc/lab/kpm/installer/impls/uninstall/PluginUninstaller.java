@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm.installer.impls.uninstall;
 
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
-import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.SearchingPluginSignal;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
@@ -15,6 +14,7 @@ import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArg
 import net.kunmc.lab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallResult;
 import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallTask;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import org.bukkit.Bukkit;

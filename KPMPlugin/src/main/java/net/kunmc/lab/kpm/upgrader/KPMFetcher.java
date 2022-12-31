@@ -5,9 +5,10 @@ import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
-import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.versioning.Version;
 
 @UtilityClass
@@ -30,7 +31,7 @@ public class KPMFetcher
             throw new IllegalStateException("Unable to fetch latest KPM version: " + errorResult.getMessage());
         }
 
-        assert resolveResult instanceof SuccessResult;
+        assert resolveResult instanceof AbstractSuccessResult;
 
         SuccessResult successResult = (SuccessResult) resolveResult;
         String versionString = successResult.getVersion();

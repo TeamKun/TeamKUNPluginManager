@@ -4,7 +4,6 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasProviderImpl;
 import net.kunmc.lab.kpm.hook.HookExecutorImpl;
 import net.kunmc.lab.kpm.installer.InstallManagerImpl;
-import net.kunmc.lab.kpm.installer.PluginLoaderImpl;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.installer.InstallManager;
@@ -15,6 +14,8 @@ import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManagerImpl;
 import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
 import net.kunmc.lab.kpm.resolver.PluginResolverImpl;
+import net.kunmc.lab.kpm.task.PluginLoaderImpl;
+import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
@@ -49,5 +50,10 @@ class KPMRegistryImpl implements KPMRegistry
         this.installManager = new InstallManagerImpl(this.tokenStore);
         this.pluginLoader = new PluginLoaderImpl(this);
         this.pluginResolver = new PluginResolverImpl();
+    }
+
+    public Version getVersion()
+    {
+        return Version.of(this.getEnvironment().getPlugin().getDescription().getVersion());
     }
 }

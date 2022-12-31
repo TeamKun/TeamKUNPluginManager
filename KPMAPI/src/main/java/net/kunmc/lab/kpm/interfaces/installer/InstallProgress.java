@@ -1,6 +1,8 @@
 package net.kunmc.lab.kpm.interfaces.installer;
 
 import net.kunmc.lab.kpm.interfaces.installer.signals.PluginModifiedSignal;
+import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
+import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -112,7 +114,7 @@ public interface InstallProgress<T extends Enum<T>, I extends PluginInstaller<?,
 
     String getInstallActionID();
 
-    net.kunmc.lab.kpm.signal.SignalHandleManager getSignalHandler();
+    SignalHandleManager getSignalHandler();
 
     DependsCollectStatus getDependsCollectStatus();
 
