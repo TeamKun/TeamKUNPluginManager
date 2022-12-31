@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.task.tasks.resolve;
 
-
 /**
  * プラグインの解決に失敗した理由を表します。
  */

@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-
 @Getter
 public class InstallProgressImpl<T extends Enum<T>, I extends PluginInstaller<?, ?, T>> implements InstallProgress<T, I>
 {
