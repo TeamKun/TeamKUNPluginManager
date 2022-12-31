@@ -1,6 +1,6 @@
 package net.kunmc.lab.plugin.kpmupgrader.migrator;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public interface KPMMigrateAction
 {
-    void migrate(@NotNull KPMDaemon daemon, @NotNull Path kpmDataFolder);
+    void migrate(@NotNull KPMRegistry daemon, @NotNull Path kpmDataFolder);
 
     String getNeedMigrateVersionRange();
 

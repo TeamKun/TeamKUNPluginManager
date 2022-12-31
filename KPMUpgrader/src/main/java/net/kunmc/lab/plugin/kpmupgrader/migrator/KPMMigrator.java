@@ -2,7 +2,7 @@ package net.kunmc.lab.plugin.kpmupgrader.migrator;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.migrators.ConfigMigrator;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class KPMMigrator
         MIGRATE_ACTIONS.add(new ConfigMigrator());
     }
 
-    public static void doMigrate(@NotNull KPMDaemon daemon, @NotNull Path kpmDataFolder,
+    public static void doMigrate(@NotNull KPMRegistry daemon, @NotNull Path kpmDataFolder,
                                  @NotNull Version fromVersion, @NotNull Version toVersion)
     {
         for (KPMMigrateAction action : MIGRATE_ACTIONS)

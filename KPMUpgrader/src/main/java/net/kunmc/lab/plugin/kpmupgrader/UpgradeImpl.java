@@ -1,7 +1,7 @@
 package net.kunmc.lab.plugin.kpmupgrader;
 
-import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMEnvironmentImpl;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
@@ -12,7 +12,6 @@ import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
-import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.versioning.Version;
@@ -35,7 +34,7 @@ public class UpgradeImpl
     private final Plugin currentKPM;
     private final Version currentKPMVersion;
 
-    private KPMDaemon daemon;
+    private KPMRegistry registry;
 
     public UpgradeImpl(KPMUpgraderPlugin plugin)
     {
@@ -48,7 +47,7 @@ public class UpgradeImpl
             this.logger.info("KPMUpgrader は、 KPM による自動インストールでのみ使用できます。");
             this.destructSelf();
             this.currentKPMVersion = null;
-            this.daemon = null;
+            this.registry = null;
             return;
         }
 
@@ -64,7 +63,7 @@ public class UpgradeImpl
         Path dataDir = this.plugin.getDataFolder().getParentFile().toPath();  // plugins/<kpm>/.caches/hogefuga/
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
 
-        this.daemon = new KPMDaemonMock(KPMEnvironmentImpl.builder(this.plugin)
+        this.registry = new KPMDaemonMock(KPMEnvironmentImpl.builder(this.plugin)
                 .dataDirPath(kpmDataFolder)
                 .tokenPath(kpmDataFolder.resolve("token.dat"))
                 .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
@@ -88,18 +87,18 @@ public class UpgradeImpl
         ));
     }
 
-    private AbstractSuccessResult resolveKPM(String version)
+    private SuccessResult resolveKPM(String version)
     {
         this.logger.info("最新の KPM を解決しています。");
 
         String query = "$>https://github.com/" + KPM_OWNER + "/" + KPM_NAME + "/releases/tag/" + version;
 
-        ResolveResult resolveResult = this.daemon.getPluginResolver().resolve(query);
+        ResolveResult resolveResult = this.registry.getPluginResolver().resolve(query);
 
-        if (resolveResult instanceof AbstractSuccessResult)
+        if (resolveResult instanceof SuccessResult)
         {
             this.logger.info("KPM を解決しました：" + ((SuccessResult) resolveResult).getVersion());
-            return (AbstractSuccessResult) resolveResult;
+            return (SuccessResult) resolveResult;
         }
 
         assert resolveResult instanceof ErrorResultImpl;
@@ -118,7 +117,7 @@ public class UpgradeImpl
 
         try
         {
-            InstallResult<UnInstallTasks> uninstallResult = new PluginUninstaller(this.daemon, signalHandleManager)
+            InstallResult<UnInstallTasks> uninstallResult = new PluginUninstaller(this.registry, signalHandleManager)
                     .run(UninstallArgument.builder(this.currentKPM)
                             .autoConfirm(true)
                             .forceUninstall(true)
@@ -142,7 +141,7 @@ public class UpgradeImpl
         }
     }
 
-    private boolean installNewKPM(AbstractSuccessResult resolveResult)
+    private boolean installNewKPM(SuccessResult resolveResult)
     {
         this.logger.info("新しい KPM をインストールしています。");
 
@@ -150,7 +149,7 @@ public class UpgradeImpl
 
         try
         {
-            InstallResult<InstallTasks> installResult = new PluginInstaller(this.daemon, signalHandleManager)
+            InstallResult<InstallTasks> installResult = new PluginInstaller(this.registry, signalHandleManager)
                     .run(InstallArgument.builder(resolveResult)
                             .onyLocate(true)
                             .build()
@@ -177,7 +176,7 @@ public class UpgradeImpl
     {
         this.logger.info("KPM をアッグレートしています ...");
 
-        AbstractSuccessResult result = this.resolveKPM(version);
+        SuccessResult result = this.resolveKPM(version);
         if (result == null)
             return;
 
@@ -190,7 +189,7 @@ public class UpgradeImpl
         Version toVersion = Version.ofNullable(result.getVersion());
 
         assert toVersion != null;
-        KPMMigrator.doMigrate(this.daemon, this.currentKPM.getDataFolder().toPath(), this.currentKPMVersion, toVersion);
+        KPMMigrator.doMigrate(this.registry, this.currentKPM.getDataFolder().toPath(), this.currentKPMVersion, toVersion);
 
         if (!this.installNewKPM(result))
             return;
