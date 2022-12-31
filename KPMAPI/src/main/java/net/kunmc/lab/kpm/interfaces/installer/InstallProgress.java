@@ -2,9 +2,13 @@ package net.kunmc.lab.kpm.interfaces.installer;
 
 import net.kunmc.lab.kpm.interfaces.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
+import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * インストールの進捗状況を管理するクラスです。
@@ -100,27 +104,63 @@ public interface InstallProgress<T extends Enum<T>, I extends PluginInstaller<?,
      */
     void finish();
 
+    /**
+     * インストーラです。
+     */
     I getInstaller();
 
-    java.util.List<String> getUpgraded();
+    /**
+     * アップグレードされたプラグインの名前です。
+     */
+    List<String> getUpgraded();
 
-    java.util.List<String> getInstalled();
+    /**
+     * 新規にインストールされたプラグインの名前です。
+     */
+    List<String> getInstalled();
 
-    java.util.List<String> getRemoved();
+    /**
+     * 削除されたプラグインの名前です。
+     */
+    List<String> getRemoved();
 
-    java.util.List<String> getPending();
+    /**
+     * 保留中としてマークされたプラグインの名前です。
+     */
+    List<String> getPending();
 
-    java.nio.file.Path getInstallTempDir();
+    /**
+     * インストールに使用される仮ディレクトリです。
+     */
+    Path getInstallTempDir();
 
+    /**
+     * インストールに割り当てられた一意のIDです。
+     */
     String getInstallActionID();
 
+    /**
+     * {@link Signal} を受け取るためのリスナーです。
+     */
     SignalHandleManager getSignalHandler();
 
+    /**
+     * 依存関係の解決の状態を表します。
+     */
     DependsCollectStatus getDependsCollectStatus();
 
+    /**
+     * 実行中のタスクを表します。
+     */
     T getCurrentTask();
 
+    /**
+     * 実行中のタスクを表します。
+     */
     void setCurrentTask(T currentTask);
 
+    /**
+     * インストールが終了したかどうかを表します。
+     */
     boolean isFinished();
 }
