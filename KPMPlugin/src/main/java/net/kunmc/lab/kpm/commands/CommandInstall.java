@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CommandInstall extends CommandBase
 {
-
     private final TeamKunPluginManager plugin;
 
     @Override

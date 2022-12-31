@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommandReload extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -37,7 +37,7 @@ public class CommandReload extends CommandBase
 
         Runner.runAsync(() -> {
             terminal.info("プラグイン %s を再読み込み中…", args[0]);
-            this.daemon.getPluginLoader().reloadPlugin(plugin);
+            this.registry.getPluginLoader().reloadPlugin(plugin);
             terminal.success("プラグイン %s を正常に再読み込み中しました。", args[0]);
         });
     }

@@ -206,6 +206,7 @@ public class KPMDaemon implements KPMRegistry
         Requests.setTokenStore(this.getTokenStore());
     }
 
+    @Override
     public void shutdown()
     {
         this.getPluginMetaManager().getProvider().close();

@@ -1,9 +1,10 @@
 package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.uninstall.UninstallErrorCause;
+import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
+import net.kunmc.lab.kpm.task.tasks.uninstall.UninstallErrorCause;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,7 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         this.terminal.success("アンインストールが正常に完了しました。");
     }
 
-    private boolean handleGeneralErrors(@Nullable net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause cause)
+    private boolean handleGeneralErrors(@Nullable UnInstallErrorCause cause)
     {
         if (cause == null)
             return false;
@@ -50,8 +51,8 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onFail(InstallFailedInstallResult<?, ?, ?> result)
     {
-        if (result.getReason() instanceof net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause &&
-                this.handleGeneralErrors((net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause) result.getReason()))
+        if (result.getReason() instanceof UnInstallErrorCause &&
+                this.handleGeneralErrors((UnInstallErrorCause) result.getReason()))
             return;
         if (result.getException() != null)
         {
@@ -60,7 +61,7 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         }
 
 
-        if (result.getReason() instanceof UninstallErrorCause)
+        if (result.getReason() instanceof UnInstallErrorCause)
         {
             UninstallErrorCause cause = (UninstallErrorCause) result.getTaskStatus();
             if (cause == UninstallErrorCause.SOME_UNINSTALL_FAILED)

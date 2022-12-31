@@ -1,10 +1,10 @@
 package net.kunmc.lab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.kpm.Utils;
-import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadErrorSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadProgressSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
+import net.kunmc.lab.kpm.task.tasks.download.signals.DownloadErrorSignal;
+import net.kunmc.lab.kpm.task.tasks.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.kpm.task.tasks.download.signals.DownloadSucceedSignal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;

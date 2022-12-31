@@ -29,7 +29,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class HeadInstallers
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
             @NotNull Terminal terminal,
@@ -39,7 +39,7 @@ public class HeadInstallers
     {
         try
         {
-            this.daemon.getInstallManager().runInstallerAsync(installer, arguments);
+            this.registry.getInstallManager().runInstallerAsync(installer, arguments);
         }
         catch (InstallerRunningException e)
         {
@@ -60,7 +60,7 @@ public class HeadInstallers
         PluginInstaller installer;
         try
         {
-            installer = new PluginInstaller(this.daemon, handleManager);
+            installer = new PluginInstaller(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -80,7 +80,7 @@ public class HeadInstallers
         PluginUninstaller uninstaller;
         try
         {
-            uninstaller = new PluginUninstaller(this.daemon, handleManager);
+            uninstaller = new PluginUninstaller(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -100,7 +100,7 @@ public class HeadInstallers
         AliasUpdater updater;
         try
         {
-            updater = new AliasUpdater(this.daemon, handleManager);
+            updater = new AliasUpdater(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -120,7 +120,7 @@ public class HeadInstallers
         PluginAutoRemover autoRemover;
         try
         {
-            autoRemover = new PluginAutoRemover(this.daemon, handleManager);
+            autoRemover = new PluginAutoRemover(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -140,7 +140,7 @@ public class HeadInstallers
         GarbageCleaner garbageCleaner;
         try
         {
-            garbageCleaner = new GarbageCleaner(this.daemon, handleManager);
+            garbageCleaner = new GarbageCleaner(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -160,7 +160,7 @@ public class HeadInstallers
         TokenRegisterer register;
         try
         {
-            register = new TokenRegisterer(this.daemon, handleManager);
+            register = new TokenRegisterer(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -183,7 +183,7 @@ public class HeadInstallers
         PluginUpgrader upgrader;
         try
         {
-            upgrader = new PluginUpgrader(this.daemon, handleManager);
+            upgrader = new PluginUpgrader(this.registry, handleManager);
         }
         catch (IOException e)
         {

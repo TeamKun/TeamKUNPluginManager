@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
-import net.kunmc.lab.kpm.installer.impls.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.meta.DependType;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandler;
+import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;

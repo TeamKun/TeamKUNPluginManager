@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands.debug;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallErrorCause;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CommandUninstallDebug extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -39,7 +39,7 @@ public class CommandUninstallDebug extends CommandBase
             try
             {
                 PluginUninstaller installer =
-                        new PluginUninstaller(this.daemon, DebugSignalHandler.toManager(terminal));
+                        new PluginUninstaller(this.registry, DebugSignalHandler.toManager(terminal));
 
                 InstallResult<UnInstallTasks> installResult = installer.execute(UninstallArgument.builder(query).build());
 

@@ -1,12 +1,12 @@
 package net.kunmc.lab.kpm.signal.handlers.intall;
 
-import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginEnablingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginInstallingSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginLoadSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
+import net.kunmc.lab.kpm.task.tasks.install.signals.PluginEnablingSignal;
+import net.kunmc.lab.kpm.task.tasks.install.signals.PluginInstallingSignal;
+import net.kunmc.lab.kpm.task.tasks.install.signals.PluginLoadSignal;
+import net.kunmc.lab.kpm.task.tasks.install.signals.PluginRelocatingSignal;
 import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 

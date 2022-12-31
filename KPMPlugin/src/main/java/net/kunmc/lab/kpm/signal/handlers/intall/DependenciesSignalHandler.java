@@ -1,11 +1,11 @@
 package net.kunmc.lab.kpm.signal.handlers.intall;
 
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals.DependencyNameMismatchSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.signals.DependencyResolveFailedSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyNameMismatchSignal;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyResolveFailedSignal;
+import net.kunmc.lab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
 /**

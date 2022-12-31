@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.Notices;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
@@ -48,7 +48,7 @@ public class CommandVersion extends CommandBase
 
     }
 
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     private static void printVersions(@NotNull Terminal terminal)
     {
@@ -70,12 +70,12 @@ public class CommandVersion extends CommandBase
         terminal.writeLine("");
     }
 
-    private static void printStatus(@NotNull Terminal terminal, @NotNull KPMDaemon daemon)
+    private static void printStatus(@NotNull Terminal terminal, @NotNull KPMRegistry registry)
     {
-        terminal.writeLine("KPM は " + daemon.getPluginMetaManager().getProvider().countPlugins() + " 個のプラグインを管理しています。");
+        terminal.writeLine("KPM は " + registry.getPluginMetaManager().getProvider().countPlugins() + " 個のプラグインを管理しています。");
         terminal.writeLine("そのうち " + Bukkit.getPluginManager().getPlugins().length + " 個のプラグインが有効です。");
         terminal.writeLine("");
-        terminal.writeLine(daemon.getAliasProvider().countAliases() + " 個のエイリアスが有効です。");
+        terminal.writeLine(registry.getAliasProvider().countAliases() + " 個のエイリアスが有効です。");
         terminal.writeLine("");
     }
 
@@ -99,9 +99,9 @@ public class CommandVersion extends CommandBase
         if (isFull || mode.equals("licenses"))
             printLicenses(terminal);
         if (isFull || mode.equals("status"))
-            printStatus(terminal, this.daemon);
+            printStatus(terminal, this.registry);
         if (isFull || mode.equals("notice"))
-            Notices.printAllNotice(this.daemon, terminal);
+            Notices.printAllNotice(this.registry, terminal);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.commands;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.commands.debug.CommandDepTreeDebug;
 import net.kunmc.lab.kpm.commands.debug.CommandInstallDebug;
 import net.kunmc.lab.kpm.commands.debug.CommandUninstallDebug;
@@ -16,16 +16,16 @@ import java.util.Map;
 
 public class CommandDebug extends SubCommandWith
 {
-    private static final HashMap<String, CommandBase> COMMANDS;
+    private final HashMap<String, CommandBase> commands;
 
-    static
+    public CommandDebug(KPMRegistry registry)
     {
-        KPMDaemon daemon = KPMDaemon.getInstance();
+        this.commands = new HashMap<>();
 
-        COMMANDS = new HashMap<>();
-        COMMANDS.put("installDebug", new CommandInstallDebug(daemon));
-        COMMANDS.put("uninstallDebug", new CommandUninstallDebug(daemon));
-        COMMANDS.put("depTree", new CommandDepTreeDebug(daemon.getPluginMetaManager()));
+
+        this.commands.put("installDebug", new CommandInstallDebug(registry));
+        this.commands.put("uninstallDebug", new CommandUninstallDebug(registry));
+        this.commands.put("depTree", new CommandDepTreeDebug(registry.getPluginMetaManager()));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CommandDebug extends SubCommandWith
     @Override
     protected Map<String, CommandBase> getSubCommands(@NotNull CommandSender sender)
     {
-        return COMMANDS;
+        return this.commands;
     }
 
     @Override

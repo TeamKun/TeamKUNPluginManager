@@ -45,7 +45,7 @@ public final class TeamKunPluginManager extends JavaPlugin
     private FileConfiguration pluginConfig;
     private CommandManager commandManager;
 
-    private KPMDaemon daemon;
+    private KPMRegistry daemon;
 
     private HeadInstallers headInstallers;
     private KPMUpgrader upgrader;
@@ -88,10 +88,10 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         commandManager.registerCommand("autoremove", new CommandAutoRemove(this));
         commandManager.registerCommand("clean", new CommandClean(this));
-        commandManager.registerCommand("debug", new CommandDebug());
+        commandManager.registerCommand("debug", new CommandDebug(this.daemon));
         commandManager.registerCommand("info", new CommandInfo(this.daemon));
         commandManager.registerCommand("install", new CommandInstall(this), "add", "i");
-        commandManager.registerCommand("register", new CommandRegister(this, this.daemon), "login");
+        commandManager.registerCommand("register", new CommandRegister(this), "login");
         commandManager.registerCommand("reload", new CommandReload(this.daemon));
         commandManager.registerCommand("resolve", new CommandResolve(this.daemon));
         commandManager.registerCommand("uninstall", new CommandUninstall(this), "remove", "rm");

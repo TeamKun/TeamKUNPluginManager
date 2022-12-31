@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.upgrader;
 
 import lombok.experimental.UtilityClass;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
@@ -18,9 +18,9 @@ public class KPMFetcher
     private static final String KPM_REPO_NAME = "TeamKunPluginManager";
     private static final String KPM_REPO_URL = String.format("https://github.com/%s/%s", KPM_REPO_OWNER, KPM_REPO_NAME);
 
-    public static Version fetchLatestKPMVersion(KPMDaemon daemon)
+    public static Version fetchLatestKPMVersion(KPMRegistry registry)
     {
-        PluginResolver resolver = daemon.getPluginResolver();
+        PluginResolver resolver = registry.getPluginResolver();
         ResolveResult resolveResult = resolver.resolve("github>" + KPM_REPO_URL);
 
         if (resolveResult instanceof MultiResultImpl)

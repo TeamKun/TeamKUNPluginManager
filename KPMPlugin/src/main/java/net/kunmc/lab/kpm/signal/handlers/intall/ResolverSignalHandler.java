@@ -1,12 +1,12 @@
 package net.kunmc.lab.kpm.signal.handlers.intall;
 
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolvingSignal;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
+import net.kunmc.lab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
+import net.kunmc.lab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
+import net.kunmc.lab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;

@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.commands;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.TextComponent;
@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 public class CommandInfo extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
-    public CommandInfo(KPMDaemon daemon)
+    public CommandInfo(KPMRegistry registry)
     {
-        this.daemon = daemon;
+        this.registry = registry;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CommandInfo extends CommandBase
             return;
         }
 
-        PluginInfoWriter infoWriter = new PluginInfoWriter(this.daemon, terminal, plugin);
+        PluginInfoWriter infoWriter = new PluginInfoWriter(this.registry, terminal, plugin);
         terminal.info("結果を出力しています…");
         infoWriter.write();
     }

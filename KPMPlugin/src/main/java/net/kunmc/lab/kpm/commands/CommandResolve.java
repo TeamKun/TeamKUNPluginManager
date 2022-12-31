@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CommandResolve extends CommandBase
 {
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -26,7 +26,7 @@ public class CommandResolve extends CommandBase
         String query = args[0];
 
         terminal.info("プラグインの名前解決をしています…");
-        ResolveResult result = this.daemon.getPluginResolver().resolve(query);
+        ResolveResult result = this.registry.getPluginResolver().resolve(query);
 
         ResolveResultWriter writer = new ResolveResultWriter(terminal, result);
         terminal.info("結果を出力しています…");

@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.kpm.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
@@ -18,14 +18,14 @@ import java.util.List;
 public class CommandUpdate extends CommandBase
 {
     private final TeamKunPluginManager plugin;
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
     {
         Runner.runAsync(() ->
                 this.plugin.getHeadInstallers().runUpdate(terminal, new UpdateArgument(
-                        this.daemon.getEnvs().getSources()
+                        this.registry.getEnvironment().getSources()
                 ))
         );
     }

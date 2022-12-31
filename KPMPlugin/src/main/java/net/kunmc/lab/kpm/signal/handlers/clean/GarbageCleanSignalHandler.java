@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.signal.handlers.clean;
 
-import net.kunmc.lab.kpm.installer.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.garbage.search.signals.GarbageSearchingSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
+import net.kunmc.lab.kpm.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
+import net.kunmc.lab.kpm.task.tasks.garbage.search.signals.GarbageSearchingSignal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 

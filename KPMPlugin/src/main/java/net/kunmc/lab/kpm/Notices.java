@@ -6,20 +6,20 @@ import java.util.List;
 
 public class Notices
 {
-    public static void printAllNotice(KPMDaemon daemon, Terminal terminal)
+    public static void printAllNotice(KPMRegistry registry, Terminal terminal)
     {
-        boolean print = printAutoRemovable(daemon, terminal);
+        boolean print = printAutoRemovable(registry, terminal);
         if (print)  // If the notice is printed, print a blank line.
             terminal.writeLine("");
-        print = printTokenUnset(daemon, terminal);
+        print = printTokenUnset(registry, terminal);
         if (print)
             terminal.writeLine("");
-        print = printTokenDead(daemon, terminal);
+        print = printTokenDead(registry, terminal);
     }
 
-    public static boolean printAutoRemovable(KPMDaemon daemon, Terminal terminal)
+    public static boolean printAutoRemovable(KPMRegistry registry, Terminal terminal)
     {
-        List<String> autoRemovable = daemon.getPluginMetaManager().getProvider().getUnusedPlugins();
+        List<String> autoRemovable = registry.getPluginMetaManager().getProvider().getUnusedPlugins();
         boolean isAutoRemovable = !autoRemovable.isEmpty();
 
         if (isAutoRemovable)
@@ -32,9 +32,9 @@ public class Notices
         return isAutoRemovable;
     }
 
-    public static boolean printTokenUnset(KPMDaemon daemon, Terminal terminal)
+    public static boolean printTokenUnset(KPMRegistry registry, Terminal terminal)
     {
-        boolean isTokenUnset = !daemon.getTokenStore().isTokenAvailable();
+        boolean isTokenUnset = !registry.getTokenStore().isTokenAvailable();
 
         if (isTokenUnset)
         {
@@ -45,9 +45,9 @@ public class Notices
         return isTokenUnset;
     }
 
-    public static boolean printTokenDead(KPMDaemon daemon, Terminal terminal)
+    public static boolean printTokenDead(KPMRegistry registry, Terminal terminal)
     {
-        boolean isTokenDead = !daemon.getTokenStore().isTokenAlive();
+        boolean isTokenDead = !registry.getTokenStore().isTokenAlive();
 
         if (isTokenDead)
         {

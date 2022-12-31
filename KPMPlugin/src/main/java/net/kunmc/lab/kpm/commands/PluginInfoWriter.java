@@ -51,7 +51,7 @@ public class PluginInfoWriter extends TerminalWriter
         else
             this.meta = null;
 
-        KPMInfoManager infoManager = daemon.getKpmInfoManager();
+        KPMInfoManager infoManager = registry.getKpmInfoManager();
         if (infoManager.hasInfo(plugin))
             this.infoFile = infoManager.getInfo(plugin);
         else

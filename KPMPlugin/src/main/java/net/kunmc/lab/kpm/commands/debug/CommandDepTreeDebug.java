@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.commands.debug;
 import net.kunmc.lab.kpm.commands.debug.deptree.CommandMarkAsDependency;
 import net.kunmc.lab.kpm.commands.debug.deptree.CommandPurge;
 import net.kunmc.lab.kpm.commands.debug.deptree.CommandRelation;
-import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.command.SubCommandWith;
 import net.kyori.adventure.text.TextComponent;
@@ -18,7 +18,7 @@ public class CommandDepTreeDebug extends SubCommandWith
 {
     private final HashMap<String, CommandBase> COMMANDS;
 
-    public CommandDepTreeDebug(PluginMetaManagerImpl manager)
+    public CommandDepTreeDebug(PluginMetaManager manager)
     {
         this.COMMANDS = new HashMap<>();
 

@@ -2,13 +2,13 @@ package net.kunmc.lab.kpm.signal.handlers.intall;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.DependsCollectErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.description.DescriptionLoadErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallErrorCause;
-import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveErrorCause;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
+import net.kunmc.lab.kpm.task.tasks.dependencies.collector.DependsCollectErrorCause;
+import net.kunmc.lab.kpm.task.tasks.description.DescriptionLoadErrorCause;
+import net.kunmc.lab.kpm.task.tasks.download.DownloadErrorCause;
+import net.kunmc.lab.kpm.task.tasks.install.PluginsInstallErrorCause;
+import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveErrorCause;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
 

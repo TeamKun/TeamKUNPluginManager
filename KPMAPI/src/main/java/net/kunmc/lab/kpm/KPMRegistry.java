@@ -76,4 +76,9 @@ public interface KPMRegistry
      * サーバの状態を取得するクラスです。
      */
     ServerConditionChecker getServerConditionChecker();
+
+    /**
+     * デーモンを終了します。
+     */
+    void shutdown();
 }

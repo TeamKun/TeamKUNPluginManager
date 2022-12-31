@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.signal.handlers.clean;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.task.tasks.garbage.clean.GarbageCleanErrorCause;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
+import net.kunmc.lab.kpm.task.tasks.garbage.clean.GarbageCleanErrorCause;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
 public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase

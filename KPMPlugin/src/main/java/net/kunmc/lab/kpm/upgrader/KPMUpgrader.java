@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.upgrader;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
@@ -33,7 +33,7 @@ public class KPMUpgrader
     }
 
     private final TeamKunPluginManager teamKUNPluginManager;
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
     private final Version currentKPMVersion;
 
     private Version toKPMVersion;
@@ -41,10 +41,10 @@ public class KPMUpgrader
     @Getter
     private volatile boolean upgradeRunning;
 
-    public KPMUpgrader(TeamKunPluginManager teamKUNPluginManager, KPMDaemon daemon)
+    public KPMUpgrader(TeamKunPluginManager teamKUNPluginManager, KPMRegistry registry)
     {
         this.teamKUNPluginManager = teamKUNPluginManager;
-        this.daemon = daemon;
+        this.registry = registry;
 
         this.currentKPMVersion = Version.of(teamKUNPluginManager.getDescription().getVersion());
         this.upgradeRunning = false;
@@ -83,7 +83,7 @@ public class KPMUpgrader
         this.teamKUNPluginManager.getDaemon().getPluginMetaManager().preparePluginModify("KPMUpgrader");
 
         Runner.run(() -> {
-            this.daemon.getPluginLoader().loadPlugin(upgraderJar);
+            this.registry.getPluginLoader().loadPlugin(upgraderJar);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kpm-upgrade-internal " + this.toKPMVersion.toString());
         });
     }
@@ -95,7 +95,7 @@ public class KPMUpgrader
         LatestFetchSignal.Post fetchedSignal;
         try
         {
-            this.toKPMVersion = KPMFetcher.fetchLatestKPMVersion(this.daemon);
+            this.toKPMVersion = KPMFetcher.fetchLatestKPMVersion(this.registry);
 
             fetchedSignal = new LatestFetchSignal.Post(this.currentKPMVersion, this.toKPMVersion);
             signalHandleManager.handleSignal(fetchedSignal);

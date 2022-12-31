@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.commands.debug;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallErrorCause;
@@ -23,7 +23,7 @@ import java.util.List;
 public class CommandInstallDebug extends CommandBase
 {
     @NotNull
-    private final KPMDaemon daemon;
+    private final KPMRegistry registry;
 
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull Terminal terminal, String[] args)
@@ -37,7 +37,7 @@ public class CommandInstallDebug extends CommandBase
             try
             {
                 PluginInstaller installer = new PluginInstaller(
-                        this.daemon,
+                        this.registry,
                         DebugSignalHandler.toManager(terminal)
                 );
 
