@@ -1,10 +1,12 @@
 package net.kunmc.lab.kpm.commands.debug;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.installer.InstallProgress;
 import net.kunmc.lab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadProgressSignal;
+import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
+import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
+import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
+import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.signal.SignalHandler;
@@ -244,7 +246,7 @@ public class DebugSignalHandler
     }
 
     @SignalHandler
-    public void handleAll(@NotNull InstallProgress<?, ?> installProgress, Signal signal)
+    public void handleAll(@NotNull InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> installProgress, Signal signal)
     {
         if (!(signal instanceof DownloadProgressSignal))
             printSignal(signal, this.terminal);

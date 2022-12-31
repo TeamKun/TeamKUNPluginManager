@@ -2,9 +2,9 @@ package net.kunmc.lab.kpm.signal.handlers.update;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
 import net.kunmc.lab.kpm.installer.impls.update.signals.UpdateFinishedSignal;
-import net.kunmc.lab.kpm.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.source.download.signals.MalformedURLSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.alias.update.signals.InvalidSourceSignal;
+import net.kunmc.lab.kpm.interfaces.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 

@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import net.kunmc.lab.kpm.Utils;
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.InstallResult;
-import net.kunmc.lab.kpm.installer.signals.InstallFinishedSignal;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
+import net.kunmc.lab.kpm.interfaces.installer.signals.InstallFinishedSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
@@ -31,7 +31,7 @@ public abstract class InstallFinishedSignalBase
     @SignalHandler
     public void onFinished(InstallFinishedSignal finished)
     {
-        InstallResult<?> installResult = finished.getResult();
+        InstallResult<? extends Enum<?>> installResult = finished.getResult();
 
         if (this.printResult)
             Utils.printInstallStatistics(this.terminal, installResult);
@@ -49,7 +49,7 @@ public abstract class InstallFinishedSignalBase
      *
      * @param result インストールの結果
      */
-    protected abstract void onSuccess(InstallResult<?> result);
+    protected abstract void onSuccess(InstallResult<? extends Enum<?>> result);
 
     /**
      * インストールが失敗したときに呼び出されます。

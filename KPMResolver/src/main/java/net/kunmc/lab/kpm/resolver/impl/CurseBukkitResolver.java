@@ -6,11 +6,14 @@ import com.google.gson.JsonObject;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.Requests;
+import net.kunmc.lab.kpm.interfaces.resolver.URLResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.resolver.interfaces.URLResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.utils.URLResolveUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +69,7 @@ public class CurseBukkitResolver implements URLResolver
             matcher = this.urlMatcher(CURSE_PATTERN, query.getQuery());
 
         if (matcher == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
+            return new ErrorResultImpl(this, ErrorCause.INVALID_QUERY, errorSource);
 
         String slug = null;
         String version = null;
@@ -83,18 +86,18 @@ public class CurseBukkitResolver implements URLResolver
         }
 
         if (slug == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, errorSource);
+            return new ErrorResultImpl(this, ErrorCause.INVALID_QUERY, errorSource);
 
         HTTPResponse response = Requests.request(RequestContext.builder()
                 .url("https://servermods.forgesvc.net/servermods/projects?search=" + slug)
                 .build());
 
         if (response.getStatus() != HTTPResponse.RequestStatus.OK)
-            return this.processErrorResponse(response, errorSource);
+            return URLResolveUtil.processErrorResponse(this, response, errorSource);
 
         JsonElement json = response.getAsJson();
         if (!json.isJsonArray())
-            return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED, errorSource);
+            return new ErrorResultImpl(this, ErrorCause.SERVER_RESPONSE_MALFORMED, errorSource);
 
         JsonArray projectSearchResult = (JsonArray) json;
 
@@ -113,7 +116,7 @@ public class CurseBukkitResolver implements URLResolver
         }
 
         if (projectId == -1)
-            return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, errorSource);
+            return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, errorSource);
 
         return this.processFiles(slug, name, projectId, version, errorSource);
     }
@@ -124,21 +127,21 @@ public class CurseBukkitResolver implements URLResolver
                 .url("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId)
                 .build());
 
-        ErrorResult mayError = this.processErrorResponse(response, source);
+        ErrorResult mayError = URLResolveUtil.processErrorResponse(this, response, source);
         if (mayError != null)
             return mayError;
 
         JsonElement json = response.getAsJson();
         if (!json.isJsonArray())
-            return new ErrorResult(this, ErrorResult.ErrorCause.SERVER_RESPONSE_MALFORMED, source);
+            return new ErrorResultImpl(this, ErrorCause.SERVER_RESPONSE_MALFORMED, source);
 
         JsonArray projectFilesResult = (JsonArray) json;
         if (projectFilesResult.size() == 0)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, source);
+            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND, source);
 
         JsonObject pickedPlugin = pickUpValidVersion(projectFilesResult, version);
         if (pickedPlugin == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.VERSION_MISMATCH, source);
+            return new ErrorResultImpl(this, ErrorCause.VERSION_MISMATCH, source);
 
         String downloadUrl = pickedPlugin.get("downloadUrl").getAsString();
         String fileName = pickedPlugin.get("fileName").getAsString();

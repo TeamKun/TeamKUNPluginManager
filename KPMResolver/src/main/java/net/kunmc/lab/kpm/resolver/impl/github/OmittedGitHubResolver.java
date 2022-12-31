@@ -1,11 +1,13 @@
 package net.kunmc.lab.kpm.resolver.impl.github;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import org.apache.commons.lang.StringUtils;
 
@@ -24,12 +26,12 @@ public class OmittedGitHubResolver implements BaseResolver
 
         ResolveResult res = this.gitHubURLResolver.resolve(query);
 
-        if (res instanceof SuccessResult || res instanceof MultiResult)
+        if (res instanceof SuccessResult || res instanceof MultiResultImpl)
             return res;
 
         query.setQuery(repoName); // restore query
 
-        return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+        return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
     }
 
     @Override

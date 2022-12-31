@@ -5,11 +5,15 @@ import com.google.gson.JsonObject;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.Requests;
+import net.kunmc.lab.kpm.interfaces.resolver.URLResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.resolver.interfaces.URLResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
+import net.kunmc.lab.kpm.resolver.utils.URLResolveUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -30,7 +34,7 @@ public class SpigotMCResolver implements URLResolver
         Matcher matcher = this.urlMatcher(PATTERN, query.getQuery());
 
         if (matcher == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResultImpl(this, ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
 
         String id = null;
         String version = null;
@@ -47,7 +51,7 @@ public class SpigotMCResolver implements URLResolver
         }
 
         if (id == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResultImpl(this, ErrorCause.INVALID_QUERY, ResolveResult.Source.SPIGOT_MC);
 
         String spigotAPIUrl = "https://api.spiget.org/v2/resources/" + id;
 
@@ -55,7 +59,7 @@ public class SpigotMCResolver implements URLResolver
                 .url(spigotAPIUrl)
                 .build());
 
-        ErrorResult mayError = this.processErrorResponse(data, ResolveResult.Source.SPIGOT_MC);
+        ErrorResult mayError = URLResolveUtil.processErrorResponse(this, data, ResolveResult.Source.SPIGOT_MC);
 
         if (mayError != null)
             return mayError;
@@ -67,7 +71,7 @@ public class SpigotMCResolver implements URLResolver
     {
         boolean external = jsonObject.get("external").getAsBoolean();
         if (external)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND,
                     ResolveResult.Source.SPIGOT_MC
             );
 
@@ -80,7 +84,7 @@ public class SpigotMCResolver implements URLResolver
 
         boolean premium = jsonObject.get("premium").getAsBoolean();
         if (premium)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND,
                     ResolveResult.Source.SPIGOT_MC,
                     "This plugin is marked as premium plugin."
             );
@@ -91,7 +95,7 @@ public class SpigotMCResolver implements URLResolver
 
 
         if (versions.length == 0)
-            return new ErrorResult(this, ErrorResult.ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.SPIGOT_MC);
+            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND, ResolveResult.Source.SPIGOT_MC);
 
 
         if (version == null)
@@ -100,14 +104,14 @@ public class SpigotMCResolver implements URLResolver
             for (long v : versions)
                 results.add(new SpigotMCSuccessResult(this, String.valueOf(v), name, id, description, testedVersions));
 
-            return new MultiResult(this, results.toArray(new SpigotMCSuccessResult[0]));
+            return new MultiResultImpl(this, results.toArray(new SpigotMCSuccessResult[0]));
         }
 
         for (long v : versions)
             if (String.valueOf(v).equals(version))
                 return new SpigotMCSuccessResult(this, version, name, id, description, testedVersions);
 
-        return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.SPIGOT_MC,
+        return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.SPIGOT_MC,
                 "Version " + version + " not found."
         );
     }
@@ -130,7 +134,16 @@ public class SpigotMCResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return this.autoPickFirst(multiResult, ResolveResult.Source.SPIGOT_MC);
+        ResolveResult[] results = multiResult.getResults();
+
+        if (results.length == 0)
+            return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.SPIGOT_MC);
+
+        ResolveResult result = results[0];
+        if (result instanceof MultiResult)
+            return this.autoPickOnePlugin((MultiResult) result);
+
+        return result;
     }
 
     @Override

@@ -3,7 +3,7 @@ package net.kunmc.lab.kpm.signal.handlers.intall;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.signals.PluginResolvingSignal;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
@@ -39,11 +39,11 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolveError(PluginResolveErrorSignal signal)
     {
-        ErrorResult.ErrorCause errorCause = signal.getError().getCause();
+        ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
         this.terminal.error("%s の解決に失敗しました： %s%s", signal.getQuery(), errorCause, message);
-        if (errorCause == ErrorResult.ErrorCause.INVALID_CREDENTIAL)
+        if (errorCause == ErrorCause.INVALID_CREDENTIAL)
         {
             this.terminal.hint("間違ったトークンが設定されている可能性があります。");
             this.terminal.hint("トークンを再設定するには /kpm register コマンドを使用してください。");

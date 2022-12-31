@@ -2,15 +2,16 @@ package net.kunmc.lab.plugin.kpmupgrader;
 
 import net.kunmc.lab.kpm.KPMDaemon;
 import net.kunmc.lab.kpm.KPMEnvironment;
-import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.versioning.Version;
@@ -100,7 +101,7 @@ public class UpgradeImpl
             return (SuccessResult) resolveResult;
         }
 
-        assert resolveResult instanceof ErrorResult;
+        assert resolveResult instanceof ErrorResultImpl;
         ErrorResult errorResult = (ErrorResult) resolveResult;
 
         this.logger.severe("KPM の取得に失敗しました：" + errorResult.getMessage());

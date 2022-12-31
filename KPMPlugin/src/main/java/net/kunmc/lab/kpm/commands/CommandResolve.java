@@ -2,7 +2,7 @@ package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.TextComponent;

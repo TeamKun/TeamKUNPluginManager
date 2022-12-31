@@ -18,6 +18,7 @@
         <module>KPMMeta</module>
         <module>KPMInfo</module>
         <module>KPMHooks</module>
+        <module>KPMPluginInstaller</module>
     </modules>
     <packaging>pom</packaging>
 

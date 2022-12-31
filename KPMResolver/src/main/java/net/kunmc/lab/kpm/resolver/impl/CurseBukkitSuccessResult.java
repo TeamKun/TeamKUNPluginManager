@@ -4,7 +4,7 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.Requests;
-import net.kunmc.lab.kpm.resolver.result.MarketplaceResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

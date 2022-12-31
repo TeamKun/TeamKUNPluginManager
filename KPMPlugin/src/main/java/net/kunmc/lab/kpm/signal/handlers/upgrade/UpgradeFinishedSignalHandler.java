@@ -2,9 +2,9 @@ package net.kunmc.lab.kpm.signal.handlers.upgrade;
 
 import net.kunmc.lab.kpm.Utils;
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeErrorCause;
 import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeTasks;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
@@ -17,7 +17,7 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
     }
 
     @Override
-    protected void onSuccess(InstallResult<?> result)
+    protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
         if (!(result.getProgress().getCurrentTask() instanceof UpgradeTasks))
             return;

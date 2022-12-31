@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
-import net.kunmc.lab.kpm.installer.AbstractInstallerArgument;
 import net.kunmc.lab.kpm.installer.exceptions.InstallerRunningException;
 import net.kunmc.lab.kpm.installer.exceptions.TokenNotAvailableException;
 import net.kunmc.lab.kpm.installer.impls.autoremove.AutoRemoveArgument;
@@ -19,6 +18,7 @@ import net.kunmc.lab.kpm.installer.impls.update.AliasUpdater;
 import net.kunmc.lab.kpm.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.kpm.installer.impls.upgrade.PluginUpgrader;
 import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeArgument;
+import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.signal.HeadSignalHandlers;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -31,7 +31,7 @@ public class HeadInstallers
 {
     private final KPMDaemon daemon;
 
-    private <A extends AbstractInstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
+    private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
             @NotNull Terminal terminal,
             @NotNull I installer,
             @NotNull A arguments

@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.signal.handlers.autoremove;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.autoremove.AutoRemoveErrorCause;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
@@ -14,7 +14,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     }
 
     @Override
-    protected void onSuccess(InstallResult<?> result)
+    protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
         this.terminal.success("プラグインの自動削除が完了しました。");
     }

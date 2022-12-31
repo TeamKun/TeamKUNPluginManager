@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm;
 
 import lombok.experimental.UtilityClass;
-import net.kunmc.lab.kpm.installer.InstallResult;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 
@@ -34,7 +34,7 @@ public class Utils
         terminal.writeLine(String.format(STATS_FORMAT, added, removed, changed, pending));
     }
 
-    public static void printInstallStatistics(Terminal terminal, InstallResult<?> result)
+    public static void printInstallStatistics(Terminal terminal, InstallResult<? extends Enum<?>> result)
     {
         printInstallStatistics(
                 terminal,

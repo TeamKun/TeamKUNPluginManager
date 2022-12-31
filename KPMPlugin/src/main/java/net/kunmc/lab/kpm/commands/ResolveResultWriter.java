@@ -1,12 +1,14 @@
 package net.kunmc.lab.kpm.commands;
 
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitSuccessResult;
 import net.kunmc.lab.kpm.resolver.impl.GitHubSuccessResult;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCSuccessResult;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MarketplaceResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.utils.TerminalWriter;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -37,7 +39,7 @@ public class ResolveResultWriter extends TerminalWriter
 
         this.printString("リゾルバ", result.getResolver().getClass().getSimpleName());
 
-        if (result instanceof ErrorResult)
+        if (result instanceof ErrorResultImpl)
         {
             ErrorResult errorResult = (ErrorResult) result;
             this.printStringFull(ChatColor.RED + "エラー", ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")");
@@ -50,7 +52,7 @@ public class ResolveResultWriter extends TerminalWriter
             this.printSeparatorShort();
             this.printAdditionalInformation(result);
         }
-        else if (result instanceof MultiResult)
+        else if (result instanceof MultiResultImpl)
         {
             MultiResult multiResult = (MultiResult) result;
             this.printBoolean("複数", true);

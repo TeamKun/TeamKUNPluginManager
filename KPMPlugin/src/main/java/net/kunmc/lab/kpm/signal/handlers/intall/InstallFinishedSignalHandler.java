@@ -1,13 +1,13 @@
 package net.kunmc.lab.kpm.signal.handlers.intall;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.install.InstallErrorCause;
 import net.kunmc.lab.kpm.installer.task.tasks.dependencies.collector.DependsCollectErrorCause;
 import net.kunmc.lab.kpm.installer.task.tasks.description.DescriptionLoadErrorCause;
 import net.kunmc.lab.kpm.installer.task.tasks.download.DownloadErrorCause;
 import net.kunmc.lab.kpm.installer.task.tasks.install.PluginsInstallErrorCause;
 import net.kunmc.lab.kpm.installer.task.tasks.resolve.PluginResolveErrorCause;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     }
 
     @Override
-    protected void onSuccess(InstallResult<?> result)
+    protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
         this.terminal.success("インストールが正常に完了しました。");
     }

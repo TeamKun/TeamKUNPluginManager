@@ -6,13 +6,17 @@ import com.google.gson.JsonObject;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.Requests;
+import net.kunmc.lab.kpm.interfaces.resolver.URLResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.impl.GitHubSuccessResult;
-import net.kunmc.lab.kpm.resolver.interfaces.URLResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
+import net.kunmc.lab.kpm.resolver.utils.URLResolveUtil;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -84,9 +88,9 @@ public class GitHubURLResolver implements URLResolver
         }
         catch (IllegalArgumentException ex)
         {
-            return new ErrorResult(
+            return new ErrorResultImpl(
                     this,
-                    ErrorResult.ErrorCause.INVALID_QUERY,
+                    ErrorCause.INVALID_QUERY,
                     ResolveResult.Source.GITHUB
             );
         }
@@ -102,7 +106,7 @@ public class GitHubURLResolver implements URLResolver
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
         HashMap<Long, ResolveResult> map = new HashMap<>();
-        ErrorResult firstError = null;
+        ErrorResultImpl firstError = null;
         for (ResolveResult result : multiResult.getResults())
         {
             if (result instanceof GitHubSuccessResult)
@@ -110,10 +114,10 @@ public class GitHubURLResolver implements URLResolver
                 GitHubSuccessResult successResult = (GitHubSuccessResult) result;
                 map.put(calcReputation(successResult), successResult);
             }
-            else if (result instanceof ErrorResult)
+            else if (result instanceof ErrorResultImpl)
             {
                 if (firstError == null)
-                    firstError = (ErrorResult) result;
+                    firstError = (ErrorResultImpl) result;
             }
         }
 
@@ -143,7 +147,7 @@ public class GitHubURLResolver implements URLResolver
                 .url(apiURL)
                 .build());
 
-        ErrorResult mayError = this.processErrorResponse(response, ResolveResult.Source.GITHUB);
+        ErrorResult mayError = URLResolveUtil.processErrorResponse(this, response, ResolveResult.Source.GITHUB);
 
         if (mayError != null)
             return mayError;
@@ -164,12 +168,12 @@ public class GitHubURLResolver implements URLResolver
         {
             ResolveResult result = this.buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
 
-            if (result instanceof ErrorResult)
+            if (result instanceof ErrorResultImpl)
             {
                 ErrorResult errorResult = (ErrorResult) result;
-                if (errorResult.getCause() == ErrorResult.ErrorCause.VERSION_MISMATCH)
+                if (errorResult.getCause() == ErrorCause.VERSION_MISMATCH)
                     isFound = true;
-                else if (errorResult.getCause() == ErrorResult.ErrorCause.ASSET_NOT_FOUND)
+                else if (errorResult.getCause() == ErrorCause.ASSET_NOT_FOUND)
                     isNoAssets = true;
                 continue;
             }
@@ -181,20 +185,20 @@ public class GitHubURLResolver implements URLResolver
 
         if (results.isEmpty())
             if (isFound)
-                return new ErrorResult(
+                return new ErrorResultImpl(
                         this,
-                        ErrorResult.ErrorCause.VERSION_MISMATCH,
+                        ErrorCause.VERSION_MISMATCH,
                         ResolveResult.Source.GITHUB
                 );
             else if (isNoAssets)
-                return new ErrorResult(
+                return new ErrorResultImpl(
                         this,
-                        ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+                        ErrorCause.ASSET_NOT_FOUND,
                         ResolveResult.Source.GITHUB
                 );
 
 
-        return new MultiResult(this, results.toArray(new ResolveResult[0]));
+        return new MultiResultImpl(this, results.toArray(new ResolveResult[0]));
     }
 
     private ResolveResult buildResultSingle(String owner, String repositoryName, JsonObject object, @Nullable Version queryVersion)
@@ -208,18 +212,18 @@ public class GitHubURLResolver implements URLResolver
 
         if (queryVersion != null && !(Version.isValidVersionString(version) &&
                 Version.of(version).isEqualTo(queryVersion)))
-            return new ErrorResult(
+            return new ErrorResultImpl(
                     this,
-                    ErrorResult.ErrorCause.VERSION_MISMATCH,
+                    ErrorCause.VERSION_MISMATCH,
                     ResolveResult.Source.GITHUB
             );
 
         JsonArray assets = object.getAsJsonArray("assets");
 
         if (assets.size() == 0)
-            return new ErrorResult(
+            return new ErrorResultImpl(
                     this,
-                    ErrorResult.ErrorCause.ASSET_NOT_FOUND,
+                    ErrorCause.ASSET_NOT_FOUND,
                     ResolveResult.Source.GITHUB
             );
 
@@ -246,7 +250,7 @@ public class GitHubURLResolver implements URLResolver
         if (results.size() == 1)
             return results.get(0);
 
-        return new MultiResult(this, results.toArray(new GitHubSuccessResult[0]));
+        return new MultiResultImpl(this, results.toArray(new GitHubSuccessResult[0]));
     }
 
     @Override

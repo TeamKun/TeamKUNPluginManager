@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.signal.handlers.common;
 
-import net.kunmc.lab.kpm.installer.signals.PluginModifiedSignal;
+import net.kunmc.lab.kpm.interfaces.installer.signals.PluginModifiedSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.utils.Utils;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;

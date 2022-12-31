@@ -2,10 +2,11 @@ package net.kunmc.lab.kpm.upgrader;
 
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.resolver.PluginResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
+import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.versioning.Version;
 
@@ -21,9 +22,9 @@ public class KPMFetcher
         PluginResolver resolver = daemon.getPluginResolver();
         ResolveResult resolveResult = resolver.resolve("github>" + KPM_REPO_URL);
 
-        if (resolveResult instanceof MultiResult)
-            resolveResult = resolveResult.getResolver().autoPickOnePlugin((MultiResult) resolveResult);
-        if (resolveResult instanceof ErrorResult)
+        if (resolveResult instanceof MultiResultImpl)
+            resolveResult = resolveResult.getResolver().autoPickOnePlugin((MultiResultImpl) resolveResult);
+        if (resolveResult instanceof ErrorResultImpl)
         {
             ErrorResult errorResult = (ErrorResult) resolveResult;
             throw new IllegalStateException("Unable to fetch latest KPM version: " + errorResult.getMessage());

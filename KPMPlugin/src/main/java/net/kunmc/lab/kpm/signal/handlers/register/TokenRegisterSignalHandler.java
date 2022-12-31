@@ -1,11 +1,11 @@
 package net.kunmc.lab.kpm.signal.handlers.register;
 
 import net.kunmc.lab.kpm.installer.InstallFailedInstallResult;
-import net.kunmc.lab.kpm.installer.InstallResult;
 import net.kunmc.lab.kpm.installer.impls.register.RegisterErrorCause;
 import net.kunmc.lab.kpm.installer.impls.register.RegisterTasks;
 import net.kunmc.lab.kpm.installer.impls.register.signals.TokenCheckingSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.TokenStoredSignal;
+import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
@@ -22,7 +22,7 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
     }
 
     @Override
-    protected void onSuccess(InstallResult<?> result)
+    protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
         this.terminal.success("トークンの登録に成功しました。");
     }

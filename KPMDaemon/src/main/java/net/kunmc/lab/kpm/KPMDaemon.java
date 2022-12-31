@@ -4,15 +4,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasPluginResolver;
 import net.kunmc.lab.kpm.http.Requests;
-import net.kunmc.lab.kpm.installer.InstallManager;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
+import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
-import net.kunmc.lab.kpm.loader.PluginLoader;
 import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
-import net.kunmc.lab.kpm.resolver.PluginResolver;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
@@ -61,27 +59,6 @@ public class KPMDaemon
     private final Logger logger;
 
     /**
-     * トークンを保管しセキュアに管理するクラスです。
-     */
-    @NotNull
-    private final TokenStore tokenStore;
-    /**
-     * プラグインクエリを解決するクラスです。
-     */
-    @NotNull
-    private final PluginResolver pluginResolver;
-    /**
-     * インストールを管理するクラスです。
-     */
-    @NotNull
-    private final InstallManager installManager;
-    /**
-     * プラグインをロード/アンロードするためのクラスです。
-     */
-    @NotNull
-    private final PluginLoader pluginLoader;
-
-    /**
      * サーバの状態を判定するクラスです。
      */
     @NotNull
@@ -96,10 +73,6 @@ public class KPMDaemon
         this.envs = env;
         this.logger = env.getLogger();
         this.registry = new KPMRegistryImpl(env);
-        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
-        this.pluginResolver = new PluginResolver();
-        this.pluginLoader = new PluginLoader(this);
-        this.installManager = new InstallManager(this);
         this.serverConditionChecker = new ServerConditionChecker();
 
         this.setupDaemon(env.getOrganizations());
@@ -192,27 +165,32 @@ public class KPMDaemon
 
     private void setupPluginResolvers(List<String> organizationNames)
     {
-        GitHubURLResolver githubResolver = new GitHubURLResolver();
-        this.pluginResolver.addResolver(new AliasPluginResolver(this.registry), "local", "alias");
-        this.pluginResolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
-        this.pluginResolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
-        this.pluginResolver.addResolver(new OmittedGitHubResolver(githubResolver), "github", "gh");
-        this.pluginResolver.addResolver(githubResolver, "github", "gh");
+        PluginResolver resolver = this.registry.getPluginResolver();
 
-        this.pluginResolver.addFallbackResolver(new BruteforceGitHubResolver(
+        GitHubURLResolver githubResolver = new GitHubURLResolver();
+        resolver.addResolver(new AliasPluginResolver(this.registry), "local", "alias");
+        resolver.addResolver(new SpigotMCResolver(), "spigotmc", "spigot", "spiget");
+        resolver.addResolver(new CurseBukkitResolver(), "curseforge", "curse", "forge", "bukkit");
+        resolver.addResolver(new OmittedGitHubResolver(githubResolver), "github", "gh");
+        resolver.addResolver(githubResolver, "github", "gh");
+
+        resolver.addFallbackResolver(new BruteforceGitHubResolver(
                 organizationNames,
                 githubResolver
         ));
-        this.pluginResolver.addFallbackResolver(new RawURLResolver());
+
+        resolver.addFallbackResolver(new RawURLResolver());
     }
 
     private void setupToken()
     {
+        TokenStore tokenStore = this.registry.getTokenStore();
+
         try
         {
-            boolean tokenAvailable = this.tokenStore.loadToken();
+            boolean tokenAvailable = tokenStore.loadToken();
             if (!tokenAvailable)
-                if (this.tokenStore.migrateToken())
+                if (tokenStore.migrateToken())
                     tokenAvailable = true;
 
             if (!tokenAvailable)
@@ -228,13 +206,13 @@ public class KPMDaemon
         String tokenEnv = System.getenv("TOKEN");
 
         if (tokenEnv != null && !tokenEnv.isEmpty())
-            this.tokenStore.fromEnv();
+            tokenStore.fromEnv();
     }
 
     private void initializeRequests()
     {
         Requests.setVersion(this.getVersion().toString());
-        Requests.setTokenStore(this.tokenStore);
+        Requests.setTokenStore(this.registry.getTokenStore());
     }
 
     public void shutdown()

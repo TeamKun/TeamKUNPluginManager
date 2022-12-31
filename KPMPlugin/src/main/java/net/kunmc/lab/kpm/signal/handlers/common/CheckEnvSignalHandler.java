@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.installer.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
+import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
 import net.kunmc.lab.kpm.utils.Utils;

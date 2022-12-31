@@ -1,11 +1,13 @@
 package net.kunmc.lab.kpm.resolver.impl.github;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class BruteforceGitHubResolver implements BaseResolver
     @Override
     public ResolveResult resolve(QueryContext query)
     {
-        ResolveResult result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+        ResolveResult result = new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
         String oldQuery = query.getQuery();
 
         for (String str : this.gitHubName)
@@ -26,16 +28,16 @@ public class BruteforceGitHubResolver implements BaseResolver
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());
             result = this.gitHubURLResolver.resolve(query);
 
-            if (result instanceof ErrorResult)
+            if (result instanceof ErrorResultImpl)
             {
                 ErrorResult error = (ErrorResult) result;
 
-                if (error.getCause() == ErrorResult.ErrorCause.INVALID_QUERY)
+                if (error.getCause() == ErrorCause.INVALID_QUERY)
                 {
-                    result = new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
+                    result = new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.GITHUB);
                     break;
                 }
-                else if (error.getCause() == ErrorResult.ErrorCause.PLUGIN_NOT_FOUND)
+                else if (error.getCause() == ErrorCause.PLUGIN_NOT_FOUND)
                     continue;
                 else
                     break;

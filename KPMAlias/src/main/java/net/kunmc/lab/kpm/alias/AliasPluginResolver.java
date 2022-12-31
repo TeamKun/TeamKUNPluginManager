@@ -2,12 +2,13 @@ package net.kunmc.lab.kpm.alias;
 
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
+import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
-import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.kpm.resolver.result.ErrorResult;
-import net.kunmc.lab.kpm.resolver.result.MultiResult;
+import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.PipeResult;
-import net.kunmc.lab.kpm.resolver.result.ResolveResult;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -28,7 +29,7 @@ public class AliasPluginResolver implements BaseResolver
         Alias alias = this.aliasProvider.getQueryByAlias(query.getQuery());
 
         if (alias == null)
-            return new ErrorResult(this, ErrorResult.ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
+            return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
 
         query.setQuery(alias.getQuery());
         return new PipeResult(this, query);

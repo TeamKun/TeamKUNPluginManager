@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.resolver.impl;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.resolver.interfaces.BaseResolver;
-import net.kunmc.lab.kpm.resolver.result.MarketplaceResult;
+import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
+import net.kunmc.lab.kpm.interfaces.resolver.result.MarketplaceResult;
 import net.kunmc.lab.kpm.resolver.result.SuccessResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
