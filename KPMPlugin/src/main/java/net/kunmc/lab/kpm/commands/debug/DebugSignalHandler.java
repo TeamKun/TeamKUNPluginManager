@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm.commands.debug;
 
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import net.kunmc.lab.kpm.installer.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.kpm.interfaces.installer.InstallProgress;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
@@ -10,6 +9,7 @@ import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSig
 import net.kunmc.lab.kpm.signal.Signal;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.signal.SignalHandler;
+import net.kunmc.lab.kpm.task.tasks.download.signals.DownloadProgressSignal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Question;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;

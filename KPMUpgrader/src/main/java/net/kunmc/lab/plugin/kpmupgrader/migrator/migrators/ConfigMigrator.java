@@ -1,6 +1,6 @@
 package net.kunmc.lab.plugin.kpmupgrader.migrator.migrators;
 
-import net.kunmc.lab.kpm.KPMDaemon;
+import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.plugin.kpmupgrader.KPMUpgraderPlugin;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.KPMMigrateAction;
 import org.apache.commons.lang.StringUtils;
@@ -76,7 +76,7 @@ public class ConfigMigrator implements KPMMigrateAction
     }
 
     @Override
-    public void migrate(@NotNull KPMDaemon daemon, @NotNull Path kpmDataFolder)
+    public void migrate(@NotNull KPMRegistry daemon, @NotNull Path kpmDataFolder)
     {
         Path configPath = kpmDataFolder.resolve("config.yml");
         FileConfiguration oldConfig = YamlConfiguration.loadConfiguration(configPath.toFile());
