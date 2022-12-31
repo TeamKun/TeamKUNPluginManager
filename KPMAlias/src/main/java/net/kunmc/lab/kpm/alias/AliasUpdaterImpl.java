@@ -2,8 +2,9 @@ package net.kunmc.lab.kpm.alias;
 
 import lombok.Getter;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.alias.AliasUpdater;
 
-public class AliasUpdaterImpl implements net.kunmc.lab.kpm.interfaces.alias.AliasUpdater
+public class AliasUpdaterImpl implements AliasUpdater
 {
     private final String sourceName;
     private final String sourceURL;
