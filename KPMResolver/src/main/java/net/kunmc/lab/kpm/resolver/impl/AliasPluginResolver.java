@@ -1,6 +1,7 @@
-package net.kunmc.lab.kpm.alias;
+package net.kunmc.lab.kpm.resolver.impl;
 
 import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.alias.Alias;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;

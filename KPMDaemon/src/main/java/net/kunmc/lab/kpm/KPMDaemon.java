@@ -1,7 +1,6 @@
 package net.kunmc.lab.kpm;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.alias.AliasPluginResolver;
 import net.kunmc.lab.kpm.alias.AliasProviderImpl;
 import net.kunmc.lab.kpm.hook.HookExecutorImpl;
 import net.kunmc.lab.kpm.http.Requests;
@@ -20,6 +19,7 @@ import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
 import net.kunmc.lab.kpm.resolver.PluginResolverImpl;
+import net.kunmc.lab.kpm.resolver.impl.AliasPluginResolver;
 import net.kunmc.lab.kpm.resolver.impl.CurseBukkitResolver;
 import net.kunmc.lab.kpm.resolver.impl.RawURLResolver;
 import net.kunmc.lab.kpm.resolver.impl.SpigotMCResolver;
