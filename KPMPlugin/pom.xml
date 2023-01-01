@@ -46,12 +46,17 @@
                         </configuration>
                     </execution>
                 </executions>
+
                 <configuration>
                     <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>net.kunmc.lab.peyangpaperutils</pattern>
                             <shadedPattern>net.kunmc.lab.kpm.pyglib</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>net.kunmc.lab.kpm.hikari</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>
@@ -107,7 +112,7 @@
             <groupId>com.github.TeamKUN</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
             <version>${pyglib.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

@@ -24,13 +24,13 @@
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMAPI</artifactId>
             <version>3.0.0-pre8</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
             <version>3.0.0-pre8</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
