@@ -210,9 +210,10 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
                             .build()
             ))
             {
-                if (!response.isSuccessful())
+                JsonObject json = response.getAsJson().getAsJsonObject();
+                boolean isError = json.has("error");
+                if (isError)
                 {
-                    JsonObject json = response.getAsJson().getAsJsonObject();
                     String error = json.get("error").getAsString();
 
                     switch (error)
