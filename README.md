@@ -1,7 +1,7 @@
 <h1 align="center">TeamKUNPluginManager</h1>
 
 <p align="center">
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/TeamKun/TeamKUNPluginManager/Java%20CI%20with%20Maven?style=flat-square">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/TeamKun/TeamKUNPluginManager/maven.yml?style=flat-square">
     <a href="https://www.codacy.com/gh/TeamKun/TeamKUNPluginManager/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TeamKun/TeamKUNPluginManager&amp;utm_campaign=Badge_Grade">
         <img alt="Codacy grade" src="https://img.shields.io/codacy/grade/de19f8162c394e46b56db749a35df467?logo=codacy&style=flat-square">
     </a>
