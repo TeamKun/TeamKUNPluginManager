@@ -66,10 +66,7 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("トークンの生成中にI/Oエラーが発生しました。");
                 return true;
             case VERIFICATION_CODE_REQUEST_FAILED:
-                this.terminal.error("認証コードの取得に失敗しました。");
-                return true;
             case VERIFICATION_FAILED:
-                this.terminal.error("コードの有効化に失敗しました。");
                 return true;
             default:
                 return false;
@@ -79,6 +76,6 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
     @SignalHandler
     public void onTokenStored(TokenStoredSignal signal)
     {
-        this.terminal.success("トークンが登録されました。");
+        this.terminal.info("トークンが登録されました。");
     }
 }
