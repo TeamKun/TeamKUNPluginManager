@@ -134,7 +134,7 @@ public class UpgradeSignalHandler
         InstallFailedInstallResult<?, ?, ?> result = (InstallFailedInstallResult<?, ?, ?>) signal.getFailedResult();
 
         this.terminal.warn(
-                "プラグイン(不明) のアップグレードは %s で %sにより失敗しました。",
+                "プラグイン(不明) のアップグレードは %s で %s により失敗しました。",
                 result.getTaskStatus(),
                 result.getReason()
         );
