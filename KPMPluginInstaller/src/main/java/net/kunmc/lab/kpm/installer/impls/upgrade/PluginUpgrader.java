@@ -159,6 +159,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         resolveResults = this.notifyUpgradeReady(resolveResults);
         if (resolveResults.isEmpty())  // Cancelled
             return this.error(UpgradeErrorCause.CANCELLED);
+        targetPlugins = new ArrayList<>(resolveResults.keySet());
 
         Map<PluginDescriptionFile, Path> unloadedPlugins;
         // region Uninstall plugins
