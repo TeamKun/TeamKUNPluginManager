@@ -7,7 +7,7 @@ import net.kunmc.lab.kpm.signal.Signal;
 import java.nio.file.Path;
 
 /**
- * 不要データの検索を開始したことを示すシグナルです。
+ * 不要なデータの検索を開始したことを示すシグナルです。
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

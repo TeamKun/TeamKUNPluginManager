@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 不要データ削除を行うタスクです。
+ * 不要なデータの削除を行うタスクです。
  */
 public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, GarbageCleanResult>
 {
@@ -73,9 +73,9 @@ public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, 
     }
 
     /**
-     * 一つの不要データを削除します。
+     * 一つの不要なデータを削除します。
      *
-     * @param path 削除する不要データのパスです。
+     * @param path 削除する不要なデータのパスです。
      * @return 0: 削除成功   1: 削除失敗   -1: 致命的なエラー
      */
     private int removeOne(Path path)

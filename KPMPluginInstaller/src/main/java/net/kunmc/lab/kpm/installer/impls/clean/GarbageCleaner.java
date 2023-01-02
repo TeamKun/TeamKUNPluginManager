@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * プラグインの不要データ削除するインストーラーの実装です。
- * 不要データ削除は主に以下の流れで動作します。
+ * プラグインの不要なデータを削除するインストーラーの実装です。
+ * 不要なデータの削除は主に以下の流れで動作します。
  *
  * <ol>
- *     <li>{@link CleanTasks#SEARCHING_GARBAGE} - 不要データを検索する。</li>
- *     <li>{@link CleanTasks#DELETING_GARBAGE} - 不要データを削除する。</li>
+ *     <li>{@link CleanTasks#SEARCHING_GARBAGE} - 不要なデータを検索する。</li>
+ *     <li>{@link CleanTasks#DELETING_GARBAGE} - 不要なデータを削除する。</li>
  * </ol>
  */
 public class GarbageCleaner extends AbstractInstaller<CleanArgument, CleanErrorCause, CleanTasks>

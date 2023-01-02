@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 不要データ削除の引数を格納するクラスです。
+ * 不要なデータ削除の引数を格納するクラスです。
  */
 @Data
 public class CleanArgument implements InstallerArgument

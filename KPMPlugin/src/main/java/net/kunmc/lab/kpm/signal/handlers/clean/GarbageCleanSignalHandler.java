@@ -23,7 +23,7 @@ public class GarbageCleanSignalHandler
     @SignalHandler
     public void onGarbageEnumerated(GarbageEnumeratedSignal signal)
     {
-        this.terminal.successImplicit("以下の未使用データは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
+        this.terminal.successImplicit("以下のデータ・フォルダは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
         this.terminal.writeLine("  " + signal.getGarbageDatas().stream()
                 .sorted()
                 .map(path -> path.getFileName().toString())
@@ -35,6 +35,6 @@ public class GarbageCleanSignalHandler
     @SignalHandler
     public void onGarbageSearching(GarbageSearchingSignal signal)
     {
-        this.terminal.info("不要データを検索しています …");
+        this.terminal.info("不要なデータを検索しています …");
     }
 }

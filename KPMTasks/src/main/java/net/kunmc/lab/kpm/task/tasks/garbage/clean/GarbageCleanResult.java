@@ -10,14 +10,14 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 /**
- * 不要データ削除を行うタスクの結果です。
+ * 不要なデータの削除を行うタスクの結果です。
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class GarbageCleanResult extends AbstractTaskResult<GarbageCleanState, GarbageCleanErrorCause>
 {
     /**
-     * 削除の結果と不要データのパスです。
+     * 削除の結果と不要なデータのパスです。
      */
     HashMap<Path, Boolean> deletedGarbage;
 

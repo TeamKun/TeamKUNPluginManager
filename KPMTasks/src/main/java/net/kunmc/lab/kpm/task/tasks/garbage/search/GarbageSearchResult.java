@@ -10,14 +10,14 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * 不要データ検索を行うタスクの結果です。
+ * 不要なデータの検索を行うタスクの結果です。
  */
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class GarbageSearchResult extends AbstractTaskResult<GarbageSearchState, GarbageSearchErrorCause>
 {
     /**
-     * 見つかった不要データのパスのリストです。
+     * 見つかった不要なデータのパスのリストです。
      */
     List<Path> garbageFiles;
 

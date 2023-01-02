@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 不要データ検索を行うタスクです。
+ * 不要なデータの検索を行うタスクです。
  */
 public class GarbageSearchTask extends AbstractInstallTask<GarbageSearchArgument, GarbageSearchResult>
 {

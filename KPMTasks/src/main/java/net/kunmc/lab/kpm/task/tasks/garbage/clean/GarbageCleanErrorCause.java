@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.task.tasks.garbage.clean;
 
 /**
- * 不要データ削除のエラーを表す列挙型です。
+ * 不要なデータの削除エラーを表す列挙型です。
  */
 public enum GarbageCleanErrorCause
 {
@@ -10,7 +10,7 @@ public enum GarbageCleanErrorCause
      */
     CANCELLED,
     /**
-     * 不要データが存在しません。
+     * 不要なデータが存在しません。
      */
     NO_GARBAGE,
 

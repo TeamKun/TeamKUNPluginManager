@@ -41,7 +41,7 @@ public class CommandClean extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("削除されて残ったプラグインの不要データを自動削除します。");
+        return of("削除されて残ったプラグインの不要なデータを自動で削除します。");
     }
 
     @Override

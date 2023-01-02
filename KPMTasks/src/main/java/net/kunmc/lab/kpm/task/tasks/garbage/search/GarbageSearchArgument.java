@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * 不要データ検索を行うタスクの引数です。
+ * 不要なデータの検索を行うタスクの引数です。
  */
 @Value
 @EqualsAndHashCode(callSuper = false)

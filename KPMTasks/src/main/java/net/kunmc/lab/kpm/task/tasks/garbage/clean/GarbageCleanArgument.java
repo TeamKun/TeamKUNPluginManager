@@ -9,14 +9,14 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * 不要データ削除を行うタスクの引数です。
+ * 不要なデータの削除を行うタスクの引数です。
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class GarbageCleanArgument implements TaskArgument
 {
     /**
-     * 不要データとして削除するディレクトリ・ファイルのパスです。
+     * 不要なデータとして削除するディレクトリ・ファイルのパスです。
      */
     @NotNull
     List<Path> paths;

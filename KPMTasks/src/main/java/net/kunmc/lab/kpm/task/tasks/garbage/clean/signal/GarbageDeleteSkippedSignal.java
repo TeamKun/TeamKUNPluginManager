@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Path;
 
 /**
- * 不要データの削除がスキップされたことを示すシグナルです。
+ * 不要なデータの削除がスキップされたことを示すシグナルです。
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class GarbageDeleteSkippedSignal extends Signal
 {
     /**
-     * スキップされた不要データのパスです。
+     * スキップされた不要なデータのパスです。
      */
     @NotNull
     Path garbageData;
