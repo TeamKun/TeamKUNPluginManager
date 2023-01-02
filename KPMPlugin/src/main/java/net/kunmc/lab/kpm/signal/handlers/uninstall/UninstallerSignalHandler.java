@@ -58,7 +58,7 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onUnloading(PluginUnloadingSignal.Pre signal)
     {
-        this.terminal.infoImplicit(" を削除しています …", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.infoImplicit("%s を削除しています …", Utils.getPluginString(signal.getPlugin()));
     }
 
     @SignalHandler
