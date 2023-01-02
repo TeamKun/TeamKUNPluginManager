@@ -72,7 +72,7 @@ public class CommandUpgradeKPM extends CommandBase
     @Override
     public @Nullable String getPermission()
     {
-        return null;
+        return "upgrade-kpm";
     }
 
     @Override
