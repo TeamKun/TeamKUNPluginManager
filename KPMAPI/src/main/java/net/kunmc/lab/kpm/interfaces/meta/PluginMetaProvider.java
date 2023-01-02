@@ -130,6 +130,14 @@ public interface PluginMetaProvider
     boolean isPluginMetaExists(@NotNull String pluginName);
 
     /**
+     * プラグインのメタデータが存在しているかどうかを返します。
+     *
+     * @param pluginName プラグイン
+     * @return プラグインのメタデータが存在しているかどうか
+     */
+    boolean isPluginMetaExists(@NotNull Plugin pluginName);
+
+    /**
      * プラグインのメタデータを保存します。
      *
      * @param plugin       プラグイン

@@ -267,6 +267,12 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     }
 
     @Override
+    public boolean isPluginMetaExists(@NotNull Plugin pluginName)
+    {
+        return this.isPluginMetaExists(pluginName.getName());
+    }
+
+    @Override
     public void savePluginMeta(@NotNull Plugin plugin,
                                @NotNull InstallOperator installedBy,
                                long installedAt,

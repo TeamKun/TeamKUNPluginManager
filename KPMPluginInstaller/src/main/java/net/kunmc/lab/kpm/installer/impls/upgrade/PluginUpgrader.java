@@ -357,6 +357,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
     {
         PluginMetaProvider metaProvider = this.registry.getPluginMetaManager().getProvider();
         return targets.stream()
+                .filter(metaProvider::isPluginMetaExists)
                 .map(plugin -> Pair.of(plugin, metaProvider.getPluginMeta(plugin.getName())))
                 .collect(KPMCollectors.toPairHashMap());
     }
