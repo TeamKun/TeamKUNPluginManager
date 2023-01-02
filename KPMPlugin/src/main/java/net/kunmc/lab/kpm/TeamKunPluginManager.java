@@ -98,7 +98,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("update", new CommandUpdate(this, this.daemon));
         commandManager.registerCommand("upgrade", new CommandUpgrade(this));
         commandManager.registerCommand("upgrade-kpm", new CommandUpgradeKPM(this));
-        commandManager.registerCommand("version", new CommandVersion(this.daemon), "v");
+        commandManager.registerCommand("version", new CommandVersion(this.daemon), "v", "status");
     }
 
     @Override
