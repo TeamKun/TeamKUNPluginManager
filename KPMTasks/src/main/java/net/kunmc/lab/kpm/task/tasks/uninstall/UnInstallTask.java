@@ -84,7 +84,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (NoSuchFieldException | IllegalAccessException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

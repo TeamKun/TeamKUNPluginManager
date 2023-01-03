@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.meta;
 
+import lombok.SneakyThrows;
 import net.kunmc.lab.kpm.db.Transaction;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
@@ -83,6 +84,7 @@ public class PluginMetaIteratorImpl implements PluginMetaIterator
     }
 
     @Override
+    @SneakyThrows(SQLException.class)
     public void close()
     {
         try
@@ -94,10 +96,6 @@ public class PluginMetaIteratorImpl implements PluginMetaIterator
                 this.provider.removePluginMeta(name, this.transaction);
                 this.provider.removePluginRelationalData(this.transaction.getConnection(), name);
             }
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
         }
         finally
         {

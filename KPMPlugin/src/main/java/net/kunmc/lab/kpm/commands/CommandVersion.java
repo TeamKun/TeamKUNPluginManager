@@ -43,7 +43,7 @@ public class CommandVersion extends CommandBase
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
     }

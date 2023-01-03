@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.utils;
 
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
@@ -23,22 +24,16 @@ public class ServerConditionChecker
         }
         catch (NoSuchFieldException | ClassNotFoundException | IllegalAccessException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
     private final long currentSessionReloadCount;
 
+    @SneakyThrows(IllegalAccessException.class)
     public ServerConditionChecker()
     {
-        try
-        {
-            this.currentSessionReloadCount = fReloadCount.getLong(Bukkit.getServer());
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
+        this.currentSessionReloadCount = fReloadCount.getLong(Bukkit.getServer());
     }
 
     public boolean isStopping()
@@ -54,15 +49,9 @@ public class ServerConditionChecker
         }
     }
 
+    @SneakyThrows(IllegalAccessException.class)
     public boolean isReloading()
     {
-        try
-        {
-            return fReloadCount.getLong(Bukkit.getServer()) != this.currentSessionReloadCount;
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fReloadCount.getLong(Bukkit.getServer()) != this.currentSessionReloadCount;
     }
 }

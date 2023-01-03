@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm;
 
+import lombok.SneakyThrows;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.RequestMethod;
@@ -14,6 +15,7 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -38,53 +40,34 @@ public class TokenStore
 
     private String tokenCache;
 
+    @SneakyThrows(IOException.class)
     public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath)
     {
         this.tokenPath = tokenPath;
-        try
-        {
-            this.key = this.getkey(keyPath);
-            this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        this.key = this.getkey(keyPath);
+        this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
     }
 
+    @SneakyThrows({NoSuchAlgorithmException.class, InvalidKeySpecException.class})
     private static SecretKeySpec getKeySpec(String key)
     {
-        try
-        {
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), 65536, 256);
-            return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
-        }
-        catch (NoSuchAlgorithmException | InvalidKeySpecException e)
-        {
-            // Never happen
-            throw new RuntimeException(e);
-        }
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), 65536, 256);
+        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
+    @SneakyThrows(IOException.class)
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void setPermission(Path path)
     {
-        try
+        if (System.getProperty("os.name").toLowerCase().contains("win"))
         {
-            if (System.getProperty("os.name").toLowerCase().contains("win"))
-            {
-                File f = path.toFile();
-                f.setReadable(true, false);
-                f.setWritable(true, false);
-            }
-            else
-                Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-------"));
+            File f = path.toFile();
+            f.setReadable(true, false);
+            f.setWritable(true, false);
         }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        else
+            Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-------"));
     }
 
     private static boolean isTokenAlive(String token)
@@ -262,7 +245,7 @@ public class TokenStore
             catch (IOException e)
             {
                 System.out.println("Failed to load token.");
-                throw new RuntimeException(e);
+                throw new UncheckedIOException(e);
             }
         }
         return this.tokenCache;

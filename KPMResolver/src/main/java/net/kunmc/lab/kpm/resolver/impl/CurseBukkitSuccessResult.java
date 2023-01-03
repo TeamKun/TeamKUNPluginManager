@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 /**
  * CurseForge または Bukkit.org の成功結果を表すクラス
@@ -69,7 +70,7 @@ public class CurseBukkitSuccessResult extends AbstractSuccessResult implements M
         }
         catch (IOException e)
         {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 

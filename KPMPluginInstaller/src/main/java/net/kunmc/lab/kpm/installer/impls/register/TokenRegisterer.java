@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.installer.impls.register;
 
 import com.google.gson.JsonObject;
+import lombok.SneakyThrows;
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
@@ -169,17 +170,11 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         return response.getAsObject(UserVerificationCodeResponse.class);
     }
 
+    @SneakyThrows(InterruptedException.class)
     private void randomSleep(long interval)
     {
         long sleepTime = interval + (long) (Math.random() * 500);
-        try
-        {
-            Thread.sleep(sleepTime);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        Thread.sleep(sleepTime);
     }
 
     @Nullable

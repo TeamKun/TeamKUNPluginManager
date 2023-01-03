@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.task;
 
 import com.mojang.brigadier.CommandDispatcher;
+import lombok.SneakyThrows;
 import net.kunmc.lab.kpm.utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -160,16 +161,10 @@ public class CommandsPatcher
      *
      * @return CommandMap
      */
+    @SneakyThrows(IllegalAccessException.class)
     public CommandMap getCommandMap()
     {
-        try
-        {
-            return (SimpleCommandMap) this.fCommandMap.get(Bukkit.getServer());
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return (SimpleCommandMap) this.fCommandMap.get(Bukkit.getServer());
     }
 
     /**

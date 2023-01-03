@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import net.kunmc.lab.kpm.signal.Signal;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -41,7 +42,7 @@ public class AliasUpdateSignal extends Signal
         }
         catch (MalformedURLException e)
         {
-            throw new RuntimeException("Invalid source URI", e);
+            throw new UncheckedIOException("Invalid source URI", e);
         }
     }
 }

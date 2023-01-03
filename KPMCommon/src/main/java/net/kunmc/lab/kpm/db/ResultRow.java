@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.db;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -34,28 +35,16 @@ public class ResultRow implements AutoCloseable
     }
 
     @Override
+    @SneakyThrows(SQLException.class)
     public void close()
     {
-        try
-        {
-            this.result.close();
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
+        this.result.close();
     }
 
+    @SneakyThrows(SQLException.class)
     public void closeAll()
     {
-        try
-        {
-            this.result.getStatement().getConnection().close();
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
+        this.result.getStatement().getConnection().close();
     }
 
     public String getString(String columnLabel)

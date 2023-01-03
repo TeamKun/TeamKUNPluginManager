@@ -34,7 +34,7 @@ public class PluginUtil
         }
         catch (NoSuchMethodException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -63,7 +63,7 @@ public class PluginUtil
         catch (IllegalAccessException | InvocationTargetException e)
         {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

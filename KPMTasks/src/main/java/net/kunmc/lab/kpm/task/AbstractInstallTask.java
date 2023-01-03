@@ -48,7 +48,7 @@ public abstract class AbstractInstallTask<A extends TaskArgument, R extends Task
             }
             catch (InterruptedException | BrokenBarrierException ex)
             {
-                throw new RuntimeException(ex);
+                throw new IllegalStateException(ex);
             }
         });
 
@@ -58,7 +58,7 @@ public abstract class AbstractInstallTask<A extends TaskArgument, R extends Task
         }
         catch (BrokenBarrierException | InterruptedException e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
         if (errorRef.get() != null)
@@ -81,7 +81,7 @@ public abstract class AbstractInstallTask<A extends TaskArgument, R extends Task
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractInstallTask<A extends TaskArgument, R extends Task
         }
         catch (Exception e)
         {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

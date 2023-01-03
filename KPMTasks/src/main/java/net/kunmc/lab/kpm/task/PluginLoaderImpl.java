@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.task;
 
+import lombok.SneakyThrows;
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.loader.PluginLoadResult;
 import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
@@ -55,31 +56,26 @@ public class PluginLoaderImpl implements PluginLoader
         this.initReflections();
     }
 
+    @SneakyThrows({NoSuchFieldException.class, IllegalAccessException.class})
     @SuppressWarnings("unchecked")
     private void initReflections()
     {
-        try
-        {
-            Field fPlugins = this.pluginManager.getClass().getDeclaredField("plugins");
-            fPlugins.setAccessible(true);
-            this.plugins = (List<Plugin>) fPlugins.get(this.pluginManager);
 
-            Field fLookupNames = this.pluginManager.getClass().getDeclaredField("lookupNames");
-            fLookupNames.setAccessible(true);
-            this.lookupNames = (Map<String, Plugin>) fLookupNames.get(this.pluginManager);
+        Field fPlugins = this.pluginManager.getClass().getDeclaredField("plugins");
+        fPlugins.setAccessible(true);
+        this.plugins = (List<Plugin>) fPlugins.get(this.pluginManager);
 
-            Field fPlugin = PluginClassLoader.class.getDeclaredField("plugin");
-            fPlugin.setAccessible(true);
-            this.fPlugin = fPlugin;
+        Field fLookupNames = this.pluginManager.getClass().getDeclaredField("lookupNames");
+        fLookupNames.setAccessible(true);
+        this.lookupNames = (Map<String, Plugin>) fLookupNames.get(this.pluginManager);
 
-            Field fPluginInit = PluginClassLoader.class.getDeclaredField("pluginInit");
-            fPluginInit.setAccessible(true);
-            this.fPluginInit = fPluginInit;
-        }
-        catch (NoSuchFieldException | IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
+        Field fPlugin = PluginClassLoader.class.getDeclaredField("plugin");
+        fPlugin.setAccessible(true);
+        this.fPlugin = fPlugin;
+
+        Field fPluginInit = PluginClassLoader.class.getDeclaredField("pluginInit");
+        fPluginInit.setAccessible(true);
+        this.fPluginInit = fPluginInit;
     }
 
     /**
