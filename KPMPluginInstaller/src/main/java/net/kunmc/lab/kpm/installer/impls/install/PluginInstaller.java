@@ -165,25 +165,24 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         // region Do collect dependencies, compute dependencies load order and install them.
         KPMInformationFile finalKpmInfo = kpmInfo;
-        TaskResult installResult =
-                this.submitter(
-                                InstallTasks.COLLECTING_DEPENDENCIES,
-                                new DependsCollectTask(this)
-                        )
-                        .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(this))
-                        .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
-                        .then(
-                                InstallTasks.INSTALLING_PLUGINS,
-                                new PluginsInstallTask(this)
-                        )
-                        .bridgeArgument(result -> new PluginsInstallArgument(
-                                pluginFilePath,
-                                pluginDescription,
-                                finalKpmInfo,
-                                result.getOrder(),
-                                argument.isOnyLocate()
-                        ))
-                        .submitAll(new DependsCollectArgument(pluginDescription));
+        this.submitter(
+                        InstallTasks.COLLECTING_DEPENDENCIES,
+                        new DependsCollectTask(this)
+                )
+                .then(InstallTasks.COMPUTING_LOAD_ORDER, new DependsComputeOrderTask(this))
+                .bridgeArgument(result -> new DependsComputeOrderArgument(result.getCollectedPlugins()))
+                .then(
+                        InstallTasks.INSTALLING_PLUGINS,
+                        new PluginsInstallTask(this)
+                )
+                .bridgeArgument(result -> new PluginsInstallArgument(
+                        pluginFilePath,
+                        pluginDescription,
+                        finalKpmInfo,
+                        result.getOrder(),
+                        argument.isOnyLocate()
+                ))
+                .submitAll(new DependsCollectArgument(pluginDescription));
         // endregion
 
         if (replacePlugin)
