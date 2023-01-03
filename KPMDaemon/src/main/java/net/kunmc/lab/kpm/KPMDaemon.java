@@ -180,12 +180,9 @@ public class KPMDaemon implements KPMRegistry
         try
         {
             boolean tokenAvailable = tokenStore.loadToken();
-            if (!tokenAvailable)
-                if (tokenStore.migrateToken())
-                    tokenAvailable = true;
-
-            if (!tokenAvailable)
+            if (!(tokenAvailable || tokenStore.migrateToken()))
                 this.logger.log(Level.WARNING, "No token is available in this server. Please run /kpm token to set a token.");
+
         }
         catch (IOException e)
         {
