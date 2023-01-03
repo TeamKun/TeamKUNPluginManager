@@ -71,13 +71,13 @@ public class Transaction implements AutoCloseable
                 continue;
 
             caller = stack[i + 1];
-            if (caller.getClassName().equals(this.getClass().getName()))
-                continue;
-
-            System.out.println("Transaction(" + this.connection.hashCode() +
-                    ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
-                    caller.getFileName() + ":" + caller.getLineNumber());
-            break;
+            if (!caller.getClassName().equals(this.getClass().getName()))
+            {
+                System.out.println("Transaction(" + this.connection.hashCode() +
+                        ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
+                        caller.getFileName() + ":" + caller.getLineNumber());
+                break;
+            }
         }
     }
 
