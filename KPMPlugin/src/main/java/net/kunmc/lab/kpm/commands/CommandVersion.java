@@ -50,6 +50,20 @@ public class CommandVersion extends CommandBase
 
     private final KPMRegistry registry;
 
+    private static void printInfo(Terminal terminal, KPMRegistry registry, String mode)
+    {
+        boolean isFull = mode.equals("full");
+
+        if (isFull || mode.equals("versions"))
+            printVersions(terminal);
+        if (isFull || mode.equals("licenses"))
+            printLicenses(terminal);
+        if (isFull || mode.equals("status"))
+            printStatus(terminal, registry);
+        if (isFull || mode.equals("notice"))
+            Notices.printAllNotice(registry, terminal);
+    }
+
     private static void printVersions(@NotNull Terminal terminal)
     {
         terminal.writeLine("KPM (TeamKUNPluginManager) v" + KPM_VERSION);
@@ -92,16 +106,7 @@ public class CommandVersion extends CommandBase
             return;
         }
 
-        boolean isFull = mode.equals("full");
-
-        if (isFull || mode.equals("versions"))
-            printVersions(terminal);
-        if (isFull || mode.equals("licenses"))
-            printLicenses(terminal);
-        if (isFull || mode.equals("status"))
-            printStatus(terminal, this.registry);
-        if (isFull || mode.equals("notice"))
-            Notices.printAllNotice(this.registry, terminal);
+        printInfo(terminal, this.registry, mode);
     }
 
     @Override
