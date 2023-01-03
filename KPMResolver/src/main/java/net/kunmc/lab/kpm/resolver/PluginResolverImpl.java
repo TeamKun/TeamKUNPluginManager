@@ -6,9 +6,9 @@ import net.kunmc.lab.kpm.interfaces.resolver.URLResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
+import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
-import net.kunmc.lab.kpm.resolver.result.PipeResult;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -159,21 +159,19 @@ public class PluginResolverImpl implements PluginResolver
             URL url = toURL(queryContext.getQuery());
             ResolveResult result = this.actuallyResolve(resolver, queryContext, url);
 
-            if (result == null || result instanceof PipeResult)
-                continue;
+            if (result instanceof SuccessResult)
+                return result;
             else if (result instanceof ErrorResultImpl)
             {
                 ErrorResultImpl error = (ErrorResultImpl) result;
 
-                if (error.getCause() != ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorCause.INVALID_QUERY)
-                    return error;
                 if (error.getCause() != ErrorCause.RESOLVER_MISMATCH)
                     errorResult = (ErrorResultImpl) result;
 
-                continue;
-            }
+                if (error.getCause() != ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorCause.INVALID_QUERY)
+                    return error;
 
-            return result;
+            }
         }
 
         return errorResult;

@@ -125,11 +125,8 @@ public class GitHubURLResolver implements URLResolver
                 GitHubSuccessResult successResult = (GitHubSuccessResult) result;
                 map.put(calcReputation(successResult), successResult);
             }
-            else if (result instanceof ErrorResultImpl)
-            {
-                if (firstError == null)
-                    firstError = (ErrorResultImpl) result;
-            }
+            else if (result instanceof ErrorResultImpl && firstError == null)
+                firstError = (ErrorResultImpl) result;
         }
 
         if (map.isEmpty())
