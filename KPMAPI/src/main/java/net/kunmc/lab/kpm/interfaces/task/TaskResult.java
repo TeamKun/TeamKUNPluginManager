@@ -3,10 +3,10 @@ package net.kunmc.lab.kpm.interfaces.task;
 /**
  * 実行したタスクの結果を表します。
  *
- * @param <S>  タスクの状態の型
- * @param <EC> タスクのエラー原因の型
+ * @param <S> タスクの状態の型
+ * @param <E> タスクのエラー原因の型
  */
-public interface TaskResult<S extends Enum<?>, EC extends Enum<?>>
+public interface TaskResult<S extends Enum<?>, E extends Enum<?>>
 {
     /**
      * タスクが成功したかどうかです。
@@ -22,5 +22,5 @@ public interface TaskResult<S extends Enum<?>, EC extends Enum<?>>
      * タスクのエラー原因です。
      * タスクが成功した場合は {@code null} です。
      */
-    EC getErrorCause();
+    E getErrorCause();
 }
