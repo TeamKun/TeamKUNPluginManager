@@ -27,15 +27,12 @@ import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveTask;
 import net.kunmc.lab.kpm.task.tasks.uninstall.UnInstallTask;
 import net.kunmc.lab.kpm.task.tasks.uninstall.UninstallArgument;
-import net.kunmc.lab.kpm.utils.PluginUtil;
-import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -216,15 +213,4 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
         return null;  // No error with environment.
     }
 
-    private void removeOldPlugin(Plugin plugin)
-    {
-        this.progress.setCurrentTask(InstallTasks.REMOVING_OLD_PLUGIN);
-
-        File oldPluginFile = PluginUtil.getFile(plugin);
-
-        this.registry.getPluginLoader().unloadPlugin(plugin);  // TODO: Replace with uninstall.
-
-        if (!this.safeDelete(oldPluginFile))
-            Runner.runLater(() -> this.safeDelete(oldPluginFile), 10L);
-    }
 }
