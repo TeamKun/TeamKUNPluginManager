@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm.task.tasks.install;
 
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.hook.hooks.PluginInstalledHook;
-import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
@@ -52,7 +51,6 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
 
     private final PluginMetaManager pluginMetaManager;
     private final PluginMetaProvider pluginMetaProvider;
-    private final HookExecutor hookExecutor;
     private PluginsInstallState state;
 
     public PluginsInstallTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
@@ -68,7 +66,6 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         PluginMetaManager pluginMetaManager = registry.getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;
         this.pluginMetaProvider = pluginMetaManager.getProvider();
-        this.hookExecutor = registry.getHookExecutor();
 
         this.state = PluginsInstallState.INITIALIZED;
     }
