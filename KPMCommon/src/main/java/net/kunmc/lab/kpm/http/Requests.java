@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.kpm.TokenStore;
+import net.kunmc.lab.kpm.utils.KPMCollectors;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +18,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.AbstractMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -106,25 +108,7 @@ public class Requests
 
         try
         {
-            URL url = new URL(context.getUrl());
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-            connection.setInstanceFollowRedirects(false);
-            connection.setRequestMethod(context.getMethod().name());
-            connection.setUseCaches(false);
-            connection.setConnectTimeout(10000);
-
-            if (context.getTimeout() > 0)
-                connection.setReadTimeout(context.getTimeout());
-            if (context.getMethod() == RequestMethod.POST)
-                connection.setDoOutput(true);
-
-            for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
-
-            setupDefaultHeaders(url.getHost(), context.getExtraHeaders())
-                    .forEach(connection::setRequestProperty);
-
+            HttpURLConnection connection = createConnection(context);
             connection.connect();
 
             if (context.getBody() != null)
@@ -135,30 +119,8 @@ public class Requests
 
             int responseCode = connection.getResponseCode();
 
-            HashMap<String, String> serverHeaders = connection.getHeaderFields().entrySet().stream().parallel()
-                    .map(stringListEntry -> new AbstractMap.SimpleEntry<>(
-                            stringListEntry.getKey() == null ? null: stringListEntry.getKey().toLowerCase(),
-                            String.join(" ", stringListEntry.getValue())
-                    ))
-                    .collect(HashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), HashMap::putAll);
-
-            String protocol = "HTTP";
-            String protocolVersion = "1.1";
-
-            if (serverHeaders.containsKey(null))
-            {
-                String[] protocolAndStatus = StringUtils.split(serverHeaders.get(null), " ");
-                if (protocolAndStatus.length > 1)
-                {
-                    String[] protocolAndVersion = StringUtils.split(protocolAndStatus[0], "/");
-                    if (protocolAndVersion.length > 0)
-                        protocol = protocolAndVersion[0];
-                    if (protocolAndVersion.length > 1)
-                        protocolVersion = protocolAndVersion[1];
-                }
-
-                serverHeaders.remove(null);
-            }
+            HashMap<String, String> serverHeaders = buildHeaders(connection.getHeaderFields());
+            Pair<String, String> serverProtocol = retrieveProtocol(serverHeaders);  // serverHeaders will be modified in this method
 
             HTTPResponse.RequestStatus status = HTTPResponse.RequestStatus.OK;
             if (responseCode >= 500)
@@ -167,7 +129,7 @@ public class Requests
                 status = HTTPResponse.RequestStatus.CLIENT_ERROR;
 
             HTTPResponse response = new HTTPResponse(status,
-                    context, protocol, protocolVersion, responseCode, serverHeaders,
+                    context, serverProtocol.getLeft(), serverProtocol.getRight(), responseCode, serverHeaders,
                     responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
             );
 
@@ -188,6 +150,63 @@ public class Requests
         {
             return HTTPResponse.error(context, HTTPResponse.RequestStatus.IO_EXCEPTION_OCCURRED);
         }
+    }
+
+    private static HttpURLConnection createConnection(RequestContext context) throws IOException
+    {
+        URL url = new URL(context.getUrl());
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod(context.getMethod().name());
+        connection.setUseCaches(false);
+        connection.setConnectTimeout(10000);
+
+        if (context.getTimeout() > 0)
+            connection.setReadTimeout(context.getTimeout());
+        if (context.getMethod() == RequestMethod.POST)
+            connection.setDoOutput(true);
+
+        for (Map.Entry<String, String> entry : context.getExtraHeaders().entrySet())
+            connection.setRequestProperty(entry.getKey(), entry.getValue());
+
+        setupDefaultHeaders(url.getHost(), context.getExtraHeaders())
+                .forEach(connection::setRequestProperty);
+
+        return connection;
+    }
+
+    private static HashMap<String, String> buildHeaders(Map<String, List<String>> originalHeaders)
+    {
+        return originalHeaders.entrySet().stream().parallel()
+                .map(stringListEntry -> Pair.of(
+                        stringListEntry.getKey() == null ? null: stringListEntry.getKey().toLowerCase(),
+                        String.join(" ", stringListEntry.getValue())
+                ))
+                .collect(KPMCollectors.toPairHashMap());
+    }
+
+    private static Pair<String, String> retrieveProtocol(Map<String, String> serverHeaders)
+    {
+        String protocol = "HTTP";
+        String protocolVersion = "1.1";
+
+        if (serverHeaders.containsKey(null))
+        {
+            String[] protocolAndStatus = StringUtils.split(serverHeaders.get(null), " ");
+            if (protocolAndStatus.length > 1)
+            {
+                String[] protocolAndVersion = StringUtils.split(protocolAndStatus[0], "/");
+                if (protocolAndVersion.length > 0)
+                    protocol = protocolAndVersion[0];
+                if (protocolAndVersion.length > 1)
+                    protocolVersion = protocolAndVersion[1];
+            }
+
+            serverHeaders.remove(null);
+        }
+
+        return new Pair<>(protocol, protocolVersion);
     }
 
     /**
