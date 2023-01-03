@@ -104,24 +104,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         HashMap<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_UPDATE_QUERY);
 
-        updateQueries = new HashMap<>();
-        for (Map.Entry<Plugin, PluginMeta> entry : pluginMetas.entrySet())
-        {
-            Plugin plugin = entry.getKey();
-            PluginMeta meta = entry.getValue();
-            KPMInformationFile kpmInfo = this.registry.getKpmInfoManager().hasInfo(plugin) ?
-                    this.registry.getKpmInfoManager().getInfo(plugin): null;
-
-            String query;
-            if (!(kpmInfo == null || kpmInfo.getUpdateQuery() == null))  // KPM info's update query is the highest priority.
-                query = kpmInfo.getUpdateQuery().toString();
-            else if (meta.getResolveQuery() != null)
-                query = meta.getResolveQuery();
-            else
-                query = meta.getName();
-
-            updateQueries.put(plugin, query);
-        }
+        updateQueries = this.retrieveUpdateQuery(pluginMetas);
         // endregion
 
         Map<Plugin, SuccessResult> resolveResults;
@@ -155,42 +138,33 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 return this.error(mayEnvErrorCause);
         }
         // endregion
+        // endregion
 
         resolveResults = this.notifyUpgradeReady(resolveResults);
         if (resolveResults.isEmpty())  // Cancelled
             return this.error(UpgradeErrorCause.CANCELLED);
         targetPlugins = new ArrayList<>(resolveResults.keySet());
 
+        return this.modifyPlugins(targetPlugins, resolveResults);
+    }
+
+    private InstallResult<UpgradeTasks> modifyPlugins(List<Plugin> targetPlugins, Map<Plugin, SuccessResult> resolveResults)
+    {
         Map<PluginDescriptionFile, Path> unloadedPlugins;
         // region Uninstall plugins
         this.progress.setCurrentTask(UpgradeTasks.UNINSTALLING_PLUGIN);
-
-        PluginUninstaller uninstaller;
         try
         {
-            uninstaller = new PluginUninstaller(this.registry, this.signalHandler);
+            unloadedPlugins = this.uninstallPlugins(targetPlugins);
+
+            if (unloadedPlugins == null)  // So, uninstall is failed
+                return this.error(UpgradeErrorCause.UNINSTALL_FAILED);
         }
         catch (IOException e)
         {
             e.printStackTrace();
             return this.error(UpgradeErrorCause.UNINSTALLER_INSTANTIATION_FAILED);
         }
-
-        InstallResult<UnInstallTasks> uninstallResult = uninstaller.run(
-                UninstallArgument.builder(targetPlugins.toArray(new Plugin[0]))
-                        .skipExcludeChecks(true)
-                        .forceUninstall(true)
-                        .onDependencyFound(PluginIsDependencySignal.Operation.DISABLE)
-                        .build());
-
-        Arrays.stream(uninstallResult.getRemoved()).parallel()
-                .forEach(this.progress::addPending);
-
-        if (!uninstallResult.isSuccess())
-            return this.error(UpgradeErrorCause.UNINSTALL_FAILED);
-
-        PluginUninstallSucceedResult uninstallSucceedResult = (PluginUninstallSucceedResult) uninstallResult;
-        unloadedPlugins = uninstallSucceedResult.getResult().getUnloadedPlugins();
         // endregion
 
         Map<PluginDescriptionFile, SuccessResult> resolveResultMap = resolveResults.entrySet().stream()
@@ -238,6 +212,53 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         // endregion
 
         return this.success();
+    }
+
+    private Map<PluginDescriptionFile, Path> uninstallPlugins(List<Plugin> targetPlugins) throws IOException
+    {
+        PluginUninstaller uninstaller = new PluginUninstaller(this.registry, this.signalHandler);
+
+        InstallResult<UnInstallTasks> uninstallResult = uninstaller.run(
+                UninstallArgument.builder(targetPlugins.toArray(new Plugin[0]))
+                        .skipExcludeChecks(true)
+                        .forceUninstall(true)
+                        .onDependencyFound(PluginIsDependencySignal.Operation.DISABLE)
+                        .build());
+
+        Arrays.stream(uninstallResult.getRemoved()).parallel()
+                .forEach(this.progress::addPending);
+
+        if (!uninstallResult.isSuccess())
+            return null;
+
+        PluginUninstallSucceedResult uninstallSucceedResult = (PluginUninstallSucceedResult) uninstallResult;
+
+        return uninstallSucceedResult.getResult().getUnloadedPlugins();
+    }
+
+    private Map<Plugin, String> retrieveUpdateQuery(HashMap<Plugin, PluginMeta> pluginMetas)
+    {
+        Map<Plugin, String> result = new HashMap<>();
+
+        for (Map.Entry<Plugin, PluginMeta> entry : pluginMetas.entrySet())
+        {
+            Plugin plugin = entry.getKey();
+            PluginMeta meta = entry.getValue();
+            KPMInformationFile kpmInfo = this.registry.getKpmInfoManager().hasInfo(plugin) ?
+                    this.registry.getKpmInfoManager().getInfo(plugin): null;
+
+            String query;
+            if (!(kpmInfo == null || kpmInfo.getUpdateQuery() == null))  // KPM info's update query is the highest priority.
+                query = kpmInfo.getUpdateQuery().toString();
+            else if (meta.getResolveQuery() != null)
+                query = meta.getResolveQuery();
+            else
+                query = meta.getName();
+
+            result.put(plugin, query);
+        }
+
+        return result;
     }
 
     private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, Path> unloadedPlugins)
