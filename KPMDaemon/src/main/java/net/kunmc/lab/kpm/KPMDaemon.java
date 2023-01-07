@@ -199,8 +199,13 @@ public class KPMDaemon implements KPMRegistry
 
     private void initializeRequests()
     {
-        Requests.setVersion(this.getVersion().toString());
         Requests.setTokenStore(this.getTokenStore());
+
+        Requests.setRedirectLimit(this.environment.getHTTPMaxRedirects());
+        Requests.setConnectTimeout(this.environment.getHTTPTimeout());
+        Requests.getExtraHeaders().put("User-Agent", this.environment.getHTTPUserAgent()
+                .replace("%productName%", this.environment.getPlugin().getName())
+                .replace("%productVersion%", this.getVersion().toString()));
     }
 
     @Override

@@ -62,4 +62,19 @@ public interface KPMEnvironment
      * エイリアスのソースです。
      */
     Map<String, String> getSources();
+
+    /**
+     * HTTP リクエストのユーザーエージェントです。
+     */
+    String getHTTPUserAgent();
+
+    /**
+     * HTTP リクエストのタイムアウト時間です。
+     */
+    int getHTTPTimeout();
+
+    /**
+     * HTTP リクエストのリダイレクト回数です。
+     */
+    int getHTTPMaxRedirects();
 }

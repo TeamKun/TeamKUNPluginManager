@@ -31,12 +31,21 @@ public class Requests
 {
     @Setter
     private static TokenStore tokenStore;
-    @Setter
-    private static String version;
+    @Getter
+    @NotNull
+    private static Map<String, String> extraHeaders;
 
     @Getter
     @Setter
-    private static int REDIRECT_LIMIT = 15;
+    private static int redirectLimit = 15;
+    @Getter
+    @Setter
+    private static int connectTimeout = 10000;
+
+    static
+    {
+        extraHeaders = new HashMap<>();
+    }
 
     private static HTTPResponse doRedirect(HTTPResponse response, int redirectCount)
     {
@@ -49,7 +58,7 @@ public class Requests
         if (location == null)
             return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LOCATION_MALFORMED);
 
-        if (redirectCount > REDIRECT_LIMIT)
+        if (redirectCount > redirectLimit)
             return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
 
         HTTPResponse newResponse = request(RequestContext.builder()
@@ -68,19 +77,15 @@ public class Requests
     @NotNull
     private static Map<String, String> setupDefaultHeaders(@NotNull String host, @NotNull Map<String, String> currentHeaders)
     {
-        HashMap<String, String> headers = new HashMap<>(currentHeaders);
-
-        headers.put("User-Agent", "Mozilla/8.10 (X931; Peyantu; Linux x86_64) PeyangWebKit/114.514(KUN, like Gacho) TeamKunPluginManager/" +
-                version);
+        HashMap<String, String> headers = new HashMap<>();
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".githubusercontent.com"))
         {
-            if (!headers.containsKey("Accept"))
-                headers.put("Accept", "application/vnd.github.v3+json");
+            headers.put("Accept", "application/vnd.github.v3+json");
 
-            if (!headers.containsKey("Authorization") && tokenStore.isTokenAvailable())
+            if (tokenStore.isTokenAvailable())
                 headers.put(
                         "Authorization",
                         "Token " + tokenStore.getToken()
@@ -89,6 +94,9 @@ public class Requests
         }
         else if (host.equalsIgnoreCase("file.io"))
             headers.put("Referer", "https://www.file.io/");
+
+        headers.putAll(extraHeaders);
+        headers.putAll(currentHeaders);
 
 
         return headers;

@@ -67,6 +67,9 @@ public final class TeamKunPluginManager extends JavaPlugin
                 .aliasesDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.aliases")))
                 .excludes(config.getStringList("excludes.pluginNames"))
                 .organizations(config.getStringList("resolve.githubUsers"))
+                .HTTPMaxRedirects(config.getInt("http.maxRedirects"))
+                .HTTPUserAgent(getStringNonNull(config, "http.userAgent"))
+                .HTTPTimeout(config.getInt("http.timeout"))
                 .sources(setupSources(config))
                 .build();
     }

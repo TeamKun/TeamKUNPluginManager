@@ -18,69 +18,42 @@ import java.util.logging.Logger;
 @Builder
 public class KPMEnvironmentImpl implements KPMEnvironment
 {
-    /**
-     * KPMのプラグインです。
-     */
     @NotNull
     private final Plugin plugin;
 
-    /**
-     * プラグインのデータディレクトリのパスです。
-     */
     @NotNull
     private final Path dataDirPath;
 
-    /**
-     * KPMデーモンが使用するロガーです。
-     */
     @NotNull
     private final Logger logger;
 
-    /**
-     * トークンの格納先のパスです。
-     */
     @NotNull
     private final Path tokenPath;
 
-    /**
-     * トークンの鍵の格納先のパスです。
-     */
     @NotNull
     private final Path tokenKeyPath;
 
-    /**
-     * プラグインメタデータデータベースのパスです。
-     */
     @NotNull
     private final Path metadataDBPath;
 
-    /**
-     * エイリアスデータベースのパスです。
-     */
     @NotNull
     private final Path aliasesDBPath;
 
-    /**
-     * プラグイン解決に使用するGitHubの組織名です。
-     */
     @NotNull
     @Singular("organization")
     private final List<String> organizations;
 
-    /**
-     * 様々な操作から除外するプラグインの名前です。
-     * 通常は、削除やアップデートを行わないようにするために使用します。
-     */
     @NotNull
     @Singular("excludePlugin")
     private final List<String> excludes;
 
-    /**
-     * エイリアスのソースです。
-     */
     @NotNull
     @Singular("sources")
     private final Map<String, String> sources;
+
+    private final String HTTPUserAgent;
+    private final int HTTPTimeout;
+    private final int HTTPMaxRedirects;
 
     public static KPMEnvironmentImplBuilder builder(@NotNull Plugin plugin, @NotNull Logger logger, @NotNull Path dataDirPath)
     {
