@@ -21,7 +21,10 @@ public class KPMDaemonMock extends KPMDaemon
     public void setupDaemon(@NotNull List<String> organizationNames)
     {
         this.getPluginResolver().addResolver(new GitHubURLResolver(), "$");
-        Requests.setVersion("KPMUpdater");
+        Requests.getExtraHeaders().put(
+                "User-Agent",
+                "TeamKUNPluginManager+Upgrader/" + this.getVersion()
+        );
         Requests.setTokenStore(this.getTokenStore());
 
         try
