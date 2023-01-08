@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm.signal.handlers.common;
 
+import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.signal.SignalHandler;
@@ -37,8 +38,19 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onPluginIsIgnored(IgnoredPluginSignal signal)
     {
+        if (!this.canForceInstall(signal.getPluginDescription()))
+        {
+            this.terminal.warn(
+                    "%s は除外プラグインとしてマークされています。",
+                    Utils.getPluginString(signal.getPluginDescription())
+            );
+
+            signal.setContinueInstall(false);
+            return;
+        }
+
         this.terminal.warn(
-                "%s は ignore としてマークされていますが強制的な操作が可能です。",
+                "%s は除外プラグインとしてマークされていますが強制的な操作が可能です。",
                 Utils.getPluginString(signal.getPluginDescription())
         );
 
@@ -69,5 +81,10 @@ public class CheckEnvSignalHandler
         this.printPluginInfo(signal.getInstallingPlugin());
 
         signal.setReplacePlugin(SignalHandlingUtils.askContinue(this.terminal));
+    }
+
+    private boolean canForceInstall(PluginDescriptionFile description)
+    {
+        return !description.getName().equals(TeamKunPluginManager.getPlugin().getName());
     }
 }
