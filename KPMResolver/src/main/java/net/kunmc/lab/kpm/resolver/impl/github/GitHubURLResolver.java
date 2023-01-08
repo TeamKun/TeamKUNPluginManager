@@ -56,23 +56,23 @@ public class GitHubURLResolver implements URLResolver
         else
             versionObj = Version.of("0.0.0");
 
-        reputation += versionObj.getMajor().getIntValue() + versionObj.getMinor().getIntValue() + versionObj.getPatch().getIntValue();
+        reputation += versionObj.getMajor().getIntValue() * 1000L;
+        reputation += versionObj.getMinor().getIntValue() * 100L;
+        reputation += versionObj.getPatch().getIntValue() * 10L;
         if (versionObj.getPreRelease() != null)
-            reputation += versionObj.getPreRelease().getRawValue().chars().sum();
-        if (versionObj.getBuildMetadata() != null)
-            reputation += versionObj.getBuildMetadata().getRawValue().chars().sum();
-        reputation *= 100L;
+            reputation -= versionObj.getPreRelease().getRawValue().chars().sum();
 
         if (endsWithIgn(fileName, ".jar", ".zip"))
-            reputation += 10;
+            reputation += 1000L;
 
         if (endsWithIgn(fileName, ".plugin.jar", ".plugin.zip"))
-            reputation += 5;
+            reputation += 500L;
         else if (endsWithIgn(fileName, ".api.jar", ".api.zip"))
-            reputation -= 5;
+            reputation -= 5000L;
 
-        if (isPreRelease)
-            reputation -= 5;
+        if (isPreRelease && !versionObj.isPreRelease())
+            // isPreRelease is given by GitHub API, but versionObj.isPreRelease() is contained in version string
+            reputation -= 500L;
 
         return reputation;
     }
