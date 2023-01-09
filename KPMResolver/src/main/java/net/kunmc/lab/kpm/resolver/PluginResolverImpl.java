@@ -148,7 +148,7 @@ public class PluginResolverImpl implements PluginResolver
     {
         List<BaseResolver> finishedResolvers = new ArrayList<>();
 
-        ErrorResultImpl errorResult = new ErrorResultImpl(null, ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
+        ErrorResult errorResult = new ErrorResultImpl(null, ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.UNKNOWN);
         for (BaseResolver resolver : resolvers)
         {
             if (finishedResolvers.contains(resolver))
@@ -159,14 +159,14 @@ public class PluginResolverImpl implements PluginResolver
             URL url = toURL(queryContext.getQuery());
             ResolveResult result = this.actuallyResolve(resolver, queryContext, url);
 
-            if (result instanceof SuccessResult)
+            if (result instanceof SuccessResult || result instanceof MultiResult)
                 return result;
-            else if (result instanceof ErrorResultImpl)
+            else if (result instanceof ErrorResult)
             {
-                ErrorResultImpl error = (ErrorResultImpl) result;
+                ErrorResult error = (ErrorResult) result;
 
                 if (error.getCause() != ErrorCause.RESOLVER_MISMATCH)
-                    errorResult = (ErrorResultImpl) result;
+                    errorResult = (ErrorResult) result;
 
                 if (error.getCause() != ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorCause.INVALID_QUERY)
                     return error;

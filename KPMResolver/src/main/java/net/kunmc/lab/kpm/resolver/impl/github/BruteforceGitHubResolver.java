@@ -27,6 +27,7 @@ public class BruteforceGitHubResolver implements BaseResolver
         {
             query.setQuery("https://github.com/" + str + "/" + query.getQuery());
             result = this.gitHubURLResolver.resolve(query);
+            query.setQuery(oldQuery);
 
             if (result instanceof ErrorResultImpl)
             {
@@ -45,9 +46,6 @@ public class BruteforceGitHubResolver implements BaseResolver
 
             return result;
         }
-
-        // Result is always ErrorResult so we have to restore old query to pass it to next resolver.
-        query.setQuery(oldQuery);
 
         return result;
     }
