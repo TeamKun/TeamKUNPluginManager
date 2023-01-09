@@ -8,7 +8,6 @@ import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
-import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -118,7 +117,7 @@ public class PluginResolverImpl implements PluginResolver
     }
 
     /**
-     * 複数の結果({@link MultiResultImpl})を一つの結果にピックアップします。
+     * 複数の結果({@link MultiResult})を一つの結果にピックアップします。
      *
      * @param multiResult 複数の結果
      * @return 一つの結果
@@ -134,7 +133,7 @@ public class PluginResolverImpl implements PluginResolver
         ResolveResult result = this.resolves(resolvers, queryContext);
 
 
-        if (result instanceof ErrorResultImpl)
+        if (result instanceof ErrorResult)
         {
             ErrorResult error = (ErrorResult) result;
             if (error.getCause() != ErrorCause.VERSION_MISMATCH)

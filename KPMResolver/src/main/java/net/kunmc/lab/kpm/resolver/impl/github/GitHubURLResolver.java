@@ -117,7 +117,7 @@ public class GitHubURLResolver implements URLResolver
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
         HashMap<Long, ResolveResult> map = new HashMap<>();
-        ErrorResultImpl firstError = null;
+        ErrorResult firstError = null;
         for (ResolveResult result : multiResult.getResults())
         {
             if (result instanceof GitHubSuccessResult)
@@ -125,8 +125,8 @@ public class GitHubURLResolver implements URLResolver
                 GitHubSuccessResult successResult = (GitHubSuccessResult) result;
                 map.put(calcReputation(successResult), successResult);
             }
-            else if (result instanceof ErrorResultImpl && firstError == null)
-                firstError = (ErrorResultImpl) result;
+            else if (result instanceof ErrorResult && firstError == null)
+                firstError = (ErrorResult) result;
         }
 
         if (map.isEmpty())
@@ -176,7 +176,7 @@ public class GitHubURLResolver implements URLResolver
         {
             ResolveResult result = this.buildResultSingle(owner, repositoryName, jsonElement.getAsJsonObject(), version);
 
-            if (result instanceof ErrorResultImpl)
+            if (result instanceof ErrorResult)
             {
                 ErrorResult errorResult = (ErrorResult) result;
                 if (errorResult.getCause() == ErrorCause.VERSION_MISMATCH)

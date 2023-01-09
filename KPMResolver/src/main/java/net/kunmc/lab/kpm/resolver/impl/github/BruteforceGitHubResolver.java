@@ -29,7 +29,7 @@ public class BruteforceGitHubResolver implements BaseResolver
             result = this.gitHubURLResolver.resolve(query);
             query.setQuery(oldQuery);
 
-            if (result instanceof ErrorResultImpl)
+            if (result instanceof ErrorResult)
             {
                 ErrorResult error = (ErrorResult) result;
 

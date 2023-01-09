@@ -12,7 +12,6 @@ import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
-import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -101,7 +100,7 @@ public class UpgradeImpl
             return (SuccessResult) resolveResult;
         }
 
-        assert resolveResult instanceof ErrorResultImpl;
+        assert resolveResult instanceof ErrorResult;
         ErrorResult errorResult = (ErrorResult) resolveResult;
 
         this.logger.severe("KPM の取得に失敗しました：" + errorResult.getMessage());

@@ -8,7 +8,6 @@ import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
-import net.kunmc.lab.kpm.resolver.result.MultiResultImpl;
 import org.apache.commons.lang.StringUtils;
 
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class OmittedGitHubResolver implements BaseResolver
 
         ResolveResult res = this.gitHubURLResolver.resolve(query);
 
-        if (res instanceof AbstractSuccessResult || res instanceof MultiResultImpl)
+        if (res instanceof AbstractSuccessResult || res instanceof MultiResult)
             return res;
 
         query.setQuery(repoName); // restore query
