@@ -136,7 +136,7 @@ public class PluginResolverImpl implements PluginResolver
         if (result instanceof ErrorResult)
         {
             ErrorResult error = (ErrorResult) result;
-            if (error.getCause() != ErrorCause.VERSION_MISMATCH)
+            if (error.getCause() == ErrorCause.RESOLVER_MISMATCH)
                 result = this.resolves(this.fallbackResolvers, queryContext);
         }
 
