@@ -30,7 +30,7 @@ public class AliasPluginResolver implements BaseResolver
         Alias alias = this.aliasProvider.getQueryByAlias(query.getQuery());
 
         if (alias == null)
-            return new ErrorResultImpl(this, ErrorCause.PLUGIN_NOT_FOUND, ResolveResult.Source.LOCAL_KNOWN);
+            return new ErrorResultImpl(this, ErrorCause.RESOLVER_MISMATCH, ResolveResult.Source.LOCAL_KNOWN);
 
         query.setQuery(alias.getQuery());
         return new PipeResult(this, query);
