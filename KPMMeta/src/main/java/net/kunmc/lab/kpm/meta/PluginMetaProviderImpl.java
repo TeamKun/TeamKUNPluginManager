@@ -1,4 +1,4 @@
-package net.kunmc.lab.kpm.meta;
+ package net.kunmc.lab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.kpm.db.Transaction;
@@ -584,8 +584,9 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                     );
 
                     statement.execute("CREATE TABLE IF NOT EXISTS plugin_author(" +
-                            "name TEXT NOT NULL UNIQUE," +
-                            "author TEXT NOT NULL" +
+                            "name TEXT NOT NULL," +
+                            "author TEXT NOT NULL, " +
+                            "PRIMARY KEY(name, author)" +
                             ")"
                     );
 
