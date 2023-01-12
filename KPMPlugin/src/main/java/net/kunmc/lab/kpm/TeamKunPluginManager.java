@@ -65,7 +65,7 @@ public final class TeamKunPluginManager extends JavaPlugin
                 .tokenKeyPath(dataFolder.resolve(getStringNonNull(config, "paths.token.decryptionKey")))
                 .metadataDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.metadata")))
                 .aliasesDBPath(dataFolder.resolve(getStringNonNull(config, "paths.database.aliases")))
-                .excludes(config.getStringList("excludes.pluginNames"))
+                .excludes(config.getStringList("exclude.pluginNames"))
                 .organizations(config.getStringList("resolve.githubUsers"))
                 .HTTPMaxRedirects(config.getInt("http.maxRedirects"))
                 .HTTPUserAgent(getStringNonNull(config, "http.userAgent"))
