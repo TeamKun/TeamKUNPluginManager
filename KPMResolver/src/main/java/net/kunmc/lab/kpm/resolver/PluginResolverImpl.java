@@ -166,8 +166,7 @@ public class PluginResolverImpl implements PluginResolver
 
                 if (error.getCause() != ErrorCause.RESOLVER_MISMATCH)
                     errorResult = (ErrorResult) result;
-
-                if (error.getCause() != ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorCause.INVALID_QUERY)
+                else if (error.getCause() != ErrorCause.PLUGIN_NOT_FOUND && error.getCause() != ErrorCause.INVALID_QUERY)
                     return error;
 
             }
