@@ -93,6 +93,11 @@ public class HookRecipientListImpl extends ArrayList<KPMHookRecipient> implement
                 throw new InvalidInformationFileException("Hook recipient class must have a constructor with" +
                         " a single parameter of type KPMDaemon: " + className, e);
             }
+            catch (NoClassDefFoundError e)
+            {
+                throw new InvalidInformationFileException("Failed to load hooks for " + className +
+                        ": incompatible kpm version?", e);
+            }
             finally
             {
                 this.registry.getLogger().setLevel(Level.INFO);
