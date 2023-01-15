@@ -31,7 +31,7 @@
         },
         "update": {
             "$ref": "#/definitions/query",
-            "description": "プラグインを自動更新する時に使用するクエリです. (この機能は将来的に実装される予定です)",
+            "description": "プラグインを自動更新する時に使用するクエリです.",
             "examples": [
                 "TeamKUN/DaredemoOpPlugin",
                 "bukkit>daredemo-op-plugin"
