@@ -10,6 +10,7 @@ import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.collector.DependsCollectStatus;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
+import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
 import net.kunmc.lab.kpm.task.tasks.dependencies.DependencyElementImpl;
 import net.kunmc.lab.kpm.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
@@ -26,6 +27,7 @@ import net.kunmc.lab.kpm.task.tasks.download.DownloadTask;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveArgument;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveResult;
 import net.kunmc.lab.kpm.task.tasks.resolve.PluginResolveTask;
+import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -35,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,22 +75,46 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         this.taskState = DependsCollectState.INITIALIZED;
     }
 
+    private static Map<String, QueryContext> buildQueryContext(@NotNull List<String> dependencyNames,
+                                                               @Nullable KPMInformationFile informationFile)
+    {
+        Map<String, QueryContext> results = new HashMap<>();
+
+        Map<String, QueryContext> definitions =
+                informationFile == null ? Collections.emptyMap(): informationFile.getDependencies();
+
+        for (String dependencyName : dependencyNames)
+        {
+            QueryContext context = definitions.entrySet().stream()
+                    .filter(entry -> entry.getKey().equalsIgnoreCase(dependencyName))
+                    .map(Map.Entry::getValue)
+                    .findFirst()
+                    .orElse(QueryContext.fromString(dependencyName));
+            results.put(dependencyName, context);
+        }
+
+        return results;
+    }
+
     @Override
     public @NotNull DependsCollectResult runTask(@NotNull DependsCollectArgument arguments)
     {
         PluginDescriptionFile pluginDescription = arguments.getPluginDescription();
+        KPMInformationFile kpmInfo = arguments.getKpmInfoFile();
         this.status.setPluginName(pluginDescription.getName());
         String pluginName = pluginDescription.getName();
 
+        Map<String, QueryContext> dependencies = buildQueryContext(pluginDescription.getDepend(), kpmInfo);
+
         // Enumerate dependencies
         DependsEnumeratedSignal dependsSignal = new DependsEnumeratedSignal(
-                pluginDescription.getDepend(),
+                dependencies,
                 arguments.getAlreadyInstalledPlugins()
         );
 
         this.postSignal(dependsSignal);
 
-        dependsSignal.getDependencies().stream().parallel()
+        dependsSignal.getDependencies().keySet().stream().parallel()
                 .filter(dependency -> !arguments.getAlreadyInstalledPlugins().contains(dependency))
                 .forEach(this.status::addDependency);
 
@@ -95,7 +122,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         // region Resolve dependencies
         this.taskState = DependsCollectState.RESOLVING_DEPENDS;
 
-        resolvedResults = this.resolveDepends(dependsSignal.getDependencies(), arguments.getAlreadyInstalledPlugins());
+        resolvedResults = this.resolveDepends(dependencies, arguments.getAlreadyInstalledPlugins());
         resolvedResults.entrySet().removeIf(entry -> !(entry.getValue() instanceof SuccessResult)); // Remove failures
         // endregion
 
@@ -156,9 +183,11 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
     }
 
     private DependsCollectResult passCollector(@NotNull PluginDescriptionFile pluginDescription,
+                                               @Nullable KPMInformationFile kpmInfoFile,
                                                @NotNull List<String> alreadyCollectedPlugins)
     {
-        DependsCollectArgument arguments = new DependsCollectArgument(pluginDescription, alreadyCollectedPlugins);
+        DependsCollectArgument arguments =
+                new DependsCollectArgument(pluginDescription, kpmInfoFile, alreadyCollectedPlugins);
 
         return new DependsCollectTask(this.progress.getInstaller()) // do new() because DependsCollectTask is stateful.
                 .runTask(arguments);
@@ -171,8 +200,10 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
 
         for (Map.Entry<String, DependencyElement> entry : dependencies.entrySet())
         {
+            DependencyElement dependency = entry.getValue();
+
             DependsCollectResult dependsCollectResult =
-                    this.passCollector(entry.getValue().getPluginDescription(), alreadyCollected);
+                    this.passCollector(dependency.getPluginDescription(), dependency.getKpmInfoFile(), alreadyCollected);
 
             if (!dependsCollectResult.isSuccess())
             {
@@ -275,24 +306,24 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         return new HashMap<>(downloadResultsCopy);
     }
 
-    private PluginResolveResult passResolver(@NotNull String dependency)
+    private PluginResolveResult passResolver(@NotNull QueryContext query)
     {
-        PluginResolveArgument resolveArgument = new PluginResolveArgument(dependency);
+        PluginResolveArgument resolveArgument = new PluginResolveArgument(query.toString());
 
         return new PluginResolveTask(this.progress.getInstaller())
                 .runTask(resolveArgument);
     }
 
-    private HashMap<String, ResolveResult> resolveDepends(@NotNull List<String> dependencies,
+    private HashMap<String, ResolveResult> resolveDepends(@NotNull Map<String, QueryContext> dependencies,
                                                           @NotNull List<String> alreadyInstalledPlugins)
     {
-        Map<String, ResolveResult> resolveResults = new HashMap<>(dependencies.stream()
-                .filter(dependency -> !alreadyInstalledPlugins.contains(dependency))
-                .map(dependency -> new Pair<>(
-                        dependency,
-                        this.passResolver(dependency).getResolveResult()  // Actual resolving
+        Map<String, ResolveResult> resolveResults = new HashMap<>(dependencies.entrySet().stream()
+                .filter(dependency -> !alreadyInstalledPlugins.contains(dependency.getKey()))
+                .map(dependency -> Pair.of(
+                        dependency.getKey(),
+                        this.passResolver(dependency.getValue()).getResolveResult()
                 ))
-                .collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+                .collect(KPMCollectors.toPairHashMap()));
 
         resolveResults.entrySet().stream()
                 .filter(entry -> !(entry.getValue() instanceof SuccessResult))

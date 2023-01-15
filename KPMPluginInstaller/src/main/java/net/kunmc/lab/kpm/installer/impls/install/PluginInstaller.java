@@ -182,7 +182,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                         result.getOrder(),
                         argument.isOnyLocate()
                 ))
-                .submitAll(new DependsCollectArgument(pluginDescription));
+                .submitAll(new DependsCollectArgument(pluginDescription, kpmInfo));
         // endregion
 
         if (replacePlugin)

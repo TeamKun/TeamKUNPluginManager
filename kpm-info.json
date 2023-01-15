@@ -5,7 +5,7 @@
     "definitions": {
         "version": {
             "type": "string",
-            "pattern": "^v?(?<major>[3-9]\\d*)\\.(?<minor>0|[1-9]\\d*)(\\.(?<patch>0|[1-9]\\d*))(-(?<preRelease>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))(?:\\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+            "pattern": "^v?(?<major>[3-9]\\d*)\\.(?<minor>0|[1-9]\\d*)(\\.(?<patch>0|[1-9]\\d*))(-(?<preRelease>(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+(?<buildMetadata>[0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
         },
         "query": {
             "type": "string",
@@ -63,6 +63,17 @@
             },
             "minItems": 1,
             "uniqueItems": true
+        },
+        "dependencies": {
+            "type": "object",
+            "description": "依存関係の名前とクエリのマップです.\nこのフィールに指定された依存関係は、このクエリを使用して解決されます。",
+            "additionalProperties": {
+                "$ref": "#/definitions/query",
+                "examples": [
+                    "TeamKUN/DaredemoOpPlugin",
+                    "bukkit>daredemo-op-plugin"
+                ]
+            }
         }
     },
     "required": [

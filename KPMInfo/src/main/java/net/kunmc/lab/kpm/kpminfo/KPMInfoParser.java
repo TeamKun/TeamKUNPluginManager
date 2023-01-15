@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -38,8 +39,10 @@ public class KPMInfoParser
         QueryContext updateQuery = parseUpdateQuery(map); // Parse update => updateQuery [required]
         HookRecipientList hooks = parseHooks(registry, map); // Parse hooks [optional]
         String[] recipes = parseRecipes(map); // Parse recipes [optional]
+        Map<String, QueryContext> dependencies = parseDependencies(map); // Parse dependencies [optional]
 
-        return new KPMInformationFile(version, updateQuery, hooks, recipes);
+
+        return new KPMInformationFile(version, updateQuery, hooks, recipes, dependencies);
     }
 
     @NotNull
@@ -114,6 +117,39 @@ public class KPMInfoParser
                 throw new InvalidInformationFileException("recipes must be a list of strings.");
 
             result[i] = recipe.toString();
+        }
+
+        return result;
+    }
+
+    private static Map<String, QueryContext> parseDependencies(Map<?, ?> map) throws InvalidInformationFileException
+    {
+        Map<String, QueryContext> result = new HashMap<>();
+
+        if (!map.containsKey("dependencies"))
+            return result;
+
+        Object dependenciesObj = map.get("dependencies");
+        if (!(dependenciesObj instanceof Map))
+            throw new InvalidInformationFileException("dependencies must be a map of strings to strings.");
+
+        Map<?, ?> dependencies = (Map<?, ?>) dependenciesObj;
+
+        for (Map.Entry<?, ?> entry : dependencies.entrySet())
+        {
+            if (!(entry.getKey() instanceof String && entry.getValue() instanceof String))
+                throw new InvalidInformationFileException("dependencies must be a map of strings to strings.");
+
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            try
+            {
+                result.put(key, QueryContext.fromString(value));
+            }
+            catch (IllegalArgumentException e)
+            {
+                throw new InvalidInformationFileException("Invalid syntax of dependency query: " + value);
+            }
         }
 
         return result;

@@ -10,6 +10,8 @@ import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 /**
  * KPMの情報ファイルを表すクラスです。
  */
@@ -51,4 +53,9 @@ public class KPMInformationFile
      */
     @NotNull
     String[] recipes;
+    /**
+     * 依存関係の解決クエリです。
+     */
+    @NotNull
+    Map<String, QueryContext> dependencies;
 }
