@@ -95,8 +95,13 @@ public class HookRecipientListImpl extends ArrayList<KPMHookRecipient> implement
             }
             catch (NoClassDefFoundError e)
             {
-                throw new InvalidInformationFileException("Failed to load hooks for " + className +
-                        ": incompatible kpm version?", e);
+                String message;
+                if (e.getMessage().contains("net/kunmc/lab/kpm/hook/KPMHookRecipient"))
+                    message = "incompatible kpm version?";
+                else
+                    message = "unknown";
+
+                throw new InvalidInformationFileException("Failed to load hooks for " + className + ": " + message, e);
             }
             finally
             {
