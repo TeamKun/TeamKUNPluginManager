@@ -1,24 +1,22 @@
-package net.kunmc.lab.kpm.alias;
-
-import lombok.Value;
+package net.kunmc.lab.kpm.interfaces.alias;
 
 /**
  * プラグインのエイリアスです。
  */
-@Value
-public class Alias
+public interface Alias
 {
     /**
      * エイリアスです。
      */
-    String alias;
+    String getAlias();
+
     /**
      * クエリです。
      */
-    String query;
+    String getQuery();
+
     /**
      * エイリアスのソースです。
      */
-    String source;
-
+    String getSource();
 }

@@ -1,7 +1,5 @@
 package net.kunmc.lab.kpm.interfaces.alias;
 
-import net.kunmc.lab.kpm.alias.Alias;
-import net.kunmc.lab.kpm.alias.AliasSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

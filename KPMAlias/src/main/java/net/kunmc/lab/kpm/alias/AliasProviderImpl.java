@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.db.ResultRow;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.interfaces.alias.Alias;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
+import net.kunmc.lab.kpm.interfaces.alias.AliasSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +94,7 @@ public class AliasProviderImpl implements AliasProvider
             if (row == null)
                 return null;
 
-            return new AliasSource(
+            return new AliasSourceImpl(
                     row.getString("name"),
                     row.getString("source"),
                     AliasSourceType.valueOf(row.getString("type"))
@@ -114,7 +116,7 @@ public class AliasProviderImpl implements AliasProvider
             if (row == null)
                 return null;
 
-            return new Alias(
+            return new AliasImpl(
                     row.getString("alias"),
                     row.getString("query"),
                     row.getString("source_id")

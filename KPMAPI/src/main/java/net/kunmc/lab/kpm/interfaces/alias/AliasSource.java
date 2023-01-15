@@ -1,28 +1,22 @@
-package net.kunmc.lab.kpm.alias;
-
-import lombok.Value;
-import org.jetbrains.annotations.NotNull;
+package net.kunmc.lab.kpm.interfaces.alias;
 
 /**
  * エイリアスのソースを表すクラスです。
  */
-@Value
-public class AliasSource
+public interface AliasSource
 {
     /**
      * 人間が読めるエイリアスの名前です。
      */
-    @NotNull
-    String name;
+    String getName();
+
     /**
      * エイリアスのソースです。
      */
-    @NotNull
-    String source;
+    String getSource();
 
     /**
      * ソースの種類です。
      */
-    @NotNull
-    AliasSourceType type;
+    net.kunmc.lab.kpm.alias.AliasSourceType getType();
 }
