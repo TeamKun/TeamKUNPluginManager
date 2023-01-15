@@ -1,29 +1,22 @@
 package net.kunmc.lab.kpm.hook;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHookRecipient;
 
 import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-/**
- * KPMフックを受け取るためのインターフェースです。
- * このクラスを継承し、KPMフックを受け取るクラスであることを宣言します。
- */
-public abstract class KPMHookRecipient
+public abstract class KPMHookRecipientBase implements KPMHookRecipient
 {
-    /**
-     * KPMデーモンのインスタンスです。
-     */
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final KPMRegistry registry;
 
     private final HashMap<Method, Class<? extends KPMHook>> hooks;
 
-    public KPMHookRecipient(KPMRegistry registry)
+    public KPMHookRecipientBase(KPMRegistry registry)
     {
         this.registry = registry;
         this.hooks = new HashMap<>();
@@ -47,6 +40,7 @@ public abstract class KPMHookRecipient
         }
     }
 
+    @Override
     public Method getHookListener(Class<? extends KPMHook> hook)
     {
         for (Method method : this.hooks.keySet())

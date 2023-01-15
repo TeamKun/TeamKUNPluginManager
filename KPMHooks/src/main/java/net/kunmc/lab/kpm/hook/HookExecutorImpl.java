@@ -5,6 +5,7 @@ import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.hook.HookRecipientList;
 import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHookRecipient;
 
 import java.lang.reflect.Method;
 

@@ -5,6 +5,7 @@ import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.hook.HookRecipientList;
 import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
+import net.kunmc.lab.kpm.interfaces.hook.KPMHookRecipient;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +21,8 @@ public class HookRecipientListImpl extends ArrayList<KPMHookRecipient> implement
 {
     @Getter
     private final KPMRegistry registry;
-    @Getter
     private final HookExecutor executor;
 
-    @Getter
     private final List<String> reservedHookClasses;
 
     public HookRecipientListImpl(@NotNull KPMRegistry registry, @NotNull HookExecutor executor)
@@ -72,11 +71,11 @@ public class HookRecipientListImpl extends ArrayList<KPMHookRecipient> implement
                 Class<?> hookClass = Class.forName(className);
                 this.registry.getLogger().setLevel(Level.INFO);
 
-                if (!KPMHookRecipient.class.isAssignableFrom(hookClass))
+                if (!KPMHookRecipientBase.class.isAssignableFrom(hookClass))
                     throw new InvalidInformationFileException("Class " + className + " is not a KPMHookRecipient.");
 
                 Constructor<? extends KPMHookRecipient> constructor =
-                        hookClass.asSubclass(KPMHookRecipient.class).getConstructor(KPMRegistry.class);
+                        hookClass.asSubclass(KPMHookRecipientBase.class).getConstructor(KPMRegistry.class);
 
                 this.add(constructor.newInstance(this.registry));
             }

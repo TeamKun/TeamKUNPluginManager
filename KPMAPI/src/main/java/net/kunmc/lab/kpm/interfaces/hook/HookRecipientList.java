@@ -1,7 +1,6 @@
 package net.kunmc.lab.kpm.interfaces.hook;
 
 import net.kunmc.lab.kpm.KPMRegistry;
-import net.kunmc.lab.kpm.hook.KPMHookRecipient;
 import net.kunmc.lab.kpm.kpminfo.InvalidInformationFileException;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,8 +32,4 @@ public interface HookRecipientList extends Collection<KPMHookRecipient>, List<KP
     void bakeHooks(@NotNull KPMRegistry registry) throws InvalidInformationFileException;
 
     KPMRegistry getRegistry();
-
-    HookExecutor getExecutor();
-
-    List<String> getReservedHookClasses();
 }
