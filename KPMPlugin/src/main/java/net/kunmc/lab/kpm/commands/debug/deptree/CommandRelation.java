@@ -2,8 +2,8 @@ package net.kunmc.lab.kpm.commands.debug.deptree;
 
 import com.google.common.base.Enums;
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.kpm.enums.metadata.DependType;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
-import net.kunmc.lab.kpm.meta.DependType;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;

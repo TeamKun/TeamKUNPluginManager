@@ -18,6 +18,7 @@ import net.kunmc.lab.kpm.installer.impls.update.AliasUpdater;
 import net.kunmc.lab.kpm.installer.impls.update.UpdateArgument;
 import net.kunmc.lab.kpm.installer.impls.upgrade.PluginUpgrader;
 import net.kunmc.lab.kpm.installer.impls.upgrade.UpgradeArgument;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.signal.HeadSignalHandlers;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;

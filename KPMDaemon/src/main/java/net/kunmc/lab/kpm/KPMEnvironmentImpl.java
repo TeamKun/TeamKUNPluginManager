@@ -3,6 +3,7 @@ package net.kunmc.lab.kpm;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import net.kunmc.lab.kpm.interfaces.KPMEnvironment;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 

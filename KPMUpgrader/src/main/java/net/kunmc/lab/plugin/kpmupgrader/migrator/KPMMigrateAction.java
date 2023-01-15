@@ -1,6 +1,6 @@
 package net.kunmc.lab.plugin.kpmupgrader.migrator;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.versioning.Version;
 import org.jetbrains.annotations.NotNull;
 

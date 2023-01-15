@@ -1,14 +1,14 @@
 package net.kunmc.lab.kpm.task.tasks.install;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
 import net.kunmc.lab.kpm.hook.hooks.PluginInstalledHook;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
-import net.kunmc.lab.kpm.meta.InstallOperator;
 import net.kunmc.lab.kpm.task.AbstractInstallTask;
 import net.kunmc.lab.kpm.task.CommandsPatcher;
 import net.kunmc.lab.kpm.task.tasks.install.signals.PluginEnablingSignal;

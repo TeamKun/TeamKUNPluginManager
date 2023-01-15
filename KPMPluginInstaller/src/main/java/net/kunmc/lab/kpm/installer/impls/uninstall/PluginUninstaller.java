@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.installer.impls.uninstall;
 
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.SearchingPluginSignal;
 import net.kunmc.lab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.interfaces.task.tasks.dependencies.DependencyElement;

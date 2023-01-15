@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm.installer.impls.register;
 
 import com.google.gson.JsonObject;
 import lombok.SneakyThrows;
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
 import net.kunmc.lab.kpm.http.RequestMethod;
@@ -20,6 +19,7 @@ import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeExpire
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeReceivedSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeRequestFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;

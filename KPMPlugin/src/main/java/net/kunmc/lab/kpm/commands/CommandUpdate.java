@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.commands;
 
 import lombok.AllArgsConstructor;
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.kpm.installer.impls.update.UpdateArgument;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;

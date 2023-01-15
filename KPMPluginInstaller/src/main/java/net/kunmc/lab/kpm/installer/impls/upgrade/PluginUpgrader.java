@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.installer.impls.upgrade;
 
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
@@ -14,6 +13,7 @@ import net.kunmc.lab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSig
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import net.kunmc.lab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;

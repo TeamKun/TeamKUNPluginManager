@@ -2,7 +2,7 @@ package net.kunmc.lab.plugin.kpmupgrader.migrator;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.migrators.ConfigMigrator;
 import org.jetbrains.annotations.NotNull;

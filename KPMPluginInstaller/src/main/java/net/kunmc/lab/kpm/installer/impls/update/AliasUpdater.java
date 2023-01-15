@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.installer.impls.update;
 
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.impls.update.signals.UpdateFinishedSignal;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;

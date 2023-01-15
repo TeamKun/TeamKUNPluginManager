@@ -2,6 +2,8 @@
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.enums.metadata.DependType;
+import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaProvider;
 import org.bukkit.plugin.Plugin;

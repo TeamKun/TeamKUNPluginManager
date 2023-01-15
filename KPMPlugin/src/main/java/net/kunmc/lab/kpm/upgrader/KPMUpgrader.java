@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.upgrader;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
 import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;

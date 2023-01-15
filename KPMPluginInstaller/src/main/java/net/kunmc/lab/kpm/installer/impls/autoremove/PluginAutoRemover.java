@@ -1,6 +1,5 @@
 package net.kunmc.lab.kpm.installer.impls.autoremove;
 
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.installer.AbstractInstaller;
 import net.kunmc.lab.kpm.installer.impls.autoremove.signals.PluginEnumeratedSignal;
 import net.kunmc.lab.kpm.installer.impls.autoremove.signals.PluginUninstallFailedSignal;
@@ -8,6 +7,7 @@ import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstallSucceedResult;
 import net.kunmc.lab.kpm.installer.impls.uninstall.PluginUninstaller;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UnInstallTasks;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallResult;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.task.TaskFailedException;

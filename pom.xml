@@ -11,7 +11,7 @@
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
         <module>KPMUpgrader</module>
-        <module>KPMAPI</module>
+        <module>KPMModels</module>
         <module>KPMCommon</module>
         <module>KPMResolver</module>
         <module>KPMAlias</module>

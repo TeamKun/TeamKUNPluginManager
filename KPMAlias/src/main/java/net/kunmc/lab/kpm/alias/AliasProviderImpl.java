@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.kunmc.lab.kpm.db.ResultRow;
 import net.kunmc.lab.kpm.db.Transaction;
+import net.kunmc.lab.kpm.enums.alias.AliasSourceType;
 import net.kunmc.lab.kpm.interfaces.alias.Alias;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.interfaces.alias.AliasSource;

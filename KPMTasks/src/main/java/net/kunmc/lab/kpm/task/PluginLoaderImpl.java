@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.task;
 
 import lombok.SneakyThrows;
-import net.kunmc.lab.kpm.KPMRegistry;
-import net.kunmc.lab.kpm.installer.loader.PluginLoadResult;
+import net.kunmc.lab.kpm.enums.pluginloader.PluginLoadResult;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;

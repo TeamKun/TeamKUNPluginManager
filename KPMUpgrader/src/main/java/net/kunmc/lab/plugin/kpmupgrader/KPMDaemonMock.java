@@ -1,8 +1,8 @@
 package net.kunmc.lab.plugin.kpmupgrader;
 
 import net.kunmc.lab.kpm.KPMDaemon;
-import net.kunmc.lab.kpm.KPMEnvironment;
 import net.kunmc.lab.kpm.http.Requests;
+import net.kunmc.lab.kpm.interfaces.KPMEnvironment;
 import net.kunmc.lab.kpm.resolver.impl.github.GitHubURLResolver;
 import org.jetbrains.annotations.NotNull;
 

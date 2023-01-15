@@ -1,6 +1,6 @@
 package net.kunmc.lab.plugin.kpmupgrader.migrator.migrators;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.plugin.kpmupgrader.KPMUpgraderPlugin;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.KPMMigrateAction;
 import org.apache.commons.lang.StringUtils;

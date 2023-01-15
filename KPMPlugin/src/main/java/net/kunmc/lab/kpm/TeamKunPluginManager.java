@@ -15,6 +15,8 @@ import net.kunmc.lab.kpm.commands.CommandUpgrade;
 import net.kunmc.lab.kpm.commands.CommandUpgradeKPM;
 import net.kunmc.lab.kpm.commands.CommandVersion;
 import net.kunmc.lab.kpm.installer.impls.uninstall.UninstallArgument;
+import net.kunmc.lab.kpm.interfaces.KPMEnvironment;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.upgrader.KPMUpgrader;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;

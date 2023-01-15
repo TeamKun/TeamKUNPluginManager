@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.alias;
 
 import lombok.Value;
+import net.kunmc.lab.kpm.enums.alias.AliasSourceType;
 import net.kunmc.lab.kpm.interfaces.alias.AliasSource;
 import org.jetbrains.annotations.NotNull;
 

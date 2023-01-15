@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.upgrader;
 
 import lombok.experimental.UtilityClass;
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;

@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.task.tasks.dependencies.collector;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.installer.InstallerArgument;
 import net.kunmc.lab.kpm.interfaces.installer.PluginInstaller;
 import net.kunmc.lab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;

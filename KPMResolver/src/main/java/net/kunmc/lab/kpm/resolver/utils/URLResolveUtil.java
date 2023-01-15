@@ -1,11 +1,11 @@
 package net.kunmc.lab.kpm.resolver.utils;
 
 import lombok.experimental.UtilityClass;
+import net.kunmc.lab.kpm.enums.resolver.ErrorCause;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.interfaces.resolver.URLResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ErrorResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
-import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 
 import java.net.MalformedURLException;

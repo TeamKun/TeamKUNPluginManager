@@ -1,12 +1,12 @@
 package net.kunmc.lab.kpm.resolver.impl;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.enums.resolver.ErrorCause;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.alias.Alias;
 import net.kunmc.lab.kpm.interfaces.alias.AliasProvider;
 import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
-import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;
 import net.kunmc.lab.kpm.resolver.result.PipeResult;

@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.signal.handlers.uninstall;
 
-import net.kunmc.lab.kpm.meta.DependType;
+import net.kunmc.lab.kpm.enums.metadata.DependType;
 import net.kunmc.lab.kpm.meta.DependencyNode;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;

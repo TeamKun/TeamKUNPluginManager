@@ -1,6 +1,6 @@
 package net.kunmc.lab.kpm.kpminfo;
 
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
 import net.kunmc.lab.kpm.utils.PluginUtil;
 import org.bukkit.plugin.Plugin;

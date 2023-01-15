@@ -1,10 +1,10 @@
 package net.kunmc.lab.kpm.resolver.impl.github;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.kpm.enums.resolver.ErrorCause;
 import net.kunmc.lab.kpm.interfaces.resolver.BaseResolver;
 import net.kunmc.lab.kpm.interfaces.resolver.result.MultiResult;
 import net.kunmc.lab.kpm.interfaces.resolver.result.ResolveResult;
-import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.QueryContext;
 import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.resolver.result.ErrorResultImpl;

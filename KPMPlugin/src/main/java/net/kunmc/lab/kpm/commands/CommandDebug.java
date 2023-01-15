@@ -1,9 +1,9 @@
 package net.kunmc.lab.kpm.commands;
 
-import net.kunmc.lab.kpm.KPMRegistry;
 import net.kunmc.lab.kpm.commands.debug.CommandDepTreeDebug;
 import net.kunmc.lab.kpm.commands.debug.CommandInstallDebug;
 import net.kunmc.lab.kpm.commands.debug.CommandUninstallDebug;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.command.SubCommandWith;
 import net.kyori.adventure.text.TextComponent;

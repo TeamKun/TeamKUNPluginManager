@@ -1,7 +1,8 @@
 package net.kunmc.lab.kpm.meta;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;

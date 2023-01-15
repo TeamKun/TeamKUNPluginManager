@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.hook;
 
 import lombok.Getter;
-import net.kunmc.lab.kpm.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.hook.KPMHook;
 import net.kunmc.lab.kpm.interfaces.hook.KPMHookRecipient;
 

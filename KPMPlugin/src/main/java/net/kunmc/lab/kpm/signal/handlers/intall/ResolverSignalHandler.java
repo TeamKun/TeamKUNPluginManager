@@ -1,7 +1,7 @@
 package net.kunmc.lab.kpm.signal.handlers.intall;
 
+import net.kunmc.lab.kpm.enums.resolver.ErrorCause;
 import net.kunmc.lab.kpm.interfaces.resolver.result.SuccessResult;
-import net.kunmc.lab.kpm.resolver.ErrorCause;
 import net.kunmc.lab.kpm.resolver.result.AbstractSuccessResult;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;

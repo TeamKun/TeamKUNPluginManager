@@ -1,5 +1,6 @@
 package net.kunmc.lab.kpm;
 
+import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 
 import java.util.List;

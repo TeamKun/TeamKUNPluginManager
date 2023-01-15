@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
-            <artifactId>KPMAPI</artifactId>
+            <artifactId>KPMModels</artifactId>
             <version>3.0.0-pre8</version>
             <scope>provided</scope>
         </dependency>
