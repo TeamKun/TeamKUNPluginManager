@@ -36,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 
 /**
  * プラグインを新規にインストールするインストーラーの実装です。
@@ -182,7 +183,10 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                         result.getOrder(),
                         argument.isOnyLocate()
                 ))
-                .submitAll(new DependsCollectArgument(pluginDescription, kpmInfo));
+                .submitAll(new DependsCollectArgument(
+                        pluginDescription,
+                        kpmInfo == null ? Collections.emptyMap(): kpmInfo.getDependencies()
+                ));
         // endregion
 
         if (replacePlugin)

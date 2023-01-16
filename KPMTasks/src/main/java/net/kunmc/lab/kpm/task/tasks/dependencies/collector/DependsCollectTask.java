@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,16 +75,13 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
     }
 
     private static Map<String, QueryContext> buildQueryContext(@NotNull List<String> dependencyNames,
-                                                               @Nullable KPMInformationFile informationFile)
+                                                               @NotNull Map<String, QueryContext> sources)
     {
         Map<String, QueryContext> results = new HashMap<>();
 
-        Map<String, QueryContext> definitions =
-                informationFile == null ? Collections.emptyMap(): informationFile.getDependencies();
-
         for (String dependencyName : dependencyNames)
         {
-            QueryContext context = definitions.entrySet().stream()
+            QueryContext context = sources.entrySet().stream()
                     .filter(entry -> entry.getKey().equalsIgnoreCase(dependencyName))
                     .map(Map.Entry::getValue)
                     .findFirst()
@@ -100,15 +96,14 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
     public @NotNull DependsCollectResult runTask(@NotNull DependsCollectArgument arguments)
     {
         PluginDescriptionFile pluginDescription = arguments.getPluginDescription();
-        KPMInformationFile kpmInfo = arguments.getKpmInfoFile();
         this.status.setPluginName(pluginDescription.getName());
         String pluginName = pluginDescription.getName();
 
-        Map<String, QueryContext> dependencies = buildQueryContext(pluginDescription.getDepend(), kpmInfo);
+        Map<String, QueryContext> sources = buildQueryContext(pluginDescription.getDepend(), arguments.getSources());
 
         // Enumerate dependencies
         DependsEnumeratedSignal dependsSignal = new DependsEnumeratedSignal(
-                dependencies,
+                sources,
                 arguments.getAlreadyInstalledPlugins()
         );
 
@@ -122,7 +117,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         // region Resolve dependencies
         this.taskState = DependsCollectState.RESOLVING_DEPENDS;
 
-        resolvedResults = this.resolveDepends(dependencies, arguments.getAlreadyInstalledPlugins());
+        resolvedResults = this.resolveDepends(sources, arguments.getAlreadyInstalledPlugins());
         resolvedResults.entrySet().removeIf(entry -> !(entry.getValue() instanceof SuccessResult)); // Remove failures
         // endregion
 
@@ -166,7 +161,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         alreadyInstalled.add(pluginName);
         alreadyInstalled.addAll(dependsDescriptions.keySet());
 
-        this.collectDependsDepends(dependsDescriptions, alreadyInstalled);
+        this.collectDependsDepends(dependsDescriptions, alreadyInstalled, sources);
 
         // endregion
 
@@ -183,27 +178,33 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
     }
 
     private DependsCollectResult passCollector(@NotNull PluginDescriptionFile pluginDescription,
-                                               @Nullable KPMInformationFile kpmInfoFile,
+                                               @NotNull Map<String, QueryContext> sources,
                                                @NotNull List<String> alreadyCollectedPlugins)
     {
         DependsCollectArgument arguments =
-                new DependsCollectArgument(pluginDescription, kpmInfoFile, alreadyCollectedPlugins);
+                new DependsCollectArgument(pluginDescription, sources, alreadyCollectedPlugins);
 
         return new DependsCollectTask(this.progress.getInstaller()) // do new() because DependsCollectTask is stateful.
                 .runTask(arguments);
     }
 
     private void collectDependsDepends(@NotNull HashMap<String, DependencyElement> dependencies,
-                                       @NotNull List<String> alreadyCollectedPlugins)
+                                       @NotNull List<String> alreadyCollectedPlugins,
+                                       @NotNull Map<String, QueryContext> parentSources)
     {
         List<String> alreadyCollected = new ArrayList<>(alreadyCollectedPlugins);
 
         for (Map.Entry<String, DependencyElement> entry : dependencies.entrySet())
         {
             DependencyElement dependency = entry.getValue();
+            KPMInformationFile informationFile = dependency.getKpmInfoFile();
+            Map<String, QueryContext> sources = new HashMap<>(parentSources);
+
+            if (informationFile != null)
+                sources.putAll(informationFile.getDependencies());
 
             DependsCollectResult dependsCollectResult =
-                    this.passCollector(dependency.getPluginDescription(), dependency.getKpmInfoFile(), alreadyCollected);
+                    this.passCollector(dependency.getPluginDescription(), sources, alreadyCollected);
 
             if (!dependsCollectResult.isSuccess())
             {

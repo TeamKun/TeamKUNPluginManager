@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.kpm.interfaces.task.TaskArgument;
-import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
+import net.kunmc.lab.kpm.resolver.QueryContext;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,10 +30,10 @@ public class DependsCollectArgument implements TaskArgument
     @NotNull
     PluginDescriptionFile pluginDescription;
     /**
-     * 依存関係を取得する対象のプラグインの KPM 情報ファイルです。
+     * 依存関係のソースです。全ての依存関係に必須なものではありません。
      */
-    @Nullable
-    KPMInformationFile kpmInfoFile;
+    @NotNull
+    Map<String, QueryContext> sources;
     /**
      * 既にサーバにインストールされているまたは既に取得済みの依存関係です。
      */
@@ -47,10 +47,12 @@ public class DependsCollectArgument implements TaskArgument
      * @param pluginDescription プラグイン情報ファイル
      * @see org.bukkit.plugin.PluginManager#getPlugins()
      */
-    public DependsCollectArgument(@NotNull PluginDescriptionFile pluginDescription, @Nullable KPMInformationFile kpmInfo)
+    public DependsCollectArgument(@NotNull PluginDescriptionFile pluginDescription, @NotNull Map<String, QueryContext> sources)
     {
-        this(pluginDescription, kpmInfo, Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
-                .map(plugin -> plugin.getDescription().getName())
-                .collect(Collectors.toList()));
+        this(pluginDescription, sources,
+                Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                        .map(plugin -> plugin.getDescription().getName())
+                        .collect(Collectors.toList())
+        );
     }
 }
