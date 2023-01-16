@@ -613,6 +613,8 @@ public class Transaction implements AutoCloseable
             boolean result = resultSet.next();
 
             resultSet.close();
+            if (closeConnection)
+                this.close();
 
             return result;
         }
