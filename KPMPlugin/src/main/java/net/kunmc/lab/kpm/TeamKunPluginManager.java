@@ -93,7 +93,6 @@ public final class TeamKunPluginManager extends JavaPlugin
     {
         commandManager.registerCommand("autoremove", new CommandAutoRemove(this));
         commandManager.registerCommand("clean", new CommandClean(this));
-        commandManager.registerCommand("debug", new CommandDebug(this.daemon));
         commandManager.registerCommand("info", new CommandInfo(this.daemon));
         commandManager.registerCommand("install", new CommandInstall(this), "add", "i");
         commandManager.registerCommand("register", new CommandRegister(this), "login");
@@ -104,6 +103,9 @@ public final class TeamKunPluginManager extends JavaPlugin
         commandManager.registerCommand("upgrade", new CommandUpgrade(this));
         commandManager.registerCommand("upgrade-kpm", new CommandUpgradeKPM(this));
         commandManager.registerCommand("version", new CommandVersion(this.daemon), "v", "status");
+
+        if (DebugConstants.DEBUG_MODE)
+            commandManager.registerCommand("debug", new CommandDebug(this.daemon));
     }
 
     @Override

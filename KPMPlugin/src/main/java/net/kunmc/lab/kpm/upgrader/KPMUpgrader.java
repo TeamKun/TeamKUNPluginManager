@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.upgrader;
 
 import lombok.Getter;
+import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
 import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
@@ -23,14 +24,8 @@ import java.util.zip.ZipFile;
 
 public class KPMUpgrader
 {
-    public static final boolean ALLOW_UNNEEDED_UPGRADE;
     private static final String UPGRADER_JAR_NAME = "KPMUpgrader-%version%.jar";
     private static final Path upgraderPath = Paths.get("XX.KPMUpgrader.jar");
-
-    static
-    {
-        ALLOW_UNNEEDED_UPGRADE = Boolean.getBoolean("kpm.allow-unneeded-upgrade");
-    }
 
     private final TeamKunPluginManager teamKUNPluginManager;
     private final KPMRegistry registry;
@@ -108,7 +103,7 @@ public class KPMUpgrader
             return false;
         }
 
-        return fetchedSignal.isUpgradable() || ALLOW_UNNEEDED_UPGRADE;
+        return fetchedSignal.isUpgradable() || DebugConstants.ALLOW_UNNEEDED_UPGRADE;
     }
 
     private boolean deployUpgrader(SignalHandleManager signalHandleManager, Path to)

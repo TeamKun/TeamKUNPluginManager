@@ -1,6 +1,7 @@
  package net.kunmc.lab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
+import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.db.Transaction;
 import net.kunmc.lab.kpm.enums.metadata.DependType;
 import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
@@ -33,6 +34,19 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
         this.db = Transaction.createDataSource(databasePath);
 
         this.initializeTables();
+    }
+
+    private static void printDebugRelData(String name,
+                                          List<String> authors,
+                                          List<String> dependencies,
+                                          List<String> softDependencies,
+                                          List<String> loadBefore)
+    {
+        System.out.println("Saving plugin relational data for " + name);
+        System.out.println("Authors: " + String.join(", ", authors));
+        System.out.println("Dependencies: " + String.join(", ", dependencies));
+        System.out.println("Soft Dependencies: " + String.join(", ", softDependencies));
+        System.out.println("Load Before: " + String.join(", ", loadBefore));
     }
 
     @Override
@@ -186,6 +200,10 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                 connection.prepareStatement("INSERT INTO plugin_author(name, author) VALUES(?, ?)");
         statement.setString(1, name);
 
+
+        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+            printDebugRelData(name, authors, dependencies, softDependencies, loadBefore);
+
         try
         {
             for (String author : authors)
@@ -243,6 +261,9 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                 Transaction.create(connection, "INSERT INTO plugin_author(name, author) VALUES(?, ?)")
                         .set(1, name);
 
+        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+            printDebugRelData(name, authors, dependencies, softDependencies, loadBefore);
+
         for (String author : authors)
         {
             transaction.set(2, author);
@@ -284,6 +305,19 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     {
 
         PluginDescriptionFile description = plugin.getDescription();
+
+        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+        {
+            System.out.println("Saving plugin meta for " + plugin.getName());
+            System.out.println("Version: " + description.getVersion());
+            System.out.println("Load Timing: " + description.getLoad().name());
+            System.out.println("Installed at: " + installedAt);
+            System.out.println("Installed by: " + installedBy.name());
+            System.out.println("Resolve Query: " + resolveQuery);
+            System.out.println("Is Dependency: " + isDependency);
+            System.out.println("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]");
+        }
+
         Transaction.create(
                         this.db,
                         "INSERT INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
@@ -302,6 +336,18 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     @Override
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
+        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+        {
+            System.out.println("Saving plugin meta for " + meta.getName());
+            System.out.println("Version: " + meta.getVersion());
+            System.out.println("Load Timing: " + meta.getLoadTiming().name());
+            System.out.println("Installed at: " + meta.getInstalledAt());
+            System.out.println("Installed by: " + meta.getInstalledBy().name());
+            System.out.println("Resolve Query: " + meta.getResolveQuery());
+            System.out.println("Is Dependency: " + meta.isDependency());
+            System.out.println("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]");
+        }
+
         Transaction.create(
                         this.db,
                         "INSERT OR REPLACE INTO plugin_meta(name, version, load_timing, installed_at, installed_by, resolve_query, is_dependency) VALUES(?, ?, ?, ?, ?, ?, ?)"
@@ -338,6 +384,9 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     @Override
     public void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
+        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+            System.out.println("Removing relational data for " + pluginName);
+
         PreparedStatement statement =
                 connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
         statement.setString(1, pluginName);
@@ -435,6 +484,13 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
 
         for (DependencyNode node : dependencyNodes)
         {
+            if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
+            {
+                System.out.println("Saving dependency tree for " + node.getPlugin());
+                System.out.println("Depends on: " + node.getDependsOn());
+                System.out.println("Dependency type: " + node.getDependType().name());
+            }
+
             transaction
                     .set(1, node.getPlugin())
                     .set(2, node.getDependsOn())
@@ -461,12 +517,18 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
         dependencies.addAll(softDependencies);
         dependencies.addAll(loadBefore);
 
+        if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
+            System.out.println("Building dependency tree for " + pluginName);
+
         this.saveDependencyTree(dependencies);
     }
 
     @Override
     public void deleteFromDependencyTree(@NotNull String pluginName)
     {
+        if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
+            System.out.println("Deleting dependency tree for " + pluginName);
+
         Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
                 .set(1, pluginName)
                 .executeUpdate();

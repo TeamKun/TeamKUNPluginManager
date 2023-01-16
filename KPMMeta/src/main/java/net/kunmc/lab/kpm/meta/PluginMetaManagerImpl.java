@@ -1,6 +1,7 @@
 package net.kunmc.lab.kpm.meta;
 
 import lombok.Getter;
+import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
 import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
@@ -43,7 +44,12 @@ public class PluginMetaManagerImpl implements PluginMetaManager
         synchronized (this.exceptedPluginModifications)
         {
             if (!this.exceptedPluginModifications.contains(pluginName))
+            {
+                if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
+                    System.out.println("The plugin " + pluginName + " is will be modified.");
+
                 this.exceptedPluginModifications.add(pluginName);
+            }
         }
     }
 

@@ -1,8 +1,8 @@
 package net.kunmc.lab.kpm.signal.handlers.kpmupgrade;
 
+import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.signal.SignalHandler;
 import net.kunmc.lab.kpm.signal.SignalHandlingUtils;
-import net.kunmc.lab.kpm.upgrader.KPMUpgrader;
 import net.kunmc.lab.kpm.upgrader.signals.AlreadyUpgradingSignal;
 import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
 import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
@@ -35,7 +35,7 @@ public class KPMUpgradeSignalHandler
     @SignalHandler
     public void onLatestFetchPost(LatestFetchSignal.Post signal)
     {
-        if (KPMUpgrader.ALLOW_UNNEEDED_UPGRADE)
+        if (DebugConstants.ALLOW_UNNEEDED_UPGRADE)
         {
             this.terminal.info("KPM has detected that the environment is debug mode.");
             if (!signal.isUpgradable())

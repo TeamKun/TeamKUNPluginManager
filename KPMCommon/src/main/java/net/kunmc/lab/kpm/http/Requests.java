@@ -3,6 +3,7 @@ package net.kunmc.lab.kpm.http;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
+import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.TokenStore;
 import net.kunmc.lab.kpm.utils.KPMCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
@@ -18,10 +19,12 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * HTTP リクエストを補助するクラスです。
@@ -60,6 +63,9 @@ public class Requests
 
         if (redirectCount > redirectLimit)
             return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
+
+        if (DebugConstants.HTTP_REDIRECT_TRACE)
+            System.out.println("Redirecting from " + request.getUrl() + " to " + location + " (count: " + redirectCount + ")");
 
         HTTPResponse newResponse = request(RequestContext.builder()
                 .cacheable(request.isCacheable())
@@ -114,6 +120,15 @@ public class Requests
         if (context.getUrl() == null)
             throw new IllegalArgumentException("URL is null");
 
+        if (DebugConstants.HTTP_REQUEST_TRACE)
+        {
+            System.out.println("Requesting " + context.getMethod() + " " + context.getUrl());
+            System.out.println("Headers:" + context.getExtraHeaders().entrySet().stream()
+                    .map(e -> e.getKey() + ": " + e.getValue())
+                    .collect(Collectors.joining(", ")));
+            System.out.println("Body: " + Base64.getEncoder().encodeToString(context.getBody()));
+        }
+
         try
         {
             HttpURLConnection connection = createConnection(context);
@@ -140,6 +155,15 @@ public class Requests
                     context, serverProtocol.getLeft(), serverProtocol.getRight(), responseCode, serverHeaders,
                     responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
             );
+
+            if (DebugConstants.HTTP_REQUEST_TRACE)
+            {
+                System.out.println("Response from " + context.getUrl() + ": " + responseCode + " " + response.getStatus());
+                System.out.println("Headers:" + response.getHeaders().entrySet().stream()
+                        .map(e -> e.getKey() + ": " + e.getValue())
+                        .collect(Collectors.joining(", ")));
+
+            }
 
             if (context.isFollowRedirects())
                 return doRedirect(response, 0);
@@ -297,5 +321,4 @@ public class Requests
     {
         return downloadFile(method, url, path, null);
     }
-
 }

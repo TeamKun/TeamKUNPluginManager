@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.kunmc.lab.kpm.DebugConstants;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,13 +28,6 @@ import java.util.stream.StreamSupport;
  */
 public class Transaction implements AutoCloseable
 {
-    private static final boolean CONN_LEAK_TRACE;
-
-    static
-    {
-        CONN_LEAK_TRACE = Boolean.getBoolean("kpm.conn-leak-trace");
-    }
-
     /**
      * Dbのコネクションです。
      */
@@ -55,30 +49,8 @@ public class Transaction implements AutoCloseable
         else
             this.preparedStatement = null;
 
-        if (!CONN_LEAK_TRACE)
-            return;
-
-        // Get stack and get the caller of this class
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        StackTraceElement caller;
-        for (int i = 0; i < stack.length; i++)
-        {
-            caller = stack[i];
-            if (!caller.getClassName().equals(this.getClass().getName()))
-                continue;
-
-            if (i + 1 >= stack.length)
-                continue;
-
-            caller = stack[i + 1];
-            if (!caller.getClassName().equals(this.getClass().getName()))
-            {
-                System.out.println("Transaction(" + this.connection.hashCode() +
-                        ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
-                        caller.getFileName() + ":" + caller.getLineNumber());
-                break;
-            }
-        }
+        if (DebugConstants.DB_CONNECTION_TRACE)
+            this.printCreatedOnDebug();
     }
 
     /**
@@ -167,6 +139,32 @@ public class Transaction implements AutoCloseable
         config.setAutoCommit(false);
 
         return new HikariDataSource(config);
+    }
+
+    private void printCreatedOnDebug()
+    {
+        // Get stack and get the caller of this class
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        StackTraceElement caller;
+        for (int i = 0; i < stack.length; i++)
+        {
+            caller = stack[i];
+            if (!caller.getClassName().equals(this.getClass().getName()))
+                continue;
+
+            if (i + 1 >= stack.length)
+                continue;
+
+            caller = stack[i + 1];
+            if (!caller.getClassName().equals(this.getClass().getName()))
+            {
+                System.out.println("Transaction(" + this.connection.hashCode() +
+                        ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
+                        caller.getFileName() + ":" + caller.getLineNumber());
+                break;
+            }
+        }
+
     }
 
     /**
@@ -646,7 +644,7 @@ public class Transaction implements AutoCloseable
             if (!this.connection.isClosed())
                 this.connection.close();
 
-            if (CONN_LEAK_TRACE)
+            if (DebugConstants.DB_CONNECTION_TRACE)
                 System.out.println("Transaction(" + this.connection.hashCode() + ") is closed.");
         }
         catch (SQLException ignored)
@@ -727,7 +725,7 @@ public class Transaction implements AutoCloseable
      * クエリの実行結果を表すクラスです。
      */
     @RequiredArgsConstructor
-    public class QueryResult<T>
+    public static class QueryResult<T>
     {
         private final ResultSet result;
         @Setter
