@@ -124,7 +124,6 @@ public class SpigotMCResolver implements URLResolver
         }
         catch (IllegalArgumentException e)
         {
-            System.out.println("[SpigotMCResolver] SpigotMCから無効なレスポンスが返答されました。: " + e.getMessage());
             e.printStackTrace();
 
             return "Failed to decode Base64 string.";
