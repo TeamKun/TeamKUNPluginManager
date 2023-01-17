@@ -70,8 +70,10 @@
             "additionalProperties": {
                 "$ref": "#/definitions/query",
                 "examples": [
-                    "TeamKUN/DaredemoOpPlugin",
-                    "bukkit>daredemo-op-plugin"
+                    {
+                        "DaredemoOpPlugin": "TeamKUN/DaredemoOpPlugin",
+                        "ExamplePlugin": "spigot>example-plugin.1234"
+                    }
                 ]
             }
         }
