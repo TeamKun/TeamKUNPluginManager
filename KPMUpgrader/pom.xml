@@ -67,6 +67,43 @@
                                     <resource>MANIFEST.MF</resource>
                                 </transformer>
                             </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>net.kunmc.lab.kpm:KPMTasks</artifact>
+                                    <excludes>
+                                        <exclude>net/kunmc/lab/kpm/task/tasks/garbage/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/task/tasks/lookup/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/task/tasks/alias/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>net.kunmc.lab.kpm:KPMPluginInstaller</artifact>
+                                    <excludes>
+                                        <exclude>net/kunmc/lab/kpm/installer/impls/autoremove/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/installer/impls/clean/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/installer/impls/register/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/installer/impls/update/**</exclude>
+                                        <exclude>net/kunmc/lab/kpm/installer/impls/upgrade/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>net.kunmc.lab.kpm:KPMCommon</artifact>
+                                    <excludes>
+                                        <exclude>net/kunmc/lab/kpm/db/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>net.kunmc.lab.kpm:KPMResolver</artifact>
+                                    <excludes>
+                                        <exclude>net/kunmc/lab/kpm/resolver/impl/**</exclude>
+                                    </excludes>
+                                    <includes>
+                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GHURLParser</include>
+                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GHURLParseResult</include>
+                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GitHubURLResolver</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -94,7 +131,31 @@
     <dependencies>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
-            <artifactId>KPMDaemon</artifactId>
+            <artifactId>KPMCommon</artifactId>
+            <version>3.0.0-pre8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMModels</artifactId>
+            <version>3.0.0-pre8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMResolver</artifactId>
+            <version>3.0.0-pre8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMPluginInstaller</artifactId>
+            <version>3.0.0-pre8</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kunmc.lab.kpm</groupId>
+            <artifactId>KPMTasks</artifactId>
             <version>3.0.0-pre8</version>
             <scope>compile</scope>
         </dependency>

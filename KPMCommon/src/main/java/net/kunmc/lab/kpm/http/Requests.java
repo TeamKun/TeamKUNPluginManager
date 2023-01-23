@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +125,6 @@ public class Requests
             System.out.println("Headers:" + context.getExtraHeaders().entrySet().stream()
                     .map(e -> e.getKey() + ": " + e.getValue())
                     .collect(Collectors.joining(", ")));
-            System.out.println("Body: " + Base64.getEncoder().encodeToString(context.getBody()));
         }
 
         try

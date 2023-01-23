@@ -1,6 +1,5 @@
 package net.kunmc.lab.plugin.kpmupgrader;
 
-import net.kunmc.lab.kpm.KPMEnvironmentImpl;
 import net.kunmc.lab.kpm.installer.impls.install.InstallArgument;
 import net.kunmc.lab.kpm.installer.impls.install.InstallTasks;
 import net.kunmc.lab.kpm.installer.impls.install.PluginInstaller;
@@ -16,11 +15,12 @@ import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import net.kunmc.lab.plugin.kpmupgrader.migrator.KPMMigrator;
+import net.kunmc.lab.plugin.kpmupgrader.mocks.KPMDaemonMock;
+import net.kunmc.lab.plugin.kpmupgrader.mocks.KPMEnvironmentMock;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public class UpgradeImpl
@@ -59,22 +59,14 @@ public class UpgradeImpl
 
     public void initDaemon()
     {
-        Path dataDir = this.plugin.getDataFolder().getParentFile().toPath();  // plugins/<kpm>/.caches/hogefuga/
         Path kpmDataFolder = this.currentKPM.getDataFolder().toPath();
-
-        this.registry = new KPMDaemonMock(KPMEnvironmentImpl.builder(this.plugin)
-                .dataDirPath(kpmDataFolder)
-                .tokenPath(kpmDataFolder.resolve("token.dat"))
-                .tokenKeyPath(kpmDataFolder.resolve("token_key.dat"))
-                .metadataDBPath(dataDir.resolve("plugins.db"))
-                .aliasesDBPath(dataDir.resolve("aliases.db"))
-                .organizations(Collections.emptyList())
-                .sources(Collections.emptyMap())
-                .clearExcludes()
-                .build()
+        this.registry = new KPMDaemonMock(
+                new KPMEnvironmentMock(
+                        this.currentKPM,
+                        kpmDataFolder.resolve("token.dat"),
+                        kpmDataFolder.resolve("token_key.dat")
+                )
         );
-
-
     }
 
     private void destructSelf()
