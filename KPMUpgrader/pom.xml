@@ -92,17 +92,6 @@
                                         <exclude>net/kunmc/lab/kpm/db/**</exclude>
                                     </excludes>
                                 </filter>
-                                <filter>
-                                    <artifact>net.kunmc.lab.kpm:KPMResolver</artifact>
-                                    <excludes>
-                                        <exclude>net/kunmc/lab/kpm/resolver/impl/**</exclude>
-                                    </excludes>
-                                    <includes>
-                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GHURLParser</include>
-                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GHURLParseResult</include>
-                                        <include>net/kunmc/lab/kpm/resolver/impl/github/GitHubURLResolver</include>
-                                    </includes>
-                                </filter>
                             </filters>
                         </configuration>
                     </execution>
