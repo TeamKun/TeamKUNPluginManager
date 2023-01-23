@@ -28,13 +28,13 @@ public class KPMEnvironmentMock implements KPMEnvironment
     @Override
     public Path getDataDirPath()
     {
-        return this.currentKPM.getDataFolder().getParentFile().toPath();
+        return this.currentKPM.getDataFolder().toPath();
     }
 
     @Override
     public Logger getLogger()
     {
-        return null;
+        return Logger.getLogger("KPMUpgrader");
     }
 
     @Override

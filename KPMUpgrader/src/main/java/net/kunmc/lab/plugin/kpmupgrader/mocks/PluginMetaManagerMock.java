@@ -54,6 +54,6 @@ public class PluginMetaManagerMock implements PluginMetaManager
     @Override
     public PluginMetaProvider getProvider()
     {
-        return null;
+        return new PluginMetaProviderMock();
     }
 }

@@ -28,7 +28,7 @@ public class KPMDaemonMock implements KPMRegistry
 {
     private final KPMEnvironment environment;
     private final Logger logger;
-    private final PluginResolver resolver;
+    private final PluginResolver pluginResolver;
     private final TokenStore tokenStore;
     private final PluginLoader loader;
 
@@ -37,7 +37,7 @@ public class KPMDaemonMock implements KPMRegistry
         this.environment = env;
 
         this.logger = env.getLogger();
-        this.resolver = new PluginResolverImpl();
+        this.pluginResolver = new PluginResolverImpl();
         this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
         this.loader = new PluginLoaderImpl(this);
         this.init();
@@ -117,12 +117,6 @@ public class KPMDaemonMock implements KPMRegistry
     public PluginLoader getPluginLoader()
     {
         return this.loader;
-    }
-
-    @Override
-    public PluginResolver getPluginResolver()
-    {
-        return null;
     }
 
     @Override
