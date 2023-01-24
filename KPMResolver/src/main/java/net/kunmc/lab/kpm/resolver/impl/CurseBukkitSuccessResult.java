@@ -1,5 +1,7 @@
 package net.kunmc.lab.kpm.resolver.impl;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.Getter;
 import net.kunmc.lab.kpm.http.HTTPResponse;
 import net.kunmc.lab.kpm.http.RequestContext;
@@ -59,14 +61,20 @@ public class CurseBukkitSuccessResult extends AbstractSuccessResult implements M
             return this.description;
 
         try (HTTPResponse response = Requests.request(RequestContext.builder()
-                .url("https://addons-ecs.forgesvc.net/api/v2/addon/" + this.id + "/description")
+                .url("https://api.curse.tools/v1/cf/mods/" + this.id + "/description")
                 .build()))
         {
             if (response.isError())
-                return "Failed to get description";
+                return this.description = "Failed to get description";
 
-            this.description = response.getAsString();
-            return this.description;
+            JsonElement element;
+            JsonObject responseObj;
+            if ((element = response.getAsJson()).isJsonObject())
+                responseObj = element.getAsJsonObject();
+            else
+                return this.description = "Failed to parse description";
+
+            return this.description = responseObj.get("data").getAsString();
         }
         catch (IOException e)
         {
