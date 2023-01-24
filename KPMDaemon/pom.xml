@@ -5,7 +5,7 @@
     <parent>
         <artifactId>TeamKunPluginManager</artifactId>
         <groupId>net.kunmc.lab</groupId>
-        <version>3.0.0-pre8</version>
+        <version>3.0.0-pre9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -112,55 +112,55 @@
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMResolver</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMAlias</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMMeta</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMHooks</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMInfo</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMPluginInstaller</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kunmc.lab.kpm</groupId>
             <artifactId>KPMTasks</artifactId>
-            <version>3.0.0-pre8</version>
+            <version>3.0.0-pre9</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
