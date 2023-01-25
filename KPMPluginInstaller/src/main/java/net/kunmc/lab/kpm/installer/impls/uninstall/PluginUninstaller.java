@@ -96,6 +96,8 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         // region Check other plugins depends on this plugin.
         if (!argument.isSkipDependencyChecks())
         {
+            List<Plugin> additionalTargets = new ArrayList<>();
+
             for (Plugin plugin : installTargets)
             {
                 List<DependencyNode> dependencies = this.getDependenciesRecursive(plugin);
@@ -122,13 +124,15 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                     return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);  // Cancel uninstallation.
 
                 dependencyBehavior = operation;
-                installTargets.addAll(dependencies.stream().parallel()
+                additionalTargets.addAll(dependencies.stream().parallel()
                         .map(dependencyNode -> Bukkit.getPluginManager().getPlugin(dependencyNode.getDependsOn()))
                         .collect(Collectors.toList()));
                 uninstallDependencies.addAll(dependencies.stream().parallel()
                         .map(DependencyNode::getDependsOn)
                         .collect(Collectors.toList()));
             }
+
+            installTargets.addAll(additionalTargets);
         }
 
         if (dependencyBehavior == null)
