@@ -49,11 +49,17 @@ public class PluginIsDependencySignalHandler
         if (this.lastOperation != null)  // This is not the first time to ask so auto select the last operation
             return this.lastOperation;
 
+        HashMap<String, PluginIsDependencySignal.Operation> optionSelection = new HashMap<>();
+        optionSelection.put("u", PluginIsDependencySignal.Operation.UNINSTALL);
+        optionSelection.put("d", PluginIsDependencySignal.Operation.DISABLE);
+        optionSelection.put("i", PluginIsDependencySignal.Operation.IGNORE);
+        optionSelection.put("c", PluginIsDependencySignal.Operation.CANCEL);
+
         HashMap<String, String> options = new HashMap<>();
-        options.put(PluginIsDependencySignal.Operation.UNINSTALL.name().toLowerCase(), "依存関係をアンインストール");
-        options.put(PluginIsDependencySignal.Operation.DISABLE.name().toLowerCase(), "依存関係を無効化");
-        options.put(PluginIsDependencySignal.Operation.IGNORE.name().toLowerCase(), "依存関係を無視");
-        options.put("c", "アンインストールをキャンセル");
+        options.put("u", "依存関係をアンインストール");
+        options.put("d", "依存関係を無効化");
+        options.put("i", ChatColor.DARK_RED + "依存関係を無視");
+        options.put("c", ChatColor.RED + "アンインストールをキャンセル");
 
         try
         {
@@ -65,12 +71,7 @@ public class PluginIsDependencySignalHandler
 
             String selection = result.getRawAnswer();
 
-            if (selection.equalsIgnoreCase("c"))  // Special bypass for cancel (it is easy to type "c" than "cancel")
-                return PluginIsDependencySignal.Operation.CANCEL;
-
-            // Value is validated by the terminal, so it's safe to use valueOf
-            this.lastOperation = PluginIsDependencySignal.Operation.valueOf(selection.toUpperCase());
-            return this.lastOperation;
+            return this.lastOperation = optionSelection.get(selection);
         }
         catch (InterruptedException e)
         {

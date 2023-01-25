@@ -207,12 +207,13 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
         // Retrieve plugins that depends on target plugin.
         List<DependencyNode> dependencies =
-                this.registry.getPluginMetaManager().getProvider().getDependedBy(target.getName());
+                this.registry.getPluginMetaManager().getProvider().getDependOn(target.getName());
+        dependencies.addAll(this.registry.getPluginMetaManager().getProvider().getSoftDependOn(target.getName()));
 
         // Loop through all dependencies to find dependency's dependency.
         for (DependencyNode depend : dependencies)
         {
-            Plugin dependPlugin = this.getPlugin(depend.getPlugin());
+            Plugin dependPlugin = this.getPlugin(depend.getDependsOn());
             if (dependPlugin != null)
             {
                 dependencyPlugins.add(depend);
