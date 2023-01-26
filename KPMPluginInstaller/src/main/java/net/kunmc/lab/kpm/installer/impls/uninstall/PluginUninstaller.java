@@ -52,7 +52,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
     @Override
     public InstallResult<UnInstallTasks> execute(@NotNull UninstallArgument argument) throws TaskFailedException
     {
-        List<Plugin> installTargets = new ArrayList<>();
+        List<Plugin> uninstallTargets = new ArrayList<>();
         // region Search plugin
         this.progress.setCurrentTask(UnInstallTasks.SEARCHING_PLUGIN);
 
@@ -63,32 +63,14 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                 if (plugin == null)
                     return this.error(UnInstallErrorCause.PLUGIN_NOT_FOUND);
 
-                installTargets.add(plugin);
+                uninstallTargets.add(plugin);
             }
         else
         {
             assert argument.getPlugins() != null;
-            installTargets.addAll(argument.getPlugins());
+            uninstallTargets.addAll(argument.getPlugins());
         }
 
-        // endregion
-
-        // region Do assertions.
-        this.progress.setCurrentTask(UnInstallTasks.CHECKING_ENVIRONMENT);
-
-        // region Check is plugin marked as ignored
-        if (!argument.isSkipExcludeChecks())
-        {
-            for (Plugin plugin : installTargets)
-            {
-                if (!this.isPluginIgnored(plugin.getName()))
-                    continue;
-                IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
-                this.postSignal(ignoredPluginSignal);
-                if (!(argument.isForceUninstall() || ignoredPluginSignal.isContinueInstall()))
-                    return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
-            }
-        }
         // endregion
 
         PluginIsDependencySignal.Operation dependencyBehavior = null;
@@ -98,7 +80,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         {
             List<Plugin> additionalTargets = new ArrayList<>();
 
-            for (Plugin plugin : installTargets)
+            for (Plugin plugin : uninstallTargets)
             {
                 List<DependencyNode> dependencies = this.getDependenciesRecursive(plugin);
 
@@ -132,28 +114,47 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                         .collect(Collectors.toList()));
             }
 
-            installTargets.addAll(additionalTargets);
+            uninstallTargets.addAll(additionalTargets);
         }
 
         if (dependencyBehavior == null)
             dependencyBehavior = argument.getOnDependencyFound();  // Typically, this is set in above if statement.
         // endregion
 
+        // region Do assertions.
+        this.progress.setCurrentTask(UnInstallTasks.CHECKING_ENVIRONMENT);
+
+        // region Check is plugin marked as ignored
+        if (!argument.isSkipExcludeChecks())
+        {
+            for (Plugin plugin : uninstallTargets)
+            {
+                if (!this.isPluginIgnored(plugin.getName()))
+                    continue;
+                IgnoredPluginSignal ignoredPluginSignal = new IgnoredPluginSignal(plugin.getDescription());
+                this.postSignal(ignoredPluginSignal);
+                if (!(argument.isForceUninstall() || ignoredPluginSignal.isContinueInstall()))
+                    return this.error(UnInstallErrorCause.PLUGIN_IGNORED);
+            }
+        }
+        // endregion
+
+
         // endregion
 
         UninstallReadySignal uninstallReadySignal =
-                new UninstallReadySignal(installTargets, argument.isAutoConfirm());
+                new UninstallReadySignal(uninstallTargets, argument.isAutoConfirm());
         this.postSignal(uninstallReadySignal);
         if (!uninstallReadySignal.isContinueUninstall())
             return this.error(UnInstallErrorCause.CANCELLED);
 
-        installTargets = uninstallReadySignal.getPlugins();
+        uninstallTargets = uninstallReadySignal.getPlugins();
 
         // region Uninstall plugin
 
         // Before uninstall plugin, we need to compute the order of plugins to uninstall.
         // Reuse DepenedsComputeOrderTask to compute the order, so we need to map List<Plugin> to List<DependencyElement>.
-        List<DependencyElement> computeOrderTarget = installTargets.stream().parallel()
+        List<DependencyElement> computeOrderTarget = uninstallTargets.stream().parallel()
                 .map(pl -> {
                     PluginDescriptionFile descriptionFile = pl.getDescription();
                     String name = descriptionFile.getName();
@@ -165,7 +166,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                 .collect(Collectors.toList());
 
         // Create String-Plugin map to DependencyElement doesn't have Plugin instance.
-        Map<String, Plugin> namePluginMap = installTargets.stream().parallel()
+        Map<String, Plugin> namePluginMap = uninstallTargets.stream().parallel()
                 .collect(Collectors.toMap(Plugin::getName, pl -> pl));
 
         PluginIsDependencySignal.Operation finalDependencyBehavior = dependencyBehavior;  // for lambda
