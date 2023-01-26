@@ -130,10 +130,10 @@ public final class TeamKunPluginManager extends JavaPlugin
         }
     }
 
-    private void uninstallUpdaterIfExist()
+    private void uninstallUpgraderIfExists()
     {
         Runner.runLater(() -> {
-            Plugin updater = Bukkit.getPluginManager().getPlugin("KPMUpdater");
+            Plugin updater = Bukkit.getPluginManager().getPlugin("KPMUpgrader");
 
             if (updater == null)
                 return;
@@ -185,7 +185,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         this.clearCaches();
         this.registerCommands(this.commandManager);
         this.noticeTokenDead();
-        this.uninstallUpdaterIfExist();
+        this.uninstallUpgraderIfExists();
     }
 
 }
