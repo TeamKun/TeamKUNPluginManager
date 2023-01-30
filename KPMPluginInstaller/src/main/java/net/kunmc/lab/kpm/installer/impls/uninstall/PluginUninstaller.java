@@ -86,7 +86,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
                 // Remove plugin which is marked as dependency because it is marked to be uninstalled.
                 dependencies.removeIf(
-                        dependencyNode -> dependencyNode.getDependsOn().equalsIgnoreCase(plugin.getName())
+                        dependencyNode -> dependencyNode.getPlugin().equalsIgnoreCase(plugin.getName())
                 );
 
                 if (dependencies.isEmpty())
@@ -104,13 +104,15 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
                 if (operation == PluginIsDependencySignal.Operation.CANCEL)
                     return this.error(UnInstallErrorCause.PLUGIN_IS_DEPENDENCY);  // Cancel uninstallation.
+                else if (operation == PluginIsDependencySignal.Operation.IGNORE)
+                    continue; // Ignore these dependencies
 
                 dependencyBehavior = operation;
                 additionalTargets.addAll(dependencies.stream().parallel()
-                        .map(dependencyNode -> Bukkit.getPluginManager().getPlugin(dependencyNode.getDependsOn()))
+                        .map(dependencyNode -> Bukkit.getPluginManager().getPlugin(dependencyNode.getPlugin()))
                         .collect(Collectors.toList()));
                 uninstallDependencies.addAll(dependencies.stream().parallel()
-                        .map(DependencyNode::getDependsOn)
+                        .map(DependencyNode::getPlugin)
                         .collect(Collectors.toList()));
             }
 
@@ -212,13 +214,13 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
 
         // Retrieve plugins that depends on target plugin.
         List<DependencyNode> dependencies =
-                this.registry.getPluginMetaManager().getProvider().getDependOn(target.getName());
-        dependencies.addAll(this.registry.getPluginMetaManager().getProvider().getSoftDependOn(target.getName()));
+                this.registry.getPluginMetaManager().getProvider().getDependedBy(target.getName());
+        dependencies.addAll(this.registry.getPluginMetaManager().getProvider().getSoftDependedBy(target.getName()));
 
         // Loop through all dependencies to find dependency's dependency.
         for (DependencyNode depend : dependencies)
         {
-            Plugin dependPlugin = this.getPlugin(depend.getDependsOn());
+            Plugin dependPlugin = this.getPlugin(depend.getPlugin());
             if (dependPlugin != null)
             {
                 dependencyPlugins.add(depend);
