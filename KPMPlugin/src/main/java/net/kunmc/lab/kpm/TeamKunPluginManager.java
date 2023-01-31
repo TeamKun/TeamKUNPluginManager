@@ -116,6 +116,16 @@ public final class TeamKunPluginManager extends JavaPlugin
     private void clearCaches()
     {
         Path cacheParent = this.getDataFolder().toPath().resolve(".caches");
+        if (!Files.exists(cacheParent))
+            try
+            {
+                Files.createDirectories(cacheParent);
+                return;
+            }
+            catch (IOException e)
+            {
+                this.getLogger().log(Level.WARNING, "Failed to create caches directory.", e);
+            }
 
         Runner.run(() -> FileUtils.cleanDirectory(cacheParent.toFile()), ((e, bukkitTask) -> this.getLogger().log(Level.WARNING, "Failed to clear caches.", e)));
     }
