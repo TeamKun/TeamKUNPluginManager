@@ -70,5 +70,10 @@ public interface PluginMetaManager extends Listener
      */
     boolean hasPluginMeta(@NotNull Plugin plugin);
 
+    /**
+     * サーバにインストールされているプラグインのメタデータを構築し、存在しないプラグインのメタデータを削除します。
+     */
+    void crawlAll();
+
     PluginMetaProvider getProvider();
 }

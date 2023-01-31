@@ -4,6 +4,7 @@ import lombok.Getter;
 import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
 import net.kunmc.lab.kpm.interfaces.KPMRegistry;
+import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.utils.ServerConditionChecker;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -17,7 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class PluginMetaManagerImpl implements PluginMetaManager
 {
@@ -139,6 +143,59 @@ public class PluginMetaManagerImpl implements PluginMetaManager
     public boolean hasPluginMeta(@NotNull Plugin plugin)
     {
         return this.hasPluginMeta(plugin.getName());
+    }
+
+    @Override
+    public void crawlAll()
+    {
+        List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
+
+        this.crawlRemovedPlugins(plugins);
+        this.crawlAddedPlugins(plugins);
+    }
+
+    private void crawlRemovedPlugins(List<Plugin> plugins)
+    {
+        List<String> pluginNames = plugins.stream().parallel()
+                .map(Plugin::getName)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+
+        try (PluginMetaIterator iterator = this.provider.getPluginMetaIterator())
+        {
+            while (iterator.hasNext())
+            {
+                PluginMeta meta = iterator.next();
+
+                if (pluginNames.contains(meta.getName().toLowerCase()))
+                    continue;
+
+                this.registry.getLogger().log(Level.INFO, "プラグイン {0} のメタデータが見つかりましたが、" +
+                                "プラグインが存在していません。メタデータを削除しています ...",
+                        meta.getName()
+                );
+                iterator.remove();
+            }
+        }
+    }
+
+    private void crawlAddedPlugins(List<Plugin> plugins)
+    {
+        for (Plugin plugin : plugins)
+        {
+            if (this.hasPluginMeta(plugin))
+                continue;
+
+            this.provider.savePluginMeta(
+                    plugin,
+                    InstallOperator.UNKNOWN,
+                    System.currentTimeMillis(),
+                    null,
+                    false
+            );
+            this.registry.getLogger().log(Level.INFO, "プラグイン {0} は KPM によってインストールされていません。メタデータを構築中 ...", plugin.getName());
+            this.provider.buildDependencyTree(plugin);
+        }
     }
 
     private boolean checkNoAutoCreateMetadata(String pluginName)

@@ -2,7 +2,6 @@ package net.kunmc.lab.kpm;
 
 import lombok.Getter;
 import net.kunmc.lab.kpm.alias.AliasProviderImpl;
-import net.kunmc.lab.kpm.enums.metadata.InstallOperator;
 import net.kunmc.lab.kpm.hook.HookExecutorImpl;
 import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.installer.InstallManagerImpl;
@@ -13,12 +12,10 @@ import net.kunmc.lab.kpm.interfaces.hook.HookExecutor;
 import net.kunmc.lab.kpm.interfaces.installer.InstallManager;
 import net.kunmc.lab.kpm.interfaces.installer.loader.PluginLoader;
 import net.kunmc.lab.kpm.interfaces.kpminfo.KPMInfoManager;
-import net.kunmc.lab.kpm.interfaces.meta.PluginMetaIterator;
 import net.kunmc.lab.kpm.interfaces.meta.PluginMetaManager;
 import net.kunmc.lab.kpm.interfaces.resolver.PluginResolver;
 import net.kunmc.lab.kpm.kpminfo.KPMInfoManagerImpl;
 import net.kunmc.lab.kpm.kpminfo.KPMInformationFile;
-import net.kunmc.lab.kpm.meta.PluginMeta;
 import net.kunmc.lab.kpm.meta.PluginMetaManagerImpl;
 import net.kunmc.lab.kpm.resolver.PluginResolverImpl;
 import net.kunmc.lab.kpm.resolver.impl.AliasPluginResolver;
@@ -37,11 +34,9 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * KPMのデーモンです。
@@ -84,11 +79,14 @@ public class KPMDaemon implements KPMRegistry
 
     public void setupDaemon(@NotNull List<String> organizationNames)
     {
-        this.setupDependencyTree();
         this.setupPluginResolvers(organizationNames);
         this.setupToken();
         this.initializeRequests();
         this.loadKPMInformationFromPlugins();
+
+        Runner.runLater(() -> {
+            this.getPluginMetaManager().crawlAll();
+        }, 1L);  // Crawl all plugins metadata after the server is fully loaded.
     }
 
     private void loadKPMInformationFromPlugins()
@@ -110,50 +108,6 @@ public class KPMDaemon implements KPMRegistry
 
             this.logger.log(Level.INFO, "Loaded {0} KPM information from {1} plugins.", new Object[]{loaded, plugins.length});
         }, 1L);
-    }
-
-    private void setupDependencyTree()
-    {
-        this.logger.info("Loading plugin meta data ...");
-
-        PluginMetaManager metaManager = this.getPluginMetaManager();
-        List<Plugin> plugins = Arrays.asList(Bukkit.getPluginManager().getPlugins());
-        List<String> pluginNames = plugins.stream().parallel()
-                .map(Plugin::getName)
-                .map(String::toLowerCase)
-                .collect(Collectors.toList());
-
-        try (PluginMetaIterator iterator = metaManager.getProvider().getPluginMetaIterator())
-        {
-            while (iterator.hasNext())
-            {
-                PluginMeta meta = iterator.next();
-
-                if (pluginNames.contains(meta.getName().toLowerCase()))
-                    continue;
-
-                this.logger.log(Level.INFO, "Found unused plugin meta: {0}", meta.getName());
-                iterator.remove();
-            }
-        }
-
-        for (Plugin plugin : plugins)
-        {
-            if (metaManager.hasPluginMeta(plugin))
-                continue;
-
-            metaManager.getProvider().savePluginMeta(
-                    plugin,
-                    InstallOperator.UNKNOWN,
-                    System.currentTimeMillis(),
-                    null,
-                    false
-            );
-            this.logger.log(Level.INFO, "Plugin {0} is not managed by KPM. Adding to database ...", plugin.getName());
-
-            metaManager.getProvider().buildDependencyTree(plugin);
-        }
-
     }
 
     private void setupPluginResolvers(List<String> organizationNames)
