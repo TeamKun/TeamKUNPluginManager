@@ -183,7 +183,7 @@ public class PluginMetaManagerImpl implements PluginMetaManager
     {
         for (Plugin plugin : plugins)
         {
-            if (this.hasPluginMeta(plugin))
+            if (this.hasPluginMeta(plugin) || this.shouldNotManage(plugin.getName()))
                 continue;
 
             this.provider.savePluginMeta(
