@@ -3,28 +3,24 @@ package net.kunmc.lab.kpm.upgrader;
 import lombok.Getter;
 import net.kunmc.lab.kpm.DebugConstants;
 import net.kunmc.lab.kpm.TeamKunPluginManager;
+import net.kunmc.lab.kpm.http.RequestMethod;
+import net.kunmc.lab.kpm.http.Requests;
 import net.kunmc.lab.kpm.interfaces.KPMRegistry;
 import net.kunmc.lab.kpm.signal.SignalHandleManager;
 import net.kunmc.lab.kpm.upgrader.signals.KPMUpgradeReadySignal;
 import net.kunmc.lab.kpm.upgrader.signals.LatestFetchSignal;
 import net.kunmc.lab.kpm.upgrader.signals.UpgraderDeploySignal;
-import net.kunmc.lab.kpm.utils.PluginUtil;
 import net.kunmc.lab.kpm.versioning.Version;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class KPMUpgrader
 {
-    private static final String UPGRADER_JAR_NAME = "KPMUpgrader-%version%.jar";
     private static final Path upgraderPath = Paths.get("XX.KPMUpgrader.jar");
 
     private final TeamKunPluginManager teamKUNPluginManager;
@@ -108,11 +104,6 @@ public class KPMUpgrader
 
     private boolean deployUpgrader(SignalHandleManager signalHandleManager, Path to)
     {
-        String jarName = UPGRADER_JAR_NAME.replace(
-                "%version%",
-                this.teamKUNPluginManager.getDescription().getVersion()
-        );
-
         if (Files.exists(to))
         {
             signalHandleManager.handleSignal(
@@ -124,31 +115,19 @@ public class KPMUpgrader
 
         signalHandleManager.handleSignal(new UpgraderDeploySignal.Pre(to));
 
-        File kpmJar = PluginUtil.getFile(this.teamKUNPluginManager);
-
-        try (ZipFile zipFile = new ZipFile(kpmJar))
+        try
         {
-            ZipEntry entry = zipFile.getEntry(jarName);
-            if (entry == null)
-            {
-                signalHandleManager.handleSignal(
-                        new UpgraderDeploySignal.Error(UpgraderDeploySignal.Error.ErrorCause.DEPLOYER_NOT_EXISTS)
-                );
-                return false;
-            }
-
-            try (InputStream in = zipFile.getInputStream(entry))
-            {
-                Files.copy(in, to);
-            }
+            String downloadFile = KPMFetcher.fetchUpgraderJarFile(this.registry);
+            Requests.downloadFile(RequestMethod.GET, downloadFile, to);
 
             return true;
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
+
             signalHandleManager.handleSignal(
-                    new UpgraderDeploySignal.Error(UpgraderDeploySignal.Error.ErrorCause.IO_EXCEPTION_OCCURRED)
+                    new UpgraderDeploySignal.Error(UpgraderDeploySignal.Error.ErrorCause.DEPLOYER_NOT_EXISTS)
             );
 
             return false;

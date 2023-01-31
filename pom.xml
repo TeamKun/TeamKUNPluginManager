@@ -10,7 +10,6 @@
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
-        <module>KPMUpgrader</module>
         <module>KPMModels</module>
         <module>KPMCommon</module>
         <module>KPMResolver</module>

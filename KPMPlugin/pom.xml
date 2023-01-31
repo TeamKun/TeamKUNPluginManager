@@ -109,12 +109,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.kunmc.lab.kpm</groupId>
-            <artifactId>KPMUpgrader</artifactId>
-            <version>3.0.0-pre9</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.TeamKUN</groupId>
             <artifactId>PeyangPaperUtils</artifactId>
             <version>${pyglib.version}</version>

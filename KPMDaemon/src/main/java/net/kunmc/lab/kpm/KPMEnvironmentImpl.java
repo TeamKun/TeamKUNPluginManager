@@ -63,6 +63,7 @@ public class KPMEnvironmentImpl implements KPMEnvironment
                 .logger(logger)
                 .dataDirPath(dataDirPath)
                 .excludePlugin("TeamKunPluginManager")
+                .excludePlugin("KPMUpgrader")  // A temporary plugin for upgrading this plugin.
                 .excludePlugin("bStats");
     }
 
