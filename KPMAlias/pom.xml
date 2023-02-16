@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>net.kunmc.lab</groupId>
+        <groupId>org.kunlab.kpm</groupId>
         <artifactId>TeamKunPluginManager</artifactId>
         <version>3.0.0-pre9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>net.kunmc.lab.kpm</groupId>
     <artifactId>KPMAlias</artifactId>
 
     <properties>
@@ -21,19 +20,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.kunmc.lab.kpm</groupId>
+            <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
             <version>3.0.0-pre9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.kunmc.lab.kpm</groupId>
+            <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
             <version>3.0.0-pre9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.kunmc.lab.kpm</groupId>
+            <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMResolver</artifactId>
             <version>3.0.0-pre9</version>
             <scope>provided</scope>

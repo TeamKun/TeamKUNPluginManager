@@ -1,6 +1,6 @@
 name: TeamKunPluginManager
 version: ${project.version}
-main: net.kunmc.lab.kpm.TeamKunPluginManager
+main: org.kunlab.kpm.TeamKunPluginManager
 authors: [Peyang]
 api-version: 1.16
 description: Manage your plugin!

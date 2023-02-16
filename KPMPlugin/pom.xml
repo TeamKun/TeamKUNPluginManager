@@ -4,13 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>TeamKunPluginManager</artifactId>
-        <groupId>net.kunmc.lab</groupId>
+        <groupId>org.kunlab.kpm</groupId>
         <version>3.0.0-pre9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.kunmc.lab.kpm</groupId>
     <artifactId>KPMPlugin</artifactId>
 
     <properties>
@@ -52,11 +51,11 @@
                     <relocations>
                         <relocation>
                             <pattern>net.kunmc.lab.peyangpaperutils</pattern>
-                            <shadedPattern>net.kunmc.lab.kpm.pyglib</shadedPattern>
+                            <shadedPattern>org.kunlab.kpm.pyglib</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
-                            <shadedPattern>net.kunmc.lab.kpm.hikari</shadedPattern>
+                            <shadedPattern>org.kunlab.kpm.hikari</shadedPattern>
                         </relocation>
                     </relocations>
                     <artifactSet>
@@ -103,7 +102,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.kunmc.lab.kpm</groupId>
+            <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMDaemon</artifactId>
             <version>3.0.0-pre9</version>
             <scope>compile</scope>
