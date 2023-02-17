@@ -8,6 +8,7 @@ import org.kunlab.kpm.interfaces.hook.HookRecipientList;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -165,7 +166,15 @@ public class KPMInfoParser
     @NotNull
     public static KPMInformationFile load(@NotNull KPMRegistry registry, @NotNull InputStream stream) throws InvalidInformationFileException
     {
-        return KPMInfoParser.loadFromMap(registry, KPMInfoParser.YAML_PARSER.load(stream));
+        try
+        {
+            return KPMInfoParser.loadFromMap(registry, KPMInfoParser.YAML_PARSER.load(stream));
+        }
+        catch (YAMLException e)
+        {
+            registry.getLogger().warning("Failed to load kpm info file: " + e.getMessage());
+            throw new InvalidInformationFileException("Load failed", e);
+        }
     }
 
     @NotNull
