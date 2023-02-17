@@ -42,7 +42,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("指定されたプラグインは既にインストールされています。");
                 return true;
             case PLUGIN_NOT_MANUALLY_INSTALLABLE:
-                this.terminal.error("指定されたプラグインは手動インストールできません。");
+                this.terminal.error("指定されたプラグインは手動でインストールできないプラグインとしてマークされています。");
                 return true;
             case INVALID_KPM_INFO_FILE:
                 this.terminal.error("指定したプラグインが無効な KPM 情報ファイルを持っています。");
