@@ -7,6 +7,9 @@ import java.util.List;
 
 public class Notices
 {
+    private static long LAST_TOKEN_FETCH = 0;
+    private static boolean LAST_TOKEN_FETCH_RESULT = false;  // true if the token is alive.
+
     public static void printAllNotice(KPMRegistry registry, Terminal terminal)
     {
         boolean print = printAutoRemovable(registry, terminal);
@@ -48,14 +51,22 @@ public class Notices
 
     public static boolean printTokenDead(KPMRegistry registry, Terminal terminal)
     {
-        boolean isTokenDead = !registry.getTokenStore().isTokenAlive();
+        long currentTime = System.currentTimeMillis();
+        boolean isTokenAlive;
+        if (currentTime - LAST_TOKEN_FETCH > 1000 * 60 * 15)  // Token alive cache expires in 15 minutes.
+        {  // Fetch token
+            LAST_TOKEN_FETCH = currentTime;
+            isTokenAlive = LAST_TOKEN_FETCH_RESULT = registry.getTokenStore().isTokenAlive();
+        }
+        else  // Use cached result
+            isTokenAlive = LAST_TOKEN_FETCH_RESULT;
 
-        if (isTokenDead)
+        if (!isTokenAlive)
         {
             terminal.warn("指定されているトークンは有効期限が切れています。");
             terminal.hint("/kpm register で新しいトークンを発行できます。");
         }
 
-        return isTokenDead;
+        return !isTokenAlive;
     }
 }
