@@ -27,6 +27,7 @@ import org.kunlab.kpm.commands.CommandVersion;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
 import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.lang.LanguageProvider;
 import org.kunlab.kpm.upgrader.KPMUpgrader;
 
 import java.io.IOException;
@@ -184,11 +185,27 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         PeyangPaperUtils.init(this);
         this.saveDefaultConfig();
+        this.pluginConfig = this.getConfig();
+        this.daemon = new KPMDaemon(buildEnvironment(this, this.pluginConfig));
+
+        try
+        {
+            LanguageProvider.init(this.daemon);
+            LanguageProvider.setLanguage(this.pluginConfig.getString("interfaces.lang"));
+        }
+        catch (IOException e)
+        {
+            this.getLogger().log(Level.WARNING, "言語ファイルの読み込みに失敗しました(Failed to load language files).", e);
+        }
+        catch (IllegalArgumentException e)
+        {
+            this.getLogger().warning("言語ファイルの読み込みに失敗しました(Failed to load a language): " + e.getMessage());
+        }
+
+
         this.deleteOldConfig(this.getConfig());
 
-        this.pluginConfig = this.getConfig();
         this.commandManager = new CommandManager(this, "kunpluginmanager", "TeamKUNPluginManager", "kpm");
-        this.daemon = new KPMDaemon(buildEnvironment(this, this.pluginConfig));
         this.headInstallers = new HeadInstallers(this.daemon);
         this.upgrader = new KPMUpgrader(this, this.daemon);
 
