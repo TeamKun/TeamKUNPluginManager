@@ -23,6 +23,8 @@ import org.kunlab.kpm.installer.impls.upgrade.UpgradeArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
 import org.kunlab.kpm.interfaces.installer.InstallerArgument;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.HeadSignalHandlers;
 import org.kunlab.kpm.signal.SignalHandleManager;
 
@@ -46,7 +48,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -66,7 +68,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -86,7 +88,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -106,7 +108,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -126,7 +128,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -146,7 +148,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -169,7 +171,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error("インストーラの初期化に失敗しました：%s", e.getMessage());
+            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -192,12 +194,11 @@ public class HeadInstallers
         }
         catch (InstallerRunningException e)
         {
-            terminal.error("他のインストールが実行中です。");
+            terminal.error(LangProvider.get("installer.anotherRunning"));
         }
         catch (TokenNotAvailableException e)
         {
-            terminal.error("トークンが設定されていません！");
-            terminal.info("/kpm register でトークンを設定してください。");
+            Notices.printTokenUnset(this.registry, terminal);
         }
     }
 

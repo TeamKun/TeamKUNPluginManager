@@ -118,3 +118,8 @@ command.version.license.bugs=バグ/新機能については GitHub < https://gi
 
 command.version.status.plugins = KPM は %%plugins%% 個のプラグインを管理しています。（ %%enabled%% 個のプラグインが有効）
 command.version.status.aliases = %%aliases%% 個のエイリアスが登録されています。
+
+
+installer.initFailed=インストーラの初期化に失敗しました：%%error%%
+installer.anotherRunning=他のインストーラが実行中です。
+
