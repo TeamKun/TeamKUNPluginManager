@@ -76,7 +76,7 @@ public class CommandVersion extends CommandBase
     {
         terminal.writeLine("Copyright (C) 2020-2021 TeamKUN., Peyang");
         terminal.write(TextComponent.fromLegacyText("The MIT License < https://opensource.org/licenses/MIT >"));
-        terminal.writeLine("これはフリーソフトウェアです。ライセンスに従って再頒布および/または変更することができます。");
+        terminal.writeLine("これはフリーソフトウェアです。ライセンスに従って再頒布および変更することができます。");
         terminal.writeLine("法律で認められている限り、著作者または著作権者は、**いかなる保証も行いません。**");
         terminal.write(TextComponent.fromLegacyText("バグ/新機能については " +
                 "GitHub < https://github.com/TeamKUN/TeamKUNPluginManager > " +
