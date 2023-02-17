@@ -3,7 +3,6 @@ package org.kunlab.kpm.commands;
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -12,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.Notices;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 
 import java.io.InputStream;
 import java.util.List;
@@ -66,30 +67,44 @@ public class CommandVersion extends CommandBase
 
     private static void printVersions(@NotNull Terminal terminal)
     {
-        terminal.writeLine("KPM (TeamKUNPluginManager) v" + KPM_VERSION);
-        terminal.writeLine("KPM Daemon v" + KPM_VERSION);  // NOTE: For any forks
-        terminal.writeLine("PeyangPaperUtils v" + PYGLIB_VERSION);
+        terminal.writeLine(LangProvider.get(
+                "command.version.versions.kpm",
+                MsgArgs.of("version", KPM_VERSION)
+        ));
+        terminal.writeLine(LangProvider.get(
+                "command.version.versions.daemon",
+                MsgArgs.of("version", KPM_VERSION)
+        ));
+
+        terminal.writeLine(LangProvider.get(
+                "command.version.versions.pyglib",
+                MsgArgs.of("version", PYGLIB_VERSION)
+        ));
         terminal.writeLine("");
     }
 
     private static void printLicenses(@NotNull Terminal terminal)
     {
-        terminal.writeLine("Copyright (C) 2020-2021 TeamKUN., Peyang");
-        terminal.write(TextComponent.fromLegacyText("The MIT License < https://opensource.org/licenses/MIT >"));
-        terminal.writeLine("これはフリーソフトウェアです。ライセンスに従って再頒布および変更することができます。");
-        terminal.writeLine("法律で認められている限り、著作者または著作権者は、**いかなる保証も行いません。**");
-        terminal.write(TextComponent.fromLegacyText("バグ/新機能については " +
-                "GitHub < https://github.com/TeamKUN/TeamKUNPluginManager > " +
-                "から報告してください。"));
+        terminal.writeLine(LangProvider.get("command.version.license.1"));
+        terminal.write(LangProvider.getComponent("command.version.license.2"));
+        terminal.writeLine(LangProvider.get("command.version.license.3"));
+        terminal.writeLine(LangProvider.get("command.version.license.4"));
+        terminal.write(LangProvider.getComponent("command.version.license.bugs"));
         terminal.writeLine("");
     }
 
     private static void printStatus(@NotNull Terminal terminal, @NotNull KPMRegistry registry)
     {
-        terminal.writeLine("KPM は " + registry.getPluginMetaManager().getProvider().countPlugins() + " 個のプラグインを管理しています。");
-        terminal.writeLine("そのうち " + Bukkit.getPluginManager().getPlugins().length + " 個のプラグインが有効です。");
+        terminal.writeLine(LangProvider.get(
+                "command.version.status.plugins",
+                MsgArgs.of("plugins", registry.getPluginMetaManager().getProvider().countPlugins())
+                        .add("enabled", Bukkit.getPluginManager().getPlugins().length)
+        ));
         terminal.writeLine("");
-        terminal.writeLine(registry.getAliasProvider().countAliases() + " 個のエイリアスが有効です。");
+        terminal.writeLine(LangProvider.get(
+                "command.version.status.aliases",
+                MsgArgs.of("aliases", registry.getAliasProvider().countAliases())
+        ));
         terminal.writeLine("");
     }
 
@@ -102,7 +117,7 @@ public class CommandVersion extends CommandBase
 
         if (!ArrayUtils.contains(AVAILABLE_MODES, mode))
         {
-            terminal.error(mode + " は不明なモードです。");
+            terminal.writeLine(LangProvider.get("command.version.invalidMode"));
             return;
         }
 
@@ -124,7 +139,7 @@ public class CommandVersion extends CommandBase
     @Override
     public net.kyori.adventure.text.TextComponent getHelpOneLine()
     {
-        return of("KPM のバージョン/ステータス情報を表示します。");
+        return LangProvider.getComponent("command.version");
     }
 
     @Override

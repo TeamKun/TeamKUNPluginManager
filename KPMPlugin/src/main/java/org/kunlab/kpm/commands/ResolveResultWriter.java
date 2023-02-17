@@ -37,12 +37,12 @@ public class ResolveResultWriter extends TerminalWriter
         else
             this.printSeparator();
 
-        this.printString("リゾルバ", result.getResolver().getClass().getSimpleName());
+        this.printString("command.resolve.resolver", result.getResolver().getClass().getSimpleName());
 
         if (result instanceof ErrorResultImpl)
         {
             ErrorResult errorResult = (ErrorResult) result;
-            this.printStringFull(ChatColor.RED + "エラー", ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")");
+            this.printStringFull("general.error", ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")");
         }
         else if (result instanceof SuccessResult)
         {
@@ -55,7 +55,7 @@ public class ResolveResultWriter extends TerminalWriter
         else if (result instanceof MultiResultImpl)
         {
             MultiResult multiResult = (MultiResult) result;
-            this.printBoolean("複数", true);
+            this.printBoolean("command.resolve.multi", true);
 
             ResolveResult[] results = multiResult.getResults();
 
@@ -66,9 +66,9 @@ public class ResolveResultWriter extends TerminalWriter
 
     private void printSuccessResult(SuccessResult result)
     {
-        this.printStringOrEmpty("ファイル名", result.getFileName());
-        this.printStringOrEmpty("バージョン", result.getVersion());
-        this.printStringFull("ダウンロード", result.getDownloadUrl());
+        this.printStringOrEmpty("command.resolve.fileName", result.getFileName());
+        this.printStringOrEmpty("command.resolve.version", result.getVersion());
+        this.printStringFull("command.resolve.downloadUrl", result.getDownloadUrl());
     }
 
     private void printAdditionalInformation(ResolveResult result)
@@ -77,33 +77,33 @@ public class ResolveResultWriter extends TerminalWriter
         {
             CurseBukkitSuccessResult curseBukkitSuccessResult = (CurseBukkitSuccessResult) result;
 
-            this.printString("種類", "CURSE_FORGE");
+            this.printString("command.resolve.extra.type", "CURSE_FORGE");
             this.printMarketplaceResult(curseBukkitSuccessResult);
-            this.printStringOrEmpty("バージョン", curseBukkitSuccessResult.getVersion());
-            this.printString("ID", curseBukkitSuccessResult.getSlug() + "#" + curseBukkitSuccessResult.getSlug());
-            this.printString("説明", curseBukkitSuccessResult.getDescription());
+            this.printStringOrEmpty("command.resolve.version", curseBukkitSuccessResult.getVersion());
+            this.printString("command.resolve.extra.id", curseBukkitSuccessResult.getSlug() + "#" + curseBukkitSuccessResult.getSlug());
+            this.printString("command.resolve.extra.description", curseBukkitSuccessResult.getDescription());
             this.printSeparatorShort();
         }
         else if (result instanceof GitHubSuccessResult)
         {
             GitHubSuccessResult githubSuccessResult = (GitHubSuccessResult) result;
 
-            this.printString("種類", "GITHUB");
-            this.printString("リポジトリ", "https://github.com/" +
+            this.printString("command.resolve.extra.type", "GITHUB");
+            this.printString("command.resolve.extra.gh.repo", "https://github.com/" +
                     githubSuccessResult.getOwner() + "/" + githubSuccessResult.getRepoName());
-            this.printString("ファイルサイズ", String.valueOf(githubSuccessResult.getSize()));
-            this.printString("リリース名", githubSuccessResult.getReleaseName());
-            this.printString("リリースID", String.valueOf(githubSuccessResult.getReleaseId()));
-            this.printString("リリース内容", githubSuccessResult.getReleaseBody());
+            this.printString("command.resolve.extra.gh.fileSize", String.valueOf(githubSuccessResult.getSize()));
+            this.printString("command.resolve.extra.gh.releaseName", githubSuccessResult.getReleaseName());
+            this.printString("command.resolve.extra.id", String.valueOf(githubSuccessResult.getReleaseId()));
+            this.printString("command.resolve.extra.gh.releaseBody", githubSuccessResult.getReleaseBody());
             this.printSeparatorShort();
         }
         else if (result instanceof SpigotMCSuccessResult)
         {
             SpigotMCSuccessResult spigotMCSuccessResult = (SpigotMCSuccessResult) result;
 
-            this.printString("種類", "SPIGOT_MC");
+            this.printString("command.resolve.extra.type", "SPIGOT_MC");
             this.printMarketplaceResult(spigotMCSuccessResult);
-            this.printStringFull("対応バージョン", String.join(", ", spigotMCSuccessResult.getVersions()));
+            this.printStringFull("command.resolve.extra.spigot.compatibleVersions", String.join(", ", spigotMCSuccessResult.getVersions()));
             this.printSeparatorShort();
         }
         else if (result instanceof MarketplaceResult)
@@ -117,9 +117,9 @@ public class ResolveResultWriter extends TerminalWriter
 
     private void printMarketplaceResult(MarketplaceResult result)
     {
-        this.printString("タイトル", result.getTitle());
-        this.printString("説明", result.getDescription());
-        this.printStringFull("公開先", result.getUrl());
+        this.printString("command.resolve.extra.title", result.getTitle());
+        this.printString("command.resolve.extra.description", result.getDescription());
+        this.printStringFull("command.resolve.extra.publishAddress", result.getUrl());
 
     }
 }

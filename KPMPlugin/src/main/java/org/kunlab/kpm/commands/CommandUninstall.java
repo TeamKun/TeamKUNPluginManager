@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +58,7 @@ public class CommandUninstall extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("インストールされているプラグインを削除します。");
+        return LangProvider.getComponent("command.uninstall");
     }
 
     @Override

@@ -1,2 +1,121 @@
+# General messages
 general.lang.name=日本語
 general.lang.set=言語が %%general.lang.name%% に設定されました。
+
+general.plugin.notFound=指定されたプラグインが見つかりませんでした。
+general.kpmInfo=KPM 情報ファイル
+
+general.yes=はい
+general.no=いいえ
+
+general.unknown=不明
+general.empty=未設定
+general.none=なし
+general.other=その他
+
+general.error=エラー
+
+general.chat.clickToCompletion=クリックしてチャットに補完！
+general.chat.writer.keyValue=%%green%%%%key%%%%white%%: %%dark_green%%%%value%%
+general.chat.writer.keyYes=%%green%%%%key%%%%white%%: %%green%%%%general.yes%%
+general.chat.writer.keyNo=%%green%%%%key%%%%white%%: %%red%%%%general.no%%
+general.chat.writer.keyEmpty=%%green%%%%key%%%%white%%: %%gray%%%%general.empty%%
+
+command.autoremove=必要がなくなったプラグインを自動で削除します。
+command.clean=削除されて残ったプラグインの不要なデータを自動で削除します。
+command.install=プラグインを新規にサーバに追加します。
+command.uninstall=インストールされているプラグインを削除します。
+command.update=エイリアスをアップデートします。
+command.upgrade=インストールされているプラグインをグレードします。
+
+
+# Info command
+command.info=プラグインの情報を表示します。
+command.info.loading=プラグインの情報を読み込んでいます …
+
+command.info.base.name=名前
+command.info.base.version=バージョン
+command.info.base.authors=作者
+command.info.base.website=ウェブサイト
+command.info.base.logPrefix=ログ接頭辞
+command.info.base.enabled=有効
+command.info.base.loadTiming=読み込みタイミング
+
+command.info.base.loadTiming.postWorld=ワールド読み込み後
+command.info.base.loadTiming.startUp=サーバ起動時
+
+command.info.meta=追加メタ情報
+command.info.meta.installedBy=インストール者
+command.info.meta.installedBy.admin=サーバ管理者
+command.info.meta.installedBy.kpmUpdater=KPM プラグインアップデータ
+command.info.meta.installedBy.kpmDependencyResolver=KPM 依存関係リゾルバ
+command.info.meta.installedAt=インストール日時
+command.info.meta.dependency=依存関係
+command.info.meta.depended=被依存関係
+command.info.meta.resolveQuery=解決クエリ
+command.info.meta.resolveQuery.overwrote= （上書きされています）
+
+command.info.file.name=ファイル名
+command.info.file.size=ファイルサイズ
+command.info.file.lastModified=最終更新日時
+command.info.file.hash=ハッシュ値
+command.info.file.hash.sha1=SHA-1
+command.info.file.hash.sha256=SHA-256
+command.info.file.hash.md5=MD5
+
+command.info.kpmInfo.kpmVersion=対応 KPM バージョン
+command.info.kpmInfo.recipeSuggestions=レシピ候補
+command.info.kpmInfo.recipes=レシピ数
+
+
+
+# Register command
+command.register=事前に取得したトークンを設定または、GitHubにログインしてトークンを設定します。
+command.register.needArgOnCmdBlockExec=コマンドブロックから実行するには第一引数が必須です。
+
+
+# Resolve command
+command.resolve=プラグインを名前解決します。
+command.resolve.resolving=プラグインを名前解決しています …
+command.resolve.resolver=リゾルバ
+command.resolve.multi=複数
+command.resolve.fileName=ファイル名
+command.resolve.version=バージョン
+command.resolve.downloadUrl=ダウンロード URL
+
+command.resolve.extra.type=種類
+command.resolve.extra.id=ID
+command.resolve.extra.description=説明
+command.resolve.extra.title=タイトル
+command.resolve.extra.description=説明
+command.resolve.extra.publishAddress=公開先
+
+command.resolve.extra.gh.repo=リポジトリ
+command.resolve.extra.gh.fileSize=ファイルサイズ
+command.resolve.extra.gh.releaseName=リリース名
+command.resolve.extra.gh.releaseBody=リリース説明
+
+command.resolve.extra.spigot.compatibleVersions=互換バージョン
+
+
+# UpgradeKPM command
+command.upgradeKPM=KPM をアップグレードします。
+command.upgradeKPM.noKPMUpgrader=KPM アップグレーダはインストールされていません。
+
+
+# Version command
+command.version=KPM のバージョン/ステータス情報を表示します。
+command.version.invalidMode=モード %%mode%% は無効です。
+
+command.version.versions.kpm=KPM (TeamKUNPluginManager) v%%version%%
+command.version.versions.daemon=KPM Daemon v%%version%%
+command.version.versions.pyglib=PeyangPaperUtils v%%version%%
+
+command.version.license.1=Copyright (C) 2021-2023 TeamKUN., Peyang
+command.version.license.2=The MIT License < https://opensource.org/licenses/MIT >
+command.version.license.3=これはフリーソフトウェアです。ライセンスに従って再頒布および変更することができます。
+command.version.license.4=法律で認められている限り、著作者または著作権者は、**いかなる保証も行いません。**
+command.version.license.bugs=バグ/新機能については GitHub < https://github.com/TeamKUN/TeamKUNPluginManager > から報告してください。
+
+command.version.status.plugins = KPM は %%plugins%% 個のプラグインを管理しています。（ %%enabled%% 個のプラグインが有効）
+command.version.status.aliases = %%aliases%% 個のエイリアスが登録されています。

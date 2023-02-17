@@ -1,6 +1,8 @@
 package org.kunlab.kpm.lang;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,9 @@ public class MsgArgs
         return new MsgArgs(new ArrayList<>());
     }
 
-    public static MsgArgs of(String key, String value)
+    public static MsgArgs of(String key, Object value)
     {
-        return MsgArgs.ofEmpty().add(key, value);
+        return MsgArgs.ofEmpty().add(key, String.valueOf(value));
     }
 
     private static String formatDeep(String msg)
@@ -43,9 +45,65 @@ public class MsgArgs
         return formatDeep(msg);
     }
 
-    public MsgArgs add(String key, String value)
+    private static String formatColors(String msg)
     {
-        this.args.add(Pair.of(key, value));
+        // This part is hideous, but I don't know how to make it better without any performance loss.
+        // Your contribution is welcome, so please make a pull request if you have any idea.
+        // @formatter:off
+        return StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+        StringUtils.replace(
+            msg,
+            "%%black%%", ChatColor.BLACK.toString()),
+            "%%dark_blue%%", ChatColor.DARK_BLUE.toString()),
+            "%%dark_green%%", ChatColor.DARK_GREEN.toString()),
+            "%%dark_aqua%%", ChatColor.DARK_AQUA.toString()),
+            "%%dark_red%%", ChatColor.DARK_RED.toString()),
+            "%%dark_purple%%", ChatColor.DARK_PURPLE.toString()),
+            "%%gold%%", ChatColor.GOLD.toString()),
+            "%%gray%%", ChatColor.GRAY.toString()),
+            "%%dark_gray%%", ChatColor.DARK_GRAY.toString()),
+            "%%blue%%", ChatColor.BLUE.toString()),
+            "%%green%%", ChatColor.GREEN.toString()),
+            "%%aqua%%", ChatColor.AQUA.toString()),
+            "%%red%%", ChatColor.RED.toString()),
+            "%%light_purple%%", ChatColor.LIGHT_PURPLE.toString()),
+            "%%yellow%%", ChatColor.YELLOW.toString()),
+            "%%white%%", ChatColor.WHITE.toString()),
+            "%%reset%%", ChatColor.RESET.toString()),
+            "%%bold%%", ChatColor.BOLD.toString()),
+            "%%strikethrough%%", ChatColor.STRIKETHROUGH.toString()),
+            "%%underline%%", ChatColor.UNDERLINE.toString()),
+            "%%italic%%", ChatColor.ITALIC.toString()),
+            "%%magic%%", ChatColor.MAGIC.toString()),
+            "%%obfuscated%%", ChatColor.MAGIC.toString()
+        );
+        // @formatter:on
+    }
+
+    public MsgArgs add(String key, Object value)
+    {
+        this.args.add(Pair.of(key, String.valueOf(value)));
         return this;
     }
 
@@ -53,6 +111,8 @@ public class MsgArgs
     {
         for (Pair<String, String> arg : this.args)
             msg = msg.replace("%%" + arg.getLeft() + "%%", arg.getRight());
+
+        msg = formatColors(msg);
 
         if (!msg.contains("%%"))
             return msg;

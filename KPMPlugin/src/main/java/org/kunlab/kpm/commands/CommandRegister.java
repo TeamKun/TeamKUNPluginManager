@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.register.RegisterArgument;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class CommandRegister extends CommandBase
     {
         if (args.length < 1 && sender instanceof BlockCommandSender)
         {
-            terminal.error("コマンドブロックから実行するには第一引数が必須です。");
+            terminal.error(LangProvider.get("command.register.needArgOnCmdBlockExec"));
             return;
         }
 
@@ -50,7 +51,7 @@ public class CommandRegister extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("事前に取得したトークンを設定または、GitHubにログインしてトークンを設定します。");
+        return LangProvider.getComponent("command.register");
     }
 
     @Override

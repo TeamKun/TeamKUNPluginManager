@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeArgument;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class CommandUpgrade extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("プラグインをアップグレードします。");
+        return LangProvider.getComponent("command.upgrade");
     }
 
     @Override

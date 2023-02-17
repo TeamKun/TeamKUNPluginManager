@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.install.InstallArgument;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class CommandInstall extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("クエリからプラグインを新規インストールします。");
+        return LangProvider.getComponent("command.install");
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,17 +30,16 @@ public class CommandInfo extends CommandBase
         if (indicateArgsLengthInvalid(terminal, args, 1))
             return;
 
-        terminal.info("プラグイン情報を読み込み中…");
+        terminal.info(LangProvider.get("command.info.loading"));
         Plugin plugin = Bukkit.getPluginManager().getPlugin(args[0]);
 
         if (plugin == null)
         {
-            terminal.error("指定されたプラグインは存在しません。");
+            terminal.error(LangProvider.get("general.plugin.notFound"));
             return;
         }
 
         PluginInfoWriter infoWriter = new PluginInfoWriter(this.registry, terminal, plugin);
-        terminal.info("結果を出力しています…");
         infoWriter.write();
     }
 
@@ -61,7 +61,7 @@ public class CommandInfo extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("プラグインの情報を表示します。");
+        return LangProvider.getComponent("command.info");
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.update.UpdateArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class CommandUpdate extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("エイリアスをアップデートします。");
+        return LangProvider.getComponent("command.update");
     }
 
     @Override

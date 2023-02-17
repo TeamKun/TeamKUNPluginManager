@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
+import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.signal.HeadSignalHandlers;
 import org.kunlab.kpm.signal.SignalHandleManager;
 
@@ -38,7 +39,7 @@ public class CommandUpgradeKPM extends CommandBase
             Plugin kpmUpgrader;
             if ((kpmUpgrader = Bukkit.getPluginManager().getPlugin("KPMUpgrader")) == null)
             {
-                terminal.success("KPM アップグレーダはインストールされていません。");
+                terminal.success(LangProvider.get("command.upgradeKPM.noKPMUpgrader"));
                 return;
             }
 
@@ -78,7 +79,7 @@ public class CommandUpgradeKPM extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("KPM をアップグレードします。");
+        return LangProvider.getComponent("command.upgradeKPM");
     }
 
     @Override

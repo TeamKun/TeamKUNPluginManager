@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.clean.CleanArgument;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class CommandClean extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("削除されて残ったプラグインの不要なデータを自動で削除します。");
+        return LangProvider.getComponent("command.clean");
     }
 
     @Override

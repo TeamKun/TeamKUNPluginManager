@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -25,11 +26,10 @@ public class CommandResolve extends CommandBase
 
         String query = args[0];
 
-        terminal.info("プラグインの名前解決をしています…");
+        terminal.info(LangProvider.get("command.resolve.resolving"));
         ResolveResult result = this.registry.getPluginResolver().resolve(query);
 
         ResolveResultWriter writer = new ResolveResultWriter(terminal, result);
-        terminal.info("結果を出力しています…");
         writer.write();
     }
 
@@ -48,7 +48,7 @@ public class CommandResolve extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return of("プラグインを名前解決します。");
+        return LangProvider.getComponent("command.resolve");
     }
 
     @Override

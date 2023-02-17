@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 
 @AllArgsConstructor
 public abstract class TerminalWriter
@@ -18,17 +20,6 @@ public abstract class TerminalWriter
             ChatColor.BLUE + ChatColor.STRIKETHROUGH.toString() + "=========================================";
     private static final String SEPARATOR_SHORT =
             ChatColor.BLUE + ChatColor.STRIKETHROUGH.toString() + "-------------";
-    private static final String KEY_VALUE_FORMAT =
-            ChatColor.GREEN + "%s" + ChatColor.WHITE + ": " + ChatColor.DARK_GREEN + "%s";
-
-    private static final String KEY_TRUE_FORMAT =
-            ChatColor.GREEN + "%s" + ChatColor.WHITE + ": " + ChatColor.GREEN + "はい";
-    private static final String KEY_FALSE_FORMAT =
-            ChatColor.GREEN + "%s" + ChatColor.WHITE + ": " + ChatColor.RED + "いいえ";
-
-    private static final String KEY_EMPTY_FORMAT =
-            ChatColor.GREEN + "%s" + ChatColor.WHITE + ": " + ChatColor.GRAY + "未設定";
-
     protected final Terminal terminal;
 
     public abstract void write();
@@ -51,33 +42,47 @@ public abstract class TerminalWriter
         this.terminal.writeLine(SEPARATOR_SHORT);
     }
 
-    protected void printWithFormat(String format, Object... args)
-    {
-        this.terminal.writeLine(String.format(format, args));
-    }
 
     protected void printBoolean(String key, boolean value)
     {
-        this.printWithFormat(value ? KEY_TRUE_FORMAT: KEY_FALSE_FORMAT, key);
+        String localeKey = "general.chat.writer.key" + (value ? "Yes": "No");
+
+        this.terminal.writeLine(LangProvider.get(localeKey, MsgArgs.of("key", "%%" + key + "%%")));
     }
 
     protected void printStringFull(String key, @NotNull String value)
     {
-        this.printWithFormat(KEY_VALUE_FORMAT, key, value);
+        this.terminal.writeLine(LangProvider.get(
+                        "general.chat.writer.keyValue",
+                        MsgArgs.of("key", "%%" + key + "%%").add("value", value)
+                )
+        );
     }
 
     protected void printStringFull(String key, String value, ClickEvent.Action action, String content)
     {
-        this.terminal.write(Component.text(String.format(KEY_VALUE_FORMAT, key, value))
-                .clickEvent(ClickEvent.clickEvent(action, content)));
+        this.terminal.write(
+                Component.text(
+                        LangProvider.get(
+                                "general.chat.writer.keyValue",
+                                MsgArgs.of("key", "%%" + key + "%%").add("value", value)
+                        )
+                ).clickEvent(ClickEvent.clickEvent(action, content))
+        );
     }
 
     protected <T> void printStringFull(String key, String value, ClickEvent.Action action, String clickContent,
                                        HoverEvent.Action<T> hoverAction, T hoverContent)
     {
-        this.terminal.write(Component.text(String.format(KEY_VALUE_FORMAT, key, value))
-                .clickEvent(ClickEvent.clickEvent(action, clickContent))
-                .hoverEvent(HoverEvent.hoverEvent(hoverAction, hoverContent)));
+        this.terminal.write(
+                Component.text(
+                                LangProvider.get(
+                                        "general.chat.writer.keyValue",
+                                        MsgArgs.of("key", "%%" + key + "%%").add("value", value)
+                                )
+                        ).clickEvent(ClickEvent.clickEvent(action, clickContent))
+                        .hoverEvent(HoverEvent.hoverEvent(hoverAction, hoverContent))
+        );
     }
 
     protected void printStringFull(String key, String value, ClickEvent.Action action, String clickContent,
@@ -103,7 +108,10 @@ public abstract class TerminalWriter
 
     protected void printEmpty(String key)
     {
-        this.printWithFormat(KEY_EMPTY_FORMAT, key);
+        this.terminal.writeLine(LangProvider.get(
+                "general.chat.writer.keyEmpty",
+                MsgArgs.of("key", "%%" + key + "%%")
+        ));
     }
 
     protected void printStringOrEmpty(String key, @Nullable String value)

@@ -19,6 +19,7 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.interfaces.kpminfo.KPMInfoManager;
 import org.kunlab.kpm.interfaces.meta.PluginMetaManager;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
+import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.meta.DependencyNode;
 import org.kunlab.kpm.meta.PluginMeta;
 import org.kunlab.kpm.resolver.QueryContext;
@@ -63,16 +64,16 @@ public class PluginInfoWriter extends TerminalWriter
         switch (operator)
         {
             case SERVER_ADMIN:
-                return "サーバ管理者";
+                return LangProvider.get("command.info.base.installOperator.admin");
             case KPM_PLUGIN_UPDATER:
-                return "KPMプラグインアップデータ";
+                return LangProvider.get("command.info.meta.installedBy.kpmUpdater");
             case KPM_DEPENDENCY_RESOLVER:
-                return "KPM依存関係リゾルバ";
+                return LangProvider.get("command.info.meta.installedBy.kpmDependencyResolver");
             case OTHER:
-                return ChatColor.GRAY + "その他";
+                return ChatColor.GRAY + LangProvider.get("general.other");
             default:
             case UNKNOWN:
-                return ChatColor.GRAY + "不明";
+                return ChatColor.GRAY + LangProvider.get("general.unknown");
         }
     }
 
@@ -81,11 +82,11 @@ public class PluginInfoWriter extends TerminalWriter
         switch (order)
         {
             case POSTWORLD:
-                return "ワールド読込後";
+                return LangProvider.get("command.info.base.loadTiming.postWorld");
             case STARTUP:
-                return "サーバ起動時";
+                return LangProvider.get("command.info.base.loadTiming.startUp");
             default:
-                return ChatColor.GRAY + "不明";
+                return ChatColor.GRAY + LangProvider.get("general.unknown");
         }
     }
 
@@ -102,7 +103,7 @@ public class PluginInfoWriter extends TerminalWriter
         this.printSeparatorShort();
 
         boolean isAdditionInfoPresent = this.meta != null;
-        this.printBoolean("追加メタ情報", isAdditionInfoPresent);
+        this.printBoolean("command.info.meta", isAdditionInfoPresent);
         if (isAdditionInfoPresent)
         {
             this.writeMetaInfo();
@@ -115,7 +116,7 @@ public class PluginInfoWriter extends TerminalWriter
         this.printSeparatorShort();
 
         boolean hasKPMInfoFile = this.infoFile != null;
-        this.printBoolean("KPM 情報ファイル", hasKPMInfoFile);
+        this.printBoolean("general.kpmInfo", hasKPMInfoFile);
         if (hasKPMInfoFile)
             this.writeKPMInfo();
 
@@ -126,14 +127,14 @@ public class PluginInfoWriter extends TerminalWriter
     {
         PluginDescriptionFile desc = this.plugin.getDescription();
 
-        this.printString("名前", desc.getName());
-        this.printString("バージョン", desc.getVersion());
-        this.printString("読込", loadOrderToString(desc.getLoad()));
-        this.printStringFull("作者", StringUtils.join(desc.getAuthors(), ", "));
-        this.printStringOrEmpty("説明", desc.getDescription());
-        this.printStringOrEmpty("ウェブサイト", desc.getWebsite());
-        this.printStringOrEmpty("ログ接頭辞", desc.getPrefix());
-        this.printBoolean("有効", this.plugin.isEnabled());
+        this.printString("command.info.base.name", desc.getName());
+        this.printString("command.info.base.version", desc.getVersion());
+        this.printString("command.info.base.loadTiming", loadOrderToString(desc.getLoad()));
+        this.printStringFull("command.info.base.authors", StringUtils.join(desc.getAuthors(), ", "));
+        this.printStringOrEmpty("command.info.base.authors", desc.getDescription());
+        this.printStringOrEmpty("command.info.base.website", desc.getWebsite());
+        this.printStringOrEmpty("command.info.base.logPrefix", desc.getPrefix());
+        this.printBoolean("command.info.base.enabled", this.plugin.isEnabled());
     }
 
     public void writeKPMInfo()
@@ -143,19 +144,19 @@ public class PluginInfoWriter extends TerminalWriter
 
         KPMInformationFile info = this.infoFile;
 
-        this.printString("対応KPMバージョン", info.getKpmVersion() + "+");
+        this.printString("command.info.kpmInfo.kpmVersion", info.getKpmVersion() + "+");
 
         QueryContext resolveQuery = info.getUpdateQuery();
         if (resolveQuery != null)
-            this.printString("解決クエリ", resolveQuery.toString(), ClickEvent.Action.SUGGEST_COMMAND,
-                    resolveQuery.toString(), "クリックしてクエリをチャットに補完！"
+            this.printString("command.info.meta.resolveQuery", resolveQuery.toString(), ClickEvent.Action.SUGGEST_COMMAND,
+                    resolveQuery.toString(), LangProvider.get("general.chat.clickToCompletion")
             );
 
         String[] recipes = info.getRecipes();
         if (recipes != null)
         {
-            this.printString("レシピ候補", StringUtils.join(recipes, ", "));
-            this.printString("レシピ数", String.valueOf(recipes.length));
+            this.printString("command.info.kpmInfo.recipeSuggestions", StringUtils.join(recipes, ", "));
+            this.printString("command.info.kpmInfo.recipes", String.valueOf(recipes.length));
         }
     }
 
@@ -163,14 +164,14 @@ public class PluginInfoWriter extends TerminalWriter
     {
         Path pluginPath = PluginUtil.getFile(this.plugin).toPath();
 
-        this.printString("ファイル名", pluginPath.getFileName().toString());
-        this.printString("ファイルサイズ", Utils.roundSizeUnit(pluginPath.toFile().length()));
-        this.printString("最終更新日", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(pluginPath.toFile().lastModified())));
+        this.printString("command.info.file.name", pluginPath.getFileName().toString());
+        this.printString("command.info.file.size", Utils.roundSizeUnit(pluginPath.toFile().length()));
+        this.printString("command.info.file.lastModified", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(pluginPath.toFile().lastModified())));
 
-        this.printString("ハッシュ", "");
-        this.printString("  SHA-1", Utils.getHash(pluginPath, "SHA-1"));
-        this.printStringFull("  SHA-256", Utils.getHash(pluginPath, "SHA-256"));
-        this.printString("  MD5", Utils.getHash(pluginPath, "MD5"));
+        this.printString("command.info.file.hash", "");
+        this.printString("command.info.file.hash.sha1", Utils.getHash(pluginPath, "SHA-1"));
+        this.printStringFull("command.info.file.hash.sha256", Utils.getHash(pluginPath, "SHA-256"));
+        this.printString("command.info.file.hash.md5", Utils.getHash(pluginPath, "MD5"));
 
     }
 
@@ -182,16 +183,21 @@ public class PluginInfoWriter extends TerminalWriter
 
         String resolveQuery = meta.getResolveQuery();
 
-        this.printStringOrEmpty("インストール者", installOperatorToString(meta.getInstalledBy()));
-        this.printStringOrEmpty("インストール日時", timeStampToString(meta.getInstalledAt()));
-        this.printBoolean("依存関係?", meta.isDependency());
+        this.printStringOrEmpty("command.info.meta.installedBy", installOperatorToString(meta.getInstalledBy()));
+        this.printStringOrEmpty("command.info.meta.installedAt", timeStampToString(meta.getInstalledAt()));
+        this.printBoolean("command.info.meta.dependency", meta.isDependency());
 
         boolean resolveQueryOverride = this.infoFile != null && this.infoFile.getUpdateQuery() != null;
+        String overwrote = LangProvider.get("command.info.meta.resolveQuery.overwrote");
         if (resolveQuery == null)
-            this.printStringFull("解決クエリ", ChatColor.GRAY + "未設定" + (resolveQueryOverride ? " (上書きされています)": ""));
+            this.printStringFull(
+                    "command.info.meta.resolveQuery",
+                    ChatColor.GRAY + LangProvider.get("general.empty") +
+                            (resolveQueryOverride ? overwrote: "")
+            );
         else
-            this.printString("解決クエリ", resolveQuery + (resolveQueryOverride ? ChatColor.GRAY + " (上書きされています)": ""),
-                    ClickEvent.Action.SUGGEST_COMMAND, resolveQuery, "クリックしてクエリをチャットに補完！"
+            this.printString("command.info.meta.resolveQuery", resolveQuery + (resolveQueryOverride ? ChatColor.GRAY + overwrote: ""),
+                    ClickEvent.Action.SUGGEST_COMMAND, resolveQuery, LangProvider.get("general.chat.clickToCompletion")
             );
     }
 
@@ -202,12 +208,14 @@ public class PluginInfoWriter extends TerminalWriter
             throw new IllegalStateException("Unable to find the plugin meta for " + this.plugin.getName());
 
         this.terminal.write(
-                Component.text(ChatColor.GREEN + "依存関係" + ChatColor.WHITE + "：")
+                Component.text(ChatColor.GREEN + LangProvider.get("command.info.meta.dependency") +
+                                ChatColor.WHITE + "：")
                         .append(this.getDependencyComponents(meta.getDependedBy(), true))
         );
 
         this.terminal.write(
-                Component.text(ChatColor.GREEN + "被依存関係" + ChatColor.WHITE + "：")
+                Component.text(ChatColor.GREEN + LangProvider.get("command.info.meta.depended") +
+                                ChatColor.WHITE + "：")
                         .append(this.getDependencyComponents(meta.getDependsOn(), false))
         );
     }
@@ -217,7 +225,7 @@ public class PluginInfoWriter extends TerminalWriter
         ComponentBuilder<TextComponent, ?> builder = Component.text();
 
         if (dependencies.isEmpty())
-            builder.append(Component.text(ChatColor.GRAY + "なし"));
+            builder.append(Component.text(ChatColor.GRAY + LangProvider.get("general.none")));
 
         for (DependencyNode dependency : dependencies)
             builder.append(this.getDependencyComponent(dependency, direction)).append(Component.text("  "));
