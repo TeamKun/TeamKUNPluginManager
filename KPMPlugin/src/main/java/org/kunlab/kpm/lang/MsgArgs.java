@@ -37,7 +37,7 @@ public class MsgArgs
         while (matcher.find())
         {
             String key = matcher.group(1);
-            String value = LanguageProvider.get(key);
+            String value = LangProvider.get(key);
             msg = msg.replace(matcher.group(), value);
         }
 

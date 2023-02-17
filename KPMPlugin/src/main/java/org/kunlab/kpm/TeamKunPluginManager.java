@@ -27,7 +27,7 @@ import org.kunlab.kpm.commands.CommandVersion;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
 import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LanguageProvider;
+import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.upgrader.KPMUpgrader;
 
 import java.io.IOException;
@@ -190,8 +190,8 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         try
         {
-            LanguageProvider.init(this.daemon);
-            LanguageProvider.setLanguage(this.pluginConfig.getString("interfaces.lang"));
+            LangProvider.init(this.daemon);
+            LangProvider.setLanguage(this.pluginConfig.getString("interfaces.lang"));
         }
         catch (IOException e)
         {

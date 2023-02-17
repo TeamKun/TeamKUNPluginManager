@@ -19,7 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class LanguageLoader
+public class LangLoader
 {
     private static final Path LANGUAGES_DIR = Paths.get("lang");
 
@@ -27,7 +27,7 @@ public class LanguageLoader
     private final List<String> jarLanguages;
     private final List<String> dataFolderLanguages;
 
-    public LanguageLoader(LanguageProvider provider) throws IOException
+    public LangLoader(LangProvider provider) throws IOException
     {
         this.registry = provider.getRegistry();
 

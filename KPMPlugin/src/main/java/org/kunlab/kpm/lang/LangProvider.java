@@ -7,39 +7,39 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 import java.io.IOException;
 import java.util.Properties;
 
-public class LanguageProvider
+public class LangProvider
 {
-    private static LanguageProvider INSTANCE;
+    private static LangProvider INSTANCE;
 
     @Getter
     private final KPMRegistry registry;
-    private final LanguageLoader loader;
+    private final LangLoader loader;
 
     @Setter
     private String currentLanguage;
     private Properties currentLanguageMessages;
 
-    private LanguageProvider(KPMRegistry registry) throws IOException
+    private LangProvider(KPMRegistry registry) throws IOException
     {
         this.registry = registry;
-        this.loader = new LanguageLoader(this);
+        this.loader = new LangLoader(this);
 
-        LanguageProvider.INSTANCE = this;
+        LangProvider.INSTANCE = this;
     }
 
     public static void init(KPMRegistry registry) throws IOException
     {
         if (INSTANCE != null)
             throw new IllegalStateException("LanguageProvider has already been initialized.");
-        new LanguageProvider(registry);
+        new LangProvider(registry);
     }
 
     public static void setLanguage(String languageName) throws IOException
     {
-        LanguageProvider provider = INSTANCE;
+        LangProvider provider = INSTANCE;
         provider.currentLanguage = languageName;
         provider.currentLanguageMessages = INSTANCE.loader.loadLanguage(languageName);
-        provider.registry.getLogger().info(LanguageProvider.get("general.lang.set"));
+        provider.registry.getLogger().info(LangProvider.get("general.lang.set"));
     }
 
     public static String get(String key, MsgArgs args)
