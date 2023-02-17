@@ -41,6 +41,9 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             case PLUGIN_ALREADY_INSTALLED:
                 this.terminal.error("指定されたプラグインは既にインストールされています。");
                 return true;
+            case PLUGIN_NOT_MANUALLY_INSTALLABLE:
+                this.terminal.error("指定されたプラグインは手動インストールできません。");
+                return true;
         }
 
         return false;

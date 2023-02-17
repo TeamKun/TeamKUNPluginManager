@@ -60,4 +60,9 @@ public class KPMInformationFile
      */
     @NotNull
     Map<String, QueryContext> dependencies;
+    /**
+     * 手動インストールできるプラグインかどうかを指定します。
+     * {@code false} の場合、 KPM の UI を介して行われるインストールはキャンセルされます。
+     */
+    boolean allowManuallyInstall;
 }

@@ -55,6 +55,13 @@ public class InstallArgument implements InstallerArgument
     @Builder.Default
     private final boolean onyLocate = false;
 
+    /**
+     * ユーザによるインストールかどうかのフラグです。
+     * このフラグが {@code true} かつ, KPM 情報ファイルの {@code allowManuallyInstall} が {@code false} の場合, インストールはキャンセルされます.
+     */
+    @Builder.Default
+    private final boolean isUserAction = true;
+
     public static InstallArgumentBuilder builder(@NotNull String query)
     {
         return new InstallArgumentBuilder().query(query);

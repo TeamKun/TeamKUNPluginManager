@@ -40,9 +40,10 @@ public class KPMInfoParser
         HookRecipientList hooks = parseHooks(registry, map); // Parse hooks [optional]
         String[] recipes = parseRecipes(map); // Parse recipes [optional]
         Map<String, QueryContext> dependencies = parseDependencies(map); // Parse dependencies [optional]
+        boolean allowManuallyInstall = parseAllowManuallyInstall(map); // Parse allowManuallyInstall [optional: true]
 
 
-        return new KPMInformationFile(version, updateQuery, hooks, recipes, dependencies);
+        return new KPMInformationFile(version, updateQuery, hooks, recipes, dependencies, allowManuallyInstall);
     }
 
     @NotNull
@@ -155,6 +156,12 @@ public class KPMInfoParser
         return result;
     }
 
+    private static boolean parseAllowManuallyInstall(Map<?, ?> map)
+    {
+        return !map.containsKey("allowManuallyInstall") ||
+                map.get("allowManuallyInstall") instanceof Boolean && (Boolean) map.get("allowManuallyInstall");
+    }
+
     @NotNull
     public static KPMInformationFile load(@NotNull KPMRegistry registry, @NotNull InputStream stream) throws InvalidInformationFileException
     {
@@ -187,5 +194,4 @@ public class KPMInfoParser
             throw new InvalidInformationFileException("Failed to load kpm.yml from " + file.getAbsolutePath(), e);
         }
     }
-
 }

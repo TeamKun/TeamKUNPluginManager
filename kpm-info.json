@@ -76,6 +76,15 @@
                     }
                 ]
             }
+        },
+        "allowManuallyInstall": {
+            "type": "boolean",
+            "description": "このプラグインを手動でインストールすることを許可するかどうかです.\nこのフィールドがfalseの場合、このプラグインは依存関係の解決やアップグレードなど、KPMによる自動インストールのみをサポートします.",
+            "examples": [
+                true,
+                false
+            ],
+            "default": true
         }
     },
     "required": [

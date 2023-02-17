@@ -129,7 +129,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
 
         this.progress.setCurrentTask(InstallTasks.CHECKING_ENVIRONMENT);
 
-        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription, argument);
+        InstallErrorCause checkEnvErrorResult = this.checkEnvironment(pluginDescription, kpmInfo, argument);
         if (checkEnvErrorResult != null)
             return this.error(checkEnvErrorResult);
 
@@ -198,7 +198,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
     }
 
     @Nullable
-    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, InstallArgument argument)
+    private InstallErrorCause checkEnvironment(PluginDescriptionFile pluginDescription, KPMInformationFile infoFile, InstallArgument argument)
     {
         String pluginName = pluginDescription.getName();
 
@@ -211,6 +211,14 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
             if (!(argument.isForceInstall() || ignoredPluginSignal.isContinueInstall()))
                 return InstallErrorCause.PLUGIN_IGNORED;
         }
+        // endregion
+
+        if (infoFile == null)
+            return null; // There are nothing to check any condition.
+
+        // region Check if the plugin can be installed by user and the checking flag is true.
+        if (!(argument.isUserAction() && infoFile.isAllowManuallyInstall()))
+            return InstallErrorCause.PLUGIN_NOT_MANUALLY_INSTALLABLE;
         // endregion
 
         return null;  // No error with environment.

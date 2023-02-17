@@ -25,4 +25,8 @@ public enum InstallErrorCause
      * {@link InvalidKPMInfoFileSignal} でも無視が選択されませんでした。
      */
     INVALID_KPM_INFO_FILE,
+    /**
+     * 手動インストールに対応していないプラグインです。
+     */
+    PLUGIN_NOT_MANUALLY_INSTALLABLE
 }
