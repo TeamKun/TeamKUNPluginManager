@@ -21,6 +21,10 @@ general.chat.writer.keyYes=%%green%%%%key%%%%white%%: %%green%%%%general.yes%%
 general.chat.writer.keyNo=%%green%%%%key%%%%white%%: %%red%%%%general.no%%
 general.chat.writer.keyEmpty=%%green%%%%key%%%%white%%: %%gray%%%%general.empty%%
 
+plugin.deleteOldConfig=古い設定ファイルを削除しています …
+plugin.deleteOldConfig.fail=古い設定ファイルの削除に失敗しました。
+plugin.unusedUpgraderFound=アップデート用の不要なプラグインが見つかりました。 削除しています …
+
 command.autoremove=必要がなくなったプラグインを自動で削除します。
 command.clean=削除されて残ったプラグインの不要なデータを自動で削除します。
 command.install=プラグインを新規にサーバに追加します。
@@ -67,12 +71,9 @@ command.info.kpmInfo.kpmVersion=対応 KPM バージョン
 command.info.kpmInfo.recipeSuggestions=レシピ候補
 command.info.kpmInfo.recipes=レシピ数
 
-
-
 # Register command
 command.register=事前に取得したトークンを設定または、GitHubにログインしてトークンを設定します。
 command.register.needArgOnCmdBlockExec=コマンドブロックから実行するには第一引数が必須です。
-
 
 # Resolve command
 command.resolve=プラグインを名前解決します。
@@ -97,11 +98,9 @@ command.resolve.extra.gh.releaseBody=リリース説明
 
 command.resolve.extra.spigot.compatibleVersions=互換バージョン
 
-
 # UpgradeKPM command
 command.upgradeKPM=KPM をアップグレードします。
 command.upgradeKPM.noKPMUpgrader=KPM アップグレーダはインストールされていません。
-
 
 # Version command
 command.version=KPM のバージョン/ステータス情報を表示します。

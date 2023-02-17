@@ -131,16 +131,6 @@ public final class TeamKunPluginManager extends JavaPlugin
         Runner.run(() -> FileUtils.cleanDirectory(cacheParent.toFile()), ((e, bukkitTask) -> this.getLogger().log(Level.WARNING, "Failed to clear caches.", e)));
     }
 
-    private void noticeTokenDead()
-    {
-        TokenStore store = this.daemon.getTokenStore();
-        if (store.isTokenAvailable() && !store.isTokenAlive())
-        {
-            this.daemon.getLogger().warning("設定されている GitHub トークンは、有効期限が切れているか無効なトークンです。");
-            this.daemon.getLogger().info("トークンを再生成するには、 /kpm register を実行してください。");
-        }
-    }
-
     private void uninstallUpgraderIfExists()
     {
         Runner.runLater(() -> {
@@ -149,7 +139,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             if (updater == null)
                 return;
 
-            Terminals.ofConsole().info("アップデート用の不要なプラグインが見つかりました。アンインストールしています …");
+            Terminals.ofConsole().info(LangProvider.get("kpmUpgrade.unusedUpgraderFound"));
             this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
                     .autoConfirm(true)
                     .build());
@@ -162,7 +152,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         if (isOld)
         {
-            this.getLogger().info("古い設定ファイルを削除しています …");
+            this.getLogger().info(LangProvider.get("plugin.deleteOldConfig"));
             Path oldConfig = this.getDataFolder().toPath().resolve("config.yml");
             try
             {
@@ -170,7 +160,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             }
             catch (IOException e)
             {
-                this.getLogger().log(Level.WARNING, "古い設定ファイルの削除に失敗しました。", e);
+                this.getLogger().log(Level.WARNING, LangProvider.get("plugin.deleteOldConfig.fail"), e);
             }
 
             this.saveDefaultConfig();
@@ -211,8 +201,8 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         this.clearCaches();
         this.registerCommands(this.commandManager);
-        this.noticeTokenDead();
         this.uninstallUpgraderIfExists();
+        Notices.printAllNotice(this.daemon, Terminals.ofConsole());
     }
 
 }
