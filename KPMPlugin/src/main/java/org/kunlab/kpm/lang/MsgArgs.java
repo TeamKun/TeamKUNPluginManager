@@ -1,7 +1,6 @@
 package org.kunlab.kpm.lang;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
-import org.intellij.lang.annotations.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class MsgArgs
         return new MsgArgs(new ArrayList<>());
     }
 
-    public static MsgArgs of(@Language("MCLang") String key, String value)
+    public static MsgArgs of(String key, String value)
     {
         return MsgArgs.ofEmpty().add(key, value);
     }
@@ -44,7 +43,7 @@ public class MsgArgs
         return formatDeep(msg);
     }
 
-    public MsgArgs add(@Language("MCLang") String key, String value)
+    public MsgArgs add(String key, String value)
     {
         this.args.add(Pair.of(key, value));
         return this;

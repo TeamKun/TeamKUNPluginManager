@@ -2,6 +2,8 @@ package org.kunlab.kpm.lang;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 
 import java.io.IOException;
@@ -53,5 +55,15 @@ public class LangProvider
     public static String get(String key)
     {
         return get(key, MsgArgs.ofEmpty());
+    }
+
+    public static TextComponent getComponent(String key, MsgArgs args)
+    {
+        return Component.text(get(key, args));
+    }
+
+    public static TextComponent getComponent(String key)
+    {
+        return getComponent(key, MsgArgs.ofEmpty());
     }
 }
