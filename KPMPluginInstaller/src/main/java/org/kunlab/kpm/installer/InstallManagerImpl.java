@@ -2,13 +2,17 @@ package org.kunlab.kpm.installer;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TokenStore;
 import org.kunlab.kpm.installer.exceptions.InstallerRunningException;
 import org.kunlab.kpm.installer.exceptions.TokenNotAvailableException;
 import org.kunlab.kpm.interfaces.installer.InstallManager;
 import org.kunlab.kpm.interfaces.installer.InstallProgress;
+import org.kunlab.kpm.interfaces.installer.InstallResult;
 import org.kunlab.kpm.interfaces.installer.InstallerArgument;
 import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+
+import java.util.function.Consumer;
 
 public class InstallManagerImpl implements InstallManager
 {
@@ -42,7 +46,8 @@ public class InstallManagerImpl implements InstallManager
     @SuppressWarnings("unchecked")
     public <A extends InstallerArgument, T extends Enum<T>, I extends PluginInstaller<A, ?, T>> InstallProgress<T, I> runInstallerAsync(
             @NotNull I installer,
-            @NotNull A arguments
+            @NotNull A arguments,
+            @Nullable Consumer<InstallResult<T>> onFinished
     )
     {
         if (this.isRunning())
@@ -52,7 +57,11 @@ public class InstallManagerImpl implements InstallManager
 
         this.runningInstall = installer.getProgress();
 
-        Runner.runAsync(() -> installer.run(arguments));
+        Runner.runAsync(() -> {
+            InstallResult<T> result = installer.run(arguments);
+            if (onFinished != null)
+                onFinished.accept(result);
+        });
 
         return (InstallProgress<T, I>) installer.getProgress();
     }

@@ -21,38 +21,18 @@ import org.kunlab.kpm.installer.impls.update.UpdateArgument;
 import org.kunlab.kpm.installer.impls.upgrade.PluginUpgrader;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.interfaces.installer.InstallResult;
 import org.kunlab.kpm.interfaces.installer.InstallerArgument;
 import org.kunlab.kpm.signal.HeadSignalHandlers;
 import org.kunlab.kpm.signal.SignalHandleManager;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 @AllArgsConstructor
 public class HeadInstallers
 {
     private final KPMRegistry registry;
-
-    private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
-            @NotNull Terminal terminal,
-            @NotNull I installer,
-            @NotNull A arguments
-    )
-    {
-        try
-        {
-            this.registry.getInstallManager().runInstallerAsync(installer, arguments);
-        }
-        catch (InstallerRunningException e)
-        {
-            terminal.error("他のインストールが実行中です。");
-        }
-        catch (TokenNotAvailableException e)
-        {
-            terminal.error("トークンが設定されていません！");
-            terminal.info("/kpm register でトークンを設定してください。");
-        }
-    }
-
     public void runInstall(@NotNull Terminal terminal, @NotNull InstallArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
@@ -194,5 +174,43 @@ public class HeadInstallers
         }
 
         this.headRun(terminal, upgrader, argument);
+    }
+
+    private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
+            @NotNull Terminal terminal,
+            @NotNull I installer,
+            @NotNull A arguments
+    )
+    {
+        try
+        {
+            this.registry.getInstallManager().runInstallerAsync(
+                    installer,
+                    arguments,
+                    new InstallCallbackRecipient<>(this.registry, terminal)
+            );
+        }
+        catch (InstallerRunningException e)
+        {
+            terminal.error("他のインストールが実行中です。");
+        }
+        catch (TokenNotAvailableException e)
+        {
+            terminal.error("トークンが設定されていません！");
+            terminal.info("/kpm register でトークンを設定してください。");
+        }
+    }
+
+    @AllArgsConstructor
+    private static class InstallCallbackRecipient<T extends Enum<T>> implements Consumer<InstallResult<T>>
+    {
+        private final KPMRegistry registry;
+        private final Terminal terminal;
+
+        @Override
+        public void accept(InstallResult<T> ignored)
+        {
+            Notices.printAllNotice(this.registry, this.terminal);
+        }
     }
 }
