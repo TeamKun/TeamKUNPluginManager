@@ -2,8 +2,9 @@ package org.kunlab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.kunlab.kpm.Utils;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.download.signals.DownloadErrorSignal;
 import org.kunlab.kpm.task.tasks.download.signals.DownloadProgressSignal;
@@ -34,7 +35,9 @@ public class DownloadingSignalHandler
         this.downloadStarted = System.currentTimeMillis();
         if (this.terminal.isPlayer())
         {
-            this.downloadProgressBar = this.terminal.createProgressbar("ダウンロード");
+            this.downloadProgressBar = this.terminal.createProgressbar(
+                    LangProvider.get("installer.tasks.download")
+            );
             this.downloadProgressBar.setProgressMax(100);
         }
         else
@@ -44,11 +47,11 @@ public class DownloadingSignalHandler
     private void addDownloadArtifact(String url, long size)
     {
         this.downloadTotalSize += size;
-        this.terminal.infoImplicit(
-                "取得 %s [%s]",
-                url,
-                Utils.roundSizeUnit(size)
-        );
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.download.get",
+                MsgArgs.of("url", url)
+                        .add("size", Utils.roundSizeUnit(size))
+        ));
     }
 
     private void endDownloads()
@@ -58,18 +61,17 @@ public class DownloadingSignalHandler
         if (elapsedSec == 0)
             elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
-        this.terminal.success(
-                "%s を " + ChatColor.YELLOW + "%d秒" + ChatColor.RESET + "で取得しました (" +
-                        ChatColor.YELLOW + "%s/s" + ChatColor.RESET + ")",
-                Utils.roundSizeUnit(this.downloadTotalSize),
-                elapsedSec,
-                Utils.roundSizeUnit(bytesPerSec)
-        );
+        this.terminal.success(LangProvider.get(
+                "installer.tasks.download.success",
+                MsgArgs.of("totalSize", Utils.roundSizeUnit(this.downloadTotalSize))
+                        .add("time", elapsedSec)
+                        .add("speed", Utils.roundSizeUnit(bytesPerSec))
+        ));
 
         this.currentDownload = null;
 
         if (this.downloadProgressBar != null)
-            this.terminal.removeProgressbar("ダウンロード");
+            this.terminal.removeProgressbar(LangProvider.get("installer.tasks.download"));
     }
 
     @SignalHandler
@@ -91,12 +93,12 @@ public class DownloadingSignalHandler
     @SignalHandler
     public void onDownloadFailed(DownloadErrorSignal signal)
     {
-        this.terminal.errorImplicit(
-                "失敗 %s： %s(%s)",
-                signal.getUrl(),
-                signal.getCause(),
-                signal.getValue()
-        );
+        this.terminal.errorImplicit(LangProvider.get(
+                "installer.tasks.download.failed",
+                MsgArgs.of("url", signal.getUrl())
+                        .add("cause", signal.getCause())
+                        .add("value", signal.getValue())
+        ));
     }
 
     @SignalHandler

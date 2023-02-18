@@ -7,6 +7,8 @@ import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
 import org.kunlab.kpm.interfaces.installer.signals.InstallFinishedSignal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 
 /**
@@ -58,4 +60,18 @@ public abstract class InstallFinishedSignalBase
      */
     protected abstract void onFail(InstallFailedInstallResult<?, ?, ?> result);
 
+    protected void handleOtherError(InstallFailedInstallResult<?, ?, ?> result, MsgArgs installerName)
+    {
+        if (result.getException() != null)
+            this.terminal.error(LangProvider.get(
+                    "general.errors.unexpected.when",
+                    MsgArgs.of("error", result.getException().getMessage())
+                            .add(installerName)
+            ));
+        else
+            this.terminal.error(LangProvider.get(
+                    "general.errors.unknown.when",
+                    installerName
+            ));
+    }
 }

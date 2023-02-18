@@ -6,6 +6,8 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import org.kunlab.kpm.enums.resolver.ErrorCause;
 import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
@@ -34,7 +36,10 @@ public class ResolverSignalHandler
     @SignalHandler
     public void onPluginResolving(PluginResolvingSignal signal)
     {
-        this.terminal.info("%s を解決しています …", signal.getQuery());
+        this.terminal.info(LangProvider.get(
+                "installer.tasks.resolve.resolving",
+                MsgArgs.of("query", signal.getQuery())
+        ));
     }
 
     @SignalHandler
@@ -43,29 +48,37 @@ public class ResolverSignalHandler
         ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        this.terminal.error("%s の解決に失敗しました： %s%s", signal.getQuery(), errorCause, message);
+        this.terminal.error(LangProvider.get(
+                "installer.tasks.resolve.failed",
+                MsgArgs.of("query", signal.getQuery())
+                        .add("cause", errorCause)
+                        .add("message", message)
+        ));
         if (errorCause == ErrorCause.INVALID_CREDENTIAL)
         {
-            this.terminal.hint("間違ったトークンが設定されている可能性があります。");
-            this.terminal.hint("トークンを再設定するには /kpm register コマンドを使用してください。");
+            this.terminal.hint(LangProvider.get("installer.tasks.resolve.failed.wrongToken"));
+            this.terminal.hint(LangProvider.get("installer.tasks.resolve.failed.wrongToken.suggest"));
         }
     }
 
     @SignalHandler
     public void onPluginsResolve(MultiplePluginResolvedSignal signal)
     {
-        this.terminal.info("複数のプラグインが見つかりました。");
+        this.terminal.info(LangProvider.get(
+                "installer.tasks.resolve.multi",
+                MsgArgs.of("query", signal.getQuery())
+        ));
 
         if (signal.getSpecifiedResult() != null)
         {
             if (signal.getSpecifiedResult() instanceof AbstractSuccessResult)
             {
                 SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
-                this.terminal.info(
-                        "プラグイン %s(%s) が選択されました。",
-                        specifiedResult.getFileName(),
-                        specifiedResult.getVersion()
-                );
+                this.terminal.info(LangProvider.get(
+                        "installer.tasks.resolve.specified",
+                        MsgArgs.of("name", specifiedResult.getFileName())
+                                .add("version", specifiedResult.getVersion())
+                ));
             }
 
             return;
@@ -84,19 +97,19 @@ public class ResolverSignalHandler
                         )
                 )
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
-        keywordToTitle.put("a", "自動で最適なプラグインを選択する");
+        keywordToTitle.put("a", LangProvider.get("installer.tasks.resolve.multi.choices.auto"));
 
         try
         {
             QuestionResult result = this.terminal.getInput().showQuestion(
-                    "使用するプラグインを選択してください",
+                    LangProvider.get("installer.tasks.resolve.multi.choice"),
                     new AttributeChoice(keywordToTitle),
                     QuestionAttribute.CANCELLABLE
             ).waitAndGetResult();
 
             if (result.test(QuestionAttribute.CANCELLABLE))
             {
-                this.terminal.error("解決をキャンセルしました。");
+                this.terminal.error(LangProvider.get("general.cancelled", MsgArgs.of("name", "解決")));
                 signal.setCancel(true);
                 return;
             }
@@ -104,19 +117,14 @@ public class ResolverSignalHandler
                 return;
 
             SuccessResult selected = keywordToResolveResult.get(result.getRawAnswer());
+            assert selected != null;
 
-            if (selected == null)
-            {
-                this.terminal.error("不明な回答が選択されました。");
-                signal.setCancel(true);
-                return;
-            }
+            this.terminal.info(LangProvider.get(
+                    "installer.tasks.resolve.specified",
+                    MsgArgs.of("name", selected.getFileName())
+                            .add("version", selected.getVersion())
+            ));
 
-            this.terminal.success(
-                    "%s(%s) が解決されました。",
-                    selected.getFileName(),
-                    selected.getVersion()
-            );
             signal.setSpecifiedResult(selected);
         }
         catch (InterruptedException ex)

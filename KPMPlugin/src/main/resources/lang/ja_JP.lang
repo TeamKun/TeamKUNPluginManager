@@ -1,4 +1,3 @@
-# General messages
 general.lang.name=日本語
 general.lang.set=言語が %%general.lang.name%% に設定されました。
 
@@ -14,12 +13,24 @@ general.none=なし
 general.other=その他
 
 general.error=エラー
+general.cancelled=%%name%%がキャンセルされました。
+general.failed=%%name%%が失敗しました。
+general.errors.unknown=不明なエラーが発生しました。
+general.errors.unknown.when=%%name%%中に不明なエラーが発生しました。
+general.errors.unexpected=予期しないエラーが発生しました：%%error%%
+general.errors.unexpected.when=%%name%%中に予期しないエラーが発生しました：%%error%%
+general.errors.ioException=I/O エラーが発生しました。
+general.errors.ioException.when=%%name%%中に I/O エラーが発生しました。
+general.success=%%name%%が成功しました。
 
 general.chat.clickToCompletion=クリックしてチャットに補完！
+general.chat.continue=続行しますか？
+
 general.chat.writer.keyValue=%%green%%%%key%%%%white%%: %%dark_green%%%%value%%
 general.chat.writer.keyYes=%%green%%%%key%%%%white%%: %%green%%%%general.yes%%
 general.chat.writer.keyNo=%%green%%%%key%%%%white%%: %%red%%%%general.no%%
 general.chat.writer.keyEmpty=%%green%%%%key%%%%white%%: %%gray%%%%general.empty%%
+
 
 plugin.deleteOldConfig=古い設定ファイルを削除しています …
 plugin.deleteOldConfig.fail=古い設定ファイルの削除に失敗しました。
@@ -33,13 +44,13 @@ command.update=エイリアスをアップデートします。
 command.upgrade=インストールされているプラグインをグレードします。
 
 
-# Info command
 command.info=プラグインの情報を表示します。
 command.info.loading=プラグインの情報を読み込んでいます …
 
 command.info.base.name=名前
 command.info.base.version=バージョン
 command.info.base.authors=作者
+command.info.base.commands=コマンド
 command.info.base.website=ウェブサイト
 command.info.base.logPrefix=ログ接頭辞
 command.info.base.enabled=有効
@@ -71,11 +82,9 @@ command.info.kpmInfo.kpmVersion=対応 KPM バージョン
 command.info.kpmInfo.recipeSuggestions=レシピ候補
 command.info.kpmInfo.recipes=レシピ数
 
-# Register command
 command.register=事前に取得したトークンを設定または、GitHubにログインしてトークンを設定します。
 command.register.needArgOnCmdBlockExec=コマンドブロックから実行するには第一引数が必須です。
 
-# Resolve command
 command.resolve=プラグインを名前解決します。
 command.resolve.resolving=プラグインを名前解決しています …
 command.resolve.resolver=リゾルバ
@@ -98,11 +107,9 @@ command.resolve.extra.gh.releaseBody=リリース説明
 
 command.resolve.extra.spigot.compatibleVersions=互換バージョン
 
-# UpgradeKPM command
 command.upgradeKPM=KPM をアップグレードします。
 command.upgradeKPM.noKPMUpgrader=KPM アップグレーダはインストールされていません。
 
-# Version command
 command.version=KPM のバージョン/ステータス情報を表示します。
 command.version.invalidMode=モード %%mode%% は無効です。
 
@@ -122,4 +129,120 @@ command.version.status.aliases = %%aliases%% 個のエイリアスが登録さ�
 
 installer.initFailed=インストーラの初期化に失敗しました：%%error%%
 installer.anotherRunning=他のインストーラが実行中です。
+installer.forceWarn=%%dark_red%%強制的な操作は予期しない問題を引き起こす可能性があります。
 
+installer.operation.remove=以下の項目は「%%red%%削除%%reset%%」されます。
+installer.operation.canForce=強制的なインストールが可能ですが、%%installer.forceWarn%%
+
+installer.common.checkenv.incompatible=%%name%% はこの TeamKUUNPluginManager と互換性がありません。
+installer.common.checkenv.excluded=%%name%% は除外プラグインとしてマークされています。
+installer.common.checkenv.excluded.force=%%name%% は除外プラグインとしてマークされていますが強制的な操作が可能です。
+installer.common.checkenv.duplicate=%%name%% は既にインストールされています。
+installer.common.checkenv.duplicate.old=== 既にインストールされているプラグイン ==
+installer.common.checkenv.duplicate.new=== インストールしようとしているプラグイン ==
+
+installer.common.mod.add=%%green%%+ %%name%%
+installer.common.mod.remove=%%red%%- %%name%%
+installer.common.mod.upgrade=%%yellow%%↑ %%name%%
+installer.common.mod.pending=%%gray%%* %%name%%
+
+installer.autoremove=プラグインの自動削除
+installer.autoremove.errors.uninstallerInitFailed=アンインストーラの初期化に失敗しました。
+installer.autoremove.errors.uninstallFailed=アンインストールに失敗しました。
+installer.autoremove.errors.noAutoRemovablePluginFound=自動削除可能なプラグインが見つかりませんでした。
+installer.autoremove.unneeded=以下のプラグインが自動でインストールされましたが、もう必要とされていません：
+
+installer.clean=不要なデータの削除
+installer.clean.errors.invalidIntegrity=ファイル・システムとの不整合が発生したため、システムが保護されました。
+installer.clean.errors.nnoGarbage=不要なデータが見つかりませんでした。
+installer.clean.searching=不要なデータを検索しています …
+
+installer.install=プラグインのインストール
+installer.install.errors.excluded=%%installer.common.checkenv.excluded%%
+installer.install.errors.duplicate=%%installer.common.checkenv.duplicate%%
+installer.install.errors.notManuallyInstallable=指定されたプラグインは手動でインストールできないプラグインとしてマークされています。
+installer.install.errors.invalidKpmInfo=指定したプラグインが無効な KPM 情報ファイルを持っています。
+
+installer.register=トークンの生成
+installer.register.errors.invalidToken=トークンが無効です。
+installer.register.token.checking=トークンの有効性を確認しています …
+
+
+installer.tasks.resolve.resolving=%%query%% を解決しています …
+installer.tasks.resolve.failed=%%query%% の解決は %%cause%% で失敗しました：%%message%%
+installer.tasks.resolve.failed.wrongToken=間違ったトークンが設定されている可能性があります。
+installer.tasks.resolve.failed.wrongToken.suggest=トークンを再設定するには /kpm register コマンドを使用してください。
+installer.tasks.resolve.multi=複数のプラグインが見つかりました。
+installer.tasks.resolve.multi.specified=プラグイン %%name%%(%%version%%) が選択されました。
+installer.tasks.resolve.multi.choice=使用するプラグインを選択してください
+installer.tasks.resolve.multi.choices.auto=自動で最適なプラグインを選択する
+installer.tasks.resolve.multi.choices.manual=手動でプラグインを選択する
+installer.tasks.resolve.errors.gotErrorResult=プラグインの解決中にエラーが発生しました。
+installer.tasks.resolve.errors.illegalInternalState=プラグインの解決中に予期しない内部エラーが発生しました。
+
+installer.tasks.download=ダウンロード
+installer.tasks.download.get=取得 %%url%% [%%size%%]
+installer.tasks.download.success=%%totalSize%% を %%yellow%%%%time%%秒%%reset%% で取得しました（ %%speed%%/s ）
+installer.tasks.download.failed=失敗 %%url%%： %%cause%%  （ %%value%% ）
+installer.tasks.download.errors.illegalHttpResult=ダウンロード中にサーバから無効なレスポンスを受け取りました。
+installer.tasks.download.errors.noBodyInResponse=Body が空でした。
+
+installer.tasks.description=プラグイン情報の読み込み
+installer.tasks.description.errors.notPlugin=指定されたファイルがプラグインではないか、 plugin.yml が存在しません。
+installer.tasks.description.errors.invalidYaml=不正なプラグイン情報ファイルです。
+
+installer.tasks.dependency.collect=依存関係の取得
+installer.tasks.dependency.collect.errors.someCollectFailed=いくつか依存関係の取得に失敗しました。
+installer.tasks.deps.collect.failed=依存関係 %%dependency%% の取得に失敗しました
+
+installer.tasks.deps.resolve.failed=依存関係 %%dependency%% の解決に失敗しました。
+installer.tasks.deps.load.failed=依存関係 %%dependency%% の読み込みに失敗しました
+installer.tasks.deps.mismatch=依存関係 %%dependency%% の整合性が確認できませんでした。
+installer.tasks.deps.mismatch.suggest=他のバージョンのプラグインを使用することで解決できるかもしれません。
+installer.tasks.deps.buildingTree=依存関係ツリーを構築しています …
+
+installer.tasks.install=インストール
+installer.tasks.install.errors.relocateFailed=指定されたプラグインの再配置に失敗しました。
+installer.tasks.install.errors.invalidPlugin=不正なプラグインをインストールしようとしました。
+installer.tasks.install.errors.invalidDescription=指定されたプラグインは、不正なプラグイン情報ファイルを持っています。
+installer.tasks.install.errors.incompatible.bukkit=指定されたプラグインは、このサーバのバージョンと互換性がありません。
+installer.tasks.install.errors.incompatible.bukkit.suggest=プラグインのapi-versionがより新しい可能性があります。
+installer.tasks.install.errors.incompatible.kpm=指定されたプラグインは、この KPM のバージョンと互換性がありません。
+installer.tasks.install.preparing=%%name%% をインストールする準備をしています …
+installer.tasks.install.relocating=%%src%% を %%dest%% に再配置しています …
+installer.tasks.install.loading=%%name%% を読み込んでいます …
+installer.tasks.install.enabling=%%name%% のトリガを処理しています …
+installer.tasks.install.invalidKPMInfo=プラグイン %%name%% は KPM 情報ファイル (kpm.yml) を持っていますが、KPMが理解できる形式ではありません。
+installer.tasks.install.invalidKPMInfo.force=このファイルを無視して%%installer.operation.canForce%%
+
+installer.tasks.genToken=トークンの生成
+installer.tasks.genToken.codeAlive=%%green%%コード有効期限：
+installer.tasks.genToken.start.1=GitHub へ Web ブラウザを用いてログインします。
+installer.tasks.genToken.start.2=この操作により、 KPM はあなたの GitHub アカウントにアクセスできるようになります。
+installer.tasks.genToken.request.requesting=サーバに接続しています …
+installer.tasks.genToken.request.fail=検証コードの取得に失敗しました：%%httpStatus%% %%message%%
+installer.tasks.genToken.verify.verifyLink=このリンクからコードを有効化してください：%%blue%%%%underline%%%%link%%
+installer.tasks.genToken.verify.code=コード：%%white%%%%code%%
+installer.tasks.genToken.verify.expiresIn=このコードは %%minutes%% 分で失効します。
+installer.tasks.genToken.verify.title=GitHub でこのコードを入力して有効化してください
+installer.tasks.genToken.verify.fail=コードの有効化に失敗しました：%%reason%%
+installer.tasks.genToken.verify.fail.expire=コードが失効しました：%%code%%
+installer.tasks.genToken.verify.fail.expire.hint=コードを再取得するには /kpm register を実行してください。
+installer.tasks.genToken.verify.fail.denied=ユーザがコードの有効化を拒否しました。
+installer.tasks.genToken.verify.success=トークンの有効化に成功しました。
+
+
+
+kpmupgrade.fetch.fetching=KPM の最新バージョンを確認しています …
+kpmupgrade.fetch.alreadyLatest=すばらしい！ 現在の KPM は最新バージョンです。アップグレードの必要はありません。
+kpmupgrade.fetch.serverOld=KPM の最新バージョンは、現在使用している KPM のバージョンよりも古いです。
+kpmupgrade.fetch.serverOld.hint=KPM の開発環境で実行している可能性があります。
+kpmupgrade.fetch.upgradable=KPM はアップグレード可能です。
+kpmupgrade.fetch.fail=KPM の最新バージョンの確認に失敗しました。
+kpmupgrade.fetch.fail.suggest=しばらく時間をおいてから再度実行してください。
+kpmupgrade.deploy.deploying=KPM アップグレーダを配置しています …
+kpmupgrade.deploy.fail=KPM アップグレーダの配置に失敗しました：%%cause%%
+kpmupgrade.upgrade.ready=TeamKUNPluginManager(%%yellow%%%%old%%%%reset%%) から TeamKUNPluginManager(%%yellow%%%%new%%%%reset%%) は、 %%green%%%%new%%%%reset%% にアップグレードされます。
+kpmupgrade.upgrade.ready.warn=%%dark_red%%KPM アップグレーダは、アップグレード完了後にサーバをリロードします。
+kpmupgrade.upgrade.cancel=アップグレードがキャンセルされました。
+kpmupgrade.upgrade.alreadyRunning=アップグレードは既に実行中です。

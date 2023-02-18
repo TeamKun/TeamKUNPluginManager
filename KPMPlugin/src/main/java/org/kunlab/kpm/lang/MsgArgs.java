@@ -107,6 +107,12 @@ public class MsgArgs
         return this;
     }
 
+    public MsgArgs add(MsgArgs args)
+    {
+        this.args.addAll(args.args);
+        return this;
+    }
+
     public String format(String msg)
     {
         for (Pair<String, String> arg : this.args)

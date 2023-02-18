@@ -2,6 +2,8 @@ package org.kunlab.kpm.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.install.signals.PluginEnablingSignal;
@@ -27,7 +29,11 @@ public class InstallerSignalHandler
     @SignalHandler
     public void onPluginInstallStart(PluginInstallingSignal signal)
     {
-        this.terminal.infoImplicit("%s をインストールする準備をしています …", signal.getPluginDescription().getName());
+        String name = signal.getPluginDescription().getName();
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.install.preparing",
+                MsgArgs.of("name", name)
+        ));
     }
 
     @SignalHandler
@@ -35,34 +41,36 @@ public class InstallerSignalHandler
     {
         String src = "…/" + signal.getSource().getFileName();
         String dest = "…/" + signal.getTarget().getFileName();
-        this.terminal.infoImplicit(
-                "%s を %s に再配置しています …",
-                src,
-                dest
-        );
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.install.relocating",
+                MsgArgs.of("src", src).add("dest", dest)
+        ));
     }
 
     @SignalHandler
     public void onPluginLoadPre(PluginLoadSignal.Pre signal)
     {
-        this.terminal.infoImplicit("%s を読み込んでいます …", Utils.getPluginString(signal.getPluginDescription()));
+        this.terminal.infoImplicit(LangProvider.get("installer.tasks.install.loading", MsgArgs.of("name", signal.getPluginDescription().getName())));
     }
 
     @SignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
-        this.terminal.infoImplicit("%s のトリガを処理しています …", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.install.enabling",
+                MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
+        ));
     }
 
     @SignalHandler
     public void onInvalidKPMInfoFile(InvalidKPMInfoFileSignal signal)
     {
-        this.terminal.warn(
-                "プラグイン %s は KPM 情報ファイル (kpm.yml) を持っていますが、KPMが理解できる形式ではありません。",
-                signal.getDescriptionFile().getName()
-        );
+        this.terminal.warn(LangProvider.get(
+                "installer.tasks.install.invalidKPMInfo",
+                MsgArgs.of("name", signal.getDescriptionFile().getName())
+        ));
         this.terminal.hint(
-                "このファイルを無視して強制的にインストールできますが、強制的な操作は予期しない問題を引き起こす可能性があります。"
+                LangProvider.get("installer.tasks.install.invalidKPMInfo.force")
         );
 
         signal.setIgnore(SignalHandlingUtils.askContinue(this.terminal));

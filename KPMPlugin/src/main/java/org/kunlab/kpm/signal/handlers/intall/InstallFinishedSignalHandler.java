@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.install.InstallErrorCause;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectErrorCause;
 import org.kunlab.kpm.task.tasks.description.DescriptionLoadErrorCause;
@@ -17,6 +19,8 @@ import org.kunlab.kpm.task.tasks.resolve.PluginResolveErrorCause;
  */
 public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.install");
+
     public InstallFinishedSignalHandler(Terminal terminal)
     {
         super(terminal);
@@ -33,27 +37,36 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (cause == null)
             return false;
 
+        String key;
         switch (cause)
         {
             case PLUGIN_IGNORED:
-                this.terminal.error("指定されたプラグインが無視リストに登録されています。");
-                return true;
+                key = "installer.install.errors.excluded";
+                break;
             case PLUGIN_ALREADY_INSTALLED:
-                this.terminal.error("指定されたプラグインは既にインストールされています。");
-                return true;
+                key = "installer.install.errors.duplicate";
+                break;
             case PLUGIN_NOT_MANUALLY_INSTALLABLE:
-                this.terminal.error("指定されたプラグインは手動でインストールできないプラグインとしてマークされています。");
-                return true;
+                key = "installer.install.errors.notManuallyInstallable";
+                break;
             case INVALID_KPM_INFO_FILE:
-                this.terminal.error("指定したプラグインが無効な KPM 情報ファイルを持っています。");
-                return true;
+                key = "installer.install.errors.invalidKPMInfo";
+                break;
+            default:
+                return false;
         }
 
-        return false;
+        this.terminal.error(LangProvider.get(
+                key,
+                MsgArgs.of("name", "指定されたプラグイン")
+        ));
+
+        return true;
     }
 
     private void handlePluginResolveError(PluginResolveErrorCause cause)
     {
+        String key;
         switch (cause)
         {
             /* This cause is handled in PluginResolveSignalHandler
@@ -61,83 +74,130 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("プラグイン解決がキャンセルされました。");
                 break;*/
             case GOT_ERROR_RESULT:
-                this.terminal.error("プラグイン解決中にエラーが発生しました。");
+                key = "installer.tasks.resolve.errors.gotErrorResult";
                 break;
             case ILLEGAL_INTERNAL_STATE:
-                this.terminal.error("プラグイン解決中に予期しない内部エラーが発生しました。");
+                key = "installer.tasks.resolve.errors.illegalInternalState";
                 break;
+            default:
+                return;
         }
+
+        this.terminal.error(LangProvider.get(key));
     }
 
     private void handleDownloadError(DownloadErrorCause cause)
     {
+        String key;
+        boolean named = false;
         switch (cause)
         {
             case ILLEGAL_HTTP_RESPONSE:
-                this.terminal.error("ダウンロード中にサーバから無効なレスポンスを受け取りました。");
+                key = "installer.tasks.download.errors.illegalHttpResponse";
                 break;
             case NO_BODY_IN_RESPONSE:
-                this.terminal.error("Body が空でした。");
+                key = "installer.tasks.download.errors.noBodyInResponse";
                 break;
             case IO_EXCEPTION:
-                this.terminal.error("ダウンロード中に I/O エラーが発生しました。");
+                key = "general.errors.ioException.when";
+                named = true;
                 break;
             case UNKNOWN_ERROR:
-                this.terminal.error("ダウンロード中に不明なエラーが発生しました。");
+                key = "general.errors.unknown.when";
+                named = true;
                 break;
+            default:
+                return;
         }
+
+        if (named)
+            this.terminal.error(LangProvider.get(
+                    key,
+                    MsgArgs.of("name", "%%installer.tasks.download%%")
+            ));
+        else
+            this.terminal.error(LangProvider.get(key));
     }
 
     private void handleDescriptionLoadError(DescriptionLoadErrorCause cause)
     {
+        String key;
+        boolean named = false;
         switch (cause)
         {
             case NOT_A_PLUGIN:
-                this.terminal.error("指定されたファイルがプラグインではないか、 plugin.yml が存在しません。");
+                key = "installer.tasks.description.errors.notPlugin";
                 break;
             case INVALID_DESCRIPTION:
-                this.terminal.error("不正なプラグイン情報ファイルです。");
+                key = "installer.tasks.description.errors.invalidDescription";
                 break;
             case IO_EXCEPTION:
-                this.terminal.error("プラグイン情報ファイルの読み込み中に I/O エラーが発生しました。");
+                key = "general.errors.ioException.when";
                 break;
+            default:
+                return;
         }
+
+        //noinspection ConstantValue
+        if (named)
+            this.terminal.error(LangProvider.get(
+                    key,
+                    MsgArgs.of("name", "%%installer.tasks.description%%")
+            ));
+        else
+            this.terminal.error(LangProvider.get(key));
     }
 
     @SuppressWarnings("SwitchStatementWithoutDefaultBranch")
     private void handleDependsCollectError(DependsCollectErrorCause cause)
     {
         if (cause == DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED)
-            this.terminal.error("いくつかの依存関係の解決に失敗しました。");
+            this.terminal.error(LangProvider.get("installer.tasks.dependency.collect.errors.someCollectFailed"));
     }
 
     private void handleInstallError(PluginsInstallErrorCause cause)
     {
+        String key;
+        boolean named = false;
         switch (cause)
         {
             case RELOCATE_FAILED:
-                this.terminal.error("プラグインの再配置に失敗しました。");
+                key = "installer.tasks.install.errors.relocateFailed";
                 break;
             case INVALID_PLUGIN:
-                this.terminal.error("不正なプラグインファイルをインストールしようとしました。");
+                key = "installer.tasks.install.errors.invalidPlugin";
                 break;
             case INVALID_PLUGIN_DESCRIPTION:
-                this.terminal.error("不正なプラグイン情報ファイルが含まれています。");
+                key = "installer.tasks.install.errors.invalidDescription";
                 break;
             case INCOMPATIBLE_WITH_BUKKIT_VERSION:
-                this.terminal.error("指定されたプラグインは、このサーバのバージョンと互換性がありません。");
-                this.terminal.hint("プラグインのapi-versionがより新しい可能性があります。");
-                break;
+                key = "installer.tasks.install.errors.incompatible.bukkit";
+                this.terminal.error(LangProvider.get(key));
+                key = "installer.tasks.install.errors.incompatible.bukkit.suggest";
+                this.terminal.hint(LangProvider.get(key));
+                return;
             case INCOMPATIBLE_WITH_KPM_VERSION:
-                this.terminal.error("指定されたプラグインは、この KPM のバージョンと互換性がありません。");
+                key = "installer.tasks.install.errors.incompatible.kpm";
                 break;
             case IO_EXCEPTION_OCCURRED:
-                this.terminal.error("プラグインのインストール中に I/O エラーが発生しました。");
+                key = "general.errors.ioException.when";
+                named = true;
                 break;
             case EXCEPTION_OCCURRED:
-                this.terminal.error("プラグインのインストール中に予期しないエラーが発生しました。");
+                key = "general.errors.unknown.when";
+                named = true;
                 break;
+            default:
+                return;
         }
+
+        if (named)
+            this.terminal.error(LangProvider.get(
+                    key,
+                    MsgArgs.of("name", "%%installer.tasks.install%%")
+            ));
+        else
+            this.terminal.error(LangProvider.get(key));
     }
 
     @Override
@@ -146,11 +206,6 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (result.getReason() instanceof InstallErrorCause &&
                 this.handleGeneralErrors((InstallErrorCause) result.getReason()))
             return;
-        if (result.getException() != null)
-        {
-            this.terminal.error("プラグインのインストール中に予期しないエラーが発生しました：%s", result.getException());
-            return;
-        }
 
         Enum<?> errorCause = result.getReason();
 
@@ -164,7 +219,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             this.handleDependsCollectError((DependsCollectErrorCause) errorCause);
         else if (errorCause instanceof PluginsInstallErrorCause)
             this.handleInstallError((PluginsInstallErrorCause) errorCause);
-        else
-            this.terminal.error("不明なエラーが発生しました。");
+
+        this.handleOtherError(result, INSTALLER_NAME);
     }
 }

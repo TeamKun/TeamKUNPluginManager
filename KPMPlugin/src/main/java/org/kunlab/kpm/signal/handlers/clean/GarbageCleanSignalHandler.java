@@ -1,7 +1,7 @@
 package org.kunlab.kpm.signal.handlers.clean;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
+import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
@@ -23,10 +23,11 @@ public class GarbageCleanSignalHandler
     @SignalHandler
     public void onGarbageEnumerated(GarbageEnumeratedSignal signal)
     {
-        this.terminal.successImplicit("以下のデータ・フォルダは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
+        this.terminal.successImplicit(LangProvider.get("installer.operation.remove"));
         this.terminal.writeLine("  " + signal.getGarbageDatas().stream()
                 .sorted()
                 .map(path -> path.getFileName().toString())
+                .map(path -> path + "/")
                 .collect(Collectors.joining(" ")));
 
         signal.setCancel(!SignalHandlingUtils.askContinue(this.terminal));
@@ -35,6 +36,6 @@ public class GarbageCleanSignalHandler
     @SignalHandler
     public void onGarbageSearching(GarbageSearchingSignal signal)
     {
-        this.terminal.info("不要なデータを検索しています …");
+        this.terminal.info(LangProvider.get("installer.clean.searching"));
     }
 }

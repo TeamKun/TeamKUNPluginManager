@@ -4,10 +4,14 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.autoremove.AutoRemoveErrorCause;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 
 public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
 {
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.autoremove");
+
     public AutoRemoveFinishedSignalHandler(Terminal terminal)
     {
         super(terminal);
@@ -16,26 +20,33 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success("プラグインの自動削除が完了しました。");
+        this.terminal.success(LangProvider.get("general.success", INSTALLER_NAME));
     }
 
     private void handleAutoRemoveErrors(AutoRemoveErrorCause cause)
     {
+        String key;
         switch (cause)
         {
             case UNINSTALLER_INIT_FAILED:
-                this.terminal.warn("アンインストーラーの初期化に失敗しました。");
+                key = "installer.autoremove.errors.uninstallerInitFailed";
                 break;
             case UNINSTALL_FAILED:
-                this.terminal.warn("プラグインのアンインストールに失敗しました。");
+                key = "installer.autoremove.errors.uninstallFailed";
                 break;
             case NO_AUTO_REMOVABLE_PLUGIN_FOUND:
-                this.terminal.warn("自動削除が可能なプラグインが見つかりませんでした。");
+                key = "installer.autoremove.errors.noAutoRemovablePluginFound";
                 break;
             case CANCELLED:
-                this.terminal.warn("自動削除がキャンセルされました。");
+                key = "general.cancelled";
+                this.terminal.warn(LangProvider.get(key, INSTALLER_NAME));
                 break;
+            default:
+                key = null;
         }
+
+        if (key != null)
+            this.terminal.warn(LangProvider.get(key));
     }
 
     @Override
@@ -43,9 +54,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof AutoRemoveErrorCause)
             this.handleAutoRemoveErrors((AutoRemoveErrorCause) result.getReason());
-        else if (result.getException() != null)
-            this.terminal.error("プラグインの自動削除中に予期しないエラーが発生しました：%s", result.getException());
-        else
-            this.terminal.error("プラグインの自動削除に失敗しました。");
+
+        this.handleOtherError(result, INSTALLER_NAME);
     }
 }

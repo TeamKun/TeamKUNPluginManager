@@ -1,9 +1,9 @@
 package org.kunlab.kpm.signal.handlers.autoremove;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.installer.impls.autoremove.signals.PluginEnumeratedSignal;
+import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 
@@ -21,8 +21,8 @@ public class AutoRemoveReadySignalHandler
 
     private void printUninstallInfo(List<String> uninstallTargets)
     {
-        this.terminal.successImplicit("以下のプラグインが自動でインストールされましたが、もう必要とされていません：");
-        this.terminal.successImplicit("以下のプラグインは「" + ChatColor.RED + "削除" + ChatColor.RESET + "」されます。");
+        this.terminal.successImplicit(LangProvider.get("installer.autoremove.unneeded"));
+        this.terminal.successImplicit(LangProvider.get("installer.operation.remove"));
         this.terminal.writeLine("  " + uninstallTargets.stream()
                 .sorted()
                 .collect(Collectors.joining(" ")));

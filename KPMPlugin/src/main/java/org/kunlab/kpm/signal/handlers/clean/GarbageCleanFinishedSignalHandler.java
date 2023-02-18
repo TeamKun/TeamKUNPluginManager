@@ -3,11 +3,15 @@ package org.kunlab.kpm.signal.handlers.clean;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import org.kunlab.kpm.task.tasks.garbage.clean.GarbageCleanErrorCause;
 
 public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
 {
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.clean");
+
     public GarbageCleanFinishedSignalHandler(Terminal terminal)
     {
         super(terminal);
@@ -16,7 +20,7 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success("不要なデータの削除に成功しました。");
+        this.terminal.success(LangProvider.get("general.success", INSTALLER_NAME));
     }
 
     private void handleGarbageCleanErrors(GarbageCleanErrorCause cause)
@@ -24,16 +28,16 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case CANCELLED:
-                this.terminal.warn("不要なデータの削除がキャンセルされました。");
+                this.terminal.warn(LangProvider.get("general.cancelled", INSTALLER_NAME));
                 break;
             case ALL_DELETE_FAILED:
-                this.terminal.warn("すべての不要なデータの削除に失敗しました。");
+                this.terminal.warn(LangProvider.get("general.failed", INSTALLER_NAME));
                 break;
             case INVALID_INTEGRITY:
-                this.terminal.warn("ファイル・システムとの不整合が発生したため、システムが保護されました。");
+                this.terminal.warn(LangProvider.get("installer.clean.errors.invalidIntegrity"));
                 break;
             case NO_GARBAGE:
-                this.terminal.warn("不要なデータが見つかりませんでした。");
+                this.terminal.warn(LangProvider.get("installer.clean.errors.noGarbage"));
                 break;
         }
     }
@@ -43,9 +47,7 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof GarbageCleanErrorCause)
             this.handleGarbageCleanErrors((GarbageCleanErrorCause) result.getReason());
-        else if (result.getException() != null)
-            this.terminal.error("不要なデータの削除中に予期しないエラーが発生しました：%s", result.getException());
-        else
-            this.terminal.error("不要なデータの削除に失敗しました。");
+
+        this.handleOtherError(result, INSTALLER_NAME);
     }
 }

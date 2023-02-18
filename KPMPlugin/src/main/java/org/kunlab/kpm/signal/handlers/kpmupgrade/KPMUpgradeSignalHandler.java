@@ -1,8 +1,9 @@
 package org.kunlab.kpm.signal.handlers.kpmupgrade;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.kunlab.kpm.DebugConstants;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.upgrader.signals.AlreadyUpgradingSignal;
@@ -23,13 +24,13 @@ public class KPMUpgradeSignalHandler
     @SignalHandler
     public void onAlreadyUpgradeRunning(AlreadyUpgradingSignal signal)
     {
-        this.terminal.error("アップグレートは既に進行中です。");
+        this.terminal.error(LangProvider.get("kpmupgrade.upgrade.alreadyRunning"));
     }
 
     @SignalHandler
     public void onLatestFetchPre(LatestFetchSignal.Pre signal)
     {
-        this.terminal.info("KPM の最新バージョンを確認しています …");
+        this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.fetching"));
     }
 
     @SignalHandler
@@ -44,27 +45,27 @@ public class KPMUpgradeSignalHandler
         }
 
         if (!signal.isUpgradable())
-            this.terminal.info("すばらしい！ 現在の KPM は最新バージョンです。アップグレードの必要はありません。");
+            this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.alreadyLatest"));
         else if (signal.isFetchedOlderVersion())
         {
-            this.terminal.error("KPM の最新バージョンは、現在使用している KPM のバージョンよりも古いです。");
-            this.terminal.hint("KPM の開発環境で実行している可能性があります。");
+            this.terminal.error(LangProvider.get("kpmupgrade.upgrade.fetch.serverOld"));
+            this.terminal.hint(LangProvider.get("kpmupgrade.upgrade.fetch.serverOld.hint"));
         }
         else
-            this.terminal.info("KPM はアップグレード可能です。");
+            this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.upgradable"));
     }
 
     @SignalHandler
     public void onLatestFetchError(LatestFetchSignal.Error signal)
     {
-        this.terminal.error("KPM の最新バージョンの確認に失敗しました。");
-        this.terminal.hint("しばらく時間をおいてから再度実行してください。");
+        this.terminal.error(LangProvider.get("kpmupgrade.upgrade.fetch.fail"));
+        this.terminal.hint(LangProvider.get("kpmupgrade.upgrade.fetch.fail.suggest"));
     }
 
     @SignalHandler
     public void onUpgraderDeployPre(UpgraderDeploySignal.Pre signal)
     {
-        this.terminal.info("KPM アップグレーダを配置しています …");
+        this.terminal.info(LangProvider.get("kpmupgrade.upgrade.deploy.deploying"));
     }
 
     @SignalHandler
@@ -76,9 +77,10 @@ public class KPMUpgradeSignalHandler
     @SignalHandler
     public void onUpgraderDeployError(UpgraderDeploySignal.Error signal)
     {
-        this.terminal.error("KPM アップグレーダの配置に失敗しました：%s", signal.getCause());
-        if (signal.getCause() == UpgraderDeploySignal.Error.ErrorCause.DEPLOYER_NOT_EXISTS)
-            this.terminal.info("この KPM のビルドは、 KPM を含んでいない可能性があります。");
+        this.terminal.error(LangProvider.get(
+                "kpmupgrade.upgrade.deploy.fail",
+                MsgArgs.of("cause", signal.getCause())
+        ));
     }
 
     @SignalHandler
@@ -87,15 +89,19 @@ public class KPMUpgradeSignalHandler
         Version from = signal.getCurrentKPMVersion();
         Version to = signal.getToKPMVersion();
 
-        this.terminal.info("TeamKUNPluginManager(%s) は、 %s にアップグレードします。", from, to);
+        this.terminal.info(LangProvider.get(
+                "kpmupgrade.upgrade.ready",
+                MsgArgs.of("from", from)
+                        .add("to", to)
+        ));
 
-        this.terminal.warn(ChatColor.DARK_RED + "KPM アップグレーダは、アップグレード完了後にサーバをリロードします。");
+        this.terminal.warn(LangProvider.get("kpmupgrade.upgrade.ready.warn"));
 
         boolean isContinue = SignalHandlingUtils.askContinue(this.terminal);
         signal.setContinueUpgrade(isContinue);
 
         if (!isContinue)
-            this.terminal.error("アップグレードがキャンセルされました。");
+            this.terminal.error(LangProvider.get("kpmupgrade.upgrade.ready.cancel"));
     }
 
 }

@@ -2,7 +2,6 @@ package org.kunlab.kpm.signal.handlers.register;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.kunlab.kpm.installer.impls.register.signals.TokenGenerateStartingSignal;
 import org.kunlab.kpm.installer.impls.register.signals.UserDoesntCompleteVerifySignal;
 import org.kunlab.kpm.installer.impls.register.signals.UserVerificationSuccessSignal;
@@ -11,6 +10,8 @@ import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeExpiredSi
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeReceivedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestFailedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 
@@ -25,7 +26,7 @@ public class TokenGenerateSignalHandler
         if (terminal.isPlayer())
         {
             this.progressbar = terminal.createProgressbar("codeExpire");
-            this.progressbar.setPrefix(ChatColor.GREEN + "コード有効期限: ");
+            this.progressbar.setPrefix(LangProvider.get("installer.tasks.genToken.codeAlive"));
         }
         else
             this.progressbar = null;
@@ -34,16 +35,15 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onTokenGenerateStarting(TokenGenerateStartingSignal signal)
     {
-        this.terminal.info("GitHub へ Web ブラウザを用いてログインします。");
-        this.terminal.info("この操作により、 KPM はあなたの GitHub アカウントにアクセスできるようになります。");
-
+        this.terminal.info(LangProvider.get("installer.tasks.genToken.start.1"));
+        this.terminal.info(LangProvider.get("installer.tasks.genToken.start.2"));
         signal.setContinueGenerate(SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler
     public void onVerificationCodeRequesting(VerificationCodeRequestingSignal signal)
     {
-        this.terminal.info("サーバに接続しています …");
+        this.terminal.info(LangProvider.get("installer.tasks.genToken.request.requesting"));
     }
 
     @SignalHandler
@@ -51,11 +51,11 @@ public class TokenGenerateSignalHandler
     {
         this.terminal.removeProgressbar("codeExpire");
 
-        this.terminal.error(
-                "検証コードの取得に失敗しました：%s %s",
-                signal.getHttpStatusCode(),
-                signal.getErrorMessage()
-        );
+        this.terminal.error(LangProvider.get(
+                "installer.tasks.genToken.request.fail",
+                MsgArgs.of("httpStatus", signal.getHttpStatusCode())
+                        .add("message", signal.getErrorMessage())
+        ));
     }
 
     @SignalHandler
@@ -66,18 +66,24 @@ public class TokenGenerateSignalHandler
         long expiresInSec = signal.getExpiresIn();
         int expiresInMin = (int) (expiresInSec / 60);
 
-        this.terminal.successImplicit(
-                "このリンクからコードを有効化してください：" + ChatColor.BLUE + ChatColor.UNDERLINE + "%s",
-                verificationUrl
-        );
-        this.terminal.successImplicit("コード：" + ChatColor.WHITE + " %s", userCode);
-        this.terminal.info("このコードは %d 分で失効します。", expiresInMin);
+        this.terminal.successImplicit(LangProvider.get(
+                "installer.tasks.genToken.verify.verifyLink",
+                MsgArgs.of("url", verificationUrl)
+        ));
+        this.terminal.successImplicit(LangProvider.get(
+                "installer.tasks.genToken.verify.code",
+                MsgArgs.of("code", userCode)
+        ));
+        this.terminal.info(LangProvider.get(
+                "installer.tasks.genToken.verify.expiresIn",
+                MsgArgs.of("minutes", expiresInMin)
+        ));
 
         int expiresInSecInt = (int) expiresInSec;
 
         if (this.terminal.isPlayer())
         {
-            this.terminal.showNotification(userCode, "GitHubでこのコードを入力して有効化してください。",
+            this.terminal.showNotification(userCode, LangProvider.get("installer.tasks.genToken.verify.title"),
                     expiresInSecInt * 1000
             );
 
@@ -90,8 +96,11 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onVerificationCodeExpired(VerificationCodeExpiredSignal signal)
     {
-        this.terminal.error("コードが失効しました： %s", signal.getUserCode());
-        this.terminal.info("コードを再取得するには /kpm register を実行してください。");
+        this.terminal.error(LangProvider.get(
+                "installer.tasks.genToken.verify.fail.expire",
+                MsgArgs.of("code", signal.getUserCode())
+        ));
+        this.terminal.hint(LangProvider.get("installer.tasks.genToken.verify.fail.expire.hint"));
 
         if (!this.terminal.isPlayer())
             return;
@@ -109,7 +118,10 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onUserVerifyDenied(UserVerifyDeniedSignal signal)
     {
-        this.terminal.error("コードの有効化に失敗しました：ユーザがコードの有効化を拒否しました。");
+        this.terminal.error(LangProvider.get(
+                "installer.tasks.genToken.verify.fail",
+                MsgArgs.of("reason", "%%installer.tasks.genToken.verify.fail.denied")
+        ));
 
         if (!this.terminal.isPlayer())
             return;
@@ -121,7 +133,7 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onUserVerifySucceeded(UserVerificationSuccessSignal signal)
     {
-        this.terminal.success("コードの有効化に成功しました。");
+        this.terminal.success(LangProvider.get("installer.tasks.genToken.verify.success"));
 
         if (!this.terminal.isPlayer())
             return;

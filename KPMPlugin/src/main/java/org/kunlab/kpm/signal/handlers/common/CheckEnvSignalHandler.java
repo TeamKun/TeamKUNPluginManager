@@ -1,11 +1,12 @@
 package org.kunlab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import org.kunlab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
@@ -26,11 +27,11 @@ public class CheckEnvSignalHandler
     @SignalHandler
     public void onIncompatibleWithKPM(PluginIncompatibleWithKPMSignal signal)
     {
-        this.terminal.warn(
-                "%s はこの TeamKUNPluginManager と互換性がありません。",
-                Utils.getPluginString(signal.getPluginDescription())
-        );
-        this.terminal.info("強制的なインストールが可能ですが、強制的な操作は予期しない問題を引き起こす可能性があります。");
+        this.terminal.warn(LangProvider.get(
+                "installer.common.checkenv.incompatible",
+                MsgArgs.of("name", Utils.getPluginString(signal.getPluginDescription()))
+        ));
+        this.terminal.info(LangProvider.get("installer.operation.canForce"));
 
         signal.setForceInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
@@ -40,44 +41,52 @@ public class CheckEnvSignalHandler
     {
         if (!this.canForceInstall(signal.getPluginDescription()))
         {
-            this.terminal.warn(
-                    "%s は除外プラグインとしてマークされています。",
-                    Utils.getPluginString(signal.getPluginDescription())
-            );
+            this.terminal.warn(LangProvider.get(
+                    "installer.common.checkenv.excluded",
+                    MsgArgs.of("name", Utils.getPluginString(signal.getPluginDescription()))
+            ));
 
             signal.setContinueInstall(false);
             return;
         }
 
-        this.terminal.warn(
-                "%s は除外プラグインとしてマークされていますが強制的な操作が可能です。",
-                Utils.getPluginString(signal.getPluginDescription())
-        );
+        this.terminal.warn(LangProvider.get(
+                "installer.common.checkenv.excluded.force",
+                MsgArgs.of("name", Utils.getPluginString(signal.getPluginDescription()))
+        ));
 
-        this.terminal.warn(ChatColor.DARK_RED + "強制的な操作は予期しない問題を引き起こす可能性があります。");
+
+        this.terminal.warn(LangProvider.get("installer.operation.forceWarn"));
 
         signal.setContinueInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
 
     private void printKeyValue(String key, String value)
     {
-        this.terminal.writeLine(ChatColor.DARK_GREEN + key + ChatColor.WHITE + ": " + ChatColor.GREEN + value);
+        this.terminal.writeLine(LangProvider.get(
+                "general.chat.writer.keyValue",
+                MsgArgs.of("key", key)
+                        .add("value", value)
+        ));
     }
 
     private void printPluginInfo(PluginDescriptionFile descriptionFile)
     {
-        this.printKeyValue("バージョン", descriptionFile.getVersion());
-        this.printKeyValue("作者", String.join(", ", descriptionFile.getAuthors()));
-        this.printKeyValue("コマンド", String.join(", ", descriptionFile.getCommands().keySet()));
+        this.printKeyValue("command.info.base.version", descriptionFile.getVersion());
+        this.printKeyValue("command.info.base.authors", String.join(", ", descriptionFile.getAuthors()));
+        this.printKeyValue("command.info.base.commands", String.join(", ", descriptionFile.getCommands().keySet()));
     }
 
     @SignalHandler
     public void onPluginIsDuplicated(AlreadyInstalledPluginSignal signal)
     {
-        this.terminal.warn("%s は既にインストールされています。", signal.getInstalledPlugin().getName());
-        this.terminal.infoImplicit("== 既にインストールされているプラグイン ==");
+        this.terminal.warn(LangProvider.get(
+                "installer.common.checkenv.duplicate",
+                MsgArgs.of("name", signal.getInstalledPlugin().getName())
+        ));
+        this.terminal.infoImplicit(LangProvider.get("installer.common.checkenv.duplicate.old"));
         this.printPluginInfo(signal.getInstalledPlugin());
-        this.terminal.infoImplicit("== インストールしようとしているプラグイン ==");
+        this.terminal.infoImplicit(LangProvider.get("installer.common.checkenv.duplicate.new"));
         this.printPluginInfo(signal.getInstallingPlugin());
 
         signal.setReplacePlugin(SignalHandlingUtils.askContinue(this.terminal));
