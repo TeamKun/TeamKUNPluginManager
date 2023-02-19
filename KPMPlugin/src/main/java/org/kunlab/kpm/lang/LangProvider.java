@@ -48,26 +48,13 @@ public class LangProvider
     {
         String msg = INSTANCE.currentLanguageMessages.getProperty(key);
         if (msg == null)
-            throw new IllegalArgumentException("No such key \"" + key + "\" in language \"" + INSTANCE.currentLanguage + "\".");
+            return key;
         return args.format(msg);
     }
 
     public static String get(String key)
     {
         return get(key, MsgArgs.ofEmpty());
-    }
-
-    public static String getNullable(String key, MsgArgs args)
-    {
-        String msg = INSTANCE.currentLanguageMessages.getProperty(key);
-        if (msg == null)
-            return null;
-        return args.format(msg);
-    }
-
-    public static String getNullable(String key)
-    {
-        return getNullable(key, MsgArgs.ofEmpty());
     }
 
     public static TextComponent getComponent(String key, MsgArgs args)

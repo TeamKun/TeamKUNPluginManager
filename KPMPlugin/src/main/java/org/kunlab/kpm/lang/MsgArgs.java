@@ -5,7 +5,9 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,25 +87,33 @@ public class MsgArgs
         // @formatter:on
     }
 
+    private static String replaceGroup(String input, Matcher matcher, String replacement)
+    {
+        int start = matcher.start();
+        int end = matcher.end();
+        return input.substring(0, start) +
+                replacement +
+                input.substring(end);
+    }
+
     private String formatDeep(String msg)
     {
-        if (!msg.contains("%%"))
-            return msg;
-
+        Map<String, String> argMap = new HashMap<>();
         Matcher matcher = ARG_PATTERN.matcher(msg);
         while (matcher.find())
         {
             String key = matcher.group(1);
-            String value = LangProvider.getNullable(key);
+            String value = argMap.get(key);
             if (value == null)
-                value = this.args.stream().parallel()
-                        .filter(pair -> pair.getLeft().equals(key))
-                        .map(Pair::getRight)
-                        .findFirst().orElseGet(() -> "INVALID LANG VARIABLE KEY: " + key);
-            msg = msg.replace(matcher.group(), value);
+            {
+                value = LangProvider.get(key, this);
+                if (value == null)
+                    value = "%%" + key + "%%";
+                argMap.put(key, value);
+            }
+            msg = replaceGroup(msg, matcher, value);
         }
-
-        return this.formatDeep(msg);
+        return msg;
     }
 
     public MsgArgs add(String key, Object value)
