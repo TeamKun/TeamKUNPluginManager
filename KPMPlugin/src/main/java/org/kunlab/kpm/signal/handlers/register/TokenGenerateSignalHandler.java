@@ -119,7 +119,7 @@ public class TokenGenerateSignalHandler
     public void onUserVerifyDenied(UserVerifyDeniedSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.genToken.verify.fail",
+                "installer.tasks.genToken.verify.fail.denied",
                 MsgArgs.of("reason", "%%installer.tasks.genToken.verify.fail.denied")
         ));
 

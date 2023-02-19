@@ -50,7 +50,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.install.errors.notManuallyInstallable";
                 break;
             case INVALID_KPM_INFO_FILE:
-                key = "installer.install.errors.invalidKPMInfo";
+                key = "installer.install.errors.invalidKpmInfo";
                 break;
             default:
                 return false;

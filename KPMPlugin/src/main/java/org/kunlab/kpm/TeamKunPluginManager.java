@@ -139,7 +139,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             if (updater == null)
                 return;
 
-            Terminals.ofConsole().info(LangProvider.get("kpmUpgrade.unusedUpgraderFound"));
+            Terminals.ofConsole().info(LangProvider.get("plugin.unusedUpgraderFound"));
             this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
                     .autoConfirm(true)
                     .build());

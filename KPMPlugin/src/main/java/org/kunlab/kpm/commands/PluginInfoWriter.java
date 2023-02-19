@@ -64,11 +64,11 @@ public class PluginInfoWriter extends TerminalWriter
         switch (operator)
         {
             case SERVER_ADMIN:
-                return LangProvider.get("command.info.base.installOperator.admin");
+                return LangProvider.get("command.info.meta.installOperator.admin");
             case KPM_PLUGIN_UPDATER:
-                return LangProvider.get("command.info.meta.installedBy.kpmUpdater");
+                return LangProvider.get("command.info.meta.installOperator.kpmUpdater");
             case KPM_DEPENDENCY_RESOLVER:
-                return LangProvider.get("command.info.meta.installedBy.kpmDependencyResolver");
+                return LangProvider.get("command.info.meta.installOperator.kpmDependencyResolver");
             case OTHER:
                 return ChatColor.GRAY + LangProvider.get("general.other");
             default:
@@ -183,7 +183,7 @@ public class PluginInfoWriter extends TerminalWriter
 
         String resolveQuery = meta.getResolveQuery();
 
-        this.printStringOrEmpty("command.info.meta.installedBy", installOperatorToString(meta.getInstalledBy()));
+        this.printStringOrEmpty("command.info.meta.installOperator", installOperatorToString(meta.getInstalledBy()));
         this.printStringOrEmpty("command.info.meta.installedAt", timeStampToString(meta.getInstalledAt()));
         this.printBoolean("command.info.meta.dependency", meta.isDependency());
 

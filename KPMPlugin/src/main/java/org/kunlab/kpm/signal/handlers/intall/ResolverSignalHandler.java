@@ -75,7 +75,7 @@ public class ResolverSignalHandler
             {
                 SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
                 this.terminal.info(LangProvider.get(
-                        "installer.tasks.resolve.specified",
+                        "installer.tasks.resolve.multi.specified",
                         MsgArgs.of("name", specifiedResult.getFileName())
                                 .add("version", specifiedResult.getVersion())
                 ));
@@ -120,7 +120,7 @@ public class ResolverSignalHandler
             assert selected != null;
 
             this.terminal.info(LangProvider.get(
-                    "installer.tasks.resolve.specified",
+                    "installer.tasks.resolve.multi.specified",
                     MsgArgs.of("name", selected.getFileName())
                             .add("version", selected.getVersion())
             ));

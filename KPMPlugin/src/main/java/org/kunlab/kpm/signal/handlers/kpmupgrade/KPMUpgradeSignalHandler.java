@@ -30,7 +30,7 @@ public class KPMUpgradeSignalHandler
     @SignalHandler
     public void onLatestFetchPre(LatestFetchSignal.Pre signal)
     {
-        this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.fetching"));
+        this.terminal.info(LangProvider.get("kpmupgrade.fetch.fetching"));
     }
 
     @SignalHandler
@@ -45,40 +45,40 @@ public class KPMUpgradeSignalHandler
         }
 
         if (!signal.isUpgradable())
-            this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.alreadyLatest"));
+            this.terminal.info(LangProvider.get("kpmupgrade.fetch.alreadyLatest"));
         else if (signal.isFetchedOlderVersion())
         {
-            this.terminal.error(LangProvider.get("kpmupgrade.upgrade.fetch.serverOld"));
-            this.terminal.hint(LangProvider.get("kpmupgrade.upgrade.fetch.serverOld.hint"));
+            this.terminal.error(LangProvider.get("kpmupgrade.fetch.serverOld"));
+            this.terminal.hint(LangProvider.get("kpmupgrade.fetch.serverOld.hint"));
         }
         else
-            this.terminal.info(LangProvider.get("kpmupgrade.upgrade.fetch.upgradable"));
+            this.terminal.info(LangProvider.get("kpmupgrade.fetch.upgradable"));
     }
 
     @SignalHandler
     public void onLatestFetchError(LatestFetchSignal.Error signal)
     {
-        this.terminal.error(LangProvider.get("kpmupgrade.upgrade.fetch.fail"));
-        this.terminal.hint(LangProvider.get("kpmupgrade.upgrade.fetch.fail.suggest"));
+        this.terminal.error(LangProvider.get("kpmupgrade.fetch.fail"));
+        this.terminal.hint(LangProvider.get("kpmupgrade.fetch.fail.suggest"));
     }
 
     @SignalHandler
     public void onUpgraderDeployPre(UpgraderDeploySignal.Pre signal)
     {
-        this.terminal.info(LangProvider.get("kpmupgrade.upgrade.deploy.deploying"));
+        this.terminal.info(LangProvider.get("kpmupgrade.deploy.deploying"));
     }
 
     @SignalHandler
     public void onUpgraderDeployPost(UpgraderDeploySignal.Post signal)
     {
-        this.terminal.info("KPM アップグレーダを正常に配置しました。");
+        this.terminal.info(LangProvider.get("kpmupgrade.deploy.done"));
     }
 
     @SignalHandler
     public void onUpgraderDeployError(UpgraderDeploySignal.Error signal)
     {
         this.terminal.error(LangProvider.get(
-                "kpmupgrade.upgrade.deploy.fail",
+                "kpmupgrade.deploy.fail",
                 MsgArgs.of("cause", signal.getCause())
         ));
     }
@@ -101,7 +101,7 @@ public class KPMUpgradeSignalHandler
         signal.setContinueUpgrade(isContinue);
 
         if (!isContinue)
-            this.terminal.error(LangProvider.get("kpmupgrade.upgrade.ready.cancel"));
+            this.terminal.error(LangProvider.get("kpmupgrade.upgrade.cancel"));
     }
 
 }

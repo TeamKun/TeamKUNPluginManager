@@ -12,7 +12,7 @@ public class SignalHandlingUtils
         try
         {
             QuestionResult result = terminal.getInput()
-                    .showYNQuestion(LangProvider.get("general.continue"))
+                    .showYNQuestion(LangProvider.get("general.chat.continue"))
                     .waitAndGetResult();
             return result.test(QuestionAttribute.YES);
         }
