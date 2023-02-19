@@ -219,7 +219,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             this.handleDependsCollectError((DependsCollectErrorCause) errorCause);
         else if (errorCause instanceof PluginsInstallErrorCause)
             this.handleInstallError((PluginsInstallErrorCause) errorCause);
-
-        this.handleOtherError(result, INSTALLER_NAME);
+        else
+            this.handleOtherError(result, INSTALLER_NAME);
     }
 }

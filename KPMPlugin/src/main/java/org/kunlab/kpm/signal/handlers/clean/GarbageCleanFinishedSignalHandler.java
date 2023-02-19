@@ -47,7 +47,7 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof GarbageCleanErrorCause)
             this.handleGarbageCleanErrors((GarbageCleanErrorCause) result.getReason());
-
-        this.handleOtherError(result, INSTALLER_NAME);
+        else
+            this.handleOtherError(result, INSTALLER_NAME);
     }
 }

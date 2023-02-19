@@ -96,12 +96,8 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
 
         if (result.getReason() instanceof UpgradeErrorCause &&
                 this.handleGeneralErrors((UpgradeErrorCause) result.getReason()))
-        {
             Utils.printInstallStatistics(this.terminal, result);
-            return;
-        }
-
-        this.handleOtherError(result, INSTALLER_NAME);
-
+        else
+            this.handleOtherError(result, INSTALLER_NAME);
     }
 }

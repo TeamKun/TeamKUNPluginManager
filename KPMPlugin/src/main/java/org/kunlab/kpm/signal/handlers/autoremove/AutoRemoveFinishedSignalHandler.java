@@ -54,7 +54,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     {
         if (result.getReason() != null && result.getReason() instanceof AutoRemoveErrorCause)
             this.handleAutoRemoveErrors((AutoRemoveErrorCause) result.getReason());
-
-        this.handleOtherError(result, INSTALLER_NAME);
+        else
+            this.handleOtherError(result, INSTALLER_NAME);
     }
 }
