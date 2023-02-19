@@ -84,7 +84,7 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         {
             UninstallErrorCause cause = (UninstallErrorCause) result.getTaskStatus();
             if (cause == UninstallErrorCause.SOME_UNINSTALL_FAILED)
-                this.terminal.error(LangProvider.get("installer.tasks.uninstall.errors.somePlugin"));
+                this.terminal.error(LangProvider.get("tasks.uninstall.errors.somePlugin"));
         }
 
         this.handleOtherError(result, INSTALLER_NAME);

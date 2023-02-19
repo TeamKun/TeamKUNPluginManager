@@ -36,7 +36,7 @@ public class DownloadingSignalHandler
         if (this.terminal.isPlayer())
         {
             this.downloadProgressBar = this.terminal.createProgressbar(
-                    LangProvider.get("installer.tasks.download")
+                    LangProvider.get("tasks.download")
             );
             this.downloadProgressBar.setProgressMax(100);
         }
@@ -48,7 +48,7 @@ public class DownloadingSignalHandler
     {
         this.downloadTotalSize += size;
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.download.get",
+                "tasks.download.get",
                 MsgArgs.of("url", url)
                         .add("size", Utils.roundSizeUnit(size))
         ));
@@ -62,7 +62,7 @@ public class DownloadingSignalHandler
             elapsedSec = 1;
         long bytesPerSec = this.downloadTotalSize / elapsedSec;
         this.terminal.success(LangProvider.get(
-                "installer.tasks.download.success",
+                "tasks.download.success",
                 MsgArgs.of("totalSize", Utils.roundSizeUnit(this.downloadTotalSize))
                         .add("time", elapsedSec)
                         .add("speed", Utils.roundSizeUnit(bytesPerSec))
@@ -71,7 +71,7 @@ public class DownloadingSignalHandler
         this.currentDownload = null;
 
         if (this.downloadProgressBar != null)
-            this.terminal.removeProgressbar(LangProvider.get("installer.tasks.download"));
+            this.terminal.removeProgressbar(LangProvider.get("tasks.download"));
     }
 
     @SignalHandler
@@ -94,7 +94,7 @@ public class DownloadingSignalHandler
     public void onDownloadFailed(DownloadErrorSignal signal)
     {
         this.terminal.errorImplicit(LangProvider.get(
-                "installer.tasks.download.failed",
+                "tasks.download.failed",
                 MsgArgs.of("url", signal.getUrl())
                         .add("cause", signal.getCause())
                         .add("value", signal.getValue())

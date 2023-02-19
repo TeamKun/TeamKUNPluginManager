@@ -31,7 +31,7 @@ public class InstallerSignalHandler
     {
         String name = signal.getPluginDescription().getName();
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.install.preparing",
+                "tasks.install.preparing",
                 MsgArgs.of("name", name)
         ));
     }
@@ -42,7 +42,7 @@ public class InstallerSignalHandler
         String src = "…/" + signal.getSource().getFileName();
         String dest = "…/" + signal.getTarget().getFileName();
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.install.relocating",
+                "tasks.install.relocating",
                 MsgArgs.of("src", src).add("dest", dest)
         ));
     }
@@ -50,14 +50,14 @@ public class InstallerSignalHandler
     @SignalHandler
     public void onPluginLoadPre(PluginLoadSignal.Pre signal)
     {
-        this.terminal.infoImplicit(LangProvider.get("installer.tasks.install.loading", MsgArgs.of("name", signal.getPluginDescription().getName())));
+        this.terminal.infoImplicit(LangProvider.get("tasks.install.loading", MsgArgs.of("name", signal.getPluginDescription().getName())));
     }
 
     @SignalHandler
     public void onPluginLoading(PluginEnablingSignal.Pre signal)
     {
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.install.enabling",
+                "tasks.install.enabling",
                 MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
         ));
     }
@@ -66,11 +66,11 @@ public class InstallerSignalHandler
     public void onInvalidKPMInfoFile(InvalidKPMInfoFileSignal signal)
     {
         this.terminal.warn(LangProvider.get(
-                "installer.tasks.install.invalidKPMInfo",
+                "tasks.install.invalidKPMInfo",
                 MsgArgs.of("name", signal.getDescriptionFile().getName())
         ));
         this.terminal.hint(
-                LangProvider.get("installer.tasks.install.invalidKPMInfo.force")
+                LangProvider.get("tasks.install.invalidKPMInfo.force")
         );
 
         signal.setIgnore(SignalHandlingUtils.askContinue(this.terminal));

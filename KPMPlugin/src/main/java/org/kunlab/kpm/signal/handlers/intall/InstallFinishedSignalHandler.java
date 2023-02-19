@@ -74,10 +74,10 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("プラグイン解決がキャンセルされました。");
                 break;*/
             case GOT_ERROR_RESULT:
-                key = "installer.tasks.resolve.errors.gotErrorResult";
+                key = "tasks.resolve.errors.gotErrorResult";
                 break;
             case ILLEGAL_INTERNAL_STATE:
-                key = "installer.tasks.resolve.errors.illegalInternalState";
+                key = "tasks.resolve.errors.illegalInternalState";
                 break;
             default:
                 return;
@@ -93,10 +93,10 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case ILLEGAL_HTTP_RESPONSE:
-                key = "installer.tasks.download.errors.illegalHttpResponse";
+                key = "tasks.download.errors.illegalHttpResponse";
                 break;
             case NO_BODY_IN_RESPONSE:
-                key = "installer.tasks.download.errors.noBodyInResponse";
+                key = "tasks.download.errors.noBodyInResponse";
                 break;
             case IO_EXCEPTION:
                 key = "general.errors.ioException.when";
@@ -113,7 +113,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (named)
             this.terminal.error(LangProvider.get(
                     key,
-                    MsgArgs.of("name", "%%installer.tasks.download%%")
+                    MsgArgs.of("name", "%%tasks.download%%")
             ));
         else
             this.terminal.error(LangProvider.get(key));
@@ -126,10 +126,10 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case NOT_A_PLUGIN:
-                key = "installer.tasks.description.errors.notPlugin";
+                key = "tasks.description.errors.notPlugin";
                 break;
             case INVALID_DESCRIPTION:
-                key = "installer.tasks.description.errors.invalidDescription";
+                key = "tasks.description.errors.invalidDescription";
                 break;
             case IO_EXCEPTION:
                 key = "general.errors.ioException.when";
@@ -142,7 +142,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (named)
             this.terminal.error(LangProvider.get(
                     key,
-                    MsgArgs.of("name", "%%installer.tasks.description%%")
+                    MsgArgs.of("name", "%%tasks.description%%")
             ));
         else
             this.terminal.error(LangProvider.get(key));
@@ -152,7 +152,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     private void handleDependsCollectError(DependsCollectErrorCause cause)
     {
         if (cause == DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED)
-            this.terminal.error(LangProvider.get("installer.tasks.deps.collect.errors.someCollectFailed"));
+            this.terminal.error(LangProvider.get("tasks.deps.collect.errors.someCollectFailed"));
     }
 
     private void handleInstallError(PluginsInstallErrorCause cause)
@@ -162,22 +162,22 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case RELOCATE_FAILED:
-                key = "installer.tasks.install.errors.relocateFailed";
+                key = "tasks.install.errors.relocateFailed";
                 break;
             case INVALID_PLUGIN:
-                key = "installer.tasks.install.errors.invalidPlugin";
+                key = "tasks.install.errors.invalidPlugin";
                 break;
             case INVALID_PLUGIN_DESCRIPTION:
-                key = "installer.tasks.install.errors.invalidDescription";
+                key = "tasks.install.errors.invalidDescription";
                 break;
             case INCOMPATIBLE_WITH_BUKKIT_VERSION:
-                key = "installer.tasks.install.errors.incompatible.bukkit";
+                key = "tasks.install.errors.incompatible.bukkit";
                 this.terminal.error(LangProvider.get(key));
-                key = "installer.tasks.install.errors.incompatible.bukkit.suggest";
+                key = "tasks.install.errors.incompatible.bukkit.suggest";
                 this.terminal.hint(LangProvider.get(key));
                 return;
             case INCOMPATIBLE_WITH_KPM_VERSION:
-                key = "installer.tasks.install.errors.incompatible.kpm";
+                key = "tasks.install.errors.incompatible.kpm";
                 break;
             case IO_EXCEPTION_OCCURRED:
                 key = "general.errors.ioException.when";
@@ -194,7 +194,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (named)
             this.terminal.error(LangProvider.get(
                     key,
-                    MsgArgs.of("name", "%%installer.tasks.install%%")
+                    MsgArgs.of("name", "%%tasks.install%%")
             ));
         else
             this.terminal.error(LangProvider.get(key));

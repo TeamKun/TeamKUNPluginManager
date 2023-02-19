@@ -80,7 +80,7 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
         if (named)
             this.terminal.error(LangProvider.get(
                     key,
-                    MsgArgs.of("name", "%%installer.tasks.description%%")
+                    MsgArgs.of("name", "%%tasks.description%%")
             ));
         else
             this.terminal.error(LangProvider.get(key));

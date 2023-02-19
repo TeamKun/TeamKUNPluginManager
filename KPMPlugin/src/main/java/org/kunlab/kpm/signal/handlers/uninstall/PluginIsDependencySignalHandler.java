@@ -36,14 +36,14 @@ public class PluginIsDependencySignalHandler
     public void onPluginIsDependency(PluginIsDependencySignal signal)
     {
         this.terminal.warn(LangProvider.get(
-                "installer.tasks.uninstall.dependency.notify",
+                "tasks.uninstall.dependency.notify",
                 MsgArgs.of("plugin", Utils.getPluginString(signal.getPlugin()))
         ));
         this.terminal.writeLine("  " + signal.getDependedBy().stream()
                 .map(PluginIsDependencySignalHandler::dependencyNameMapper)
                 .sorted()
                 .collect(Collectors.joining(" ")));
-        this.terminal.warn(LangProvider.get("installer.tasks.uninstall.dependency.warn"));
+        this.terminal.warn(LangProvider.get("tasks.uninstall.dependency.warn"));
 
         PluginIsDependencySignal.Operation operation = this.pollUninstallDeps();
         signal.setOperation(operation);
@@ -61,15 +61,15 @@ public class PluginIsDependencySignalHandler
         optionSelection.put("c", PluginIsDependencySignal.Operation.CANCEL);
 
         HashMap<String, String> options = new HashMap<>();
-        options.put("u", LangProvider.get("installer.tasks.uninstall.dependency.choice.uninstall"));
-        options.put("d", LangProvider.get("installer.tasks.uninstall.dependency.choice.disable"));
-        options.put("i", LangProvider.get("installer.tasks.uninstall.dependency.choice.ignore"));
-        options.put("c", LangProvider.get("installer.tasks.uninstall.dependency.choice.cancel"));
+        options.put("u", LangProvider.get("tasks.uninstall.dependency.choice.uninstall"));
+        options.put("d", LangProvider.get("tasks.uninstall.dependency.choice.disable"));
+        options.put("i", LangProvider.get("tasks.uninstall.dependency.choice.ignore"));
+        options.put("c", LangProvider.get("tasks.uninstall.dependency.choice.cancel"));
 
         try
         {
             QuestionResult result = this.terminal.getInput().showChoiceQuestion(
-                            LangProvider.get("installer.tasks.uninstall.dependency.choice"),
+                            LangProvider.get("tasks.uninstall.dependency.choice"),
                             options
                     )
                     .waitAndGetResult();

@@ -26,7 +26,7 @@ public class TokenGenerateSignalHandler
         if (terminal.isPlayer())
         {
             this.progressbar = terminal.createProgressbar("codeExpire");
-            this.progressbar.setPrefix(LangProvider.get("installer.tasks.genToken.codeAlive"));
+            this.progressbar.setPrefix(LangProvider.get("tasks.genToken.codeAlive"));
         }
         else
             this.progressbar = null;
@@ -35,15 +35,15 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onTokenGenerateStarting(TokenGenerateStartingSignal signal)
     {
-        this.terminal.info(LangProvider.get("installer.tasks.genToken.start.1"));
-        this.terminal.info(LangProvider.get("installer.tasks.genToken.start.2"));
+        this.terminal.info(LangProvider.get("tasks.genToken.start.1"));
+        this.terminal.info(LangProvider.get("tasks.genToken.start.2"));
         signal.setContinueGenerate(SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler
     public void onVerificationCodeRequesting(VerificationCodeRequestingSignal signal)
     {
-        this.terminal.info(LangProvider.get("installer.tasks.genToken.request.requesting"));
+        this.terminal.info(LangProvider.get("tasks.genToken.request.requesting"));
     }
 
     @SignalHandler
@@ -52,7 +52,7 @@ public class TokenGenerateSignalHandler
         this.terminal.removeProgressbar("codeExpire");
 
         this.terminal.error(LangProvider.get(
-                "installer.tasks.genToken.request.fail",
+                "tasks.genToken.request.fail",
                 MsgArgs.of("httpStatus", signal.getHttpStatusCode())
                         .add("message", signal.getErrorMessage())
         ));
@@ -67,15 +67,15 @@ public class TokenGenerateSignalHandler
         int expiresInMin = (int) (expiresInSec / 60);
 
         this.terminal.successImplicit(LangProvider.get(
-                "installer.tasks.genToken.verify.verifyLink",
+                "tasks.genToken.verify.verifyLink",
                 MsgArgs.of("url", verificationUrl)
         ));
         this.terminal.successImplicit(LangProvider.get(
-                "installer.tasks.genToken.verify.code",
+                "tasks.genToken.verify.code",
                 MsgArgs.of("code", userCode)
         ));
         this.terminal.info(LangProvider.get(
-                "installer.tasks.genToken.verify.expiresIn",
+                "tasks.genToken.verify.expiresIn",
                 MsgArgs.of("minutes", expiresInMin)
         ));
 
@@ -83,7 +83,7 @@ public class TokenGenerateSignalHandler
 
         if (this.terminal.isPlayer())
         {
-            this.terminal.showNotification(userCode, LangProvider.get("installer.tasks.genToken.verify.title"),
+            this.terminal.showNotification(userCode, LangProvider.get("tasks.genToken.verify.title"),
                     expiresInSecInt * 1000
             );
 
@@ -97,10 +97,10 @@ public class TokenGenerateSignalHandler
     public void onVerificationCodeExpired(VerificationCodeExpiredSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.genToken.verify.fail.expire",
+                "tasks.genToken.verify.fail.expire",
                 MsgArgs.of("code", signal.getUserCode())
         ));
-        this.terminal.hint(LangProvider.get("installer.tasks.genToken.verify.fail.expire.hint"));
+        this.terminal.hint(LangProvider.get("tasks.genToken.verify.fail.expire.hint"));
 
         if (!this.terminal.isPlayer())
             return;
@@ -119,8 +119,8 @@ public class TokenGenerateSignalHandler
     public void onUserVerifyDenied(UserVerifyDeniedSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.genToken.verify.fail.denied",
-                MsgArgs.of("reason", "%%installer.tasks.genToken.verify.fail.denied")
+                "tasks.genToken.verify.fail.denied",
+                MsgArgs.of("reason", "%%tasks.genToken.verify.fail.denied")
         ));
 
         if (!this.terminal.isPlayer())
@@ -133,7 +133,7 @@ public class TokenGenerateSignalHandler
     @SignalHandler
     public void onUserVerifySucceeded(UserVerificationSuccessSignal signal)
     {
-        this.terminal.success(LangProvider.get("installer.tasks.genToken.verify.success"));
+        this.terminal.success(LangProvider.get("tasks.genToken.verify.success"));
 
         if (!this.terminal.isPlayer())
             return;

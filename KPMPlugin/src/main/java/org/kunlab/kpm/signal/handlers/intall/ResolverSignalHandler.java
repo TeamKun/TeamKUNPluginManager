@@ -37,7 +37,7 @@ public class ResolverSignalHandler
     public void onPluginResolving(PluginResolvingSignal signal)
     {
         this.terminal.info(LangProvider.get(
-                "installer.tasks.resolve.resolving",
+                "tasks.resolve.resolving",
                 MsgArgs.of("query", signal.getQuery())
         ));
     }
@@ -49,15 +49,15 @@ public class ResolverSignalHandler
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
         this.terminal.error(LangProvider.get(
-                "installer.tasks.resolve.failed",
+                "tasks.resolve.failed",
                 MsgArgs.of("query", signal.getQuery())
                         .add("cause", errorCause)
                         .add("message", message)
         ));
         if (errorCause == ErrorCause.INVALID_CREDENTIAL)
         {
-            this.terminal.hint(LangProvider.get("installer.tasks.resolve.failed.wrongToken"));
-            this.terminal.hint(LangProvider.get("installer.tasks.resolve.failed.wrongToken.suggest"));
+            this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken"));
+            this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken.suggest"));
         }
     }
 
@@ -65,7 +65,7 @@ public class ResolverSignalHandler
     public void onPluginsResolve(MultiplePluginResolvedSignal signal)
     {
         this.terminal.info(LangProvider.get(
-                "installer.tasks.resolve.multi",
+                "tasks.resolve.multi",
                 MsgArgs.of("query", signal.getQuery())
         ));
 
@@ -75,7 +75,7 @@ public class ResolverSignalHandler
             {
                 SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
                 this.terminal.info(LangProvider.get(
-                        "installer.tasks.resolve.multi.specified",
+                        "tasks.resolve.multi.specified",
                         MsgArgs.of("name", specifiedResult.getFileName())
                                 .add("version", specifiedResult.getVersion())
                 ));
@@ -97,12 +97,12 @@ public class ResolverSignalHandler
                         )
                 )
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
-        keywordToTitle.put("a", LangProvider.get("installer.tasks.resolve.multi.choices.auto"));
+        keywordToTitle.put("a", LangProvider.get("tasks.resolve.multi.choices.auto"));
 
         try
         {
             QuestionResult result = this.terminal.getInput().showQuestion(
-                    LangProvider.get("installer.tasks.resolve.multi.choice"),
+                    LangProvider.get("tasks.resolve.multi.choice"),
                     new AttributeChoice(keywordToTitle),
                     QuestionAttribute.CANCELLABLE
             ).waitAndGetResult();
@@ -120,7 +120,7 @@ public class ResolverSignalHandler
             assert selected != null;
 
             this.terminal.info(LangProvider.get(
-                    "installer.tasks.resolve.multi.specified",
+                    "tasks.resolve.multi.specified",
                     MsgArgs.of("name", selected.getFileName())
                             .add("version", selected.getVersion())
             ));

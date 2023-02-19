@@ -28,10 +28,10 @@ public class UninstallerSignalHandler
         switch (signal.getCause())
         {
             case INTERNAL_CLASS_UNLOAD_FAILED:
-                key = "installer.tasks.uninstall.errors.classUnloadFail";
+                key = "tasks.uninstall.errors.classUnloadFail";
                 break;
             case INTERNAL_PLUGIN_DISABLE_FAILED:
-                key = "installer.tasks.uninstall.errors.disableFail";
+                key = "tasks.uninstall.errors.disableFail";
                 break;
             default:
                 key = "general.errors.unknown";
@@ -44,7 +44,7 @@ public class UninstallerSignalHandler
     public void onPluginUninstall(PluginUninstallingSignal signal)
     {
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.uninstall.uninstalling",
+                "tasks.uninstall.uninstalling",
                 MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
         ));
     }
@@ -55,7 +55,7 @@ public class UninstallerSignalHandler
         if (!this.oneRecipeRemoved)
         {
             this.terminal.infoImplicit(LangProvider.get(
-                    "installer.tasks.uninstall.recipesRemoving",
+                    "tasks.uninstall.recipesRemoving",
                     MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
             ));
             this.oneRecipeRemoved = true;
@@ -66,7 +66,7 @@ public class UninstallerSignalHandler
     public void onDisabling(PluginDisablingSignal.Pre signal)
     {
         this.terminal.infoImplicit(LangProvider.get(
-                "installer.tasks.uninstall.disabling",
+                "tasks.uninstall.disabling",
                 MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
         ));
     }
@@ -75,7 +75,7 @@ public class UninstallerSignalHandler
     public void onUnloading(PluginUnloadingSignal.Pre signal)
     {
         this.terminal.infoImplicit(LangProvider.get(
-                        "installer.tasks.uninstall.unloading",
+                        "tasks.uninstall.unloading",
                         MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
                 )
         );
@@ -85,7 +85,7 @@ public class UninstallerSignalHandler
     public void onError(PluginUninstallErrorSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.uninstall.error",
+                "tasks.uninstall.error",
                 MsgArgs.of("name", Utils.getPluginString(signal.getDescription()))
                         .add("error", getErrorCauseMessage(signal))
         ));

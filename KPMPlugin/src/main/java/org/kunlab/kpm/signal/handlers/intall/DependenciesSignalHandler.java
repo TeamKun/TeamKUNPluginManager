@@ -32,7 +32,7 @@ public class DependenciesSignalHandler
     public void onDependencyResolveFailed(DependencyResolveFailedSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.deps.resolve.failed",
+                "tasks.deps.resolve.failed",
                 MsgArgs.of("dependency", signal.getFailedDependency())
         ));
     }
@@ -42,7 +42,7 @@ public class DependenciesSignalHandler
     {
         signal.getCollectFailedDependencies().forEach(dependency ->
                 this.terminal.error(LangProvider.get(
-                        "installer.tasks.deps.collect.failed",
+                        "tasks.deps.collect.failed",
                         MsgArgs.of("dependency", dependency)
                 )))
         ;
@@ -52,7 +52,7 @@ public class DependenciesSignalHandler
     public void onDependencyLoadDescriptionFailed(DependencyLoadDescriptionFailedSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.deps.load.failed",
+                "tasks.deps.load.failed",
                 MsgArgs.of("dependency", signal.getFailedDependency())
         ));
     }
@@ -61,15 +61,15 @@ public class DependenciesSignalHandler
     public void onDependencyNameMismatch(DependencyNameMismatchSignal signal)
     {
         this.terminal.error(LangProvider.get(
-                "installer.tasks.deps.mismatch",
+                "tasks.deps.mismatch",
                 MsgArgs.of("dependency", signal.getFailedDependency())
         ));
-        this.terminal.info(LangProvider.get("installer.tasks.deps.mismatch.suggest"));
+        this.terminal.info(LangProvider.get("tasks.deps.mismatch.suggest"));
     }
 
     @SignalHandler
     public void onDependencyTreeBuilt(DependsLoadOrderComputingSignal.Pre signal)
     {
-        this.terminal.info(LangProvider.get("installer.tasks.deps.buildingTree"));
+        this.terminal.info(LangProvider.get("tasks.deps.buildingTree"));
     }
 }
