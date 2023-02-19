@@ -15,7 +15,7 @@ import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
 {
 
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.register");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.register%%");
 
     private final Terminal terminal;
 

@@ -19,7 +19,7 @@ import org.kunlab.kpm.task.tasks.resolve.PluginResolveErrorCause;
  */
 public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.install");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.install%%");
 
     public InstallFinishedSignalHandler(Terminal terminal)
     {

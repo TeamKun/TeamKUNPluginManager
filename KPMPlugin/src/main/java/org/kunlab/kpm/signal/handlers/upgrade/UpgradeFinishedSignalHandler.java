@@ -12,7 +12,7 @@ import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 
 public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
 {
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.upgrade");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.upgrade%%");
 
     public UpgradeFinishedSignalHandler(Terminal terminal)
     {

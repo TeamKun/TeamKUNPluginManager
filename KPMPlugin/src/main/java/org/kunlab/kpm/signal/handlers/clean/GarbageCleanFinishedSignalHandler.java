@@ -10,7 +10,7 @@ import org.kunlab.kpm.task.tasks.garbage.clean.GarbageCleanErrorCause;
 
 public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
 {
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.clean");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.clean%%");
 
     public GarbageCleanFinishedSignalHandler(Terminal terminal)
     {

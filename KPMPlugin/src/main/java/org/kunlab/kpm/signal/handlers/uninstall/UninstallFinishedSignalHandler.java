@@ -15,7 +15,7 @@ import org.kunlab.kpm.task.tasks.uninstall.UninstallErrorCause;
  */
 public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.uninstall");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.uninstall%%");
 
     public UninstallFinishedSignalHandler(Terminal terminal)
     {

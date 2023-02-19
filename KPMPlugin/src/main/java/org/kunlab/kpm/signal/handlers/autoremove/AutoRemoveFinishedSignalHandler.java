@@ -10,7 +10,7 @@ import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 
 public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
 {
-    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.autoremove");
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "%%installer.autoremove%%");
 
     public AutoRemoveFinishedSignalHandler(Terminal terminal)
     {
