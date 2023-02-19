@@ -100,7 +100,10 @@ public class TokenGenerateSignalHandler
                 "tasks.gen_token.verify.fail.expire",
                 MsgArgs.of("code", signal.getUserCode())
         ));
-        this.terminal.hint(LangProvider.get("tasks.gen_token.verify.fail.expire.hint"));
+        this.terminal.hint(LangProvider.get(
+                "tasks.gen_token.verify.fail.expire.hint",
+                MsgArgs.of("command", "/kpm register")
+        ));
 
         if (!this.terminal.isPlayer())
             return;

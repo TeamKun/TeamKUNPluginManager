@@ -3,6 +3,7 @@ package org.kunlab.kpm;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 
 import java.util.List;
 
@@ -31,7 +32,10 @@ public class Notices
         {
             terminal.info(LangProvider.get("notice.plugin.removable"));
             terminal.info("  " + String.join(" ", autoRemovable));
-            terminal.hint(LangProvider.get("notice.plugin.removable.suggest"));
+            terminal.hint(LangProvider.get(
+                    "notice.plugin.removable.suggest",
+                    MsgArgs.of("command", "/kpm autoremove")
+            ));
         }
 
         return isAutoRemovable;
@@ -44,7 +48,10 @@ public class Notices
         if (isTokenUnset)
         {
             terminal.warn(LangProvider.get("notice.token.unset"));
-            terminal.hint(LangProvider.get("notice.token.unset.suggest"));
+            terminal.hint(LangProvider.get(
+                    "notice.token.unset.suggest",
+                    MsgArgs.of("command", "/kpm register")
+            ));
         }
 
         return isTokenUnset;
@@ -65,7 +72,10 @@ public class Notices
         if (!isTokenAlive)
         {
             terminal.warn(LangProvider.get("notice.token.dead"));
-            terminal.hint(LangProvider.get("notice.token.dead.suggest"));
+            terminal.hint(LangProvider.get(
+                    "notice.token.dead.suggest",
+                    MsgArgs.of("command", "/kpm register")
+            ));
         }
 
         return !isTokenAlive;

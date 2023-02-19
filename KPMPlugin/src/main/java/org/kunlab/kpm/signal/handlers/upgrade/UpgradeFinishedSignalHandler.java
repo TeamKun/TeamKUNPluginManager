@@ -71,7 +71,10 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.upgrade.errors.self_upgrade";
                 this.terminal.error(LangProvider.get(key));
                 key = "installer.upgrade.errors.self_upgrade.suggest";
-                this.terminal.hint(LangProvider.get(key));
+                this.terminal.hint(LangProvider.get(
+                        key,
+                        MsgArgs.of("command", "/kpm upgrade-kpm")
+                ));
                 return true;
             default:
                 return false;

@@ -69,7 +69,10 @@ public class ResolverSignalHandler
             // noinspection FallThroughInSwitchStatement
             case INVALID_CREDENTIAL:
                 this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrong_token"));
-                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrong_token.suggest"));
+                this.terminal.hint(LangProvider.get(
+                        "tasks.resolve.failed.wrong_token.suggest",
+                        MsgArgs.of("command", "/kpm register")
+                ));
                 // no break
             default:
                 this.terminal.error(LangProvider.get(
