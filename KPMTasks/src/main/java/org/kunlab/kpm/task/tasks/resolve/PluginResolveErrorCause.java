@@ -8,6 +8,10 @@ import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
 public enum PluginResolveErrorCause
 {
     /**
+     * 無効なクエリが指定されたことを示します。
+     */
+    INVALID_QUERY,
+    /**
      * 予期しない内部エラーが発生したことを示します。
      */
     ILLEGAL_INTERNAL_STATE,

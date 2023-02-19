@@ -56,7 +56,17 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
         this.taskState = PluginResolveState.PRE_RESOLVING;
         this.postSignal(new PluginResolvingSignal(this.resolver, query));
 
-        ResolveResult queryResolveResult = this.resolver.resolve(query);
+        ResolveResult queryResolveResult;
+        try
+        {
+            queryResolveResult = this.resolver.resolve(query);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return new PluginResolveResult(false, this.taskState,
+                    PluginResolveErrorCause.INVALID_QUERY, null
+            );
+        }
 
         this.taskState = PluginResolveState.PRE_RESOLVE_FINISHED;
 
