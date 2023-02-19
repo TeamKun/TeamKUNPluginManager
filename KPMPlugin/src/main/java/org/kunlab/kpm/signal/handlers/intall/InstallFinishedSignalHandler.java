@@ -47,10 +47,10 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.install.errors.duplicate";
                 break;
             case PLUGIN_NOT_MANUALLY_INSTALLABLE:
-                key = "installer.install.errors.notManuallyInstallable";
+                key = "installer.install.errors.not_manually_installable";
                 break;
             case INVALID_KPM_INFO_FILE:
-                key = "installer.install.errors.invalidKpmInfo";
+                key = "installer.install.errors.invalid_kpm_info";
                 break;
             default:
                 return false;
@@ -58,7 +58,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
 
         this.terminal.error(LangProvider.get(
                 key,
-                MsgArgs.of("name", "%%general.plugin.specifiedPlugin%%")
+                MsgArgs.of("name", "%%general.plugin.specified_plugin%%")
         ));
 
         return true;
@@ -74,13 +74,13 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.error("プラグイン解決がキャンセルされました。");
                 break;*/
             case INVALID_QUERY:
-                key = "tasks.resolve.errors.invalidQuery";
+                key = "tasks.resolve.errors.invalid_query";
                 break;
             case GOT_ERROR_RESULT:
-                key = "tasks.resolve.errors.gotErrorResult";
+                key = "tasks.resolve.errors.got_error_result";
                 break;
             case ILLEGAL_INTERNAL_STATE:
-                key = "tasks.resolve.errors.illegalInternalState";
+                key = "tasks.resolve.errors.illegal_internal_state";
                 break;
             default:
                 return;
@@ -96,13 +96,13 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case ILLEGAL_HTTP_RESPONSE:
-                key = "tasks.download.errors.illegalHttpResponse";
+                key = "tasks.download.errors.illegal_http_response";
                 break;
             case NO_BODY_IN_RESPONSE:
-                key = "tasks.download.errors.noBodyInResponse";
+                key = "tasks.download.errors.no_body_in_response";
                 break;
             case IO_EXCEPTION:
-                key = "tasks.download.errors.ioException";
+                key = "tasks.download.errors.io_exception";
                 named = true;
                 break;
             case UNKNOWN_ERROR:
@@ -129,13 +129,13 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case NOT_A_PLUGIN:
-                key = "tasks.description.errors.notPlugin";
+                key = "tasks.description.errors.not_plugin";
                 break;
             case INVALID_DESCRIPTION:
-                key = "tasks.description.errors.invalidDescription";
+                key = "tasks.description.errors.invalid_description";
                 break;
             case IO_EXCEPTION:
-                key = "tasks.description.errors.ioException";
+                key = "tasks.description.errors.io_exception";
                 break;
             default:
                 return;
@@ -155,7 +155,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     private void handleDependsCollectError(DependsCollectErrorCause cause)
     {
         if (cause == DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED)
-            this.terminal.error(LangProvider.get("tasks.deps.collect.errors.someCollectFailed"));
+            this.terminal.error(LangProvider.get("tasks.deps.collect.errors.some_collect_failed"));
     }
 
     private void handleInstallError(PluginsInstallErrorCause cause)
@@ -165,13 +165,13 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case RELOCATE_FAILED:
-                key = "tasks.install.errors.relocateFailed";
+                key = "tasks.install.errors.relocate_failed";
                 break;
             case INVALID_PLUGIN:
-                key = "tasks.install.errors.invalidPlugin";
+                key = "tasks.install.errors.invalid_plugin";
                 break;
             case INVALID_PLUGIN_DESCRIPTION:
-                key = "tasks.install.errors.invalidDescription";
+                key = "tasks.install.errors.invalid_description";
                 break;
             case INCOMPATIBLE_WITH_BUKKIT_VERSION:
                 key = "tasks.install.errors.incompatible.bukkit";
@@ -183,7 +183,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "tasks.install.errors.incompatible.kpm";
                 break;
             case IO_EXCEPTION_OCCURRED:
-                key = "tasks.install.errors.ioException";
+                key = "tasks.install.errors.io_exception";
                 named = true;
                 break;
             case EXCEPTION_OCCURRED:

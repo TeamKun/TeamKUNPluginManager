@@ -42,7 +42,7 @@ public class UpgradeSignalHandler
             return;  // implemented in #onResolveFailed(ResolveFailedSignal)
 
         this.terminal.warn(LangProvider.get(
-                "installer.upgrade.notFound",
+                "installer.upgrade.not_found",
                 MsgArgs.of("name", signal.getSpecifiedPluginName())
         ));
     }
@@ -67,7 +67,7 @@ public class UpgradeSignalHandler
         {
             case PLUGIN_IS_OLDER_OR_EQUAL:
                 message = LangProvider.get(
-                        "installer.upgrade.errors.olderOrEqual",
+                        "installer.upgrade.errors.older_or_equal",
                         MsgArgs.of("name", pluginName)
                                 .add("version", signal.getPluginVersion())
                 );
@@ -80,7 +80,7 @@ public class UpgradeSignalHandler
                 break;
             case PLUGIN_VERSION_NOT_DEFINED:
                 message = LangProvider.get(
-                        "installer.upgrade.errors.versionNotDef",
+                        "installer.upgrade.errors.version_not_def",
                         MsgArgs.of("name", pluginName)
                 );
                 break;
@@ -101,14 +101,14 @@ public class UpgradeSignalHandler
     {
         this.logErrorMessage(signal, false);
 
-        this.terminal.info(LangProvider.get("installer.upgrade.canForce"));
+        this.terminal.info(LangProvider.get("installer.upgrade.can_force"));
         signal.setExcludePlugin(!SignalHandlingUtils.askContinue(this.terminal));
     }
 
     @SignalHandler
     public void onMultiResolved(MultiplePluginResolvedSignal signal)
     {
-        this.terminal.info(LangProvider.get("installer.upgrade.resolve.autoPick"));
+        this.terminal.info(LangProvider.get("installer.upgrade.resolve.auto_pick"));
         ResolveResult result = signal.getResults().getResolver().autoPickOnePlugin(signal.getResults());
 
         if (result instanceof AbstractSuccessResult)
@@ -149,7 +149,7 @@ public class UpgradeSignalHandler
     {
         InstallFailedInstallResult<?, ?, ?> result = (InstallFailedInstallResult<?, ?, ?>) signal.getFailedResult();
         this.terminal.warn(LangProvider.get(
-                "installer.upgrade.failUnknown",
+                "installer.upgrade.fail_unknown",
                 MsgArgs.of("status", result.getTaskStatus())
                         .add("error", result.getReason())
         ));

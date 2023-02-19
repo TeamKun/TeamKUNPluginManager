@@ -28,10 +28,10 @@ public class UninstallerSignalHandler
         switch (signal.getCause())
         {
             case INTERNAL_CLASS_UNLOAD_FAILED:
-                key = "tasks.uninstall.errors.classUnloadFail";
+                key = "tasks.uninstall.errors.class_unload_fail";
                 break;
             case INTERNAL_PLUGIN_DISABLE_FAILED:
-                key = "tasks.uninstall.errors.disableFail";
+                key = "tasks.uninstall.errors.disable_fail";
                 break;
             default:
                 key = "tasks.uninstall.errors.unknown";
@@ -55,7 +55,7 @@ public class UninstallerSignalHandler
         if (!this.oneRecipeRemoved)
         {
             this.terminal.infoImplicit(LangProvider.get(
-                    "tasks.uninstall.recipesRemoving",
+                    "tasks.uninstall.recipes_removing",
                     MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
             ));
             this.oneRecipeRemoved = true;

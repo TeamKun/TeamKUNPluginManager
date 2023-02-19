@@ -39,7 +39,7 @@ public class CommandUpgradeKPM extends CommandBase
             Plugin kpmUpgrader;
             if ((kpmUpgrader = Bukkit.getPluginManager().getPlugin("KPMUpgrader")) == null)
             {
-                terminal.success(LangProvider.get("command.upgradeKPM.noKPMUpgrader"));
+                terminal.success(LangProvider.get("command.upgrade_kpm.no_kpm_upgrader"));
                 return;
             }
 
@@ -79,7 +79,7 @@ public class CommandUpgradeKPM extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return LangProvider.getComponent("command.upgradeKPM");
+        return LangProvider.getComponent("command.upgrade_kpm");
     }
 
     @Override

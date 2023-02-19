@@ -117,7 +117,7 @@ public class CommandVersion extends CommandBase
 
         if (!ArrayUtils.contains(AVAILABLE_MODES, mode))
         {
-            terminal.writeLine(LangProvider.get("command.version.invalidMode"));
+            terminal.writeLine(LangProvider.get("command.version.invalid_mode"));
             return;
         }
 

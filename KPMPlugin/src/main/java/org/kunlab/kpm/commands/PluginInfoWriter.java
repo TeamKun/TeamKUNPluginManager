@@ -64,11 +64,11 @@ public class PluginInfoWriter extends TerminalWriter
         switch (operator)
         {
             case SERVER_ADMIN:
-                return LangProvider.get("command.info.meta.installOperator.admin");
+                return LangProvider.get("command.info.meta.install_operator.admin");
             case KPM_PLUGIN_UPDATER:
-                return LangProvider.get("command.info.meta.installOperator.kpmUpdater");
+                return LangProvider.get("command.info.meta.install_operator.kpm_updater");
             case KPM_DEPENDENCY_RESOLVER:
-                return LangProvider.get("command.info.meta.installOperator.kpmDependencyResolver");
+                return LangProvider.get("command.info.meta.install_operator.kpm_dependency_resolver");
             case OTHER:
                 return LangProvider.get("general.other");
             default:
@@ -82,9 +82,9 @@ public class PluginInfoWriter extends TerminalWriter
         switch (order)
         {
             case POSTWORLD:
-                return LangProvider.get("command.info.base.loadTiming.postWorld");
+                return LangProvider.get("command.info.base.load_timing.post_world");
             case STARTUP:
-                return LangProvider.get("command.info.base.loadTiming.startUp");
+                return LangProvider.get("command.info.base.load_timing.start_up");
             default:
                 return LangProvider.get("general.unknown");
         }
@@ -116,7 +116,7 @@ public class PluginInfoWriter extends TerminalWriter
         this.printSeparatorShort();
 
         boolean hasKPMInfoFile = this.infoFile != null;
-        this.printBoolean("general.kpmInfo", hasKPMInfoFile);
+        this.printBoolean("general.kpm_info", hasKPMInfoFile);
         if (hasKPMInfoFile)
             this.writeKPMInfo();
 
@@ -129,11 +129,11 @@ public class PluginInfoWriter extends TerminalWriter
 
         this.printString("command.info.base.name", desc.getName());
         this.printString("command.info.base.version", desc.getVersion());
-        this.printString("command.info.base.loadTiming", loadOrderToString(desc.getLoad()));
+        this.printString("command.info.base.load_timing", loadOrderToString(desc.getLoad()));
         this.printStringFull("command.info.base.authors", StringUtils.join(desc.getAuthors(), ", "));
         this.printStringOrEmpty("command.info.base.authors", desc.getDescription());
         this.printStringOrEmpty("command.info.base.website", desc.getWebsite());
-        this.printStringOrEmpty("command.info.base.logPrefix", desc.getPrefix());
+        this.printStringOrEmpty("command.info.base.log_prefix", desc.getPrefix());
         this.printBoolean("command.info.base.enabled", this.plugin.isEnabled());
     }
 
@@ -144,19 +144,19 @@ public class PluginInfoWriter extends TerminalWriter
 
         KPMInformationFile info = this.infoFile;
 
-        this.printString("command.info.kpmInfo.kpmVersion", info.getKpmVersion() + "+");
+        this.printString("command.info.kpm_info.kpm_version", info.getKpmVersion() + "+");
 
         QueryContext resolveQuery = info.getUpdateQuery();
         if (resolveQuery != null)
-            this.printString("command.info.meta.resolveQuery", resolveQuery.toString(), ClickEvent.Action.SUGGEST_COMMAND,
-                    resolveQuery.toString(), LangProvider.get("general.chat.clickToCompletion")
+            this.printString("command.info.meta.resolve_query", resolveQuery.toString(), ClickEvent.Action.SUGGEST_COMMAND,
+                    resolveQuery.toString(), LangProvider.get("general.chat.click_to_completion")
             );
 
         String[] recipes = info.getRecipes();
         if (recipes != null)
         {
-            this.printString("command.info.kpmInfo.recipeSuggestions", StringUtils.join(recipes, ", "));
-            this.printString("command.info.kpmInfo.recipes", String.valueOf(recipes.length));
+            this.printString("command.info.kpm_info.recipe_suggestions", StringUtils.join(recipes, ", "));
+            this.printString("command.info.kpm_info.recipes", String.valueOf(recipes.length));
         }
     }
 
@@ -166,7 +166,7 @@ public class PluginInfoWriter extends TerminalWriter
 
         this.printString("command.info.file.name", pluginPath.getFileName().toString());
         this.printString("command.info.file.size", Utils.roundSizeUnit(pluginPath.toFile().length()));
-        this.printString("command.info.file.lastModified", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(pluginPath.toFile().lastModified())));
+        this.printString("command.info.file.last_modified", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(pluginPath.toFile().lastModified())));
 
         this.printString("command.info.file.hash", "");
         this.printString("command.info.file.hash.sha1", Utils.getHash(pluginPath, "SHA-1"));
@@ -183,20 +183,20 @@ public class PluginInfoWriter extends TerminalWriter
 
         String resolveQuery = meta.getResolveQuery();
 
-        this.printStringOrEmpty("command.info.meta.installOperator", installOperatorToString(meta.getInstalledBy()));
-        this.printStringOrEmpty("command.info.meta.installedAt", timeStampToString(meta.getInstalledAt()));
+        this.printStringOrEmpty("command.info.meta.install_operator", installOperatorToString(meta.getInstalledBy()));
+        this.printStringOrEmpty("command.info.meta.installed_at", timeStampToString(meta.getInstalledAt()));
         this.printBoolean("command.info.meta.dependency", meta.isDependency());
 
         boolean resolveQueryOverride = this.infoFile != null && this.infoFile.getUpdateQuery() != null;
-        String overwrote = LangProvider.get("command.info.meta.resolveQuery.overwrote");
+        String overwrote = LangProvider.get("command.info.meta.resolve_query.overwrote");
         if (resolveQuery == null)
             this.printStringFull(
-                    "command.info.meta.resolveQuery",
+                    "command.info.meta.resolve_query",
                     LangProvider.get("general.empty") + (resolveQueryOverride ? overwrote: "")
             );
         else
-            this.printString("command.info.meta.resolveQuery", resolveQuery + (resolveQueryOverride ? ChatColor.GRAY + overwrote: ""),
-                    ClickEvent.Action.SUGGEST_COMMAND, resolveQuery, LangProvider.get("general.chat.clickToCompletion")
+            this.printString("command.info.meta.resolve_query", resolveQuery + (resolveQueryOverride ? ChatColor.GRAY + overwrote: ""),
+                    ClickEvent.Action.SUGGEST_COMMAND, resolveQuery, LangProvider.get("general.chat.click_to_completion")
             );
     }
 

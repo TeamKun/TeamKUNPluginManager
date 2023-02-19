@@ -25,7 +25,7 @@ public class CommandRegister extends CommandBase
     {
         if (args.length < 1 && sender instanceof BlockCommandSender)
         {
-            terminal.error(LangProvider.get("command.register.needArgOnCmdBlockExec"));
+            terminal.error(LangProvider.get("command.register.need_arg_on_cmd_block_exec"));
             return;
         }
 

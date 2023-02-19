@@ -46,8 +46,8 @@ public abstract class TerminalWriter
     protected void printBoolean(String key, boolean value)
     {
         String localeKey = value ?
-                "general.chat.writer.keyYes":
-                "general.chat.writer.keyNo";
+                "general.chat.writer.key_yes":
+                "general.chat.writer.key_no";
 
         this.terminal.writeLine(LangProvider.get(localeKey, MsgArgs.of("key", "%%" + key + "%%")));
     }
@@ -55,7 +55,7 @@ public abstract class TerminalWriter
     protected void printStringFull(String key, @NotNull String value)
     {
         this.terminal.writeLine(LangProvider.get(
-                        "general.chat.writer.keyValue",
+                        "general.chat.writer.key_value",
                         MsgArgs.of("key", "%%" + key + "%%").add("value", value)
                 )
         );
@@ -66,7 +66,7 @@ public abstract class TerminalWriter
         this.terminal.write(
                 Component.text(
                         LangProvider.get(
-                                "general.chat.writer.keyValue",
+                                "general.chat.writer.key_value",
                                 MsgArgs.of("key", "%%" + key + "%%").add("value", value)
                         )
                 ).clickEvent(ClickEvent.clickEvent(action, content))
@@ -79,7 +79,7 @@ public abstract class TerminalWriter
         this.terminal.write(
                 Component.text(
                                 LangProvider.get(
-                                        "general.chat.writer.keyValue",
+                                        "general.chat.writer.key_value",
                                         MsgArgs.of("key", "%%" + key + "%%").add("value", value)
                                 )
                         ).clickEvent(ClickEvent.clickEvent(action, clickContent))
@@ -111,7 +111,7 @@ public abstract class TerminalWriter
     protected void printEmpty(String key)
     {
         this.terminal.writeLine(LangProvider.get(
-                "general.chat.writer.keyEmpty",
+                "general.chat.writer.key_empty",
                 MsgArgs.of("key", "%%" + key + "%%")
         ));
     }

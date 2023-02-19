@@ -33,7 +33,7 @@ public class UpdateAliasesSignalHandler
     public void onURLMalformed(MalformedURLSignal signal)
     {
         this.terminal.warn(LangProvider.get(
-                "tasks.update.malformedURL",
+                "tasks.update.malformed_url",
                 MsgArgs.of("remote", signal.getRemoteName())
                         .add("url", signal.getRemoteURL())
         ));
@@ -46,13 +46,13 @@ public class UpdateAliasesSignalHandler
         switch (signal.getErrorCause())
         {
             case IO_ERROR:
-                key = "tasks.update.invalidSource.ioException";
+                key = "tasks.update.invalid_source.io_exception";
                 break;
             case SOURCE_FILE_MALFORMED:
-                key = "tasks.update.invalidSource.malformedURL";
+                key = "tasks.update.invalid_source.malformed_url";
                 break;
             default:
-                key = "tasks.update.invalidSource.unknown";
+                key = "tasks.update.invalid_source.unknown";
                 break;
         }
 

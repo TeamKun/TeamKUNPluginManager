@@ -36,14 +36,14 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case UP_TO_DATE:  // THIS IS NOT AN ERROR
-                key = "installer.upgrade.errors.upToDate";
+                key = "installer.upgrade.errors.up_to_date";
                 break;
             case CANCELLED:
                 key = "installer.upgrade.errors.cancel";
                 named = true;
                 break;
             case PLUGIN_NOT_FOUND:
-                key = "installer.upgrade.errors.notFound";
+                key = "installer.upgrade.errors.not_found";
                 break;
             case INSTALL_FAILED:
                 key = "installer.upgrade.errors.install.fail";
@@ -58,7 +58,7 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.upgrade.errors.excluded";
                 this.terminal.error(LangProvider.get(
                         key,
-                        MsgArgs.of("name", "%%general.plugin.specifiedPlugin%%")
+                        MsgArgs.of("name", "%%general.plugin.specified_plugin%%")
                 ));
                 return true;
             case UNINSTALL_FAILED:
@@ -68,9 +68,9 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.upgrade.errors.uninstall.constant";
                 break;
             case SELF_UPGRADE_ATTEMPTED:
-                key = "installer.upgrade.errors.selfUpgrade";
+                key = "installer.upgrade.errors.self_upgrade";
                 this.terminal.error(LangProvider.get(key));
-                key = "installer.upgrade.errors.selfUpgrade.suggest";
+                key = "installer.upgrade.errors.self_upgrade.suggest";
                 this.terminal.hint(LangProvider.get(key));
                 return true;
             default:

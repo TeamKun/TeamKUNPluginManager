@@ -42,8 +42,8 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case PLUGIN_NOT_FOUND:
-                key = "installer.uninstall.errors.notFound";
-                name = "%%general.plugin.specifiedPlugin%%";
+                key = "installer.uninstall.errors.not_found";
+                name = "%%general.plugin.specified_plugin%%";
                 named = true;
                 break;
             case PLUGIN_IGNORED:
@@ -84,7 +84,7 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         {
             UninstallErrorCause cause = (UninstallErrorCause) result.getTaskStatus();
             if (cause == UninstallErrorCause.SOME_UNINSTALL_FAILED)
-                this.terminal.error(LangProvider.get("tasks.uninstall.errors.somePlugin"));
+                this.terminal.error(LangProvider.get("tasks.uninstall.errors.some_plugin"));
         }
         else
             this.handleOtherError(result, INSTALLER_NAME);

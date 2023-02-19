@@ -51,25 +51,25 @@ public class ResolverSignalHandler
         switch (errorCause)
         {
             case PLUGIN_NOT_FOUND:
-                this.terminal.error(LangProvider.get("tasks.resolve.failed.notFound"));
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.not_found"));
                 break;
             case ASSET_NOT_FOUND:
-                this.terminal.error(LangProvider.get("tasks.resolve.failed.assetNotFound"));
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.asset_not_found"));
                 break;
             case RESOLVER_MISMATCH:
-                this.terminal.error(LangProvider.get("tasks.resolve.failed.resolverMismatch"));
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.resolver_mismatch"));
                 break;
             case SERVER_RESPONSE_ERROR:
             case SERVER_RESPONSE_MALFORMED:
                 this.terminal.error(LangProvider.get(
-                        "tasks.resolve.failed.serverError",
+                        "tasks.resolve.failed.server_error",
                         MsgArgs.of("message", message)
                 ));
                 break;
             // noinspection FallThroughInSwitchStatement
             case INVALID_CREDENTIAL:
-                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken"));
-                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken.suggest"));
+                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrong_token"));
+                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrong_token.suggest"));
                 // no break
             default:
                 this.terminal.error(LangProvider.get(

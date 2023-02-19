@@ -70,6 +70,6 @@ public class DependenciesSignalHandler
     @SignalHandler
     public void onDependencyTreeBuilt(DependsLoadOrderComputingSignal.Pre signal)
     {
-        this.terminal.info(LangProvider.get("tasks.deps.buildingTree"));
+        this.terminal.info(LangProvider.get("tasks.deps.building_tree"));
     }
 }

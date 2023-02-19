@@ -35,7 +35,7 @@ public class CommandInfo extends CommandBase
 
         if (plugin == null)
         {
-            terminal.error(LangProvider.get("general.plugin.notFound"));
+            terminal.error(LangProvider.get("general.plugin.not_found"));
             return;
         }
 

@@ -58,14 +58,14 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case INVALID_TOKEN:
-                key = "installer.register.errors.invalidToken";
+                key = "installer.register.errors.invalid_token";
                 break;
             case GENERATE_CANCELLED:
                 key = "installer.register.errors.cancel";
                 named = true;
                 break;
             case IO_EXCEPTION_OCCURRED:
-                key = "installer.register.errors.ioException";
+                key = "installer.register.errors.io_exception";
                 named = true;
                 break;
             case VERIFICATION_CODE_REQUEST_FAILED:

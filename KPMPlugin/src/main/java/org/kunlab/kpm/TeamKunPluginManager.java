@@ -139,7 +139,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             if (updater == null)
                 return;
 
-            Terminals.ofConsole().info(LangProvider.get("plugin.unusedUpgraderFound"));
+            Terminals.ofConsole().info(LangProvider.get("plugin.unused_upgrader_found"));
             this.headInstallers.runUninstall(Terminals.ofConsole(), UninstallArgument.builder(updater)
                     .autoConfirm(true)
                     .build());
@@ -152,7 +152,7 @@ public final class TeamKunPluginManager extends JavaPlugin
 
         if (isOld)
         {
-            this.getLogger().info(LangProvider.get("plugin.deleteOldConfig"));
+            this.getLogger().info(LangProvider.get("plugin.delete_old_config"));
             Path oldConfig = this.getDataFolder().toPath().resolve("config.yml");
             try
             {
@@ -160,7 +160,7 @@ public final class TeamKunPluginManager extends JavaPlugin
             }
             catch (IOException e)
             {
-                this.getLogger().log(Level.WARNING, LangProvider.get("plugin.deleteOldConfig.fail"), e);
+                this.getLogger().log(Level.WARNING, LangProvider.get("plugin.delete_old_config.fail"), e);
             }
 
             this.saveDefaultConfig();

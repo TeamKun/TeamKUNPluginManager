@@ -34,10 +34,10 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
                 this.terminal.warn(LangProvider.get("installer.clean.errors.fail", INSTALLER_NAME));
                 break;
             case INVALID_INTEGRITY:
-                this.terminal.warn(LangProvider.get("installer.clean.errors.invalidIntegrity"));
+                this.terminal.warn(LangProvider.get("installer.clean.errors.invalid_integrity"));
                 break;
             case NO_GARBAGE:
-                this.terminal.warn(LangProvider.get("installer.clean.errors.noGarbage"));
+                this.terminal.warn(LangProvider.get("installer.clean.errors.no_garbage"));
                 break;
         }
     }

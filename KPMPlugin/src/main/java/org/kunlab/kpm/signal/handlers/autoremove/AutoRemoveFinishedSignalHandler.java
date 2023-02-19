@@ -29,13 +29,13 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case UNINSTALLER_INIT_FAILED:
-                key = "installer.autoremove.errors.uninstallerInitFailed";
+                key = "installer.autoremove.errors.uninstaller_init_failed";
                 break;
             case UNINSTALL_FAILED:
-                key = "installer.autoremove.errors.uninstallFailed";
+                key = "installer.autoremove.errors.uninstall_failed";
                 break;
             case NO_AUTO_REMOVABLE_PLUGIN_FOUND:
-                key = "installer.autoremove.errors.noAutoRemovablePluginFound";
+                key = "installer.autoremove.errors.no_auto_removable_plugin_found";
                 break;
             case CANCELLED:
                 key = "installer.autoremove.errors.cancel";

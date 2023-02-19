@@ -66,11 +66,11 @@ public class InstallerSignalHandler
     public void onInvalidKPMInfoFile(InvalidKPMInfoFileSignal signal)
     {
         this.terminal.warn(LangProvider.get(
-                "tasks.install.invalidKPMInfo",
+                "tasks.install.invalid_kpm_info",
                 MsgArgs.of("name", signal.getDescriptionFile().getName())
         ));
         this.terminal.hint(
-                LangProvider.get("tasks.install.invalidKPMInfo.force")
+                LangProvider.get("tasks.install.invalid_kpm_info.force")
         );
 
         signal.setIgnore(SignalHandlingUtils.askContinue(this.terminal));

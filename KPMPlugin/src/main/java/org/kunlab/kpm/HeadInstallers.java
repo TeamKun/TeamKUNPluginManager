@@ -48,7 +48,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -68,7 +68,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -88,7 +88,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -108,7 +108,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -128,7 +128,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -148,7 +148,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -171,7 +171,7 @@ public class HeadInstallers
         catch (IOException e)
         {
             e.printStackTrace();
-            terminal.error(LangProvider.get("installer.initFailed", MsgArgs.of("error", e.getMessage())));
+            terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
 
@@ -194,7 +194,7 @@ public class HeadInstallers
         }
         catch (InstallerRunningException e)
         {
-            terminal.error(LangProvider.get("installer.anotherRunning"));
+            terminal.error(LangProvider.get("installer.another_running"));
         }
         catch (TokenNotAvailableException e)
         {

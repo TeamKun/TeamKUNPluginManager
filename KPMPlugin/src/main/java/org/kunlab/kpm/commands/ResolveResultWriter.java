@@ -69,9 +69,9 @@ public class ResolveResultWriter extends TerminalWriter
 
     private void printSuccessResult(SuccessResult result)
     {
-        this.printStringOrEmpty("command.resolve.fileName", result.getFileName());
+        this.printStringOrEmpty("command.resolve.file_name", result.getFileName());
         this.printStringOrEmpty("command.resolve.version", result.getVersion());
-        this.printStringFull("command.resolve.downloadUrl", result.getDownloadUrl());
+        this.printStringFull("command.resolve.download_url", result.getDownloadUrl());
     }
 
     private void printAdditionalInformation(ResolveResult result)
@@ -94,10 +94,10 @@ public class ResolveResultWriter extends TerminalWriter
             this.printString("command.resolve.extra.type", "GITHUB");
             this.printString("command.resolve.extra.gh.repo", "https://github.com/" +
                     githubSuccessResult.getOwner() + "/" + githubSuccessResult.getRepoName());
-            this.printString("command.resolve.extra.gh.fileSize", String.valueOf(githubSuccessResult.getSize()));
-            this.printString("command.resolve.extra.gh.releaseName", githubSuccessResult.getReleaseName());
+            this.printString("command.resolve.extra.gh.file_size", String.valueOf(githubSuccessResult.getSize()));
+            this.printString("command.resolve.extra.gh.release_name", githubSuccessResult.getReleaseName());
             this.printString("command.resolve.extra.id", String.valueOf(githubSuccessResult.getReleaseId()));
-            this.printString("command.resolve.extra.gh.releaseBody", githubSuccessResult.getReleaseBody());
+            this.printString("command.resolve.extra.gh.release_body", githubSuccessResult.getReleaseBody());
             this.printSeparatorShort();
         }
         else if (result instanceof SpigotMCSuccessResult)
@@ -106,7 +106,7 @@ public class ResolveResultWriter extends TerminalWriter
 
             this.printString("command.resolve.extra.type", "SPIGOT_MC");
             this.printMarketplaceResult(spigotMCSuccessResult);
-            this.printStringFull("command.resolve.extra.spigot.compatibleVersions", String.join(", ", spigotMCSuccessResult.getVersions()));
+            this.printStringFull("command.resolve.extra.spigot.compatible_versions", String.join(", ", spigotMCSuccessResult.getVersions()));
             this.printSeparatorShort();
         }
         else if (result instanceof MarketplaceResult)
@@ -122,7 +122,7 @@ public class ResolveResultWriter extends TerminalWriter
     {
         this.printString("command.resolve.extra.title", result.getTitle());
         this.printString("command.resolve.extra.description", result.getDescription());
-        this.printStringFull("command.resolve.extra.publishAddress", result.getUrl());
+        this.printStringFull("command.resolve.extra.publish_address", result.getUrl());
 
     }
 }

@@ -31,7 +31,7 @@ public class CheckEnvSignalHandler
                 "installer.common.checkenv.incompatible",
                 MsgArgs.of("name", Utils.getPluginString(signal.getPluginDescription()))
         ));
-        this.terminal.info(LangProvider.get("installer.operation.canForce"));
+        this.terminal.info(LangProvider.get("installer.operation.can_force"));
 
         signal.setForceInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
@@ -56,7 +56,7 @@ public class CheckEnvSignalHandler
         ));
 
 
-        this.terminal.warn(LangProvider.get("installer.common.checkenv.forceWhen"));
+        this.terminal.warn(LangProvider.get("installer.common.checkenv.force_when"));
 
         signal.setContinueInstall(SignalHandlingUtils.askContinue(this.terminal));
     }
@@ -64,7 +64,7 @@ public class CheckEnvSignalHandler
     private void printKeyValue(String key, String value)
     {
         this.terminal.writeLine(LangProvider.get(
-                "general.chat.writer.keyValue",
+                "general.chat.writer.key_value",
                 MsgArgs.of("key", key)
                         .add("value", value)
         ));
