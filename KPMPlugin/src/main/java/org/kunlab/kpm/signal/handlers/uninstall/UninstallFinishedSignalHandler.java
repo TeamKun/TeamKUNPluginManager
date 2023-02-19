@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.uninstall.UnInstallErrorCause;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import org.kunlab.kpm.task.tasks.uninstall.UninstallErrorCause;
 
@@ -13,6 +15,8 @@ import org.kunlab.kpm.task.tasks.uninstall.UninstallErrorCause;
  */
 public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
 {
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.uninstall");
+
     public UninstallFinishedSignalHandler(Terminal terminal)
     {
         super(terminal);
@@ -21,7 +25,10 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success("アンインストールが正常に完了しました。");
+        this.terminal.success(LangProvider.get(
+                "general.success",
+                INSTALLER_NAME
+        ));
     }
 
     private boolean handleGeneralErrors(@Nullable UnInstallErrorCause cause)
@@ -29,23 +36,41 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (cause == null)
             return false;
 
+        String key;
+        String name = null;  // Alternative of INSTALLER_NAME
+        boolean named = false;
         switch (cause)
         {
             case PLUGIN_NOT_FOUND:
-                this.terminal.error("指定されたプラグインが見つかりませんでした。");
-                return true;
+                key = "general.plugin.notFound";
+                name = "%%general.plugin.specifiedPlugin%%";
+                named = true;
+                break;
             case PLUGIN_IGNORED:
-                this.terminal.error("指定されたプラグインが無視リストに登録されています。");
-                return true;
+                key = "installer.common.checkenv.excluded";
+                break;
             case PLUGIN_IS_DEPENDENCY:
-                this.terminal.error("指定されたプラグインが他のプラグインの依存関係に含まれています。");
-                return true;
+                key = "installer.uninstall.errors.dependency";
+                break;
             case CANCELLED:
-                this.terminal.error("アンインストールがキャンセルされました。");
-                return true;
+                key = "general.cancelled";
+                named = true;
+                break;
+            default:
+                return false;
         }
 
-        return false;
+        if (named)
+        {
+            if (name == null)
+                this.terminal.error(LangProvider.get(key, INSTALLER_NAME));
+            else
+                this.terminal.error(LangProvider.get(key, MsgArgs.of("name", name)));
+        }
+        else
+            this.terminal.error(LangProvider.get(key));
+
+        return true;
     }
 
     @Override
@@ -54,20 +79,15 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         if (result.getReason() instanceof UnInstallErrorCause &&
                 this.handleGeneralErrors((UnInstallErrorCause) result.getReason()))
             return;
-        if (result.getException() != null)
-        {
-            this.terminal.error("アンインストール中に予期しないエラーが発生しました：%s", result.getException());
-            return;
-        }
-
 
         if (result.getReason() instanceof UnInstallErrorCause)
         {
             UninstallErrorCause cause = (UninstallErrorCause) result.getTaskStatus();
             if (cause == UninstallErrorCause.SOME_UNINSTALL_FAILED)
-                this.terminal.error("いくつかのプラグインのアンインストールに失敗しました。");
+                this.terminal.error(LangProvider.get("installer.tasks.uninstall.errors.somePlugin"));
         }
 
+        this.handleOtherError(result, INSTALLER_NAME);
     }
 
 }

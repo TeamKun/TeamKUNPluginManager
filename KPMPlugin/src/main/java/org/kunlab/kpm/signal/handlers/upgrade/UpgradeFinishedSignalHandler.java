@@ -6,10 +6,14 @@ import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeErrorCause;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeTasks;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 
 public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
 {
+    private static final MsgArgs INSTALLER_NAME = MsgArgs.of("name", "installer.upgrade");
+
     public UpgradeFinishedSignalHandler(Terminal terminal)
     {
         super(terminal);
@@ -27,42 +31,61 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
 
     private boolean handleGeneralErrors(UpgradeErrorCause cause)
     {
+        String key;
+        boolean named = false;
         switch (cause)
         {
             case UP_TO_DATE:  // THIS IS NOT AN ERROR
-                this.terminal.success("プラグインが最新です。");
-                return true;
+                key = "installer.upgrade.errors.upToDate";
+                break;
             case CANCELLED:
-                this.terminal.error("アップグレードがキャンセルされました。");
-                return true;
+                key = "general.cancelled";
+                named = true;
+                break;
             case PLUGIN_NOT_FOUND:
-                this.terminal.error("指定されたプラグインが見つかりませんでした。");
-                return true;
+                key = "general.plugin.notFound";
+                break;
             case INSTALL_FAILED:
-                this.terminal.error("プラグインのインストールに失敗しました。");
-                return true;
+                key = "installer.upgrade.errors.install.fail";
+                break;
             case INSTALLER_INSTANTIATION_FAILED:
-                this.terminal.error("プラグインインストーラの生成に失敗しました。");
-                return true;
+                key = "installer.upgrade.errors.install.constant";
+                break;
             case PLUGIN_RESOLVE_FAILED:
-                this.terminal.error("プラグインの解決に失敗しました。");
-                return true;
+                key = "installer.upgrade.errors.resolve";
+                break;
             case PLUGIN_EXCLUDED:
-                this.terminal.error("指定されたプラグインが除外リストに登録されています。");
+                key = "installer.common.checkenv.excluded";
+                this.terminal.error(LangProvider.get(
+                        key,
+                        MsgArgs.of("name", "%%general.plugin.specifiedPlugin%%")
+                ));
                 return true;
             case UNINSTALL_FAILED:
-                this.terminal.error("プラグインのアンインストールに失敗しました。");
-                return true;
+                key = "installer.upgrade.errors.uninstall.fail";
+                break;
             case UNINSTALLER_INSTANTIATION_FAILED:
-                this.terminal.error("プラグインアンインストーラの生成に失敗しました。");
-                return true;
+                key = "installer.upgrade.errors.uninstall.constant";
+                break;
             case SELF_UPGRADE_ATTEMPTED:
-                this.terminal.error("KPM 自体のアップグレードを試みました。");
-                this.terminal.hint("KPM のアップグレードは、 /kpm upgrade-kpm コマンドを使用してください。");
+                key = "installer.upgrade.errors.selfUpgrade";
+                this.terminal.error(LangProvider.get(key));
+                key = "installer.upgrade.errors.selfUpgrade.suggest";
+                this.terminal.hint(LangProvider.get(key));
                 return true;
             default:
                 return false;
         }
+
+        if (named)
+            this.terminal.error(LangProvider.get(
+                    key,
+                    MsgArgs.of("name", "%%installer.tasks.description%%")
+            ));
+        else
+            this.terminal.error(LangProvider.get(key));
+
+        return true;
     }
 
     @Override
@@ -71,13 +94,6 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
         if (!(result.getProgress().getCurrentTask() instanceof UpgradeTasks))
             return;
 
-        if (result.getException() != null)
-        {
-            this.terminal.error("アップグレード中に予期しないエラーが発生しました：%s", result.getException());
-            Utils.printInstallStatistics(this.terminal, result);
-            return;
-        }
-
         if (result.getReason() instanceof UpgradeErrorCause &&
                 this.handleGeneralErrors((UpgradeErrorCause) result.getReason()))
         {
@@ -85,6 +101,7 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
             return;
         }
 
-        this.terminal.error("アップグレード中に予期しないエラーが発生しました。");
+        this.handleOtherError(result, INSTALLER_NAME);
+
     }
 }

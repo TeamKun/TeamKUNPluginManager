@@ -1,6 +1,8 @@
 package org.kunlab.kpm.signal.handlers.uninstall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginDisablingSignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
@@ -22,21 +24,29 @@ public class UninstallerSignalHandler
 
     private static String getErrorCauseMessage(PluginUninstallErrorSignal signal)
     {
+        String key;
         switch (signal.getCause())
         {
             case INTERNAL_CLASS_UNLOAD_FAILED:
-                return "クラスのアンロードに失敗しました。";
+                key = "installer.tasks.uninstall.errors.classUnloadFail";
+                break;
             case INTERNAL_PLUGIN_DISABLE_FAILED:
-                return "プラグインの無効化に失敗しました。";
+                key = "installer.tasks.uninstall.errors.disableFail";
+                break;
             default:
-                return "不明なエラーが発生しました。";
+                key = "general.errors.unknown";
         }
+
+        return LangProvider.get(key);
     }
 
     @SignalHandler
     public void onPluginUninstall(PluginUninstallingSignal signal)
     {
-        this.terminal.infoImplicit("%s をアンインストールしています …", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.uninstall.uninstalling",
+                MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
+        ));
     }
 
     @SignalHandler
@@ -44,7 +54,10 @@ public class UninstallerSignalHandler
     {
         if (!this.oneRecipeRemoved)
         {
-            this.terminal.infoImplicit("%s のレシピを削除しています …", Utils.getPluginString(signal.getPlugin()));
+            this.terminal.infoImplicit(LangProvider.get(
+                    "installer.tasks.uninstall.recipesRemoving",
+                    MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
+            ));
             this.oneRecipeRemoved = true;
         }
     }
@@ -52,22 +65,29 @@ public class UninstallerSignalHandler
     @SignalHandler
     public void onDisabling(PluginDisablingSignal.Pre signal)
     {
-        this.terminal.infoImplicit("%s のトリガを処理しています …", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.infoImplicit(LangProvider.get(
+                "installer.tasks.uninstall.disabling",
+                MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
+        ));
     }
 
     @SignalHandler
     public void onUnloading(PluginUnloadingSignal.Pre signal)
     {
-        this.terminal.infoImplicit("%s を削除しています …", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.infoImplicit(LangProvider.get(
+                        "installer.tasks.uninstall.unloading",
+                        MsgArgs.of("name", Utils.getPluginString(signal.getPlugin()))
+                )
+        );
     }
 
     @SignalHandler
     public void onError(PluginUninstallErrorSignal signal)
     {
-        this.terminal.error(
-                "%s のアンインストールに失敗しました： %s",
-                getErrorCauseMessage(signal),
-                Utils.getPluginString(signal.getDescription())
-        );
+        this.terminal.error(LangProvider.get(
+                "installer.tasks.uninstall.error",
+                MsgArgs.of("name", Utils.getPluginString(signal.getDescription()))
+                        .add("error", getErrorCauseMessage(signal))
+        ));
     }
 }

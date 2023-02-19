@@ -29,22 +29,6 @@ public class MsgArgs
         return MsgArgs.ofEmpty().add(key, String.valueOf(value));
     }
 
-    private static String formatDeep(String msg)
-    {
-        if (!msg.contains("%%"))
-            return msg;
-
-        Matcher matcher = ARG_PATTERN.matcher(msg);
-        while (matcher.find())
-        {
-            String key = matcher.group(1);
-            String value = LangProvider.get(key);
-            msg = msg.replace(matcher.group(), value);
-        }
-
-        return formatDeep(msg);
-    }
-
     private static String formatColors(String msg)
     {
         // This part is hideous, but I don't know how to make it better without any performance loss.
@@ -101,6 +85,27 @@ public class MsgArgs
         // @formatter:on
     }
 
+    private String formatDeep(String msg)
+    {
+        if (!msg.contains("%%"))
+            return msg;
+
+        Matcher matcher = ARG_PATTERN.matcher(msg);
+        while (matcher.find())
+        {
+            String key = matcher.group(1);
+            String value = LangProvider.getNullable(key);
+            if (value == null)
+                value = this.args.stream().parallel()
+                        .filter(pair -> pair.getLeft().equals(key))
+                        .map(Pair::getRight)
+                        .findFirst().orElseGet(() -> "INVALID LANG VARIABLE KEY: " + key);
+            msg = msg.replace(matcher.group(), value);
+        }
+
+        return this.formatDeep(msg);
+    }
+
     public MsgArgs add(String key, Object value)
     {
         this.args.add(Pair.of(key, String.valueOf(value)));
@@ -125,7 +130,7 @@ public class MsgArgs
 
         try
         {
-            return formatDeep(msg);
+            return this.formatDeep(msg);
         }
         catch (StackOverflowError e)
         {

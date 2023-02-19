@@ -2,8 +2,9 @@ package org.kunlab.kpm;
 
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.bukkit.ChatColor;
 import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,8 +16,6 @@ import java.security.NoSuchAlgorithmException;
 @UtilityClass
 public class Utils
 {
-    private static final String STATS_FORMAT
-            = ChatColor.GREEN + "%d 追加 " + ChatColor.RED + "%d 削除 " + ChatColor.YELLOW + "%d 変更 " + ChatColor.GRAY + "%d 保留";
     private static final String[] SIZE_UNITS = {
             "B",
             "kB",
@@ -29,9 +28,15 @@ public class Utils
             "YB"
     };
 
-    public static void printInstallStatistics(Terminal terminal, int added, int removed, int changed, int pending)
+    public static void printInstallStatistics(Terminal terminal, int added, int removed, int modified, int pending)
     {
-        terminal.writeLine(String.format(STATS_FORMAT, added, removed, changed, pending));
+        terminal.writeLine(LangProvider.get(
+                "installer.operation.result",
+                MsgArgs.of("add", added)
+                        .add("remove", removed)
+                        .add("modify", modified)
+                        .add("pending", pending)
+        ));
     }
 
     public static void printInstallStatistics(Terminal terminal, InstallResult<? extends Enum<?>> result)

@@ -40,7 +40,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
             case CANCELLED:
                 key = "general.cancelled";
                 this.terminal.warn(LangProvider.get(key, INSTALLER_NAME));
-                break;
+                return;
             default:
                 key = null;
         }

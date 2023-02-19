@@ -4,6 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.kunlab.kpm.enums.metadata.DependType;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.meta.DependencyNode;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
@@ -33,12 +35,15 @@ public class PluginIsDependencySignalHandler
     @SignalHandler
     public void onPluginIsDependency(PluginIsDependencySignal signal)
     {
-        this.terminal.warn("%s は以下のプラグインの依存関係です。", Utils.getPluginString(signal.getPlugin()));
+        this.terminal.warn(LangProvider.get(
+                "installer.tasks.uninstall.dependency.notify",
+                MsgArgs.of("plugin", Utils.getPluginString(signal.getPlugin()))
+        ));
         this.terminal.writeLine("  " + signal.getDependedBy().stream()
                 .map(PluginIsDependencySignalHandler::dependencyNameMapper)
                 .sorted()
                 .collect(Collectors.joining(" ")));
-        this.terminal.warn("このプラグインのアンインストールにより、これらのプラグインが動作しなくなる可能性があります。");
+        this.terminal.warn(LangProvider.get("installer.tasks.uninstall.dependency.warn"));
 
         PluginIsDependencySignal.Operation operation = this.pollUninstallDeps();
         signal.setOperation(operation);
@@ -56,15 +61,15 @@ public class PluginIsDependencySignalHandler
         optionSelection.put("c", PluginIsDependencySignal.Operation.CANCEL);
 
         HashMap<String, String> options = new HashMap<>();
-        options.put("u", "依存関係をアンインストール");
-        options.put("d", "依存関係を無効化");
-        options.put("i", ChatColor.DARK_RED + "依存関係を無視");
-        options.put("c", ChatColor.RED + "アンインストールをキャンセル");
+        options.put("u", LangProvider.get("installer.tasks.uninstall.dependency.choice.uninstall"));
+        options.put("d", LangProvider.get("installer.tasks.uninstall.dependency.choice.disable"));
+        options.put("i", LangProvider.get("installer.tasks.uninstall.dependency.choice.ignore"));
+        options.put("c", LangProvider.get("installer.tasks.uninstall.dependency.choice.cancel"));
 
         try
         {
             QuestionResult result = this.terminal.getInput().showChoiceQuestion(
-                            "依存関係の処理方法を選択してください。",
+                            LangProvider.get("installer.tasks.uninstall.dependency.choice"),
                             options
                     )
                     .waitAndGetResult();
@@ -76,7 +81,10 @@ public class PluginIsDependencySignalHandler
         catch (InterruptedException e)
         {
             e.printStackTrace();
-            this.terminal.error("不明なエラーが発生しました： %s", e.getMessage());
+            this.terminal.error(LangProvider.get(
+                    "general.errors.unexpected",
+                    MsgArgs.of("error", e.getMessage())
+            ));
             return PluginIsDependencySignal.Operation.CANCEL;
         }
     }

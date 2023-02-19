@@ -2,6 +2,7 @@ package org.kunlab.kpm;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class Notices
 
         if (isAutoRemovable)
         {
-            terminal.info("以下のプラグインがインストールされていますが、もう必要とされていません:");
+            terminal.info(LangProvider.get("notice.plugin.removable"));
             terminal.info("  " + String.join(" ", autoRemovable));
-            terminal.hint("これを削除するには、'/kpm autoremove' を利用してください。");
+            terminal.hint(LangProvider.get("notice.plugin.removable.suggest"));
         }
 
         return isAutoRemovable;
@@ -42,8 +43,8 @@ public class Notices
 
         if (isTokenUnset)
         {
-            terminal.warn("トークンがセットされていません。");
-            terminal.hint("/kpm register でトークンを発行できます。");
+            terminal.warn(LangProvider.get("notice.token.unset"));
+            terminal.hint(LangProvider.get("notice.token.unset.suggest"));
         }
 
         return isTokenUnset;
@@ -63,8 +64,8 @@ public class Notices
 
         if (!isTokenAlive)
         {
-            terminal.warn("指定されているトークンは有効期限が切れています。");
-            terminal.hint("/kpm register で新しいトークンを発行できます。");
+            terminal.warn(LangProvider.get("notice.token.dead"));
+            terminal.hint(LangProvider.get("notice.token.dead.suggest"));
         }
 
         return !isTokenAlive;

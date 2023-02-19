@@ -4,6 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.update.signals.UpdateFinishedSignal;
 import org.kunlab.kpm.interfaces.installer.signals.InstallFinishedSignal;
+import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.alias.source.download.signals.MalformedURLSignal;
 import org.kunlab.kpm.task.tasks.alias.update.signals.InvalidSourceSignal;
@@ -20,42 +22,62 @@ public class UpdateAliasesSignalHandler
     @SignalHandler
     public void onUpdateAliases(UpdateFinishedSignal signal)
     {
-        this.terminal.info("エイリアスが更新されました。");
-        this.terminal.info("登録数：%d", signal.getAliases());
+        this.terminal.info(LangProvider.get("installer.update.done"));
+        this.terminal.info(LangProvider.get(
+                "installer.update.aliases",
+                MsgArgs.of("aliases", signal.getAliases())
+        ));
     }
 
     @SignalHandler
     public void onURLMalformed(MalformedURLSignal signal)
     {
-        this.terminal.warn("不正なURLが指定されました(%s)： %s", signal.getRemoteName(), signal.getRemoteURL());
+        this.terminal.warn(LangProvider.get(
+                "installer.tasks.update.malformedURL",
+                MsgArgs.of("remote", signal.getRemoteName())
+                        .add("url", signal.getRemoteURL())
+        ));
     }
 
     @SignalHandler
     public void onInvalidSources(InvalidSourceSignal signal)
     {
+        String key;
         switch (signal.getErrorCause())
         {
             case IO_ERROR:
-                this.terminal.warn("不正なソースファイルが指定されました(%s)：IOError", signal.getSourceName());
+                key = "installer.tasks.update.invalidSource.io";
                 break;
             case SOURCE_FILE_MALFORMED:
-                this.terminal.warn("不正なソースファイルが指定されました(%s)：Malformed", signal.getSourceName());
+                key = "installer.tasks.update.invalidSource.malformedURL";
                 break;
             default:
-                this.terminal.warn("不正なソースファイルが指定されました(%s)：Unknown", signal.getSourceName());
+                key = "installer.tasks.update.invalidSource.unknown";
+                break;
         }
+
+        this.terminal.warn(LangProvider.get(
+                key,
+                MsgArgs.of("source", signal.getSourceName())
+        ));
     }
 
     @SignalHandler
     public void onInstallFinished(InstallFinishedSignal signal)
     {
         if (signal.getResult().isSuccess())
-            this.terminal.success("エイリアスの更新に成功しました。");
+            this.terminal.success(LangProvider.get(
+                    "general.success",
+                    MsgArgs.of("name", "%%installer.update%%")
+            ));
         else
         {
             InstallFailedInstallResult<?, ?, ?> result = (InstallFailedInstallResult<?, ?, ?>) signal.getResult();
 
-            this.terminal.warn("エイリアスの更新は %s で失敗しました。", result.getReason());
+            this.terminal.warn(LangProvider.get(
+                    "installer.update.fail",
+                    MsgArgs.of("error", result.getReason())
+            ));
         }
     }
 

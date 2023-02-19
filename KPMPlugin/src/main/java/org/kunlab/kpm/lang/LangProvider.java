@@ -57,6 +57,19 @@ public class LangProvider
         return get(key, MsgArgs.ofEmpty());
     }
 
+    public static String getNullable(String key, MsgArgs args)
+    {
+        String msg = INSTANCE.currentLanguageMessages.getProperty(key);
+        if (msg == null)
+            return null;
+        return args.format(msg);
+    }
+
+    public static String getNullable(String key)
+    {
+        return getNullable(key, MsgArgs.ofEmpty());
+    }
+
     public static TextComponent getComponent(String key, MsgArgs args)
     {
         return Component.text(get(key, args));

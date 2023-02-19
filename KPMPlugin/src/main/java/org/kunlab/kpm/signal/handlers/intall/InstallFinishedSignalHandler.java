@@ -58,7 +58,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
 
         this.terminal.error(LangProvider.get(
                 key,
-                MsgArgs.of("name", "指定されたプラグイン")
+                MsgArgs.of("name", "%%general.plugin.specifiedPlugin%%")
         ));
 
         return true;
@@ -152,7 +152,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     private void handleDependsCollectError(DependsCollectErrorCause cause)
     {
         if (cause == DependsCollectErrorCause.SOME_DEPENDENCIES_COLLECT_FAILED)
-            this.terminal.error(LangProvider.get("installer.tasks.dependency.collect.errors.someCollectFailed"));
+            this.terminal.error(LangProvider.get("installer.tasks.deps.collect.errors.someCollectFailed"));
     }
 
     private void handleInstallError(PluginsInstallErrorCause cause)
