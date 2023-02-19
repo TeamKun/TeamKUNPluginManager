@@ -42,7 +42,10 @@ public class ResolveResultWriter extends TerminalWriter
         if (result instanceof ErrorResultImpl)
         {
             ErrorResult errorResult = (ErrorResult) result;
-            this.printStringFull("general.error", ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")");
+            this.printStringFull(
+                    "general.error",
+                    ChatColor.RED + errorResult.getMessage() + " (" + errorResult.getCause() + ")"
+            );
         }
         else if (result instanceof SuccessResult)
         {

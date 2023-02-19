@@ -70,10 +70,10 @@ public class PluginInfoWriter extends TerminalWriter
             case KPM_DEPENDENCY_RESOLVER:
                 return LangProvider.get("command.info.meta.installOperator.kpmDependencyResolver");
             case OTHER:
-                return ChatColor.GRAY + LangProvider.get("general.other");
+                return LangProvider.get("general.other");
             default:
             case UNKNOWN:
-                return ChatColor.GRAY + LangProvider.get("general.unknown");
+                return LangProvider.get("general.unknown");
         }
     }
 
@@ -86,7 +86,7 @@ public class PluginInfoWriter extends TerminalWriter
             case STARTUP:
                 return LangProvider.get("command.info.base.loadTiming.startUp");
             default:
-                return ChatColor.GRAY + LangProvider.get("general.unknown");
+                return LangProvider.get("general.unknown");
         }
     }
 
@@ -192,8 +192,7 @@ public class PluginInfoWriter extends TerminalWriter
         if (resolveQuery == null)
             this.printStringFull(
                     "command.info.meta.resolveQuery",
-                    ChatColor.GRAY + LangProvider.get("general.empty") +
-                            (resolveQueryOverride ? overwrote: "")
+                    LangProvider.get("general.empty") + (resolveQueryOverride ? overwrote: "")
             );
         else
             this.printString("command.info.meta.resolveQuery", resolveQuery + (resolveQueryOverride ? ChatColor.GRAY + overwrote: ""),
@@ -225,7 +224,7 @@ public class PluginInfoWriter extends TerminalWriter
         ComponentBuilder<TextComponent, ?> builder = Component.text();
 
         if (dependencies.isEmpty())
-            builder.append(Component.text(ChatColor.GRAY + LangProvider.get("general.none")));
+            builder.append(Component.text(LangProvider.get("general.none")));
 
         for (DependencyNode dependency : dependencies)
             builder.append(this.getDependencyComponent(dependency, direction)).append(Component.text("  "));

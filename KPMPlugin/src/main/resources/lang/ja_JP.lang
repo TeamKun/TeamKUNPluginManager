@@ -8,10 +8,10 @@ general.kpmInfo=KPM \u60C5\u5831\u30D5\u30A1\u30A4\u30EB
 general.yes=\u306F\u3044
 general.no=\u3044\u3044\u3048
 
-general.unknown=\u4E0D\u660E
-general.empty=\u672A\u8A2D\u5B9A
-general.none=\u306A\u3057
-general.other=\u305D\u306E\u4ED6
+general.unknown=%%gray%%\u4E0D\u660E
+general.empty=%%gray%%\u672A\u8A2D\u5B9A
+general.none=%%gray%%\u306A\u3057
+general.other=%%gray%%\u305D\u306E\u4ED6
 
 general.error=\u30A8\u30E9\u30FC
 general.cancelled=%%name%%\u304C\u30AD\u30E3\u30F3\u30BB\u30EB\u3055\u308C\u307E\u3057\u305F\u3002
