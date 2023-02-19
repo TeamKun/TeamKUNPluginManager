@@ -1,0 +1,341 @@
+general.lang.name=English
+general.lang.set=Language set to %%general.lang.name%%.
+
+general.plugin.specified_plugin=Specified plugin
+general.plugin.not_found=Plugin %%general.plugin.specified_plugin%% not found.
+general.kpm_info=KPM information file
+
+general.yes=Yes
+general.no=No
+
+general.unknown=%%gray%%Unknown
+general.empty=%%gray%%Not set
+general.none=%%gray%%None
+general.other=%%gray%%Other
+
+general.error=Error
+general.cancelled=%%name%% cancelled.
+general.failed=%%name%% failed.
+general.errors.unknown=An unknown error occurred.
+general.errors.unknown.when=An unknown error occurred during %%name%%.
+general.errors.unexpected=An unexpected error occurred: %%error%%
+general.errors.unexpected.when=An unexpected error occurred during %%name%%: %%error%%
+general.errors.io_exception=An I/O error occurred.
+general.errors.io_exception.when=An I/O error occurred during %%name%%.
+general.success=%%name%% succeeded.
+
+general.chat.click_to_completion=Click to autocomplete in chat!
+general.chat.continue=Do you want to continue?
+
+general.chat.writer.key_value=%%green%%%%key%%%%white%%: %%dark_green%%%%value%%
+general.chat.writer.key_yes=%%green%%%%key%%%%white%%: %%green%%%%general.yes%%
+general.chat.writer.key_no=%%green%%%%key%%%%white%%: %%red%%%%general.no%%
+general.chat.writer.key_empty=%%green%%%%key%%%%white%%: %%gray%%%%general.empty%%
+
+
+plugin.delete_old_config=Deleting old configuration files...
+plugin.delete_old_config.fail=Failed to delete old configuration files.
+plugin.unused_upgrader_found=Unused upgrader plugin found. Removing...
+
+command.autoremove=Automatically removes plugins that are no longer needed.
+command.clean=Automatically removes unnecessary data left by uninstalled plugins.
+command.install=Adds a new plugin to the server.
+command.uninstall=Removes an installed plugin.
+command.update=Updates aliases.
+command.upgrade=Upgrades installed plugins.
+
+
+command.info=Displays information about the plugin.
+command.info.loading=Loading plugin information...
+
+
+command.info.base.name=Name
+command.info.base.version=Version
+command.info.base.authors=Authors
+command.info.base.commands=Commands
+command.info.base.website=Website
+command.info.base.log_prefix=Log prefix
+command.info.base.enabled=Enabled
+command.info.base.load_timing=Load timing
+
+command.info.base.load_timing.post_world=After world loads
+command.info.base.load_timing.start_up=On server start-up
+
+command.info.meta=Additional meta information
+command.info.meta.install_operator=Installed by
+command.info.meta.install_operator.admin=Server administrator
+command.info.meta.install_operator.kpm_updater=KPM Plugin Updater
+command.info.meta.install_operator.kpm_dependency_resolver=KPM Dependency Resolver
+command.info.meta.installed_at=Installed at
+command.info.meta.dependency=Dependency
+command.info.meta.depended=Depended by
+command.info.meta.resolve_query=Resolution query
+command.info.meta.resolve_query.overwrote=(overwrote)
+
+command.info.file.name=File name
+command.info.file.size=File size
+command.info.file.last_modified=Last modified
+command.info.file.hash=Hash
+command.info.file.hash.sha1=SHA-1
+command.info.file.hash.sha256=SHA-256
+command.info.file.hash.md5=MD5
+
+command.info.kpm_info.kpm_version=Compatible KPM version
+command.info.kpm_info.recipe_suggestions=Recipe suggestions
+command.info.kpm_info.recipes=Recipe count
+
+command.register=Set a previously obtained token or log in to GitHub and set a token.
+command.register.need_arg_on_cmd_block_exec=First argument is required to execute from a command block.
+
+command.resolve=Resolve plugin names.
+command.resolve.resolving=Resolving plugin names...
+command.resolve.resolver=Resolver
+command.resolve.multi=Multi
+command.resolve.file_name=File Name
+command.resolve.version=Version
+command.resolve.download_url=Download URL
+
+command.resolve.extra.type=Type
+command.resolve.extra.id=ID
+command.resolve.extra.title=Title
+command.resolve.extra.description=Description
+command.resolve.extra.publish_address=Publish Address
+
+command.resolve.extra.gh.repo=Repository
+command.resolve.extra.gh.file_size=File Size
+command.resolve.extra.gh.release_name=Release Name
+command.resolve.extra.gh.release_body=Release Body
+
+command.resolve.extra.spigot.compatible_versions=Compatible Versions
+
+command.upgrade_kpm=Upgrade KPM.
+command.upgrade_kpm.no_kpm_upgrader=KPM upgrader is not installed.
+
+command.version=Display version and status information of KPM.
+command.version.invalid_mode=Mode %%mode%% is invalid.
+
+command.version.versions.kpm=KPM (TeamKUNPluginManager) v%%version%%
+command.version.versions.daemon=KPM Daemon v%%version%%
+command.version.versions.pyglib=PeyangPaperUtils v%%version%%
+
+command.version.license.1=Copyright (C) 2021-2023 TeamKUN., Peyang
+command.version.license.2=The MIT License https://opensource.org/licenses/MIT
+command.version.license.3=This is free software: you are free to redistribute it and/or modify
+command.version.license.4=it under the terms of the MIT License. There is no warranty; not even for merchantability or fitness for a particular purpose.
+command.version.license.bugs=Please report bugs/new features to GitHub https://github.com/TeamKUN/TeamKUNPluginManager.
+
+command.version.status.plugins=KPM manages %%plugins%% plugins (%%enabled%% enabled).
+command.version.status.aliases=%%aliases%% aliases are registered.
+
+
+installer.init_failed=Failed to initialize the installer: %%error%%
+installer.another_running=Another installer is currently running.
+installer.force_warn=%%dark_red%%Forced operation may cause unexpected issues.
+
+installer.operation.remove=The following items will be "%%red%%removed%%reset%%":
+installer.operation.modify=The following items will be "%%yellow%%modified%%reset%%":
+installer.operation.can_force=Forced operation is possible, but %%installer.force_warn%%
+installer.operation.result=%%green%%%%add%% added %%red%%%%remove%% removed %%yellow%%%%modify%% modified %%gray%%%%pending%% pending
+
+installer.common.checkenv.incompatible=The plugin %%name%% is incompatible with this TeamKUUNPluginManager.
+installer.common.checkenv.excluded=The plugin %%name%% is marked as an excluded plugin.
+installer.common.checkenv.excluded.force=The plugin %%name%% is marked as an excluded plugin, but forced operation is possible.
+installer.common.checkenv.force_when=%%installer.force_warn%%
+installer.common.checkenv.duplicate=The plugin %%name%% is already installed.
+installer.common.checkenv.duplicate.old=== Already Installed Plugins ==
+installer.common.checkenv.duplicate.new=== Plugins Trying to Install ==
+
+installer.common.mod.add=%%green%%+ %%name%%
+installer.common.mod.remove=%%red%%- %%name%%
+installer.common.mod.upgrade=%%yellow%%\u2191 %%name%%
+installer.common.mod.pending=%%gray%%* %%name%%
+
+installer.autoremove=Automatic removal of plugins
+installer.autoremove.errors.uninstaller_init_failed=Failed to initialize the uninstaller.
+installer.autoremove.errors.uninstall_failed=Failed to uninstall.
+installer.autoremove.errors.no_auto_removable_plugin_found=No automatically removable plugins found.
+installer.autoremove.errors.cancel=%%general.cancelled%%
+installer.autoremove.success=%%general.success%%
+installer.autoremove.unneeded=The following plugins were automatically installed, but are no longer needed:
+installer.autoremove.remove=%%installer.operation.remove%%
+
+installer.clean=Cleaning up unnecessary data
+installer.clean.errors.invalid_integrity=The system has been protected because there is a discrepancy with the file system.
+installer.clean.errors.no_garbage=No unnecessary data found.
+installer.clean.errors.cancel=%%general.cancelled%%
+installer.clean.errors.fail=%%general.failed%%
+installer.clean.searching=Searching for unnecessary data...
+installer.clean.remove=%%installer.operation.remove%%
+installer.clean.success=%%general.success%%
+
+installer.install=Installing plugin
+installer.install.errors.excluded=%%installer.common.checkenv.excluded%%
+installer.install.errors.duplicate=%%installer.common.checkenv.duplicate%%
+installer.install.errors.not_manually_installable=The specified plugin is marked as not manually installable.
+installer.install.errors.invalid_kpm_info=The specified plugin has an invalid KPM information file.
+
+installer.register=Generating token
+installer.register.errors.invalid_token=Invalid token.
+installer.register.errors.cancel=%%general.cancelled%%
+installer.register.errors.io_exception=%%general.ioException.when%%
+installer.register.token.checking=Checking the validity of the token...
+
+installer.update=Updating aliases
+installer.update.done=Aliases have been updated.
+installer.update.fail=Failed to update %%installer.update%% with %%error%%.
+installer.update.aliases=There are %%aliases%% registered aliases.
+installer.update.success=%%general.success%%
+
+installer.upgrade=Plugin upgrade
+installer.upgrade.errors.up_to_date=Plugin is up to date.
+installer.upgrade.errors.cancel=Cancelled.
+installer.upgrade.errors.not_found=Plugin not found.
+installer.upgrade.errors.install.fail=Failed to install with %%installer.install%%.
+installer.upgrade.errors.install.constant=Failed to generate plugin installer.
+installer.upgrade.errors.resolve=Failed to resolve dependencies.
+installer.upgrade.errors.excluded=Excluded by %%installer.common.checkenv.excluded%%.
+installer.upgrade.errors.uninstall.fail=Failed to uninstall with %%installer.uninstall%%.
+installer.upgrade.errors.uninstall.constant=Failed to generate plugin uninstaller.
+installer.upgrade.errors.self_upgrade=Attempted to upgrade KPM itself.
+installer.upgrade.errors.self_upgrade.suggest=To upgrade KPM, use the /kpm upgrade-kpm command.
+installer.upgrade.errors.older_or_equal=Plugin %%name%% is already up to date (version obtained: %%version%%).
+installer.upgrade.errors.version_not_def=Plugin %%name%% does not support automatic upgrades.
+installer.upgrade.errors.unknown=Failed to upgrade plugin %%name%%.
+installer.upgrade.not_found=Plugin %%name%% not found.
+installer.upgrade.resolve.auto_pick=Multiple plugins were resolved, attempting automatic selection.
+installer.upgrade.fail_unknown=Plugin (unknown) upgrade failed with %%status%% due to %%error%%.
+installer.upgrade.can_force=%%installer.operation.can_force%%
+installer.upgrade.ready.modify=%%installer.operation.modify%%
+installer.upgrade.ready.plugins=%%green%%%%name%% (%%yellow%%%%oldVersion%%%%white%% -> %%dark_green%%%%newVersion%%%%green%%)
+
+installer.uninstall=Plugin uninstall
+installer.uninstall.errors.not_found=Plugin not found.
+installer.uninstall.errors.excluded=Excluded by %%installer.common.checkenv.excluded%%.
+installer.uninstall.errors.dependency=%%general.plugin.specified_plugin%% depends on other plugins.
+installer.uninstall.errors.cancel=Cancelled.
+installer.uninstall.ready=%%installer.operation.remove%%
+installer.uninstall.success=%%general.success%%
+
+tasks.resolve.resolving=Resolving %%query%%...
+tasks.resolve.failed=Failed to resolve %%query%%: %%cause%%: %%message%%
+tasks.resolve.failed.not_found=Plugin not found.
+tasks.resolve.failed.asset_not_found=Plugin JAR file not found.
+tasks.resolve.failed.resolver_mismatch=No plugin resolver found for the query.
+tasks.resolve.failed.server_error=Invalid response received from server: %%message%%
+tasks.resolve.failed.wrong_token=Incorrect token may be set.
+tasks.resolve.failed.wrong_token.suggest=To reset the token, use the command /kpm register.
+tasks.resolve.multi=Multiple plugins found.
+tasks.resolve.multi.specified=Plugin %%name%%(%%version%%) has been selected.
+tasks.resolve.multi.choice=Please choose a plugin to use.
+tasks.resolve.multi.choices.auto=Automatically select the best plugin.
+tasks.resolve.multi.cancel=%%general.cancelled%%
+tasks.resolve.errors.got_error_result=An error occurred while resolving the plugin.
+tasks.resolve.errors.invalid_query=An invalid query was specified.
+tasks.resolve.errors.illegal_internal_state=An unexpected internal error occurred while resolving the plugin.
+
+tasks.download=Downloading
+tasks.download.progress_bar=%%tasks.download%%
+tasks.download.get=Getting %%url%% [%%size%%]
+tasks.download.success=Downloaded %%totalSize%% in %%yellow%%%%time%% seconds%%reset%% (%%speed%%/s).
+tasks.download.failed=Failed %%url%%: %%cause%% (%%value%%).
+tasks.download.errors.illegal_http_response=Invalid response received from server while downloading.
+tasks.download.errors.no_body_in_response=Body is empty.
+tasks.download.errors.io_exception=%%general.ioException.when%%
+tasks.download.errors.unknown=%%general.unknown.when%%
+
+tasks.description=Loading plugin information
+tasks.description.errors.not_plugin=The specified file is not a plugin or plugin.yml does not exist.
+tasks.description.errors.invalid_description=Invalid plugin information file.
+tasks.description.errors.io_exception=%%general.ioException.when%%
+
+tasks.deps.collect=Collect dependencies
+tasks.deps.collect.errors.some_collect_failed=Failed to collect some dependencies.
+tasks.deps.collect.failed=Failed to collect dependency %%dependency%%.
+
+tasks.deps.resolve.failed=Failed to resolve dependency %%dependency%%.
+tasks.deps.load.failed=Failed to load dependency %%dependency%%.
+tasks.deps.mismatch=Dependency %%dependency%% was found to be incompatible.
+tasks.deps.mismatch.suggest=Using a different version of the plugin may resolve this.
+
+tasks.deps.building_tree=Building dependency tree...
+
+tasks.install=Install
+tasks.install.errors.relocate_failed=Failed to relocate the specified plugin.
+tasks.install.errors.invalid_plugin=Attempted to install an invalid plugin.
+tasks.install.errors.invalid_description=The specified plugin has an invalid plugin information file.
+tasks.install.errors.incompatible.bukkit=The specified plugin is not compatible with this server version.
+tasks.install.errors.incompatible.bukkit.suggest=The plugin's api-version may be newer.
+tasks.install.errors.incompatible.kpm=The specified plugin is not compatible with this version of KPM.
+tasks.install.errors.io_exception=%%general.ioException.when%%
+tasks.install.errors.unknown=%%general.unknown.when%%
+tasks.install.preparing=Preparing to install %%name%%...
+tasks.install.relocating=Relocating %%src%% to %%dest%%...
+tasks.install.loading=Loading %%name%%...
+tasks.install.enabling=Processing triggers for %%name%%...
+tasks.install.invalid_kpm_info=Plugin %%name%% has a KPM information file (kpm.yml) but it is not in a format that KPM can understand.
+tasks.install.invalid_kpm_info.force=You can ignore this file with %%installer.operation.can_force%%.
+
+tasks.gen_token=Generate Token
+tasks.gen_token.code_alive=%%green%%Code alive for:
+tasks.gen_token.start.1=Log in to GitHub using a web browser.
+tasks.gen_token.start.2=This operation will grant KPM access to your GitHub account.
+tasks.gen_token.request.requesting=Connecting to server...
+tasks.gen_token.request.fail=Failed to retrieve verification code: %%httpStatus%% %%message%%
+tasks.gen_token.verify.verify_link=Please use this link to activate the code: %%blue%%%%underline%%%%link%%
+tasks.gen_token.verify.code=Code: %%white%%%%code%%
+tasks.gen_token.verify.expiresIn=This code will expire in %%minutes%% minutes.
+tasks.gen_token.verify.title=Please enter this code in GitHub to activate it.
+tasks.gen_token.verify.fail=Failed to activate code:
+tasks.gen_token.verify.fail.expire=%%tasks.gen_token.verify.fail%%The code has expired: %%code%%
+tasks.gen_token.verify.fail.expire.hint=To retrieve a new code, run /kpm register.
+tasks.gen_token.verify.fail.denied=%%tasks.gen_token.verify.fail%%User denied code activation.
+tasks.gen_token.verify.success=Token activation successful.
+
+tasks.uninstall=Uninstalling plugin
+tasks.uninstall.errors.some_plugin=Some %%tasks.uninstall%% failed.
+tasks.uninstall.errors.class_unload_fail=Failed to unload class.
+tasks.uninstall.errors.disable_fail=Failed to disable the plugin.
+tasks.uninstall.errors.unknown=%%general.unknown%%
+tasks.uninstall.uninstalling=Uninstalling %%name%%...
+tasks.uninstall.recipes_removing=Removing recipes of %%name%%...
+tasks.uninstall.disabling=Processing triggers of %%name%%...
+tasks.uninstall.unloading=Removing %%name%%...
+tasks.uninstall.error=Failed to uninstall %%name%%: %%error%%
+tasks.uninstall.dependency=Dependency
+tasks.uninstall.dependency.notify=%%name%% is dependent on the following plugins.
+tasks.uninstall.dependency.warn=Uninstalling this plugin may cause these plugins to stop working.
+tasks.uninstall.dependency.choice=Select how to handle the dependency.
+tasks.uninstall.dependency.choice.uninstall=Uninstall %%tasks.uninstall.dependency%%
+tasks.uninstall.dependency.choice.disable=Disable %%tasks.uninstall.dependency%%
+tasks.uninstall.dependency.choice.ignore=%%dark_red%%Ignore %%tasks.uninstall.dependency%%
+tasks.uninstall.dependency.choice.cancel=%%red%%Cancel uninstallation
+tasks.uninstall.dependency.error=%%general.errors.unexpected%%
+
+tasks.update=Updating plugin
+tasks.update.malformed_url=Malformed URL specified (%%remote%%): %%url%%
+tasks.update.invalid_source=Invalid source specified (%%source%%):
+tasks.update.invalid_source.io_exception=%%tasks.update.invalid_source%% %%general.errors.io_exception%%
+tasks.update.invalid_source.malformed_url=%%tasks.update.invalid_source%% Malformed
+tasks.update.invalid_source.unknown=%%tasks.update.invalid_source%% Unknown
+
+kpm_upgrade.fetch.fetching=Checking for the latest version of KPM...
+kpm_upgrade.fetch.already_latest=Great! Your current KPM version is already up to date. No upgrade is needed.
+kpm_upgrade.fetch.server_old=The latest version of KPM is older than the version you're currently using.
+kpm_upgrade.fetch.server_old.hint=You might be running KPM in a development environment.
+kpm_upgrade.fetch.upgradable=KPM is upgradable.
+kpm_upgrade.fetch.fail=Failed to check for the latest version of KPM.
+kpm_upgrade.fetch.fail.suggest=Please try again later.
+kpm_upgrade.deploy.deploying=Deploying KPM upgrader...
+kpm_upgrade.deploy.done=KPM upgrader has been deployed successfully.
+kpm_upgrade.deploy.fail=Failed to deploy KPM upgrader: %%cause%%
+kpm_upgrade.upgrade.ready=TeamKUNPluginManager(%%yellow%%%%old%%%%reset%%) will be upgraded to TeamKUNPluginManager(%%yellow%%%%new%%%%reset%%) at %%green%%%%new%%%%reset%%.
+kpm_upgrade.upgrade.ready.warn=%%dark_red%%KPM upgrader will reload the server after the upgrade is complete.
+kpm_upgrade.upgrade.cancel=Upgrade has been canceled.
+kpm_upgrade.upgrade.already_running=Upgrade is already running.
+
+notice.token.unset=GitHub token is not set.
+notice.token.unset.suggest=To issue or set a GitHub token, run /kpm register.
+notice.token.dead=The specified GitHub token has expired or is invalid.
+notice.token.dead.suggest=To reissue or set a GitHub token, run /kpm register.
+notice.plugin.removable=The following plugins are installed but no longer needed.
+notice.plugin.removable.suggest=To remove them, run '%%green%%/kpm autoremove%%reset%%'.
