@@ -73,6 +73,9 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
             case CANCELLED:
                 this.terminal.error("プラグイン解決がキャンセルされました。");
                 break;*/
+            case INVALID_QUERY:
+                key = "tasks.resolve.errors.invalidQuery";
+                break;
             case GOT_ERROR_RESULT:
                 key = "tasks.resolve.errors.gotErrorResult";
                 break;
