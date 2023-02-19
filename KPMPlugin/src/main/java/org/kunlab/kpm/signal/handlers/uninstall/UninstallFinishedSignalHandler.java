@@ -26,7 +26,7 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
         this.terminal.success(LangProvider.get(
-                "general.success",
+                "installer.uninstall.success",
                 INSTALLER_NAME
         ));
     }
@@ -42,18 +42,18 @@ public class UninstallFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case PLUGIN_NOT_FOUND:
-                key = "general.plugin.notFound";
+                key = "installer.uninstall.errors.notFound";
                 name = "%%general.plugin.specifiedPlugin%%";
                 named = true;
                 break;
             case PLUGIN_IGNORED:
-                key = "installer.common.checkenv.excluded";
+                key = "installer.uninstall.errors.excluded";
                 break;
             case PLUGIN_IS_DEPENDENCY:
                 key = "installer.uninstall.errors.dependency";
                 break;
             case CANCELLED:
-                key = "general.cancelled";
+                key = "installer.uninstall.errors.cancel";
                 named = true;
                 break;
             default:

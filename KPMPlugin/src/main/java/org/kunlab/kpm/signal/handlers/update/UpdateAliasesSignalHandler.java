@@ -46,7 +46,7 @@ public class UpdateAliasesSignalHandler
         switch (signal.getErrorCause())
         {
             case IO_ERROR:
-                key = "tasks.update.invalidSource.io";
+                key = "tasks.update.invalidSource.ioException";
                 break;
             case SOURCE_FILE_MALFORMED:
                 key = "tasks.update.invalidSource.malformedURL";
@@ -67,7 +67,7 @@ public class UpdateAliasesSignalHandler
     {
         if (signal.getResult().isSuccess())
             this.terminal.success(LangProvider.get(
-                    "general.success",
+                    "installer.update.success",
                     MsgArgs.of("name", "%%installer.update%%")
             ));
         else

@@ -20,7 +20,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success(LangProvider.get("general.success", INSTALLER_NAME));
+        this.terminal.success(LangProvider.get("installer.autoremove.success", INSTALLER_NAME));
     }
 
     private void handleAutoRemoveErrors(AutoRemoveErrorCause cause)
@@ -38,7 +38,7 @@ public class AutoRemoveFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.autoremove.errors.noAutoRemovablePluginFound";
                 break;
             case CANCELLED:
-                key = "general.cancelled";
+                key = "installer.autoremove.errors.cancel";
                 this.terminal.warn(LangProvider.get(key, INSTALLER_NAME));
                 return;
             default:

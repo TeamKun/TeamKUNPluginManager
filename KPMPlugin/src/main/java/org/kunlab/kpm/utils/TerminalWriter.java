@@ -45,7 +45,9 @@ public abstract class TerminalWriter
 
     protected void printBoolean(String key, boolean value)
     {
-        String localeKey = "general.chat.writer.key" + (value ? "Yes": "No");
+        String localeKey = value ?
+                "general.chat.writer.keyYes":
+                "general.chat.writer.keyNo";
 
         this.terminal.writeLine(LangProvider.get(localeKey, MsgArgs.of("key", "%%" + key + "%%")));
     }

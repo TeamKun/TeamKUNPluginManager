@@ -101,7 +101,7 @@ public class UpgradeSignalHandler
     {
         this.logErrorMessage(signal, false);
 
-        this.terminal.info(LangProvider.get("installer.operation.canForce"));
+        this.terminal.info(LangProvider.get("installer.upgrade.canForce"));
         signal.setExcludePlugin(!SignalHandlingUtils.askContinue(this.terminal));
     }
 
@@ -118,13 +118,13 @@ public class UpgradeSignalHandler
     @SignalHandler
     public void onUpgradeReady(UpgradeReadySignal signal)
     {
-        this.terminal.infoImplicit(LangProvider.get("installer.operation.modify"));
+        this.terminal.infoImplicit(LangProvider.get("installer.upgrade.ready.modify"));
 
         this.terminal.writeLine("  " + signal.getPlugins().stream()
                 .map(element -> {
                     Plugin plugin = element.getPlugin();
                     return LangProvider.get(
-                            "installer.upgrade.readyPlugin",
+                            "installer.upgrade.ready.plugins",
                             MsgArgs.of("name", plugin.getName())
                                     .add("version", plugin.getDescription().getVersion())
                                     .add("newVersion", element.getResolveResult().getVersion())

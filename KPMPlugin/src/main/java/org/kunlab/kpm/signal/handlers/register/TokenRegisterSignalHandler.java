@@ -61,11 +61,11 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
                 key = "installer.register.errors.invalidToken";
                 break;
             case GENERATE_CANCELLED:
-                key = "general.cancelled";
+                key = "installer.register.errors.cancel";
                 named = true;
                 break;
             case IO_EXCEPTION_OCCURRED:
-                key = "general.errors.ioException.when";
+                key = "installer.register.errors.ioException";
                 named = true;
                 break;
             case VERIFICATION_CODE_REQUEST_FAILED:

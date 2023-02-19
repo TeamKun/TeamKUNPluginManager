@@ -82,7 +82,7 @@ public class PluginIsDependencySignalHandler
         {
             e.printStackTrace();
             this.terminal.error(LangProvider.get(
-                    "general.errors.unexpected",
+                    "tasks.uninstall.dependency.error",
                     MsgArgs.of("error", e.getMessage())
             ));
             return PluginIsDependencySignal.Operation.CANCEL;

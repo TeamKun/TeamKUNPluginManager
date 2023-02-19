@@ -56,7 +56,7 @@ public class CheckEnvSignalHandler
         ));
 
 
-        this.terminal.warn(LangProvider.get("installer.operation.forceWarn"));
+        this.terminal.warn(LangProvider.get("installer.common.checkenv.forceWhen"));
 
         signal.setContinueInstall(SignalHandlingUtils.askContinue(this.terminal));
     }

@@ -22,7 +22,7 @@ public class UninstallReadySignalHandler
 
     private void printUninstallInfo(List<Plugin> uninstallTargets)
     {
-        this.terminal.successImplicit(LangProvider.get("installer.operation.remove"));
+        this.terminal.successImplicit(LangProvider.get("installer.uninstall.ready"));
         this.terminal.writeLine("  " + uninstallTargets.stream()
                 .map(Plugin::getName)
                 .sorted()

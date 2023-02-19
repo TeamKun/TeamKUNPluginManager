@@ -39,11 +39,11 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.upgrade.errors.upToDate";
                 break;
             case CANCELLED:
-                key = "general.cancelled";
+                key = "installer.upgrade.errors.cancel";
                 named = true;
                 break;
             case PLUGIN_NOT_FOUND:
-                key = "general.plugin.notFound";
+                key = "installer.upgrade.errors.notFound";
                 break;
             case INSTALL_FAILED:
                 key = "installer.upgrade.errors.install.fail";
@@ -55,7 +55,7 @@ public class UpgradeFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "installer.upgrade.errors.resolve";
                 break;
             case PLUGIN_EXCLUDED:
-                key = "installer.common.checkenv.excluded";
+                key = "installer.upgrade.errors.excluded";
                 this.terminal.error(LangProvider.get(
                         key,
                         MsgArgs.of("name", "%%general.plugin.specifiedPlugin%%")

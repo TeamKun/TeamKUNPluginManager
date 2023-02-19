@@ -23,7 +23,7 @@ public class GarbageCleanSignalHandler
     @SignalHandler
     public void onGarbageEnumerated(GarbageEnumeratedSignal signal)
     {
-        this.terminal.successImplicit(LangProvider.get("installer.operation.remove"));
+        this.terminal.successImplicit(LangProvider.get("installer.clean.remove"));
         this.terminal.writeLine("  " + signal.getGarbageDatas().stream()
                 .sorted()
                 .map(path -> path.getFileName().toString())

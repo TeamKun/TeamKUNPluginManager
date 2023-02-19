@@ -34,7 +34,7 @@ public class UninstallerSignalHandler
                 key = "tasks.uninstall.errors.disableFail";
                 break;
             default:
-                key = "general.errors.unknown";
+                key = "tasks.uninstall.errors.unknown";
         }
 
         return LangProvider.get(key);

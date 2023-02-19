@@ -20,7 +20,7 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success(LangProvider.get("general.success", INSTALLER_NAME));
+        this.terminal.success(LangProvider.get("installer.clean.success", INSTALLER_NAME));
     }
 
     private void handleGarbageCleanErrors(GarbageCleanErrorCause cause)
@@ -28,10 +28,10 @@ public class GarbageCleanFinishedSignalHandler extends InstallFinishedSignalBase
         switch (cause)
         {
             case CANCELLED:
-                this.terminal.warn(LangProvider.get("general.cancelled", INSTALLER_NAME));
+                this.terminal.warn(LangProvider.get("installer.clean.errors.cancel", INSTALLER_NAME));
                 break;
             case ALL_DELETE_FAILED:
-                this.terminal.warn(LangProvider.get("general.failed", INSTALLER_NAME));
+                this.terminal.warn(LangProvider.get("installer.clean.errors.fail", INSTALLER_NAME));
                 break;
             case INVALID_INTEGRITY:
                 this.terminal.warn(LangProvider.get("installer.clean.errors.invalidIntegrity"));

@@ -99,11 +99,11 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "tasks.download.errors.noBodyInResponse";
                 break;
             case IO_EXCEPTION:
-                key = "general.errors.ioException.when";
+                key = "tasks.download.errors.ioException";
                 named = true;
                 break;
             case UNKNOWN_ERROR:
-                key = "general.errors.unknown.when";
+                key = "tasks.download.errors.unknown";
                 named = true;
                 break;
             default:
@@ -132,7 +132,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "tasks.description.errors.invalidDescription";
                 break;
             case IO_EXCEPTION:
-                key = "general.errors.ioException.when";
+                key = "tasks.description.errors.ioException";
                 break;
             default:
                 return;
@@ -180,11 +180,11 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
                 key = "tasks.install.errors.incompatible.kpm";
                 break;
             case IO_EXCEPTION_OCCURRED:
-                key = "general.errors.ioException.when";
+                key = "tasks.install.errors.ioException";
                 named = true;
                 break;
             case EXCEPTION_OCCURRED:
-                key = "general.errors.unknown.when";
+                key = "tasks.install.errors.unknown";
                 named = true;
                 break;
             default:

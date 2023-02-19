@@ -109,7 +109,7 @@ public class ResolverSignalHandler
 
             if (result.test(QuestionAttribute.CANCELLABLE))
             {
-                this.terminal.error(LangProvider.get("general.cancelled", MsgArgs.of("name", "解決")));
+                this.terminal.error(LangProvider.get("tasks.resolve.multi.cancel", MsgArgs.of("name", "解決")));
                 signal.setCancel(true);
                 return;
             }

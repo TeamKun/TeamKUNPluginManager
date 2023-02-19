@@ -36,7 +36,7 @@ public class DownloadingSignalHandler
         if (this.terminal.isPlayer())
         {
             this.downloadProgressBar = this.terminal.createProgressbar(
-                    LangProvider.get("tasks.download")
+                    LangProvider.get("tasks.download.progressBar")
             );
             this.downloadProgressBar.setProgressMax(100);
         }
