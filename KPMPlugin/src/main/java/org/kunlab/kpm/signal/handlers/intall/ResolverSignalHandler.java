@@ -48,16 +48,36 @@ public class ResolverSignalHandler
         ErrorCause errorCause = signal.getError().getCause();
         String message = signal.getError().getMessage() == null ? "": "(" + signal.getError().getMessage() + ")";
 
-        this.terminal.error(LangProvider.get(
-                "tasks.resolve.failed",
-                MsgArgs.of("query", signal.getQuery())
-                        .add("cause", errorCause)
-                        .add("message", message)
-        ));
-        if (errorCause == ErrorCause.INVALID_CREDENTIAL)
+        switch (errorCause)
         {
-            this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken"));
-            this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken.suggest"));
+            case PLUGIN_NOT_FOUND:
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.notFound"));
+                break;
+            case ASSET_NOT_FOUND:
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.assetNotFound"));
+                break;
+            case RESOLVER_MISMATCH:
+                this.terminal.error(LangProvider.get("tasks.resolve.failed.resolverMismatch"));
+                break;
+            case SERVER_RESPONSE_ERROR:
+            case SERVER_RESPONSE_MALFORMED:
+                this.terminal.error(LangProvider.get(
+                        "tasks.resolve.failed.serverError",
+                        MsgArgs.of("message", message)
+                ));
+                break;
+            // noinspection FallThroughInSwitchStatement
+            case INVALID_CREDENTIAL:
+                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken"));
+                this.terminal.hint(LangProvider.get("tasks.resolve.failed.wrongToken.suggest"));
+                // no break
+            default:
+                this.terminal.error(LangProvider.get(
+                        "tasks.resolve.failed",
+                        MsgArgs.of("query", signal.getQuery())
+                                .add("cause", errorCause)
+                                .add("message", message)
+                ));
         }
     }
 
