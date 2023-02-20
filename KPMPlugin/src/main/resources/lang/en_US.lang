@@ -177,7 +177,7 @@ installer.install.errors.invalid_kpm_info=The specified plugin has an invalid KP
 installer.register=Generating token
 installer.register.errors.invalid_token=Invalid token.
 installer.register.errors.cancel=%%general.cancelled%%
-installer.register.errors.io_exception=%%general.ioException.when%%
+installer.register.errors.io_exception=%%general.errors.ioException.when%%
 installer.register.token.checking=Checking the validity of the token...
 
 installer.update=Updating aliases
@@ -240,13 +240,13 @@ tasks.download.success=Downloaded %%totalSize%% in %%yellow%%%%time%% seconds%%r
 tasks.download.failed=Failed %%url%%: %%cause%% (%%value%%).
 tasks.download.errors.illegal_http_response=Invalid response received from server while downloading.
 tasks.download.errors.no_body_in_response=Body is empty.
-tasks.download.errors.io_exception=%%general.ioException.when%%
-tasks.download.errors.unknown=%%general.unknown.when%%
+tasks.download.errors.io_exception=%%general.errors.ioException.when%%
+tasks.download.errors.unknown=%%general.errors.unknown.when%%
 
 tasks.description=Loading plugin information
 tasks.description.errors.not_plugin=The specified file is not a plugin or plugin.yml does not exist.
 tasks.description.errors.invalid_description=Invalid plugin information file.
-tasks.description.errors.io_exception=%%general.ioException.when%%
+tasks.description.errors.io_exception=%%general.errors.ioException.when%%
 
 tasks.deps.collect=Collect dependencies
 tasks.deps.collect.errors.some_collect_failed=Failed to collect some dependencies.
@@ -266,8 +266,8 @@ tasks.install.errors.invalid_description=The specified plugin has an invalid plu
 tasks.install.errors.incompatible.bukkit=The specified plugin is not compatible with this server version.
 tasks.install.errors.incompatible.bukkit.suggest=The plugin's api-version may be newer.
 tasks.install.errors.incompatible.kpm=The specified plugin is not compatible with this version of KPM.
-tasks.install.errors.io_exception=%%general.ioException.when%%
-tasks.install.errors.unknown=%%general.unknown.when%%
+tasks.install.errors.io_exception=%%general.errors.ioException.when%%
+tasks.install.errors.unknown=%%general.errors.unknown.when%%
 tasks.install.preparing=Preparing to install %%name%%...
 tasks.install.relocating=Relocating %%src%% to %%dest%%...
 tasks.install.loading=Loading %%name%%...

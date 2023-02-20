@@ -2,6 +2,7 @@ package org.kunlab.kpm.lang;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.kunlab.kpm.interfaces.KPMRegistry;
@@ -41,14 +42,28 @@ public class LangProvider
         LangProvider provider = INSTANCE;
         provider.currentLanguage = languageName;
         provider.currentLanguageMessages = INSTANCE.loader.loadLanguage(languageName);
+
+        buildCache();
         provider.registry.getLogger().info(LangProvider.get("general.lang.set"));
+    }
+
+    public static void buildCache()
+    {
+        Properties current = INSTANCE.currentLanguageMessages;
+        Properties cache = new Properties();
+        current.keySet().stream().parallel()
+                .map(Object::toString)
+                .map(key -> Pair.of(key, get(key)))
+                .forEach(pair -> cache.setProperty(pair.getLeft(), pair.getRight()));
+
+        INSTANCE.currentLanguageMessages = cache;
     }
 
     public static String get(String key, MsgArgs args)
     {
         String msg = INSTANCE.currentLanguageMessages.getProperty(key);
         if (msg == null)
-            return key;
+            return "%%" + key + "%%";
         return args.format(msg);
     }
 

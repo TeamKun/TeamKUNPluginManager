@@ -87,15 +87,6 @@ public class MsgArgs
         // @formatter:on
     }
 
-    private static String replaceGroup(String input, Matcher matcher, String replacement)
-    {
-        int start = matcher.start();
-        int end = matcher.end();
-        return input.substring(0, start) +
-                replacement +
-                input.substring(end);
-    }
-
     private String formatDeep(String msg)
     {
         Map<String, String> argMap = new HashMap<>();
@@ -111,7 +102,7 @@ public class MsgArgs
                     value = "%%" + key + "%%";
                 argMap.put(key, value);
             }
-            msg = replaceGroup(msg, matcher, value);
+            msg = StringUtils.replace(msg, "%%" + key + "%%", value);
         }
         return msg;
     }
@@ -133,10 +124,10 @@ public class MsgArgs
         for (Pair<String, String> arg : this.args)
             msg = msg.replace("%%" + arg.getLeft() + "%%", arg.getRight());
 
-        msg = formatColors(msg);
-
         if (!msg.contains("%%"))
             return msg;
+
+        msg = formatColors(msg);
 
         try
         {
