@@ -292,27 +292,28 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
     {
         this.postSignal(new PluginUninstallingSignal(plugin));
 
-        KPMInformationFile kpmInfo = null;
+        KPMInformationFile kpmInfo;
         if (this.registry.getKpmInfoManager().hasInfo(plugin))
             kpmInfo = this.registry.getKpmInfoManager().getOrLoadInfo(plugin);
+        else
+            kpmInfo = null;
 
         if (kpmInfo != null)
             kpmInfo.getHooks().runHook(new PluginUninstallHook.Pre(plugin.getDescription(), kpmInfo, plugin));
 
-        UninstallErrorCause mayError = this.disableOnePlugin(plugin, kpmInfo);
+        UninstallErrorCause mayError = this.runSync(() -> this.disableOnePlugin(plugin, kpmInfo));
         if (mayError != UninstallErrorCause.INTERNAL_UNINSTALL_OK)
             return mayError;
 
         if (onlyDisableMode)
             return UninstallErrorCause.INTERNAL_DISABLE_AND_UNINSTALL_OK;
 
-        mayError = this.unloadOnePlugin(plugin);
+        mayError = this.runSync(() -> this.unloadOnePlugin(plugin));
         if (mayError != UninstallErrorCause.INTERNAL_UNINSTALL_OK)
             return mayError;
 
         if (kpmInfo != null)
-            kpmInfo.getHooks().runHook(new PluginUninstallHook.Post(plugin.getDescription(), kpmInfo));
-
+            this.runSync(() -> kpmInfo.getHooks().runHook(new PluginUninstallHook.Post(plugin.getDescription(), kpmInfo)));
         this.registry.getPluginMetaManager().onUninstalled(plugin.getName());
         return UninstallErrorCause.INTERNAL_UNINSTALL_OK;
     }
