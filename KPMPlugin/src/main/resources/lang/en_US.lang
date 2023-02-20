@@ -173,6 +173,7 @@ installer.install.errors.excluded=%%installer.common.checkenv.excluded%%
 installer.install.errors.duplicate=%%installer.common.checkenv.duplicate%%
 installer.install.errors.not_manually_installable=The specified plugin is marked as not manually installable.
 installer.install.errors.invalid_kpm_info=The specified plugin has an invalid KPM information file.
+installer.install.success=%%general.success%%
 
 installer.register=Generating token
 installer.register.errors.invalid_token=Invalid token.

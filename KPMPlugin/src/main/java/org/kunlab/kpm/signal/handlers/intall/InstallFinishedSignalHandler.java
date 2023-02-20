@@ -29,7 +29,7 @@ public class InstallFinishedSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
-        this.terminal.success("インストールが正常に完了しました。");
+        this.terminal.success(LangProvider.get("installer.install.success", INSTALLER_NAME));
     }
 
     private boolean handleGeneralErrors(@Nullable InstallErrorCause cause)
