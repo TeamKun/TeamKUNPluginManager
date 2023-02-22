@@ -50,6 +50,12 @@ public class DebugConstants
      */
     public static final boolean PLUGIN_META_DEPENDENCY_TREE_TRACE;
 
+    /**
+     * メッセージの出力時に、翻訳キーを出力するかどうかを示します。
+     * デバッグモードが有効か、VM プロパティの {@code kpm.debug.raw-message} が {@code true} である場合に有効化されます。
+     */
+    public static final boolean RAW_MESSAGE;
+
     static
     {
         DEBUG_MODE = Boolean.getBoolean("kpm.enable-debug");
@@ -63,5 +69,8 @@ public class DebugConstants
 
         PLUGIN_META_OPERATION_TRACE = DEBUG_MODE || Boolean.getBoolean("kpm.debug.plugin-meta.trace-operation");
         PLUGIN_META_DEPENDENCY_TREE_TRACE = DEBUG_MODE || Boolean.getBoolean("kpm.debug.plugin-meta.trace-dependency-tree");
+
+        RAW_MESSAGE = DEBUG_MODE || Boolean.getBoolean("kpm.debug.raw-message");
+
     }
 }

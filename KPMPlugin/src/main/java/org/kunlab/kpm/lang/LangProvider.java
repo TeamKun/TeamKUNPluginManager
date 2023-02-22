@@ -5,9 +5,11 @@ import lombok.Setter;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class LangProvider
@@ -55,6 +57,16 @@ public class LangProvider
                 .map(Object::toString)
                 .map(key -> Pair.of(key, get(key)))
                 .forEach(pair -> cache.setProperty(pair.getLeft(), pair.getRight()));
+
+        if (DebugConstants.RAW_MESSAGE)
+        {
+            new ArrayList<>(cache.entrySet()).stream().parallel()
+                    .map(entry -> Pair.of(
+                            entry.getKey().toString(),
+                            entry.getValue().toString() + "(" + entry.getKey() + ")"
+                    ))
+                    .forEach(pair -> cache.setProperty(pair.getLeft(), pair.getRight()));
+        }
 
         INSTANCE.currentLanguageMessages = cache;
     }
