@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.enums.metadata.DependType;
 import org.kunlab.kpm.interfaces.meta.PluginMetaProvider;
+import org.kunlab.kpm.meta.DependType;
 import org.kunlab.kpm.meta.DependencyNode;
 import org.kunlab.kpm.meta.PluginMeta;
 

@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.db.Transaction;
-import org.kunlab.kpm.enums.metadata.DependType;
-import org.kunlab.kpm.enums.metadata.InstallOperator;
 import org.kunlab.kpm.interfaces.meta.PluginMetaIterator;
 import org.kunlab.kpm.interfaces.meta.PluginMetaProvider;
 import org.slf4j.LoggerFactory;

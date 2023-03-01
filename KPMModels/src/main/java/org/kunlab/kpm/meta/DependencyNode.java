@@ -1,7 +1,6 @@
 package org.kunlab.kpm.meta;
 
 import lombok.Value;
-import org.kunlab.kpm.enums.metadata.DependType;
 
 /**
  * 依存関係のノードです。

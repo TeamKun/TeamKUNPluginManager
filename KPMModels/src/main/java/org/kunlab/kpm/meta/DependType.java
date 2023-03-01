@@ -1,4 +1,4 @@
-package org.kunlab.kpm.enums.metadata;
+package org.kunlab.kpm.meta;
 
 /**
  * 依存の種類です。

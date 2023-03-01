@@ -1,7 +1,6 @@
 package org.kunlab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.kunlab.kpm.enums.metadata.DependType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

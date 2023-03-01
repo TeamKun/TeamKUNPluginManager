@@ -1,4 +1,4 @@
-package org.kunlab.kpm.enums.metadata;
+package org.kunlab.kpm.meta;
 
 /**
  * プラグインが誰によってインストールされたかを表します。

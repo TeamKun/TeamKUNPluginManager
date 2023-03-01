@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.db.Transaction;
-import org.kunlab.kpm.enums.metadata.InstallOperator;
 import org.kunlab.kpm.interfaces.meta.PluginMetaIterator;
 import org.kunlab.kpm.interfaces.meta.PluginMetaProvider;
 

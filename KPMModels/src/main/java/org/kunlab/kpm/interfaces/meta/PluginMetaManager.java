@@ -4,7 +4,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.enums.metadata.InstallOperator;
+import org.kunlab.kpm.meta.InstallOperator;
 
 /**
  * プラグインのメタデータを管理するクラスです。

@@ -10,7 +10,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
-import org.kunlab.kpm.enums.metadata.InstallOperator;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.interfaces.meta.PluginMetaIterator;
 import org.kunlab.kpm.interfaces.meta.PluginMetaManager;
