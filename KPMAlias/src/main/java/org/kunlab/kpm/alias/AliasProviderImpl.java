@@ -117,7 +117,7 @@ public class AliasProviderImpl implements AliasProvider
             if (row == null)
                 return null;
 
-            return new AliasImpl(
+            return new AliasRecord(
                     row.getString("alias"),
                     row.getString("query"),
                     row.getString("source_id")

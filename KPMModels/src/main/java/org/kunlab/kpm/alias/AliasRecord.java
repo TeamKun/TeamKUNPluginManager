@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.interfaces.alias.Alias;
 
 @Value
-class AliasImpl implements Alias
+class AliasRecord implements Alias
 {
     @NotNull
     String alias;
