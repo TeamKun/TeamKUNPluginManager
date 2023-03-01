@@ -43,6 +43,9 @@ public class TokenStore
     @SneakyThrows(IOException.class)
     public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath)
     {
+        if (Files.isDirectory(tokenPath) || Files.isDirectory(keyPath))
+            throw new IllegalArgumentException("Path must be a file");
+
         this.tokenPath = tokenPath;
         this.key = this.getkey(keyPath);
         this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
