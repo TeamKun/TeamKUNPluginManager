@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.alias.update;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 import java.net.URI;
 import java.nio.file.Path;

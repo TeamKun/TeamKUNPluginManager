@@ -21,8 +21,8 @@ import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeExpiredSi
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeReceivedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestFailedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.TaskFailedException;
 

@@ -3,9 +3,9 @@ package org.kunlab.kpm.installer;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.installer.InstallProgress;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 /**
  * インストールに失敗したことを表すインストール結果です。

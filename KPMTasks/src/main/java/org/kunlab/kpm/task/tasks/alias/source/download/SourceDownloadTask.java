@@ -2,8 +2,8 @@ package org.kunlab.kpm.task.tasks.alias.source.download;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.alias.source.download.signals.MalformedURLSignal;
 import org.kunlab.kpm.task.tasks.alias.source.download.signals.SourceDownloadFailedSignal;

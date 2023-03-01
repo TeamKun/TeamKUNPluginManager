@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.task.TaskResult;
+import org.kunlab.kpm.task.interfaces.TaskResult;
 
 /**
  * 実行したタスクの結果を表します。

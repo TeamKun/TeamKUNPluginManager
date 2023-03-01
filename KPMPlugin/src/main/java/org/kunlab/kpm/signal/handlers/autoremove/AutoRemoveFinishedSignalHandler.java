@@ -3,7 +3,7 @@ package org.kunlab.kpm.signal.handlers.autoremove;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.autoremove.AutoRemoveErrorCause;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;

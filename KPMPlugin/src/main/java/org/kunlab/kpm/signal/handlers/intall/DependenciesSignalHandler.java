@@ -4,11 +4,11 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
-import org.kunlab.kpm.task.tasks.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
-import org.kunlab.kpm.task.tasks.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
-import org.kunlab.kpm.task.tasks.dependencies.collector.signals.DependencyNameMismatchSignal;
-import org.kunlab.kpm.task.tasks.dependencies.collector.signals.DependencyResolveFailedSignal;
-import org.kunlab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.collector.signals.DependencyCollectDependencysDependsFailedSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.collector.signals.DependencyLoadDescriptionFailedSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.collector.signals.DependencyNameMismatchSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.collector.signals.DependencyResolveFailedSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 
 /**
  * 依存関係のシグナルを処理するハンドラです.

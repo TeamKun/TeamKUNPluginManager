@@ -15,8 +15,8 @@ import org.kunlab.kpm.installer.impls.uninstall.PluginUninstaller;
 import org.kunlab.kpm.installer.impls.uninstall.UnInstallErrorCause;
 import org.kunlab.kpm.installer.impls.uninstall.UnInstallTasks;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
 
 import java.util.Arrays;
 import java.util.List;

@@ -2,8 +2,8 @@ package org.kunlab.kpm.task.tasks.garbage.clean;
 
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageDeleteSkippedSignal;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageDeletingSignal;

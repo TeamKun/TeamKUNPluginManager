@@ -1,8 +1,8 @@
 package org.kunlab.kpm.alias;
 
 import lombok.Getter;
+import org.kunlab.kpm.alias.interfaces.AliasUpdater;
 import org.kunlab.kpm.db.Transaction;
-import org.kunlab.kpm.interfaces.alias.AliasUpdater;
 
 public class AliasUpdaterImpl implements AliasUpdater
 {

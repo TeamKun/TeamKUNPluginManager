@@ -7,10 +7,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.installer.InstallProgress;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 public class InstallResultImpl<P extends Enum<P>> implements InstallResult<P>
 {

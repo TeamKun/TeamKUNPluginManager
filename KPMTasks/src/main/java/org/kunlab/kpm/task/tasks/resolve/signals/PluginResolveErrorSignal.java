@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
+import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.signal.Signal;
 
 /**

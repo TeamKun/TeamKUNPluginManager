@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 
 import java.util.Collections;

@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.meta.PluginMetaProvider;
+import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 
 import java.util.Arrays;
 import java.util.List;

@@ -2,11 +2,11 @@ package org.kunlab.kpm.hook;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.hook.interfaces.HookExecutor;
+import org.kunlab.kpm.hook.interfaces.HookRecipientList;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHookRecipient;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.hook.HookExecutor;
-import org.kunlab.kpm.interfaces.hook.HookRecipientList;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
-import org.kunlab.kpm.interfaces.hook.KPMHookRecipient;
 import org.kunlab.kpm.kpminfo.InvalidInformationFileException;
 
 import javax.annotation.Nonnull;

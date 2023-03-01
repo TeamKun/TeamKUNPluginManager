@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 
 /**

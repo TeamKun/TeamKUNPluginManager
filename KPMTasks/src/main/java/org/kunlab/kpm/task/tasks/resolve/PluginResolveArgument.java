@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.resolve;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 /**
  * プラグインの解決を行うタスクの引数です。

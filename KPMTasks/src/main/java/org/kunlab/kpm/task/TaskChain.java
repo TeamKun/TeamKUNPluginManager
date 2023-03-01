@@ -4,11 +4,11 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
-import org.kunlab.kpm.interfaces.task.InstallTask;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
-import org.kunlab.kpm.interfaces.task.TaskResult;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
+import org.kunlab.kpm.task.interfaces.InstallTask;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskResult;
 
 import java.util.function.Function;
 

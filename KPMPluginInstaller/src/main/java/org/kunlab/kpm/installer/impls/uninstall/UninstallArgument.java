@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 
 import java.util.Arrays;

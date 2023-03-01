@@ -1,6 +1,6 @@
 package org.kunlab.kpm.task.tasks.resolve;
 
-import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
+import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 
 /**
  * プラグインの解決に失敗した理由を表します。

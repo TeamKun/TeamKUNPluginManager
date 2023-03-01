@@ -1,8 +1,8 @@
 package org.kunlab.kpm.installer.impls.install;
 
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import org.kunlab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
-import org.kunlab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import org.kunlab.kpm.installer.signals.InvalidKPMInfoFileSignal;
+import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 
 /**
  * インストールのエラーを表す列挙型です。

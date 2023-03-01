@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.resolve.signals;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.signal.Signal;
 
 /**

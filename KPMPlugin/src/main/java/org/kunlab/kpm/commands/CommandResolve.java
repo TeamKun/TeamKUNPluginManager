@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
 import org.kunlab.kpm.lang.LangProvider;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 
 import java.util.List;
 

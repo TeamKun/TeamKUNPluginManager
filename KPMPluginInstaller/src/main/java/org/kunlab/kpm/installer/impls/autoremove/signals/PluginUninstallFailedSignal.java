@@ -3,7 +3,7 @@ package org.kunlab.kpm.installer.impls.autoremove.signals;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.kunlab.kpm.installer.impls.uninstall.UnInstallTasks;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.signal.Signal;
 
 /**

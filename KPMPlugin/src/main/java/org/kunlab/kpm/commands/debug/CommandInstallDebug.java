@@ -13,8 +13,8 @@ import org.kunlab.kpm.installer.impls.install.InstallArgument;
 import org.kunlab.kpm.installer.impls.install.InstallErrorCause;
 import org.kunlab.kpm.installer.impls.install.InstallTasks;
 import org.kunlab.kpm.installer.impls.install.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
 
 import java.util.Arrays;
 import java.util.List;

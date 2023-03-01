@@ -1,13 +1,13 @@
 package org.kunlab.kpm.interfaces;
 
 import org.kunlab.kpm.TokenStore;
-import org.kunlab.kpm.interfaces.alias.AliasProvider;
-import org.kunlab.kpm.interfaces.hook.HookExecutor;
-import org.kunlab.kpm.interfaces.installer.InstallManager;
-import org.kunlab.kpm.interfaces.installer.loader.PluginLoader;
-import org.kunlab.kpm.interfaces.kpminfo.KPMInfoManager;
-import org.kunlab.kpm.interfaces.meta.PluginMetaManager;
-import org.kunlab.kpm.interfaces.resolver.PluginResolver;
+import org.kunlab.kpm.alias.interfaces.AliasProvider;
+import org.kunlab.kpm.hook.interfaces.HookExecutor;
+import org.kunlab.kpm.installer.interfaces.InstallManager;
+import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
+import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
+import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
+import org.kunlab.kpm.resolver.interfaces.PluginResolver;
 import org.kunlab.kpm.utils.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 

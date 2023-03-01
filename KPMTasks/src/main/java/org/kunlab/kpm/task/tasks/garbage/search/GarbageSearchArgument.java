@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 import java.nio.file.Path;
 import java.util.List;

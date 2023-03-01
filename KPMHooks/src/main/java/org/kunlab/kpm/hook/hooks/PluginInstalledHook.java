@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
 import org.kunlab.kpm.meta.InstallOperator;
 
 /**

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.Singular;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 
 import java.util.ArrayList;
 import java.util.List;

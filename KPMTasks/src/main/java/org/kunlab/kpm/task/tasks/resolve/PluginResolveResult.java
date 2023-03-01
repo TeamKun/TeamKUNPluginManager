@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.resolve;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.task.AbstractTaskResult;
 
 /**

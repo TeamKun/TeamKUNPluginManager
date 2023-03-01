@@ -2,7 +2,7 @@ package org.kunlab.kpm;
 
 import lombok.experimental.UtilityClass;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 

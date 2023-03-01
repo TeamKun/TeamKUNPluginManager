@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
 
 import java.util.ArrayList;
 

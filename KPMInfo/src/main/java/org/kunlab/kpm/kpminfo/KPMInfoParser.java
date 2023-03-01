@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.HookRecipientListImpl;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.hook.HookRecipientList;
+import org.kunlab.kpm.hook.interfaces.HookRecipientList;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 import org.yaml.snakeyaml.Yaml;

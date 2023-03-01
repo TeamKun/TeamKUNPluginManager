@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.lookup;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 /**
  * プラグインの検索を行うタスクの引数です。

@@ -11,9 +11,9 @@ import org.kunlab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSignal
 import org.kunlab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
 import org.kunlab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import org.kunlab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;

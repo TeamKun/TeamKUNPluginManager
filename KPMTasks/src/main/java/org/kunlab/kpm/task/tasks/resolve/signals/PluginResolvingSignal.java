@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.resolve.signals;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.kunlab.kpm.interfaces.resolver.PluginResolver;
+import org.kunlab.kpm.resolver.interfaces.PluginResolver;
 import org.kunlab.kpm.signal.Signal;
 
 /**

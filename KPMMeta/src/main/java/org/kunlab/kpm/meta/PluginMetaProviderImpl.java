@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.db.Transaction;
-import org.kunlab.kpm.interfaces.meta.PluginMetaIterator;
-import org.kunlab.kpm.interfaces.meta.PluginMetaProvider;
+import org.kunlab.kpm.meta.interfaces.PluginMetaIterator;
+import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;

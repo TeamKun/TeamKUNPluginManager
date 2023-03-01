@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.plugin.Plugin;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.signal.Signal;
 
 import java.util.List;

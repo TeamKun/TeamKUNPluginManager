@@ -6,11 +6,11 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TokenStore;
 import org.kunlab.kpm.installer.exceptions.InstallerRunningException;
 import org.kunlab.kpm.installer.exceptions.TokenNotAvailableException;
-import org.kunlab.kpm.interfaces.installer.InstallManager;
-import org.kunlab.kpm.interfaces.installer.InstallProgress;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallManager;
+import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 import java.util.function.Consumer;
 

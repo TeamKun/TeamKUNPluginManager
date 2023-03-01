@@ -5,7 +5,7 @@ import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeErrorCause;
 import org.kunlab.kpm.installer.impls.upgrade.UpgradeTasks;
-import org.kunlab.kpm.interfaces.installer.InstallResult;
+import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;

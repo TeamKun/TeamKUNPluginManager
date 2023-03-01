@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.commands.debug.deptree.CommandMarkAsDependency;
 import org.kunlab.kpm.commands.debug.deptree.CommandPurge;
 import org.kunlab.kpm.commands.debug.deptree.CommandRelation;
-import org.kunlab.kpm.interfaces.meta.PluginMetaManager;
+import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 
 import java.util.HashMap;
 import java.util.Map;

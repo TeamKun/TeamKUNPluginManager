@@ -1,6 +1,6 @@
 package org.kunlab.kpm.installer.impls.uninstall;
 
-import org.kunlab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 
 /**

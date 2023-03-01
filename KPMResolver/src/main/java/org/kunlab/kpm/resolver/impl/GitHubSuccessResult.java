@@ -3,8 +3,8 @@ package org.kunlab.kpm.resolver.impl;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.resolver.BaseResolver;
-import org.kunlab.kpm.interfaces.resolver.result.MarketplaceResult;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.result.MarketplaceResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 
 import javax.annotation.Nonnull;

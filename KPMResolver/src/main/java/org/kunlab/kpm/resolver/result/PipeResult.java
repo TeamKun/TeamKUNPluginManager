@@ -2,8 +2,8 @@ package org.kunlab.kpm.resolver.result;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.resolver.BaseResolver;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.PluginResolverImpl;
 import org.kunlab.kpm.resolver.QueryContext;
 

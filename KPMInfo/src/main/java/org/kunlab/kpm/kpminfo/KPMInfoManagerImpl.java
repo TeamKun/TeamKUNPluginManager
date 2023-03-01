@@ -5,7 +5,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.kpminfo.KPMInfoManager;
+import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.FileNotFoundException;

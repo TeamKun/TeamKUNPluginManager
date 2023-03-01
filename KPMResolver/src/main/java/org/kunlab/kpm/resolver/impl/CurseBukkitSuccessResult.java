@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
-import org.kunlab.kpm.interfaces.resolver.result.MarketplaceResult;
+import org.kunlab.kpm.resolver.interfaces.result.MarketplaceResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 
 import javax.annotation.Nonnull;

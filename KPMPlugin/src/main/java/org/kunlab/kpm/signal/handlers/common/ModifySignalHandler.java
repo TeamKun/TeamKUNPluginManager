@@ -1,7 +1,7 @@
 package org.kunlab.kpm.signal.handlers.common;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.kunlab.kpm.interfaces.installer.signals.PluginModifiedSignal;
+import org.kunlab.kpm.installer.signals.PluginModifiedSignal;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;

@@ -2,7 +2,7 @@ package org.kunlab.kpm.alias;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.alias.Alias;
+import org.kunlab.kpm.alias.interfaces.Alias;
 
 @Value
 class AliasRecord implements Alias

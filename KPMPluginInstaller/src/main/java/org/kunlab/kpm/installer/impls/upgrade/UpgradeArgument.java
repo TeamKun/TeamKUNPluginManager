@@ -3,7 +3,7 @@ package org.kunlab.kpm.installer.impls.upgrade;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 
 import java.util.List;
 

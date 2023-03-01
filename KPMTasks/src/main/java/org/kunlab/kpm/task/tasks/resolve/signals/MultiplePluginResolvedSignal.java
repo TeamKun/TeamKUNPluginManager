@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.resolver.result.MultiResult;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.signal.Signal;
 
 /**

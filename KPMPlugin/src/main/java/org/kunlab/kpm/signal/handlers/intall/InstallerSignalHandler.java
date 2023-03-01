@@ -1,7 +1,7 @@
 package org.kunlab.kpm.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.kunlab.kpm.interfaces.installer.signals.InvalidKPMInfoFileSignal;
+import org.kunlab.kpm.installer.signals.InvalidKPMInfoFileSignal;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;

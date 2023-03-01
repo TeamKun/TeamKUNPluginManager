@@ -2,8 +2,8 @@ package org.kunlab.kpm.installer.impls.install;
 
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectTask;
-import org.kunlab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
+import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectTask;
+import org.kunlab.kpm.task.interfaces.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 import org.kunlab.kpm.task.tasks.description.DescriptionLoadTask;
 import org.kunlab.kpm.task.tasks.download.DownloadTask;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveTask;

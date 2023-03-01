@@ -1,9 +1,9 @@
 package org.kunlab.kpm.resolver.result;
 
 import lombok.Value;
-import org.kunlab.kpm.interfaces.resolver.BaseResolver;
-import org.kunlab.kpm.interfaces.resolver.result.MultiResult;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 
 /**
  * 解決結果が複数ある場合に返されるクラスです。

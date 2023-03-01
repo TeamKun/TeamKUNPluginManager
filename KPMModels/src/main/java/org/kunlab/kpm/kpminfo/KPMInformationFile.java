@@ -6,9 +6,9 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.HookListener;
-import org.kunlab.kpm.interfaces.hook.HookRecipientList;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
-import org.kunlab.kpm.interfaces.hook.KPMHookRecipient;
+import org.kunlab.kpm.hook.interfaces.HookRecipientList;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHookRecipient;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 

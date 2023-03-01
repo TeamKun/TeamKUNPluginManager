@@ -1,12 +1,12 @@
 package org.kunlab.kpm.resolver;
 
-import org.kunlab.kpm.interfaces.resolver.BaseResolver;
-import org.kunlab.kpm.interfaces.resolver.PluginResolver;
-import org.kunlab.kpm.interfaces.resolver.URLResolver;
-import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
-import org.kunlab.kpm.interfaces.resolver.result.MultiResult;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.PluginResolver;
+import org.kunlab.kpm.resolver.interfaces.URLResolver;
+import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
+import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 
 import java.net.MalformedURLException;

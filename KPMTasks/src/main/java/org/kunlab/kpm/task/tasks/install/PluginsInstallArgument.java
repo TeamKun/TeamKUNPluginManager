@@ -6,9 +6,9 @@ import lombok.Value;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
-import org.kunlab.kpm.interfaces.task.tasks.dependencies.DependencyElement;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
+import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
 
 import java.nio.file.Path;
 import java.util.List;

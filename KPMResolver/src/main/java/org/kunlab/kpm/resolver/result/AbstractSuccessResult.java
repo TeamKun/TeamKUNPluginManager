@@ -3,8 +3,8 @@ package org.kunlab.kpm.resolver.result;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.interfaces.resolver.BaseResolver;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 
 /**
  * 解決に成功したことを表すクエリ解決結果です。

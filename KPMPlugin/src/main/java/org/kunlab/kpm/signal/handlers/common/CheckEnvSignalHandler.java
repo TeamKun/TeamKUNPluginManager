@@ -4,7 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
-import org.kunlab.kpm.interfaces.installer.signals.assertion.IgnoredPluginSignal;
+import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;

@@ -4,9 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.InstallResultImpl;
-import org.kunlab.kpm.interfaces.installer.InstallProgress;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 import java.nio.file.Path;
 import java.util.List;

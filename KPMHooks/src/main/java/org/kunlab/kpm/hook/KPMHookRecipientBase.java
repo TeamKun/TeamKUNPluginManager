@@ -1,9 +1,9 @@
 package org.kunlab.kpm.hook;
 
 import lombok.Getter;
+import org.kunlab.kpm.hook.interfaces.KPMHook;
+import org.kunlab.kpm.hook.interfaces.KPMHookRecipient;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.hook.KPMHook;
-import org.kunlab.kpm.interfaces.hook.KPMHookRecipient;
 
 import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Method;

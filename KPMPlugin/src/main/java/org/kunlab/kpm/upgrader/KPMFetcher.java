@@ -2,11 +2,11 @@ package org.kunlab.kpm.upgrader;
 
 import lombok.experimental.UtilityClass;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.interfaces.resolver.PluginResolver;
-import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
-import org.kunlab.kpm.interfaces.resolver.result.MultiResult;
-import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
-import org.kunlab.kpm.interfaces.resolver.result.SuccessResult;
+import org.kunlab.kpm.resolver.interfaces.PluginResolver;
+import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
+import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
+import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.MultiResultImpl;

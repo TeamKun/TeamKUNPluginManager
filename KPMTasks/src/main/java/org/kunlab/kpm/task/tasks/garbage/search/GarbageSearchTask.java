@@ -1,8 +1,8 @@
 package org.kunlab.kpm.task.tasks.garbage.search;
 
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.interfaces.installer.InstallerArgument;
-import org.kunlab.kpm.interfaces.installer.PluginInstaller;
+import org.kunlab.kpm.installer.interfaces.InstallerArgument;
+import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.garbage.search.signals.GarbageSearchingSignal;
 

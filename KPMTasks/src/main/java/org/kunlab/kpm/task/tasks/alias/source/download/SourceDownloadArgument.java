@@ -2,7 +2,7 @@ package org.kunlab.kpm.task.tasks.alias.source.download;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.kunlab.kpm.interfaces.task.TaskArgument;
+import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 import java.util.Map;
 
