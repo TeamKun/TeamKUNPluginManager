@@ -5,10 +5,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.enums.resolver.ErrorCause;
 import org.kunlab.kpm.interfaces.resolver.BaseResolver;
 import org.kunlab.kpm.interfaces.resolver.result.ErrorResult;
 import org.kunlab.kpm.interfaces.resolver.result.ResolveResult;
+import org.kunlab.kpm.resolver.ErrorCause;
 
 @AllArgsConstructor
 @EqualsAndHashCode

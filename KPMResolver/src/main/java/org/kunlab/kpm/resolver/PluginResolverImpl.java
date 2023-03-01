@@ -1,6 +1,5 @@
 package org.kunlab.kpm.resolver;
 
-import org.kunlab.kpm.enums.resolver.ErrorCause;
 import org.kunlab.kpm.interfaces.resolver.BaseResolver;
 import org.kunlab.kpm.interfaces.resolver.PluginResolver;
 import org.kunlab.kpm.interfaces.resolver.URLResolver;

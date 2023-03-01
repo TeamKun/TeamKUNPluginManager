@@ -1,7 +1,7 @@
 package org.kunlab.kpm.interfaces.resolver.result;
 
-import org.kunlab.kpm.enums.resolver.ErrorCause;
 import org.kunlab.kpm.interfaces.resolver.BaseResolver;
+import org.kunlab.kpm.resolver.ErrorCause;
 
 /**
  * 解決に失敗したことを表すクエリ解決結果です。

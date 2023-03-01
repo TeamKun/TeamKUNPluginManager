@@ -1,4 +1,4 @@
-package org.kunlab.kpm.enums.resolver;
+package org.kunlab.kpm.resolver;
 
 /**
  * エラーのかんたんな理由を表す列挙型です。
