@@ -1,4 +1,4 @@
-package org.kunlab.kpm.enums.alias;
+package org.kunlab.kpm.alias;
 
 /**
  * ソースの種類を表す列挙型です。

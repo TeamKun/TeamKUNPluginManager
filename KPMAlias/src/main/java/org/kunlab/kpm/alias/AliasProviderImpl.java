@@ -7,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.db.ResultRow;
 import org.kunlab.kpm.db.Transaction;
-import org.kunlab.kpm.enums.alias.AliasSourceType;
 import org.kunlab.kpm.interfaces.alias.Alias;
 import org.kunlab.kpm.interfaces.alias.AliasProvider;
 import org.kunlab.kpm.interfaces.alias.AliasSource;

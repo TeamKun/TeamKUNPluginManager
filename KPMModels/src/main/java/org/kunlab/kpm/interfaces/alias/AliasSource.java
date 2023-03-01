@@ -1,6 +1,6 @@
 package org.kunlab.kpm.interfaces.alias;
 
-import org.kunlab.kpm.enums.alias.AliasSourceType;
+import org.kunlab.kpm.alias.AliasSourceType;
 
 /**
  * エイリアスのソースを表すクラスです。

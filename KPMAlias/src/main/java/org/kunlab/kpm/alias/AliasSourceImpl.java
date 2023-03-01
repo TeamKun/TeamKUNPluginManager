@@ -2,7 +2,6 @@ package org.kunlab.kpm.alias;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.enums.alias.AliasSourceType;
 import org.kunlab.kpm.interfaces.alias.AliasSource;
 
 @Value
