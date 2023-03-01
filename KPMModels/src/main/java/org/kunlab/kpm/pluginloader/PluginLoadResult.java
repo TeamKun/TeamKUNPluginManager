@@ -1,4 +1,4 @@
-package org.kunlab.kpm.enums.pluginloader;
+package org.kunlab.kpm.pluginloader;
 
 import lombok.Getter;
 import org.bukkit.plugin.Plugin;

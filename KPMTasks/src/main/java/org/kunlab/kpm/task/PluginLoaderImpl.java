@@ -16,9 +16,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.enums.pluginloader.PluginLoadResult;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.interfaces.installer.loader.PluginLoader;
+import org.kunlab.kpm.pluginloader.PluginLoadResult;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.IOException;
