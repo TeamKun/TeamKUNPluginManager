@@ -150,25 +150,27 @@ public class Version implements Comparable<Version>
         else if (patchCompare != 0)
             return patchCompare;
 
-        if (this.preRelease != null)
+        // すべての要素が等しい場合、preReleaseとbuildMetadataを比較する
+
+        if (!(this.preRelease == null && o.preRelease == null))
         {
-            if (o.preRelease == null)
+            if (this.preRelease == null)
                 return -1;
+            else if (o.preRelease == null)
+                return 1;
             else
                 return this.preRelease.compareTo(o.preRelease);
         }
-        else if (o.preRelease != null)
-            return 1;
 
-        if (this.buildMetadata != null)
+        if (!(this.buildMetadata == null && o.buildMetadata == null))
         {
-            if (o.buildMetadata == null)
+            if (this.buildMetadata == null)
+                return -1;
+            else if (o.buildMetadata == null)
                 return 1;
             else
                 return this.buildMetadata.compareTo(o.buildMetadata);
         }
-        else if (o.buildMetadata != null)
-            return -1;
 
         return 0;
     }
