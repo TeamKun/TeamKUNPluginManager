@@ -32,15 +32,21 @@ class TokenStoreTest
 
     @BeforeAll
     @SuppressWarnings("unchecked")
-    @SneakyThrows({ClassNotFoundException.class, NoSuchFieldException.class, IllegalAccessException.class})
     public static void injectEnv()
     {
-        Class<?> cProcessEnvironment = Class.forName("java.lang.ProcessEnvironment");
-        Field fTheCaseInsensitiveEnvironment = cProcessEnvironment.getDeclaredField("theCaseInsensitiveEnvironment");
-        fTheCaseInsensitiveEnvironment.setAccessible(true);  // 黒魔術で, ENVを書き換える
-        Map<String, String> env = (Map<String, String>) fTheCaseInsensitiveEnvironment.get(null);
+        try
+        {
+            Class<?> cProcessEnvironment = Class.forName("java.lang.ProcessEnvironment");
+            Field fTheCaseInsensitiveEnvironment = cProcessEnvironment.getDeclaredField("theCaseInsensitiveEnvironment");
+            fTheCaseInsensitiveEnvironment.setAccessible(true);  // 黒魔術で, ENVを書き換える
+            Map<String, String> env = (Map<String, String>) fTheCaseInsensitiveEnvironment.get(null);
 
-        env.put("TOKEN", "dummy_token_114514");
+            env.put("TOKEN", "dummy_token_114514");
+        }
+        catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e)
+        {
+            System.out.println("Failed to inject env");
+        }
     }
 
     @BeforeAll

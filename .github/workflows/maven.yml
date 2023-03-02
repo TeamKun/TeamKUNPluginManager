@@ -28,3 +28,6 @@ jobs:
             ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
       - name: Build with Maven
         run: mvn -B package --file pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN: "dummy_token_114514" # for maven test
