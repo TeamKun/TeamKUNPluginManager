@@ -7,22 +7,44 @@
     </a>
     <img alt="GitHub" src="https://img.shields.io/github/license/TeamKun/TeamKunPluginManager?style=flat-square">
     <img alt="Java version" src="https://img.shields.io/static/v1?label=Java%20version&message=1.8&color=success&style=flat-square">
-    <a href="https://github.com/TeamKun/TeamKunPluginManager/wiki">
-        <img alt="Docs" src="https://img.shields.io/static/v1?label=Docs&message=wiki&color=green&style=flat-square">
+    <a href="https://kpm.kunlab.org">https://img.shields.io/static/v1?label=Docs&message=Website&color=green&style=flat-square
+        <img alt="Docs" src="https://img.shields.io/static/v1?label=Docs&message=Website%E2%98%81&color=green&style=flat-square">
     </a>
     <br>
-    プラグインをリモートからインストールします。
+    リポジトリからプラグインおよびその依存関係を自動でダウンロードし, 高度なサーバ管理支援を行います。
+    <br>
+    It automatically downloads plugins and their dependencies from repositories and provides advanced server management support.
 </p>
 
-## 概要
+## 概要 (Overview)
 
-+ TeamKUNPluginManagerは、[PlugMan](https://dev.bukkit.org/projects/plugman), [Installer](https://dev.bukkit.org/projects/plugin-installer)に並ぶ新しいプラグインマネージャです。
-+ GitHubと連携し、リモートリポジトリのリリースからインストールを行うことが可能です。
-+ 依存関係の解決機能を有しており`plugin.yml`に記述された依存関係がプラグインインストール時に自動でインストールされます。
-+ プラグイン名の別名を自分で作成することができ、リモートで同期することが可能です。
-+ [apt](https://salsa.debian.org/apt-team/apt)と[npm](https://github.com/npm/cli)を足して2で割ったようなコマンド操作感で、初心者でも簡単に扱うことが可能です。
-+ SQLiteを用いて依存関係ツリーを構築します。
+* TeamKUNPluginManager は、PaperMC プラグインを簡単かつ安全にインストールするツールです。
+* GitHub や HTTP サーバなどのリポジトリから必要なプラグインを簡単な操作で自動ダウンロードし、インストールできます。
+* KPM は、自動で依存関係を解決するため、手動で前提プラグインをインストールする必要がなくなります。
+* KPMは不要なプラグイン（削除されたプラグインの依存関係として自動インストールされたもの等）を自動で検出し、管理者に報告します。  
+  これにより、不要なプラグインを削除でき、パフォーマンスの向上につながります。
+* 依存関係ツリーとメタデータを自動で構築し、プラグインの管理が簡単になります。
+* グラフィカルなインタフェースで、必要なプラグインをより簡単に見つけられます。
 
-## 導入方法&ドキュメント
+## 言語サポート (Language Support)
 
-+ [こちら](https://github.com/TeamKun/TeamKunPluginManager/wiki)からご覧ください。
+KPM は、以下の言語に対応しています。
+
+| 言語 (Language) | プラグイン (Plugin)     | ドキュメント (Documentation) |
+|:--------------|:-------------------|:-----------------------|
+| 日本語           | :white_check_mark: | :white_check_mark:     |
+| English(US)   | :white_check_mark: | :x:                    |
+| 日本語(関西弁)      | :white_check_mark: | :x:                    |
+
+## 導入方法とドキュメント (Installation and Documentation)
+
+* [こちら](https://kpm.kunlab.org) を参照してください。
+
+## スクリーンショット (Screenshots)
+
+<img src="images/pl-install.png" width="350px" alt="Install feature">
+<img src="images/pl-upgrade.png" width="350px" alt="Upgrade feature">
+<br>
+<img src="images/clean.png" width="350px" alt="Clean feature">
+<img src="images/pl-info.png" width="350px" alt="Plugin info
+feature">
