@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.kunlab.kpm</groupId>
+        <artifactId>TeamKunPluginManager</artifactId>
+        <version>3.0.0-pre10</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>KPMHooks</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kunlab.kpm</groupId>
+            <artifactId>KPMModels</artifactId>
+            <version>3.0.0-pre10</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kunlab.kpm</groupId>
+            <artifactId>KPMCommon</artifactId>
+            <version>3.0.0-pre10</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

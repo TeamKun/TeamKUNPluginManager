@@ -24,4 +24,5 @@
 + SQLiteを用いて依存関係ツリーを構築します。
 
 ## 導入方法&ドキュメント
+
 + [こちら](https://github.com/TeamKun/TeamKunPluginManager/wiki)からご覧ください。
