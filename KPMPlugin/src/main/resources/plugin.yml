@@ -1,0 +1,59 @@
+name: TeamKunPluginManager
+version: ${project.version}
+main: org.kunlab.kpm.TeamKunPluginManager
+authors: [Peyang]
+api-version: 1.16
+description: Manage your plugin!
+website: https://kunmc.net/
+
+loadbefore: [KPMUpgrader]
+
+commands:
+  kunpluginmanager:
+    aliases: [pm, kpm, kunpm, kunmgmt] #devicemgmt.mscへの恨み
+    usage: "/kpm <i|rm|info|autoremove|clean|fix|status|update> [Plugin name | URL | Repository Name]"
+
+
+permissions:
+  kpm:
+    description: "このプラグインを使用できます。"
+    default: op
+    children:
+      kpm.install: true
+      kpm.reload: true
+      kpm.uninstall: true
+      kpm.info: true
+      kpm.autoremove: true
+      kpm.clean: true
+      kpm.fix: true
+      kpm.status: true
+      kpm.update: true
+  kpm.install:
+    description: "プラグインをインストールできます。"
+  kpm.uninstall:
+    description: "プラグインをアンインストールします。"
+  kpm.reload:
+    description: "プラグインを再起動します。"
+  kpm.info:
+    description: "プラグインの情報を閲覧します。"
+  kpm.autoremove:
+    description: "不要になったプラグインを削除します。"
+  kpm.clean:
+    description: "アンインストールされたプラグインのデータファイルを削除します。"
+  kpm.fix:
+    description: "プラグインのエラーを修復します。"
+  kpm.status:
+    description: "プラグインの状態を閲覧します。"
+  kpm.update:
+    description: "エイリアス定義データベースを更新します。"
+  kpm.help:
+    description: "プラグインのヘルプを表示します。"
+
+  kpm.debug:
+    description: "プラグインのデバッグを行います。"
+    default: op
+    children:
+      kpm.debug.install:
+        description: "プラグインをインストールします。"
+        default: op
+
