@@ -10,9 +10,7 @@ include:
   - name: DeclareCollectionAsInterface
   - name: MagicNumber
   - name: MethodOnlyUsedFromInnerClass
-  - name: TypeMayBeWeakened
   - name: UnresolvedClassReferenceRepair
-  - name: UseOfConcreteClass
   - name: AssignmentToLambdaParameter
   - name: AssignmentToMethodParameter
   - name: DoubleLiteralMayBeFloatLiteral
