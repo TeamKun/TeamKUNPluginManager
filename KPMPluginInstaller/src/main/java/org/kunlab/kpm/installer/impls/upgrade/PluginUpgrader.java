@@ -392,8 +392,10 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         LookupResult lookupResult = this.submitter(UpgradeTasks.SEARCHING_PLUGIN, new PluginLookupTask(this))
                 .submitAll(new LookupArgument(targets.toArray(new String[0])));
 
-        HashMap<String, Plugin> foundPlugins = lookupResult.getPlugins();
-        assert foundPlugins != null;
+        assert lookupResult.getPlugins() != null;
+        HashMap<String, Plugin> foundPlugins = lookupResult.getPlugins().entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(KPMCollectors.toHashMap());
 
         targets.removeAll(foundPlugins.keySet());
 
