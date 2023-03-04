@@ -29,6 +29,9 @@ import java.util.stream.StreamSupport;
  */
 public class Transaction implements AutoCloseable
 {
+    private static final int MAX_POOL_SIZE = 20;
+    private static final long CONN_LEAK_DETECT_THRESHOLD = 300000L;
+
     /**
      * Dbのコネクションです。
      */
@@ -135,8 +138,8 @@ public class Transaction implements AutoCloseable
         config.setDriverClassName("org.sqlite.JDBC");
         config.setJdbcUrl("jdbc:sqlite:" + databasePath);
 
-        config.setMaximumPoolSize(20);
-        config.setLeakDetectionThreshold(300000);
+        config.setMaximumPoolSize(MAX_POOL_SIZE);
+        config.setLeakDetectionThreshold(CONN_LEAK_DETECT_THRESHOLD);
         config.setAutoCommit(false);
 
         return new HikariDataSource(config);

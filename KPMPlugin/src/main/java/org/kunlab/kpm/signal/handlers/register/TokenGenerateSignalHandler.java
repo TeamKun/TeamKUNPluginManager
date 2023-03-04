@@ -15,6 +15,8 @@ import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 
+import java.util.concurrent.TimeUnit;
+
 public class TokenGenerateSignalHandler
 {
     private final Progressbar progressbar;
@@ -64,7 +66,7 @@ public class TokenGenerateSignalHandler
         String userCode = signal.getUserCode();
         String verificationUrl = signal.getVerificationUrl();
         long expiresInSec = signal.getExpiresIn();
-        int expiresInMin = (int) (expiresInSec / 60);
+        int expiresInMin = Math.toIntExact(TimeUnit.SECONDS.toMinutes(expiresInSec));
 
         this.terminal.successImplicit(LangProvider.get(
                 "tasks.gen_token.verify.verify_link",

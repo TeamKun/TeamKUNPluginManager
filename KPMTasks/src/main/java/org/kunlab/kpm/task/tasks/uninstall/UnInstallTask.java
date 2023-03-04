@@ -53,6 +53,8 @@ import java.util.Map;
  */
 public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInstallResult>
 {
+    private static final long DELETE_DELAY = 20L; // tick
+
     private static final PluginManager PLUGIN_MANAGER;
     private static final CommandsPatcher COMMANDS_PATCHER;
 
@@ -169,7 +171,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
             File pluginFile = PluginUtil.getFile(plugin);
             if (isFileDel && pluginFile.exists())
                 pluginFile.delete();
-        }), 20L);
+        }), DELETE_DELAY);
 
         orderedUninstallTargets.stream()
                 .map(Plugin::getDescription)

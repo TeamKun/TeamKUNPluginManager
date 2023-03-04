@@ -16,6 +16,8 @@ import java.security.NoSuchAlgorithmException;
 @UtilityClass
 public class Utils
 {
+    private static final long SIZE_UNIT_THRESHOLD = 1024;  // 1000byte ではなく 1024byte で切り捨てる
+    private static final int HASH_BUFFER_SIZE = 1024;
     private static final String[] SIZE_UNITS = {
             "B",
             "kB",
@@ -55,9 +57,9 @@ public class Utils
         int unit = 0;
         double dSize = size;
 
-        while (dSize > 1024 && unit < SIZE_UNITS.length - 1)
+        while (dSize > SIZE_UNIT_THRESHOLD && unit < SIZE_UNITS.length - 1)
         {
-            dSize /= 1024;
+            dSize /= SIZE_UNIT_THRESHOLD;
             unit++;
         }
 
@@ -80,7 +82,7 @@ public class Utils
         try (FileInputStream fis = new FileInputStream(path.toFile());
              DigestInputStream dis = new DigestInputStream(fis, md))
         {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[HASH_BUFFER_SIZE];
             while (dis.read(buffer) != -1)
             {
             }

@@ -32,6 +32,9 @@ public class TokenStore
     private static final String SALT = "TeamKunPluginManager>114514";
     private static final String SECONDARY_KEY = "KPM>Origin>114514";
 
+    private static final int ALGO_KEY_SIZE = 256;
+    private static final int ALGO_KEY_ITERATION = 65536;
+
     private final Path tokenPath;
 
     private final byte[] key;
@@ -56,7 +59,7 @@ public class TokenStore
     private static SecretKeySpec getKeySpec(String key)
     {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), 65536, 256);
+        KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), ALGO_KEY_ITERATION, ALGO_KEY_SIZE);
         return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
@@ -136,7 +139,7 @@ public class TokenStore
         try
         {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
+            keyGenerator.init(ALGO_KEY_SIZE);
             SecretKey key = keyGenerator.generateKey();
             byte[] keyBytes = key.getEncoded();
             Files.write(keyPath, keyBytes);
