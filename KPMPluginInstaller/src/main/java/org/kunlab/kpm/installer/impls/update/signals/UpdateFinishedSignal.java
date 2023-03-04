@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.kunlab.kpm.signal.Signal;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * エイリアスのアップデートが完了したことを示すシグナルです。
@@ -20,5 +20,5 @@ public class UpdateFinishedSignal extends Signal
     /**
      * エイリアスとソースのペアの数です。
      */
-    HashMap<String, Long> aliasesBySources;
+    Map<String, Long> aliasesBySources;
 }

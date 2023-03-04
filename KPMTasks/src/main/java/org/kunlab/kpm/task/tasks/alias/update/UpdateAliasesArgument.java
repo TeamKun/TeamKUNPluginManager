@@ -7,7 +7,7 @@ import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * エイリアスのアップデートを行うタスクの引数です。
@@ -20,5 +20,5 @@ public class UpdateAliasesArgument implements TaskArgument
      * エイリアスのソースファイルの名前とペアのマップです。
      * ペアの左辺はリモートのURL、右辺はローカルのパスです。
      */
-    HashMap<String, Pair<URI, Path>> sources;
+    Map<String, Pair<URI, Path>> sources;
 }
