@@ -3,6 +3,7 @@ package org.kunlab.kpm.signal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.DebugConstants;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -63,8 +64,9 @@ class SignalHandlerList<T extends Signal>
                 }
                 catch (Exception e)
                 {
-                    System.out.println("Target: " + pair.getRight().getDeclaringClass().getName() + "#" + pair.getRight().getName());
-                    e.printStackTrace();
+                    DebugConstants.debugLog("Target: " + pair.getRight().getDeclaringClass().getName() +
+                            "#" + pair.getRight().getName());
+                    DebugConstants.onException(e);
                 }
             });
         }

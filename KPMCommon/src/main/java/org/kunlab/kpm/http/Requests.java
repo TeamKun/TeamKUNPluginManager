@@ -63,8 +63,10 @@ public class Requests
         if (redirectCount > redirectLimit)
             return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
 
-        if (DebugConstants.HTTP_REDIRECT_TRACE)
-            System.out.println("Redirecting from " + request.getUrl() + " to " + location + " (count: " + redirectCount + ")");
+        DebugConstants.debugLog(
+                "Redirecting from " + request.getUrl() + " to " + location + " (count: " + redirectCount + ")",
+                DebugConstants.HTTP_REDIRECT_TRACE
+        );
 
         HTTPResponse newResponse = request(RequestContext.builder()
                 .cacheable(request.isCacheable())
@@ -119,13 +121,16 @@ public class Requests
         if (context.getUrl() == null)
             throw new IllegalArgumentException("URL is null");
 
-        if (DebugConstants.HTTP_REQUEST_TRACE)
-        {
-            System.out.println("Requesting " + context.getMethod() + " " + context.getUrl());
-            System.out.println("Headers:" + context.getExtraHeaders().entrySet().stream()
-                    .map(e -> e.getKey() + ": " + e.getValue())
-                    .collect(Collectors.joining(", ")));
-        }
+        DebugConstants.debugLog(
+                "Requesting " + context.getMethod() + " " + context.getUrl(),
+                DebugConstants.HTTP_REQUEST_TRACE
+        );
+        DebugConstants.debugLog(
+                "Headers:" + context.getExtraHeaders().entrySet().stream()
+                        .map(e -> e.getKey() + ": " + e.getValue())
+                        .collect(Collectors.joining(", ")),
+                DebugConstants.HTTP_REQUEST_TRACE
+        );
 
         try
         {
@@ -154,14 +159,16 @@ public class Requests
                     responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
             );
 
-            if (DebugConstants.HTTP_REQUEST_TRACE)
-            {
-                System.out.println("Response from " + context.getUrl() + ": " + responseCode + " " + response.getStatus());
-                System.out.println("Headers:" + response.getHeaders().entrySet().stream()
-                        .map(e -> e.getKey() + ": " + e.getValue())
-                        .collect(Collectors.joining(", ")));
-
-            }
+            DebugConstants.debugLog(
+                    "Response from " + context.getUrl() + ": " + responseCode + " " + response.getStatus(),
+                    DebugConstants.HTTP_REQUEST_TRACE
+            );
+            DebugConstants.debugLog(
+                    "Headers:" + response.getHeaders().entrySet().stream()
+                            .map(e -> e.getKey() + ": " + e.getValue())
+                            .collect(Collectors.joining(", ")),
+                    DebugConstants.HTTP_REQUEST_TRACE
+            );
 
             if (context.isFollowRedirects())
                 return doRedirect(response, 0);

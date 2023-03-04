@@ -158,7 +158,7 @@ public class Transaction implements AutoCloseable
             caller = stack[i + 1];
             if (!caller.getClassName().equals(this.getClass().getName()))
             {
-                System.out.println("Transaction(" + this.connection.hashCode() +
+                DebugConstants.debugLog("Transaction(" + this.connection.hashCode() +
                         ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
                         caller.getFileName() + ":" + caller.getLineNumber());
                 break;
@@ -646,8 +646,10 @@ public class Transaction implements AutoCloseable
             if (!this.connection.isClosed())
                 this.connection.close();
 
-            if (DebugConstants.DB_CONNECTION_TRACE)
-                System.out.println("Transaction(" + this.connection.hashCode() + ") is closed.");
+            DebugConstants.debugLog(
+                    "Transaction(" + this.connection.hashCode() + ") is closed.",
+                    DebugConstants.DB_CONNECTION_TRACE
+            );
         }
         catch (SQLException ignored)
         {

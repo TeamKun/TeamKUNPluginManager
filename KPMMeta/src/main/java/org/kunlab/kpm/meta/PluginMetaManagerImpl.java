@@ -48,8 +48,10 @@ public class PluginMetaManagerImpl implements PluginMetaManager
         {
             if (!this.exceptedPluginModifications.contains(pluginName))
             {
-                if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
-                    System.out.println("The plugin " + pluginName + " is will be modified.");
+                DebugConstants.debugLog(
+                        "The plugin " + pluginName + " is will be modified.",
+                        DebugConstants.PLUGIN_META_OPERATION_TRACE
+                );
 
                 this.exceptedPluginModifications.add(pluginName);
             }

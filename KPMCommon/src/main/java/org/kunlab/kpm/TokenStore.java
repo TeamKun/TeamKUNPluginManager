@@ -15,7 +15,6 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -249,8 +248,7 @@ public class TokenStore
             }
             catch (IOException e)
             {
-                System.out.println("Failed to load token.");
-                throw new UncheckedIOException(e);
+                this.exceptionHandler.report(e);
             }
         }
         return this.tokenCache;
