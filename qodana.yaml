@@ -44,7 +44,6 @@ include:
   - name: CallToStringConcatCanBeReplacedByOperator
   - name: BoundedWildcard
   - name: SingleStatementInBlock
-  - name: ConstantOnWrongSideOfComparison
   - name: FieldMayBeFinal
   - name: UnqualifiedFieldAccess
   - name: UnqualifiedMethodAccess
