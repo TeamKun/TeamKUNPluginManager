@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
+import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.ErrorCause;
@@ -26,10 +27,12 @@ import java.util.stream.Collectors;
  */
 public class ResolverSignalHandler
 {
+    private final KPMRegistry registry;
     private final Terminal terminal;
 
-    public ResolverSignalHandler(Terminal terminal)
+    public ResolverSignalHandler(KPMRegistry registry, Terminal terminal)
     {
+        this.registry = registry;
         this.terminal = terminal;
     }
 
@@ -152,7 +155,7 @@ public class ResolverSignalHandler
         }
         catch (InterruptedException ex)
         {
-            ex.printStackTrace();
+            this.registry.getExceptionHandler().on(ex);
         }
     }
 }

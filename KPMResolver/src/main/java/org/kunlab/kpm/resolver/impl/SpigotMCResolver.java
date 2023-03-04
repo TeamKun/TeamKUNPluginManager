@@ -6,15 +6,16 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -124,8 +125,7 @@ public class SpigotMCResolver implements URLResolver
         }
         catch (IllegalArgumentException e)
         {
-            e.printStackTrace();
-
+            LoggerFactory.getLogger(SpigotMCResolver.class).error("Failed to decode Base64 string.", e);
             return "Failed to decode Base64 string.";
         }
     }

@@ -695,9 +695,8 @@ public class Transaction implements AutoCloseable
                     {
                         this.result.getStatement().getConnection().close();
                     }
-                    catch (SQLException e1)
+                    catch (SQLException ignored)
                     {
-                        e1.printStackTrace();
                     }
                 }
                 throw new IllegalStateException(e);

@@ -62,7 +62,6 @@ public class PluginUtil
         }
         catch (IllegalAccessException | InvocationTargetException e)
         {
-            e.printStackTrace();
             throw new IllegalStateException(e);
         }
     }

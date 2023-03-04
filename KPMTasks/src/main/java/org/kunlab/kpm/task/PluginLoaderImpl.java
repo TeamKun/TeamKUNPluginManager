@@ -172,12 +172,12 @@ public class PluginLoaderImpl implements PluginLoader
         }
         catch (IllegalAccessException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             this.registry.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             this.registry.getLogger().warning("Unable to close class loader of plugin " + plugin.getName());
         }
 
@@ -221,13 +221,13 @@ public class PluginLoaderImpl implements PluginLoader
             }
             catch (IllegalAccessException e)
             {
-                e.printStackTrace();
+                this.registry.getExceptionHandler().on(e);
             }
             catch (IllegalStateException e)
             {
                 if (!e.getMessage().equals("zip file closed"))
                 {
-                    e.printStackTrace();
+                    this.registry.getExceptionHandler().on(e);
                     continue;
                 }
 

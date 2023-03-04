@@ -15,6 +15,7 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.ExceptionHandler;
 import org.kunlab.kpm.hook.hooks.PluginUninstallHook;
 import org.kunlab.kpm.hook.hooks.RecipesUnregisteringHook;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
@@ -89,6 +90,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
     }
 
     private final KPMRegistry registry;
+    private final ExceptionHandler exceptionHandler;
     private final List<PluginDescriptionFile> uninstalledPlugins;
     private final List<PluginDescriptionFile> disabledDependencyPlugins;
     private final Map<PluginDescriptionFile, Path> unloadedPlugins;
@@ -100,6 +102,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.registry = installer.getRegistry();
+        this.exceptionHandler = this.registry.getExceptionHandler();
         this.uninstalledPlugins = new ArrayList<>();
         this.disabledDependencyPlugins = new ArrayList<>();
         this.unloadedPlugins = new HashMap<>();
@@ -223,13 +226,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
             }
             catch (IllegalAccessException e)
             {
-                e.printStackTrace();
+                this.exceptionHandler.on(e);
             }
             catch (IllegalStateException e)
             {
                 if (!e.getMessage().equals("zip file closed"))
                 {
-                    e.printStackTrace();
+                    this.exceptionHandler.on(e);
                     continue;
                 }
 
@@ -257,7 +260,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            this.exceptionHandler.on(ex);
             return UninstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
         }
 
@@ -336,13 +339,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (IllegalAccessException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.on(e);
             this.registry.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
             return false;
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.on(e);
             this.registry.getLogger().warning("Unable to close class loader of plugin " +
                     plugin.getName());
             return false;

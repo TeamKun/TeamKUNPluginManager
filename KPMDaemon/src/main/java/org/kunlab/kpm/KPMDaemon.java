@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 public class KPMDaemon implements KPMRegistry
 {
     private final Logger logger;
+    private final ExceptionHandler exceptionHandler;
     private final KPMEnvironment environment;
     private final AliasProvider aliasProvider;
     private final PluginMetaManager pluginMetaManager;
@@ -60,6 +61,8 @@ public class KPMDaemon implements KPMRegistry
     {
         this.logger = env.getLogger();
         this.environment = env;
+        this.exceptionHandler = env.getExceptionHandler();
+
         this.pluginMetaManager = new PluginMetaManagerImpl(
                 this,
                 env.getMetadataDBPath(),
@@ -68,7 +71,7 @@ public class KPMDaemon implements KPMRegistry
         this.aliasProvider = new AliasProviderImpl(env.getAliasesDBPath());
         this.kpmInfoManager = new KPMInfoManagerImpl(this);
         this.hookExecutor = new HookExecutorImpl(this);
-        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
+        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath(), this.exceptionHandler);
         this.installManager = new InstallManagerImpl(this.tokenStore);
         this.pluginLoader = new PluginLoaderImpl(this);
         this.pluginResolver = new PluginResolverImpl();
@@ -142,7 +145,7 @@ public class KPMDaemon implements KPMRegistry
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.getExceptionHandler().on(e);
             this.logger.log(Level.WARNING, "Failed to load token.");
         }
 
@@ -175,6 +178,4 @@ public class KPMDaemon implements KPMRegistry
     {
         return Version.of(this.getEnvironment().getPlugin().getDescription().getVersion());
     }
-
-
 }

@@ -38,7 +38,7 @@ public class HeadInstallers
     public void runInstall(@NotNull Terminal terminal, @NotNull InstallArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
-        HeadSignalHandlers.getInstallHandlers(terminal).forEach(handleManager::register);
+        HeadSignalHandlers.getInstallHandlers(this.registry, terminal).forEach(handleManager::register);
 
         PluginInstaller installer;
         try
@@ -47,7 +47,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -58,7 +58,7 @@ public class HeadInstallers
     public void runUninstall(@NotNull Terminal terminal, @NotNull UninstallArgument argument)
     {
         SignalHandleManager handleManager = new SignalHandleManager();
-        HeadSignalHandlers.getUninstallHandlers(terminal).forEach(handleManager::register);
+        HeadSignalHandlers.getUninstallHandlers(this.registry, terminal).forEach(handleManager::register);
 
         PluginUninstaller uninstaller;
         try
@@ -67,7 +67,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -87,7 +87,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -107,7 +107,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -127,7 +127,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -147,7 +147,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -160,7 +160,7 @@ public class HeadInstallers
         SignalHandleManager handleManager = new SignalHandleManager();
         boolean isAuto = argument.getTargetPlugins() == null || argument.getTargetPlugins().isEmpty();
 
-        HeadSignalHandlers.getUpgraderHandlers(terminal, isAuto)
+        HeadSignalHandlers.getUpgraderHandlers(this.registry, terminal, isAuto)
                 .forEach(handleManager::register);
 
         PluginUpgrader upgrader;
@@ -170,7 +170,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }

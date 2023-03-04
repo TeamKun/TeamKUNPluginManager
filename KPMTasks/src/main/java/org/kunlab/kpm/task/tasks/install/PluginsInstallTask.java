@@ -173,6 +173,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
                     installedPlugins
             );
 
+        KPMRegistry registry = this.progress.getInstaller().getRegistry();
         Plugin target;
         try
         {
@@ -193,17 +194,17 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (InvalidDescriptionException e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().on(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN_DESCRIPTION);
         }
         catch (InvalidPluginException e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().on(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().on(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.EXCEPTION_OCCURRED);
         }
 
@@ -283,6 +284,8 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
     @Nullable
     private PluginsInstallResult movePlugin(@NotNull Path source, @NotNull Path target)
     {
+        KPMRegistry registry = this.progress.getInstaller().getRegistry();
+
         PluginRelocatingSignal signal = new PluginRelocatingSignal(source, target);
         this.postSignal(signal);
 
@@ -297,14 +300,12 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (IOException e)
         {
-            e.printStackTrace();
-
+            registry.getExceptionHandler().on(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.IO_EXCEPTION_OCCURRED);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-
+            registry.getExceptionHandler().on(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
         }
     }

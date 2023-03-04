@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 
 /**
@@ -88,9 +89,9 @@ public class HTTPResponse implements AutoCloseable
             while ((len = this.inputStream.read(buffer)) != -1)
                 sb.append(new String(buffer, 0, len));
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            e.printStackTrace();
+            throw new UncheckedIOException(e);
         }
 
         this.bodyCache = sb.toString();

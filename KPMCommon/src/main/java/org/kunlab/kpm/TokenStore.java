@@ -36,18 +36,20 @@ public class TokenStore
     private final Path tokenPath;
 
     private final byte[] key;
+    private final ExceptionHandler exceptionHandler;
     private final SecretKeySpec SECONDARY_KEY_SPEC;
 
     private String tokenCache;
 
     @SneakyThrows(IOException.class)
-    public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath)
+    public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath, @NotNull ExceptionHandler exceptionHandler)
     {
         if (Files.isDirectory(tokenPath) || Files.isDirectory(keyPath))
             throw new IllegalArgumentException("Path must be a file");
 
         this.tokenPath = tokenPath;
         this.key = this.getkey(keyPath);
+        this.exceptionHandler = exceptionHandler;
         this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
     }
 
@@ -73,7 +75,7 @@ public class TokenStore
             Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-------"));
     }
 
-    private static boolean isTokenAlive(String token)
+    private boolean isTokenAlive(String token)
     {
         try (HTTPResponse apiResponse = Requests.request(RequestContext.builder()
                 .url("https://api.github.com/rate_limit")
@@ -85,7 +87,7 @@ public class TokenStore
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.on(e);
             return false;
         }
     }
@@ -158,7 +160,7 @@ public class TokenStore
      */
     public void storeToken(String token, boolean checkLiving) throws IOException
     {
-        if (checkLiving && !isTokenAlive(token))
+        if (checkLiving && !this.isTokenAlive(token))
             throw new IllegalStateException("Token is not available.");
 
         byte[] tokenBytes = this.encryptToken(token);
@@ -272,6 +274,6 @@ public class TokenStore
         if (this.tokenCache == null)
             return false;
 
-        return isTokenAlive(this.tokenCache);
+        return this.isTokenAlive(this.tokenCache);
     }
 }

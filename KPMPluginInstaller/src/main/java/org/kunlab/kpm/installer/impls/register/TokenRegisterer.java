@@ -149,7 +149,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().on(e);
             return null;
         }
     }
