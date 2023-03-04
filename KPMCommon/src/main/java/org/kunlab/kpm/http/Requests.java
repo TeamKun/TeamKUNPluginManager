@@ -31,12 +31,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class Requests
 {
-    @Setter
-    private static TokenStore tokenStore;
     @Getter
     @NotNull
-    private static Map<String, String> extraHeaders;
-
+    private static final Map<String, String> extraHeaders;
+    @Setter
+    private static TokenStore tokenStore;
     @Getter
     @Setter
     private static int redirectLimit = 15;
@@ -294,7 +293,7 @@ public class Requests
 
                 int progress;
                 if (downloaded != 0 && size != 0)
-                    progress = (int) (downloaded * 100 / size);
+                    progress = Math.toIntExact(downloaded * 100 / size);
                 else
                     progress = 0;
 
