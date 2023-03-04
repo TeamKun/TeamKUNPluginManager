@@ -87,9 +87,8 @@ public class KPMDaemon implements KPMRegistry
         this.initializeRequests();
         this.loadKPMInformationFromPlugins();
 
-        Runner.runLater(() -> {
-            this.getPluginMetaManager().crawlAll();
-        }, 1L);  // Crawl all plugins metadata after the server is fully loaded.
+        // サーバが全て読み込まれた後にプラグインをクロールする。
+        Runner.runLater(() -> this.getPluginMetaManager().crawlAll(), 1L);
     }
 
     private void loadKPMInformationFromPlugins()
