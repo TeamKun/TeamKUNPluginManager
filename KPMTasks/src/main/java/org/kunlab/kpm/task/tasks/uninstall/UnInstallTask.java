@@ -226,13 +226,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
             }
             catch (IllegalAccessException e)
             {
-                this.exceptionHandler.on(e);
+                this.exceptionHandler.report(e);
             }
             catch (IllegalStateException e)
             {
                 if (!e.getMessage().equals("zip file closed"))
                 {
-                    this.exceptionHandler.on(e);
+                    this.exceptionHandler.report(e);
                     continue;
                 }
 
@@ -260,7 +260,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (Exception ex)
         {
-            this.exceptionHandler.on(ex);
+            this.exceptionHandler.report(ex);
             return UninstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
         }
 
@@ -339,13 +339,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (IllegalAccessException e)
         {
-            this.exceptionHandler.on(e);
+            this.exceptionHandler.report(e);
             this.registry.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
             return false;
         }
         catch (IOException e)
         {
-            this.exceptionHandler.on(e);
+            this.exceptionHandler.report(e);
             this.registry.getLogger().warning("Unable to close class loader of plugin " +
                     plugin.getName());
             return false;

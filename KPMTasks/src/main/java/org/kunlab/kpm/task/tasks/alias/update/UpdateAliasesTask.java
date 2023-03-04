@@ -127,7 +127,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
             this.postSignal(new InvalidSourceSignal(sourceName, source,
                     uri.toString(), InvalidSourceSignal.ErrorCause.IO_ERROR
             ));
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             updater.cancel();
             return -1;
         }

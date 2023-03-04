@@ -33,7 +33,7 @@ public class HookExecutorImpl implements HookExecutor
         }
         catch (Exception e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
         }
     }
 

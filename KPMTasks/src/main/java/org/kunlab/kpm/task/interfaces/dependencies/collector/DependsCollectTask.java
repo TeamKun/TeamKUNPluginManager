@@ -227,7 +227,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         }
         catch (Exception e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             return null;
         }
     }

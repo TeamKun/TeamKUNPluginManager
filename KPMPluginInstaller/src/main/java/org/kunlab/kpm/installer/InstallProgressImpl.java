@@ -201,7 +201,7 @@ public class InstallProgressImpl<T extends Enum<T>, I extends PluginInstaller<?,
         }
         catch (IOException e)
         {
-            this.installer.getRegistry().getExceptionHandler().on(e);
+            this.installer.getRegistry().getExceptionHandler().report(e);
         }
 
         PROGRESS_CACHES.remove(this.getInstallActionID());

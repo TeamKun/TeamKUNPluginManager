@@ -155,7 +155,7 @@ public class ResolverSignalHandler
         }
         catch (InterruptedException ex)
         {
-            this.registry.getExceptionHandler().on(ex);
+            this.registry.getExceptionHandler().report(ex);
         }
     }
 }

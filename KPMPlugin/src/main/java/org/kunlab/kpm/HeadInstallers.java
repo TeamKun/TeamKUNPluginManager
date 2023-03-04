@@ -47,7 +47,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -67,7 +67,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -87,7 +87,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -107,7 +107,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -127,7 +127,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -147,7 +147,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }
@@ -170,7 +170,7 @@ public class HeadInstallers
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             terminal.error(LangProvider.get("installer.init_failed", MsgArgs.of("error", e.getMessage())));
             return;
         }

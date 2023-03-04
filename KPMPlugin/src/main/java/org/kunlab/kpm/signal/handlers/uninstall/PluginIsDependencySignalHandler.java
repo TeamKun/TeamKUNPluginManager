@@ -83,7 +83,7 @@ public class PluginIsDependencySignalHandler
         }
         catch (InterruptedException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             this.terminal.error(LangProvider.get(
                     "tasks.uninstall.dependency.error",
                     MsgArgs.of("error", e.getMessage())

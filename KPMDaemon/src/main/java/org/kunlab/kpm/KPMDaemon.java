@@ -144,7 +144,7 @@ public class KPMDaemon implements KPMRegistry
         }
         catch (IOException e)
         {
-            this.getExceptionHandler().on(e);
+            this.getExceptionHandler().report(e);
             this.logger.log(Level.WARNING, "Failed to load token.");
         }
 

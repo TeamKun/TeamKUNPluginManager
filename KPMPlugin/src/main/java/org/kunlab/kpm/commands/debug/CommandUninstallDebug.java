@@ -61,7 +61,7 @@ public class CommandUninstallDebug extends CommandBase
             }
             catch (Exception e)
             {
-                this.registry.getExceptionHandler().on(e);
+                this.registry.getExceptionHandler().report(e);
                 terminal.error(e.getClass() + ": " + e.getMessage());
             }
         });

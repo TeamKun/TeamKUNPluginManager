@@ -194,17 +194,17 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (InvalidDescriptionException e)
         {
-            registry.getExceptionHandler().on(e);
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN_DESCRIPTION);
         }
         catch (InvalidPluginException e)
         {
-            registry.getExceptionHandler().on(e);
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN);
         }
         catch (Exception e)
         {
-            registry.getExceptionHandler().on(e);
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.EXCEPTION_OCCURRED);
         }
 
@@ -300,12 +300,12 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (IOException e)
         {
-            registry.getExceptionHandler().on(e);
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.IO_EXCEPTION_OCCURRED);
         }
         catch (Exception e)
         {
-            registry.getExceptionHandler().on(e);
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
         }
     }

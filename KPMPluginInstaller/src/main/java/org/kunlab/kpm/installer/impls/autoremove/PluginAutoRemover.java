@@ -79,7 +79,7 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             return this.error(AutoRemoveErrorCause.UNINSTALLER_INIT_FAILED);
         }
 

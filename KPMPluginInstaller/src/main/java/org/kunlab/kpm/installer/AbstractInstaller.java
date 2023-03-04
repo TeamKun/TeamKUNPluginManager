@@ -86,7 +86,7 @@ public abstract class AbstractInstaller<A extends InstallerArgument, E extends E
         }
         catch (Exception e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             InstallFailedInstallResult<P, ?, ?> result = new InstallFailedInstallResult<>(this.progress, e);
             this.postSignal(new InstallFinishedSignal(result));
 
@@ -214,7 +214,7 @@ public abstract class AbstractInstaller<A extends InstallerArgument, E extends E
         }
         catch (SecurityException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             return false;
         }
     }

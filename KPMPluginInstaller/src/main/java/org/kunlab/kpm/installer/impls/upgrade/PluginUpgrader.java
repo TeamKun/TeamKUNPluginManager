@@ -162,7 +162,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         }
         catch (IOException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             return this.error(UpgradeErrorCause.UNINSTALLER_INSTANTIATION_FAILED);
         }
         // endregion
@@ -185,7 +185,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
             }
             catch (IOException e)
             {
-                this.registry.getExceptionHandler().on(e);
+                this.registry.getExceptionHandler().report(e);
                 return this.error(UpgradeErrorCause.INSTALLER_INSTANTIATION_FAILED);
             }
 

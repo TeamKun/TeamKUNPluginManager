@@ -87,7 +87,7 @@ public class TokenStore
         }
         catch (IOException e)
         {
-            this.exceptionHandler.on(e);
+            this.exceptionHandler.report(e);
             return false;
         }
     }

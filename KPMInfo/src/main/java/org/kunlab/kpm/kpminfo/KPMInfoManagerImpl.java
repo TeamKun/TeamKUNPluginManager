@@ -69,7 +69,7 @@ public class KPMInfoManagerImpl implements KPMInfoManager
         }
         catch (FileNotFoundException | InvalidInformationFileException e)
         {
-            this.registry.getExceptionHandler().on(e);
+            this.registry.getExceptionHandler().report(e);
             return null;
         }
     }

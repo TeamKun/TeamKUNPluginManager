@@ -47,7 +47,7 @@ public class DescriptionLoadTask extends AbstractInstallTask<DescriptionLoadArgu
                 );
             else
             {
-                this.progress.getInstaller().getRegistry().getExceptionHandler().on(e);
+                this.progress.getInstaller().getRegistry().getExceptionHandler().report(e);
                 return new DescriptionLoadResult(false, this.taskState,
                         DescriptionLoadErrorCause.INVALID_DESCRIPTION, pluginFile, null
                 );
@@ -55,7 +55,7 @@ public class DescriptionLoadTask extends AbstractInstallTask<DescriptionLoadArgu
         }
         catch (IOException e)
         {
-            this.progress.getInstaller().getRegistry().getExceptionHandler().on(e);
+            this.progress.getInstaller().getRegistry().getExceptionHandler().report(e);
             return new DescriptionLoadResult(false, this.taskState,
                     DescriptionLoadErrorCause.IO_EXCEPTION, pluginFile, null
             );
