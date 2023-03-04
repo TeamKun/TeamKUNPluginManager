@@ -14,11 +14,11 @@ import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
+import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -122,7 +122,7 @@ public class ResolverSignalHandler
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
+                .collect(KPMCollectors.toMap(LinkedHashMap::new));
         keywordToTitle.put("a", LangProvider.get("tasks.resolve.multi.choices.auto"));
 
         try
