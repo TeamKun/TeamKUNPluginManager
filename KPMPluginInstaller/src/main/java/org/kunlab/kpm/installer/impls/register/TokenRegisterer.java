@@ -246,7 +246,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                this.registry.getExceptionHandler().report(e);
                 return null;
             }
 
@@ -294,7 +294,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return false;
         }
         catch (IllegalStateException e)

@@ -44,7 +44,6 @@ public class ServerConditionChecker
         }
         catch (IllegalAccessException e)
         {
-            e.printStackTrace();
             return false;
         }
     }

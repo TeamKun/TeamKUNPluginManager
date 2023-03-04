@@ -151,7 +151,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            DebugConstants.onException(e);
             return false;
         }
     }

@@ -18,7 +18,6 @@ public class SignalHandlingUtils
         }
         catch (InterruptedException e)
         {
-            e.printStackTrace();
             terminal.error(LangProvider.get("general.errors.unknown") + "：%s", e.getMessage());
             return false;
         }
