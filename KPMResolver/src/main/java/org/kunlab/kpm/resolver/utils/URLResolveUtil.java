@@ -2,6 +2,7 @@ package org.kunlab.kpm.resolver.utils;
 
 import lombok.experimental.UtilityClass;
 import org.kunlab.kpm.http.HTTPResponse;
+import org.kunlab.kpm.http.StatusCode;
 import org.kunlab.kpm.resolver.ErrorCause;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
@@ -50,43 +51,43 @@ public class URLResolveUtil
                 );
         }
 
-        int code = response.getStatusCode();
-        switch (code)
+        StatusCode responseCode = response.getStatusCode();
+        switch (responseCode)
         {
-            case 200:
+            case OK:
                 return null;
-            case 401:
+            case UNAUTHORIZED:
                 return new ErrorResultImpl(resolver, ErrorCause.INVALID_CREDENTIAL,
                         source,
-                        errorCodeWith("Invalid credential", code)
+                        errorCodeWith("Invalid credential", responseCode)
                 );
-            case 403:
+            case FORBIDDEN:
                 return new ErrorResultImpl(resolver, ErrorCause.SERVER_RESPONSE_ERROR, source,
-                        errorCodeWith("Forbidden", code)
+                        errorCodeWith("Forbidden", responseCode)
                 );
-            case 404:
+            case NOT_FOUND:
                 return new ErrorResultImpl(resolver, ErrorCause.PLUGIN_NOT_FOUND
-                        , source, errorCodeWith("Not Found", code)
+                        , source, errorCodeWith("Not Found", responseCode)
                 );
-            case 418:
+            case I_AM_A_TEAPOT:
                 return new ErrorResultImpl(
                         resolver,
                         ErrorCause.SERVER_RESPONSE_ERROR
-                        , source, errorCodeWith("I'm a teapot", code)
+                        , source, errorCodeWith("I'm a teapot", responseCode)
                 );
             default:
-                if (code >= 500 && code < 600)
+                if (response.isServerError())
                     return new ErrorResultImpl(resolver, ErrorCause.SERVER_RESPONSE_ERROR
-                            , source, errorCodeWith("Server Error", code)
+                            , source, errorCodeWith("Server Error", responseCode)
                     );
                 else
                     return new ErrorResultImpl(resolver, ErrorCause.UNKNOWN_ERROR
-                            , source, errorCodeWith("Unknown Error", code)
+                            , source, errorCodeWith("Unknown Error", responseCode)
                     );
         }
     }
 
-    private static String errorCodeWith(String message, int code)
+    private static String errorCodeWith(String message, StatusCode code)
     {
         return message + "(The server responded with " + code + ")";
     }

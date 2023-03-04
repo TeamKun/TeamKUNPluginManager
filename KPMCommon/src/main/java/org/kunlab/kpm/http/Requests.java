@@ -31,6 +31,11 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class Requests
 {
+
+    static final int HTTP_BUFFER_SIZE = 1024;
+    private static final int REDIRECT_LIMIT_DEFAULT = 15;
+    private static final int CONNECT_TIMEOUT_DEFAULT = 10000;
+
     @Getter
     @NotNull
     private static final Map<String, String> extraHeaders;
@@ -38,10 +43,10 @@ public class Requests
     private static TokenStore tokenStore;
     @Getter
     @Setter
-    private static int redirectLimit = 15;
+    private static int redirectLimit = REDIRECT_LIMIT_DEFAULT;
     @Getter
     @Setter
-    private static int connectTimeout = 10000;
+    private static int connectTimeout = CONNECT_TIMEOUT_DEFAULT;
 
     static
     {
@@ -142,24 +147,24 @@ public class Requests
                     outputStream.write(context.getBody());
                 }
 
-            int responseCode = connection.getResponseCode();
+            StatusCode responseCode = StatusCode.valueOf(connection.getResponseCode());
 
             HashMap<String, String> serverHeaders = buildHeaders(connection.getHeaderFields());
             Pair<String, String> serverProtocol = retrieveProtocol(serverHeaders);  // serverHeaders will be modified in this method
 
             HTTPResponse.RequestStatus status = HTTPResponse.RequestStatus.OK;
-            if (responseCode >= 500)
+            if (responseCode.isServerError())
                 status = HTTPResponse.RequestStatus.SERVER_ERROR;
-            else if (responseCode >= 400)
+            else if (responseCode.isClientError())
                 status = HTTPResponse.RequestStatus.CLIENT_ERROR;
 
             HTTPResponse response = new HTTPResponse(status,
                     context, serverProtocol.getLeft(), serverProtocol.getRight(), responseCode, serverHeaders,
-                    responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
+                    responseCode.isError() ? connection.getErrorStream(): connection.getInputStream()
             );
 
             DebugConstants.debugLog(
-                    "Response from " + context.getUrl() + ": " + responseCode + " " + response.getStatus(),
+                    "Response from " + context.getUrl() + ": " + responseCode.getCode() + " " + response.getStatus(),
                     DebugConstants.HTTP_REQUEST_TRACE
             );
             DebugConstants.debugLog(
@@ -196,7 +201,7 @@ public class Requests
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(context.getMethod().name());
         connection.setUseCaches(false);
-        connection.setConnectTimeout(10000);
+        connection.setConnectTimeout(connectTimeout);
 
         if (context.getTimeout() > 0)
             connection.setReadTimeout(context.getTimeout());
@@ -269,7 +274,7 @@ public class Requests
         try (HTTPResponse response = request(context.build());
              OutputStream output = Files.newOutputStream(path))
         {
-            if (response.getStatusCode() < 200 || response.getStatusCode() >= 300)
+            if (response.getStatusCode().isError())
                 throw new IOException("HTTP error " + response.getStatusCode());
             else if (response.getInputStream() == null)
                 throw new IOException("No response body was returned");
@@ -279,7 +284,7 @@ public class Requests
             long size = contentLength != null ? Long.parseLong(contentLength): -1;
 
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[HTTP_BUFFER_SIZE];
 
             int read;
             long downloaded = 0;
