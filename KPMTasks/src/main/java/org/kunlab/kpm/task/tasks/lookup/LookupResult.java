@@ -18,6 +18,7 @@ public class LookupResult extends AbstractTaskResult<LookupState, LookupErrorCau
 {
     /**
      * 検索に成功した場合、そのプラグインらが格納されます。
+     * {@link #isSuccess()}がfalseの場合や、クエリが間違っている場合などにこの値はnullになります。
      */
     @Nullable
     LinkedHashMap<@NotNull String, @Nullable Plugin> plugins;
