@@ -1,5 +1,6 @@
 package org.kunlab.kpm.utils;
 
+import lombok.experimental.UtilityClass;
 import org.kunlab.kpm.utils.collectors.MappingMapElementCollector;
 import org.kunlab.kpm.utils.collectors.MappingPairCollector;
 import org.kunlab.kpm.utils.collectors.ReversingCollector;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@UtilityClass
 public class KPMCollectors
 {
     public static <T> ReversingCollector<T> toReversedList()
