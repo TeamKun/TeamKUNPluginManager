@@ -40,6 +40,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -356,7 +357,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
 
     private void unregisterRecipes(@NotNull Plugin plugin, @Nullable KPMInformationFile kpmInfo)
     {
-        ArrayList<String> targetNamespaces =
+        List<String> targetNamespaces =
                 new ArrayList<>(Collections.singletonList(plugin.getName().toLowerCase(Locale.ROOT)));
         if (kpmInfo != null)
         {
@@ -398,7 +399,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
     }
 
-    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull ArrayList<String> targetNamespaces, @NotNull Recipe recipe)
+    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull Collection<String> targetNamespaces, @NotNull Recipe recipe)
     {
         if (!(recipe instanceof Keyed))
             return false;

@@ -2,6 +2,7 @@ package org.kunlab.kpm.db;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.kunlab.kpm.DebugConstants;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -29,7 +30,7 @@ public class ResultRow implements AutoCloseable
             }
             catch (SQLException e)
             {
-                e.printStackTrace();
+                DebugConstants.onException(e);
             }
         }
     }

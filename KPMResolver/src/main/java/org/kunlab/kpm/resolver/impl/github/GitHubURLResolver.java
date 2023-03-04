@@ -8,13 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.impl.GitHubSuccessResult;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
-import org.kunlab.kpm.resolver.impl.GitHubSuccessResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
@@ -116,7 +116,7 @@ public class GitHubURLResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        HashMap<Long, ResolveResult> map = new HashMap<>();
+        Map<Long, ResolveResult> map = new HashMap<>();
         ErrorResult firstError = null;
         for (ResolveResult result : multiResult.getResults())
         {

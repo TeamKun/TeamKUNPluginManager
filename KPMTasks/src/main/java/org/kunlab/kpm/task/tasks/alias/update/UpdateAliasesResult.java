@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.task.AbstractTaskResult;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * エイリアスのアップデートを行うタスクの結果です。
@@ -17,10 +17,10 @@ public class UpdateAliasesResult extends AbstractTaskResult<UpdateAliasesState, 
 {
     boolean warn;
     long aliasesCount;
-    HashMap<String, Long> aliasesCountBySource;
+    Map<String, Long> aliasesCountBySource;
 
     public UpdateAliasesResult(boolean success, @NotNull UpdateAliasesState state, @Nullable UpdateAliasesErrorCause errorCause,
-                               boolean warn, long aliasesCount, HashMap<String, Long> aliasesCountBySource)
+                               boolean warn, long aliasesCount, Map<String, Long> aliasesCountBySource)
     {
         super(success, state, errorCause);
         this.warn = warn;
@@ -29,7 +29,7 @@ public class UpdateAliasesResult extends AbstractTaskResult<UpdateAliasesState, 
     }
 
     public UpdateAliasesResult(boolean success, @NotNull UpdateAliasesState state,
-                               boolean warn, long aliasesCount, HashMap<String, Long> aliasesCountBySource)
+                               boolean warn, long aliasesCount, Map<String, Long> aliasesCountBySource)
     {
         this(success, state, null, warn, aliasesCount, aliasesCountBySource);
     }

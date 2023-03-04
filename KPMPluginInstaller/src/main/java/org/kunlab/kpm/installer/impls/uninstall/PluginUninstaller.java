@@ -208,9 +208,9 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         return plugin;
     }
 
-    private ArrayList<DependencyNode> getDependenciesRecursive(Plugin target)
+    private List<DependencyNode> getDependenciesRecursive(Plugin target)
     {
-        ArrayList<DependencyNode> dependencyPlugins = new ArrayList<>();
+        List<DependencyNode> dependencyPlugins = new ArrayList<>();
 
         // Retrieve plugins that depends on target plugin.
         List<DependencyNode> dependencies =

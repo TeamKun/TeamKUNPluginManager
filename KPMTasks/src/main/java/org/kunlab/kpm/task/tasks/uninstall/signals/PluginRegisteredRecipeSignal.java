@@ -11,6 +11,7 @@ import org.kunlab.kpm.signal.Signal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * プラグインが登録したレシピについてのシグナルです。
@@ -71,7 +72,7 @@ public class PluginRegisteredRecipeSignal extends Signal
          * デフォルトでは, プラグインの名前(Lower case)が使用されます。
          */
         @NotNull
-        private ArrayList<String> targetNamespaces;
+        private List<String> targetNamespaces;
 
         public Searching(@NotNull Plugin plugin, @NotNull String... targetNamespaces)
         {

@@ -76,7 +76,7 @@ public final class TeamKunPluginManager extends JavaPlugin
                 .build();
     }
 
-    private static HashMap<String, String> setupSources(FileConfiguration config)
+    private static Map<String, String> setupSources(FileConfiguration config)
     {
         List<Map<?, ?>> aliasSources = config.getMapList("resolve.aliases.sources");
 

@@ -84,7 +84,7 @@ public class Requests
     @NotNull
     private static Map<String, String> setupDefaultHeaders(@NotNull String host, @NotNull Map<String, String> currentHeaders)
     {
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||

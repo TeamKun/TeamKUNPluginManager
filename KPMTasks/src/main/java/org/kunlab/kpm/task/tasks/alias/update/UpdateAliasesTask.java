@@ -43,9 +43,9 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
     @Override
     public @NotNull UpdateAliasesResult runTask(@NotNull UpdateAliasesArgument arguments)
     {
-        HashMap<String, Pair<URI, Path>> sources = arguments.getSources();
+        Map<String, Pair<URI, Path>> sources = arguments.getSources();
 
-        HashMap<String, Long> aliasesOfSources = new HashMap<>();
+        Map<String, Long> aliasesOfSources = new HashMap<>();
         long total = 0;
 
         boolean isWarn = false;

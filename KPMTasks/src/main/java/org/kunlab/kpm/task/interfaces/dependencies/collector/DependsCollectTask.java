@@ -120,7 +120,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         resolvedResults.entrySet().removeIf(entry -> !(entry.getValue() instanceof SuccessResult)); // Remove failures
         // endregion
 
-        HashMap<String, DownloadResult> downloadResults;
+        Map<String, DownloadResult> downloadResults;
         // region Download dependencies
         this.taskState = DependsCollectState.DOWNLOADING_DEPENDS;
 
@@ -187,7 +187,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .runTask(arguments);
     }
 
-    private void collectDependsDepends(@NotNull HashMap<String, DependencyElement> dependencies,
+    private void collectDependsDepends(@NotNull Map<String, DependencyElement> dependencies,
                                        @NotNull List<String> alreadyCollectedPlugins,
                                        @NotNull Map<String, QueryContext> parentSources)
     {
@@ -286,7 +286,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .runTask(argument);
     }
 
-    private HashMap<String, DownloadResult> downloadDepends(@NotNull HashMap<String, ResolveResult> resolvedPlugins)
+    private HashMap<String, DownloadResult> downloadDepends(@NotNull Map<String, ResolveResult> resolvedPlugins)
     {
         Map<String, DownloadResult> downloadResults = resolvedPlugins.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.task.AbstractTaskResult;
 
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * プラグインの検索を行うタスクの結果です。
@@ -21,9 +21,9 @@ public class LookupResult extends AbstractTaskResult<LookupState, LookupErrorCau
      * {@link #isSuccess()}がfalseの場合や、クエリが間違っている場合などにこの値はnullになります。
      */
     @Nullable
-    LinkedHashMap<@NotNull String, @Nullable Plugin> plugins;
+    Map<@NotNull String, @Nullable Plugin> plugins;
 
-    public LookupResult(boolean success, @NotNull LookupState state, @NotNull LinkedHashMap<String, Plugin> plugins)
+    public LookupResult(boolean success, @NotNull LookupState state, @NotNull Map<String, Plugin> plugins)
     {
         super(success, state, null);
         this.plugins = plugins;

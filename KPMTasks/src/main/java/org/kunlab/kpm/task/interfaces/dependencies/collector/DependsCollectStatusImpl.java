@@ -24,7 +24,7 @@ public class DependsCollectStatusImpl implements DependsCollectStatus
     private final String installId;
     @NotNull
     @Getter(AccessLevel.PRIVATE)
-    private final HashMap<String, DependencyElement> enumeratedDependencies;
+    private final Map<String, DependencyElement> enumeratedDependencies;
 
     @NotNull
     private String pluginName;

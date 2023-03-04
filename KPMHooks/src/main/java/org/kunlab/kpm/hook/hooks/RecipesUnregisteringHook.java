@@ -7,7 +7,7 @@ import org.bukkit.inventory.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.hook.interfaces.KPMHook;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * プラグインのレシピが削除されるときに呼び出されるフックです。
@@ -25,7 +25,7 @@ public class RecipesUnregisteringHook implements KPMHook
          * 削除対象の名前空間です。
          */
         @NotNull
-        ArrayList<String> targetNamespaces;
+        List<String> targetNamespaces;
 
         /**
          * 名前空間を追加します。

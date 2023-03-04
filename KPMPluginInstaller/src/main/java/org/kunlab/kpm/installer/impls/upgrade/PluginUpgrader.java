@@ -236,7 +236,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return uninstallSucceedResult.getResult().getUnloadedPlugins();
     }
 
-    private Map<Plugin, String> retrieveUpdateQuery(HashMap<Plugin, PluginMeta> pluginMetas)
+    private Map<Plugin, String> retrieveUpdateQuery(Map<Plugin, PluginMeta> pluginMetas)
     {
         Map<Plugin, String> result = new HashMap<>();
 
@@ -393,7 +393,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 .submitAll(new LookupArgument(targets.toArray(new String[0])));
 
         assert lookupResult.getPlugins() != null;
-        HashMap<String, Plugin> foundPlugins = lookupResult.getPlugins().entrySet().stream()
+        Map<String, Plugin> foundPlugins = lookupResult.getPlugins().entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .collect(KPMCollectors.toHashMap());
 

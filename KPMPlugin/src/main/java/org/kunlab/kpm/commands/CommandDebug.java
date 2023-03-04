@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class CommandDebug extends SubCommandWith
 {
-    private final HashMap<String, CommandBase> commands;
+    private final Map<String, CommandBase> commands;
 
     public CommandDebug(KPMRegistry registry)
     {
