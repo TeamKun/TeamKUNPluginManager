@@ -91,7 +91,7 @@ public class DependsComputeOrderTask extends AbstractInstallTask<DependsComputeO
 
         this.state = DependsComputeOrderState.COMPUTING_DEPENDENCY_LOAD_ORDER;
 
-        ArrayList<DependencyElement> result = new ArrayList<>();
+        List<DependencyElement> result = new ArrayList<>();
         List<DependencyElement> last = new ArrayList<>();
 
         while (!plugins.isEmpty())

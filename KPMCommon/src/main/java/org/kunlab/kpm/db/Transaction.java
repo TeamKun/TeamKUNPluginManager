@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -760,9 +761,9 @@ public class Transaction implements AutoCloseable
          * @param max          最大件数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper, long max)
+        public List<T> mapToList(Function<ResultRow, T> resultMapper, long max)
         {
-            ArrayList<T> list = new ArrayList<>();
+            List<T> list = new ArrayList<>();
 
             try
             {
@@ -783,7 +784,7 @@ public class Transaction implements AutoCloseable
          * @param resultMapper マッピング関数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper)
+        public List<T> mapToList(Function<ResultRow, T> resultMapper)
         {
             return this.mapToList(resultMapper, -1);
         }
