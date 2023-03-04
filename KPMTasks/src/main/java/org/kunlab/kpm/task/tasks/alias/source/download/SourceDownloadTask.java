@@ -42,10 +42,10 @@ public class SourceDownloadTask extends AbstractInstallTask<SourceDownloadArgume
     public @NotNull SourceDownloadResult runTask(@NotNull SourceDownloadArgument arguments)
     {
         this.status = SourceDownloadState.ANALYZING_URLS;
-        HashMap<String, URI> remotes = this.buildURLs(arguments.getRemotes());
+        Map<String, URI> remotes = this.buildURLs(arguments.getRemotes());
 
         this.status = SourceDownloadState.DOWNLOADING_SOURCES;
-        HashMap<String, Pair<URI, Path>> downloadSources = this.downloadSources(remotes);
+        Map<String, Pair<URI, Path>> downloadSources = this.downloadSources(remotes);
 
         if (downloadSources.isEmpty())
             return new SourceDownloadResult(false, this.status, SourceDownloadErrorCause.ALL_DOWNLOAD_FAILED);
@@ -53,9 +53,9 @@ public class SourceDownloadTask extends AbstractInstallTask<SourceDownloadArgume
         return new SourceDownloadResult(true, this.status, downloadSources);
     }
 
-    private HashMap<String, URI> buildURLs(Map<String, String> sources)
+    private Map<String, URI> buildURLs(Map<String, String> sources)
     {
-        HashMap<String, URI> result = new HashMap<>();
+        Map<String, URI> result = new HashMap<>();
 
         for (String remoteName : sources.keySet())
         {
@@ -97,9 +97,9 @@ public class SourceDownloadTask extends AbstractInstallTask<SourceDownloadArgume
         return url;
     }
 
-    private HashMap<String, Pair<URI, Path>> downloadSources(HashMap<String, URI> remotes)
+    private Map<String, Pair<URI, Path>> downloadSources(Map<String, URI> remotes)
     {
-        HashMap<String, Pair<URI, Path>> result = new HashMap<>();
+        Map<String, Pair<URI, Path>> result = new HashMap<>();
 
         for (String remoteName : remotes.keySet())
         {

@@ -39,7 +39,7 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
     @Override
     public InstallResult<AutoRemoveTasks> execute(@NotNull AutoRemoveArgument argument) throws TaskFailedException
     {
-        ArrayList<String> targetPlugins;
+        List<String> targetPlugins;
         // region Enumerate plugins to be removed
         this.progress.setCurrentTask(AutoRemoveTasks.SEARCHING_REMOVABLES);
 
@@ -47,7 +47,7 @@ public class PluginAutoRemover extends AbstractInstaller<AutoRemoveArgument, Aut
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
 
-        targetPlugins = (ArrayList<String>) this.registry.getPluginMetaManager().getProvider().getUnusedPlugins()
+        targetPlugins = this.registry.getPluginMetaManager().getProvider().getUnusedPlugins()
                 .stream()
                 .parallel()
                 .filter(unusedPluginName -> !excludePlugins.contains(unusedPluginName.toLowerCase()))

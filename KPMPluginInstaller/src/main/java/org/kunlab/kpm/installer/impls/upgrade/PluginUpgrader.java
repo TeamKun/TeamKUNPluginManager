@@ -101,7 +101,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         Map<Plugin, String> updateQueries;
         // region Retrieve update queries
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_METADATA);
-        HashMap<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
+        Map<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_UPDATE_QUERY);
 
         updateQueries = this.retrieveUpdateQuery(pluginMetas);
@@ -375,7 +375,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 .collect(KPMCollectors.toPairHashMap());
     }
 
-    private HashMap<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
+    private Map<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
     {
         PluginMetaProvider metaProvider = this.registry.getPluginMetaManager().getProvider();
         return targets.stream()

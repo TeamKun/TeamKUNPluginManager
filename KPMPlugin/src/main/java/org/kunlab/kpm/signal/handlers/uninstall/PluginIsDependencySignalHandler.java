@@ -13,6 +13,7 @@ import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.utils.Utils;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PluginIsDependencySignalHandler
@@ -57,7 +58,7 @@ public class PluginIsDependencySignalHandler
         if (this.lastOperation != null)  // This is not the first time to ask so auto select the last operation
             return this.lastOperation;
 
-        HashMap<String, PluginIsDependencySignal.Operation> optionSelection = new HashMap<>();
+        Map<String, PluginIsDependencySignal.Operation> optionSelection = new HashMap<>();
         optionSelection.put("u", PluginIsDependencySignal.Operation.UNINSTALL);
         optionSelection.put("d", PluginIsDependencySignal.Operation.DISABLE);
         optionSelection.put("i", PluginIsDependencySignal.Operation.IGNORE);

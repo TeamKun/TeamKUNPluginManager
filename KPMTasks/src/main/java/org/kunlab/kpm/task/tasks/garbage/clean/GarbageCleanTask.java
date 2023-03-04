@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 不要なデータの削除を行うタスクです。
@@ -33,7 +34,7 @@ public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, 
     public @NotNull GarbageCleanResult runTask(@NotNull GarbageCleanArgument arguments)
     {
         List<Path> paths = arguments.getPaths();
-        HashMap<Path, Boolean> result = new HashMap<>();
+        Map<Path, Boolean> result = new HashMap<>();
 
         if (arguments.getPaths().isEmpty())
             return new GarbageCleanResult(false, this.status,

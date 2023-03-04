@@ -13,6 +13,7 @@ import org.kunlab.kpm.versioning.Version;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,7 +31,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
         this.state = LookupState.INITIALIZED;
     }
 
-    private static LinkedHashMap<String, Plugin> lookupAll(QueryContext[] queries, String[] queryStrings)
+    private static Map<String, Plugin> lookupAll(QueryContext[] queries, String[] queryStrings)
     {
         AtomicInteger count = new AtomicInteger(0);
         return Arrays.stream(queries)
@@ -86,7 +87,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
             return new LookupResult(false, this.state, LookupErrorCause.INVALID_QUERY);
 
         this.state = LookupState.PLUGIN_LOOKUP;
-        LinkedHashMap<String, Plugin> result = lookupAll(queries, queryStrs);
+        Map<String, Plugin> result = lookupAll(queries, queryStrs);
 
         return new LookupResult(true, this.state, result);
     }

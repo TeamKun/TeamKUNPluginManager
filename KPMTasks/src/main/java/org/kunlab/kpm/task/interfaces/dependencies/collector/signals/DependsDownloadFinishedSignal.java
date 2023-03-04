@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.signal.Signal;
 import org.kunlab.kpm.task.tasks.download.DownloadResult;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 依存関係のダウンロードがすべて完了したことを示すシグナルです。
@@ -19,5 +19,5 @@ public class DependsDownloadFinishedSignal extends Signal
      * ダウンロード結果です。
      */
     @NotNull
-    HashMap<String, DownloadResult> downloads;
+    Map<String, DownloadResult> downloads;
 }

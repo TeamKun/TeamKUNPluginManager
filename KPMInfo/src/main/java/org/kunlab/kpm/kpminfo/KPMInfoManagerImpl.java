@@ -11,12 +11,13 @@ import org.kunlab.kpm.utils.PluginUtil;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipFile;
 
 public class KPMInfoManagerImpl implements KPMInfoManager
 {
     private final KPMRegistry registry;
-    private final HashMap<String, KPMInformationFile> lookupNames;
+    private final Map<String, KPMInformationFile> lookupNames;
 
     public KPMInfoManagerImpl(KPMRegistry registry)
     {

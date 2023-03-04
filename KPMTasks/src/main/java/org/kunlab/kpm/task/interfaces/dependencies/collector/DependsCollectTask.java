@@ -112,7 +112,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .filter(dependency -> !arguments.getAlreadyInstalledPlugins().contains(dependency))
                 .forEach(this.status::addDependency);
 
-        HashMap<String, ResolveResult> resolvedResults;
+        Map<String, ResolveResult> resolvedResults;
         // region Resolve dependencies
         this.taskState = DependsCollectState.RESOLVING_DEPENDS;
 
@@ -131,7 +131,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         // region Collect dependency's dependencies (Recursive via collectDependsDepends)
         this.taskState = DependsCollectState.COLLECTING_DEPENDS_DEPENDS;
 
-        HashMap<String, DependencyElement> dependsDescriptions = this.downloadResultsToDependencyElement(downloadResults);
+        Map<String, DependencyElement> dependsDescriptions = this.downloadResultsToDependencyElement(downloadResults);
 
         // Remove failed dependencies from load description results
         dependsDescriptions.entrySet().removeIf(entry -> entry.getValue() == null);
@@ -232,10 +232,10 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
         }
     }
 
-    private HashMap<String, @Nullable DependencyElement> downloadResultsToDependencyElement(
+    private Map<String, @Nullable DependencyElement> downloadResultsToDependencyElement(
             @NotNull Map<String, DownloadResult> downloadResults)
     {
-        HashMap<String, DependencyElement> dependencyElements = new HashMap<>();
+        Map<String, DependencyElement> dependencyElements = new HashMap<>();
 
         for (Map.Entry<String, DownloadResult> entry : downloadResults.entrySet())
         {
@@ -286,7 +286,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .runTask(argument);
     }
 
-    private HashMap<String, DownloadResult> downloadDepends(@NotNull Map<String, ResolveResult> resolvedPlugins)
+    private Map<String, DownloadResult> downloadDepends(@NotNull Map<String, ResolveResult> resolvedPlugins)
     {
         Map<String, DownloadResult> downloadResults = resolvedPlugins.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
@@ -299,9 +299,9 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .forEach(entry -> this.postSignal(
                         new DependencyDownloadFailedSignal(entry.getKey(), entry.getValue().getUrl())));
 
-        HashMap<String, DownloadResult> downloadResultsCopy = new HashMap<>(downloadResults);
+        Map<String, DownloadResult> downloadResultsCopy = new HashMap<>(downloadResults);
 
-        this.postSignal(new DependsDownloadFinishedSignal((HashMap<String, DownloadResult>) downloadResults));
+        this.postSignal(new DependsDownloadFinishedSignal(downloadResults));
 
         return new HashMap<>(downloadResultsCopy);
     }
@@ -314,8 +314,8 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .runTask(resolveArgument);
     }
 
-    private HashMap<String, ResolveResult> resolveDepends(@NotNull Map<String, QueryContext> dependencies,
-                                                          @NotNull List<String> alreadyInstalledPlugins)
+    private Map<String, ResolveResult> resolveDepends(@NotNull Map<String, QueryContext> dependencies,
+                                                      @NotNull List<String> alreadyInstalledPlugins)
     {
         Map<String, ResolveResult> resolveResults = new HashMap<>(dependencies.entrySet().stream()
                 .filter(dependency -> !alreadyInstalledPlugins.contains(dependency.getKey()))

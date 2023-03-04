@@ -19,6 +19,7 @@ import org.kunlab.kpm.utils.KPMCollectors;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -112,11 +113,11 @@ public class ResolverSignalHandler
 
         AtomicLong index = new AtomicLong(0);
 
-        LinkedHashMap<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
+        Map<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
                 .filter(r -> r instanceof AbstractSuccessResult)
                 .map(r -> (SuccessResult) r)
                 .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
-        LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
+        Map<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
                                 e.getKey(),
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
