@@ -136,7 +136,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
             if (!response.isSuccessful())
             {
                 String errorMessage = this.getErrorMessage(response);
-                int errorCode = response.getStatusCode();
+                int errorCode = response.getStatusCode().getCode();
                 this.postSignal(new VerificationCodeRequestFailedSignal(
                         errorCode,
                         errorMessage
