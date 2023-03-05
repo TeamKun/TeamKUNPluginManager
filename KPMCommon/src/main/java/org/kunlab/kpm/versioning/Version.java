@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,5 +174,11 @@ public class Version implements Comparable<Version>
         }
 
         return 0;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.rawVersion, this.major, this.minor, this.patch, this.preRelease, this.buildMetadata);
     }
 }
