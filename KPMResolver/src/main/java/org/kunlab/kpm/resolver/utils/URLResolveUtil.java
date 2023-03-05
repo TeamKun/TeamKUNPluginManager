@@ -1,6 +1,7 @@
 package org.kunlab.kpm.resolver.utils;
 
 import lombok.experimental.UtilityClass;
+import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.StatusCode;
 import org.kunlab.kpm.resolver.ErrorCause;
@@ -49,13 +50,17 @@ public class URLResolveUtil
                         source,
                         "Redirect location malformed: " + response.getHeader("Location")
                 );
+            default:
+                return processHTTPError(resolver, response, source);
         }
+    }
 
+    @NotNull
+    private static ErrorResult processHTTPError(URLResolver resolver, HTTPResponse response, ResolveResult.Source source)
+    {
         StatusCode responseCode = response.getStatusCode();
         switch (responseCode)
         {
-            case OK:
-                return null;
             case UNAUTHORIZED:
                 return new ErrorResultImpl(resolver, ErrorCause.INVALID_CREDENTIAL,
                         source,
