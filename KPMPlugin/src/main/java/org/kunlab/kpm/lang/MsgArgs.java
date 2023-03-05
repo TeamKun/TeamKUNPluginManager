@@ -91,6 +91,7 @@ public class MsgArgs
     {
         Map<String, String> argMap = new HashMap<>();
         Matcher matcher = ARG_PATTERN.matcher(msg);
+        String replacedMessage = msg;
         while (matcher.find())
         {
             String key = matcher.group(1);
@@ -102,9 +103,9 @@ public class MsgArgs
                     value = "%%" + key + "%%";
                 argMap.put(key, value);
             }
-            msg = StringUtils.replace(msg, "%%" + key + "%%", value);
+            replacedMessage = StringUtils.replace(msg, "%%" + key + "%%", value);
         }
-        return msg;
+        return replacedMessage;
     }
 
     public MsgArgs add(String key, Object value)
@@ -121,21 +122,22 @@ public class MsgArgs
 
     public String format(String msg)
     {
+        String result = msg;
         for (Pair<String, String> arg : this.args)
-            msg = msg.replace("%%" + arg.getLeft() + "%%", arg.getRight());
+            result = result.replace("%%" + arg.getLeft() + "%%", arg.getRight());
 
-        if (!msg.contains("%%"))
-            return msg;
+        if (!result.contains("%%"))
+            return result;
 
-        msg = formatColors(msg);
+        result = formatColors(result);
 
         try
         {
-            return this.formatDeep(msg);
+            return this.formatDeep(result);
         }
         catch (StackOverflowError e)
         {
-            return msg;
+            return result;
         }
     }
 }

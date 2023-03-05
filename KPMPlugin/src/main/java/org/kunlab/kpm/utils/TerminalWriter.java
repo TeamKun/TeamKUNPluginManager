@@ -26,10 +26,10 @@ public abstract class TerminalWriter
 
     protected void printString(String key, @NotNull String value)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue);
     }
 
     protected void printSeparator()
@@ -136,43 +136,43 @@ public abstract class TerminalWriter
 
     protected void printString(String key, @NotNull String value, ClickEvent.Action action, String content)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value, action, content);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue, action, content);
     }
 
     protected <T> void printString(String key, @NotNull String value, ClickEvent.Action action, String clickContent,
                                    HoverEvent.Action<T> hoverAction, T hoverContent)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value, action, clickContent, hoverAction, hoverContent);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue, action, clickContent, hoverAction, hoverContent);
     }
 
     protected void printString(String key, @NotNull String value, ClickEvent.Action action, String clickContent,
                                String hoverText)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value, action, clickContent, ChatColor.AQUA + hoverText);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue, action, clickContent, ChatColor.AQUA + hoverText);
     }
 
     protected void printString(String key, @NotNull String value, String clickCommand)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value, clickCommand);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue, clickCommand);
     }
 
     protected void printString(String key, @NotNull String value, String clickCommand, String hoverText)
     {
-        value = value.substring(0, Math.min(value.length(), MAX_LENGTH));
-        if (value.length() == MAX_LENGTH)
-            value += "…";
-        this.printStringFull(key, value, clickCommand, ChatColor.AQUA + hoverText);
+        String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
+        if (croppedValue.length() == MAX_LENGTH)
+            croppedValue += "…";
+        this.printStringFull(key, croppedValue, clickCommand, ChatColor.AQUA + hoverText);
     }
 }

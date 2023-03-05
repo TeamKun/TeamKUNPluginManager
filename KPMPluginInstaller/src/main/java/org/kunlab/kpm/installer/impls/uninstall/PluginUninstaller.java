@@ -198,9 +198,9 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
     {
         SearchingPluginSignal searchingPluginSignal = new SearchingPluginSignal(query);
         this.postSignal(searchingPluginSignal);
-        query = searchingPluginSignal.getQuery(); // May be changed by signal handler
+        String modifiedQuery = searchingPluginSignal.getQuery(); // May be changed by signal handler
 
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(query);
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(modifiedQuery);
 
         if (!PluginUtil.isPluginLoaded(plugin))
             return null;

@@ -289,11 +289,11 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         PluginRelocatingSignal signal = new PluginRelocatingSignal(source, target);
         this.postSignal(signal);
 
-        target = signal.getTarget(); // May be changed by signal
+        Path actualTarget = signal.getTarget(); // May be changed by signal
 
         try
         {
-            if (!this.moveFile(source, target, false))
+            if (!this.moveFile(source, actualTarget, false))
                 return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
             else
                 return null;
