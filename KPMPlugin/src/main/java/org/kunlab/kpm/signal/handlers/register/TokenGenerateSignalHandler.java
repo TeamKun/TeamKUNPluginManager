@@ -81,7 +81,7 @@ public class TokenGenerateSignalHandler
                 MsgArgs.of("minutes", expiresInMin)
         ));
 
-        int expiresInSecInt = (int) expiresInSec;
+        int expiresInSecInt = Math.toIntExact(expiresInSec);
 
         if (this.terminal.isPlayer())
         {
@@ -117,7 +117,7 @@ public class TokenGenerateSignalHandler
     public void onUserDoesntCompleteVerify(UserDoesntCompleteVerifySignal signal)
     {
         if (this.terminal.isPlayer())
-            this.progressbar.setProgress((int) signal.getRemainTime());
+            this.progressbar.setProgress(Math.toIntExact(signal.getRemainTime()));
     }
 
     @SignalHandler
