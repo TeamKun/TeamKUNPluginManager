@@ -181,7 +181,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                         pluginDescription,
                         finalKpmInfo,
                         result.getOrder(),
-                        argument.isOnyLocate()
+                        argument.isOnlyLocate()
                 ))
                 .submitAll(new DependsCollectArgument(
                         pluginDescription,

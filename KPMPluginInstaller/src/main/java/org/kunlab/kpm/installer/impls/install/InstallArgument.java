@@ -53,7 +53,7 @@ public class InstallArgument implements InstallerArgument
      * このフラグを {@code true} にした場合, プラグインの読み込みは行われません。
      */
     @Builder.Default
-    private final boolean onyLocate = false;
+    private final boolean onlyLocate = false;
 
     /**
      * ユーザによるインストールかどうかのフラグです。
