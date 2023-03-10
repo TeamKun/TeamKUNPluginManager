@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.collector;
+package org.kunlab.kpm.task.tasks.dependencies.collector;
 
 /**
  * 依存関係取得の状態を表す列挙型です。

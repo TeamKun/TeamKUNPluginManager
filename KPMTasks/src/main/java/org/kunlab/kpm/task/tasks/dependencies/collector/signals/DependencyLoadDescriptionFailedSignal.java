@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.collector.signals;
+package org.kunlab.kpm.task.tasks.dependencies.collector.signals;
 
 /**
  * 依存関係のプラグイン情報ファイルの読み込みに失敗したことを示すシグナルです。

@@ -13,7 +13,7 @@ import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.installer.signals.PluginModifiedSignal;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectStatus;
-import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectStatusImpl;
+import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectStatusImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;

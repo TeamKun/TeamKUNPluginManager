@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.computer;
+package org.kunlab.kpm.task.tasks.dependencies.computer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -7,7 +7,7 @@ import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.signals.DependsLoadOrderComputingSignal;
+import org.kunlab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.collector;
+package org.kunlab.kpm.task.tasks.dependencies.collector;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;

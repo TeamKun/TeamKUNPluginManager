@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.computer;
+package org.kunlab.kpm.task.tasks.dependencies.computer;
 
 /**
  * 依存関係の読み込み順序計算の状態を表す列挙型です。

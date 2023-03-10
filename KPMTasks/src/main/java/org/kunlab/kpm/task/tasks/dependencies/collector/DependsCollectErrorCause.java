@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.collector;
+package org.kunlab.kpm.task.tasks.dependencies.collector;
 
 /**
  * 依存関係の取得に失敗した理由を表します。

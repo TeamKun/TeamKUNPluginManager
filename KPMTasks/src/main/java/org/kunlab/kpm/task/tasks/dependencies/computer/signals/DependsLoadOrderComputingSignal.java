@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.computer.signals;
+package org.kunlab.kpm.task.tasks.dependencies.computer.signals;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

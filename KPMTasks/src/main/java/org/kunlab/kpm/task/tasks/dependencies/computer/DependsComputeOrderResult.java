@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.computer;
+package org.kunlab.kpm.task.tasks.dependencies.computer;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

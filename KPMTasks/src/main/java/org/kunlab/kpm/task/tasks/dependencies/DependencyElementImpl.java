@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies;
+package org.kunlab.kpm.task.tasks.dependencies;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -6,6 +6,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
+import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
 
 import java.nio.file.Path;
 

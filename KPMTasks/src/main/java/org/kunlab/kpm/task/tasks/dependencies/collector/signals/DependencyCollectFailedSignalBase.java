@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task.interfaces.dependencies.collector.signals;
+package org.kunlab.kpm.task.tasks.dependencies.collector.signals;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
