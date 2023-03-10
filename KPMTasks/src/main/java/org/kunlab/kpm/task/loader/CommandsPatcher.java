@@ -1,6 +1,9 @@
 package org.kunlab.kpm.task.loader;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.ArgumentCommandNode;
+import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -36,6 +39,12 @@ public class CommandsPatcher
 
     private Field fCommandMap; // Lorg/bukkit/craftbukkit/<version>/CraftServer;
     // ->org/bukkit/command/SimpleCommandMap; commandMap;
+    private Field fChildren; // Lcom/mojang/brigadier/tree/CommandNode;
+    // ->java/util/Map<Ljava/lang/String;Lcom/mojang/brigadier/tree/CommandNode<>; children;
+    private Field fLiterals; // Lcom/mojang/brigadier/tree/CommandNode;
+    // ->java/util/Map<Ljava/lang/String;Lcom/mojang/brigadier/tree/LiteralCommandNode<>; literals;
+    private Field fArguments; // Lcom/mojang/brigadier/tree/CommandNode;
+    // ->java/util/Map<Ljava/lang/String;Lcom/mojang/brigadier/tree/ArgumentCommandNode<>; arguments;
 
     /**
      * BukkitCommandWrapperのコンストラクタ。
@@ -154,6 +163,42 @@ public class CommandsPatcher
         {
             throw new IllegalStateException(generateFailedMessage("Failed to get commandMap field"), e);
         }
+
+        // Get brigadier field(s)
+        try
+        {
+            this.fChildren = ReflectionUtils.getAccessibleField(CommandNode.class, true, "children");
+            this.fLiterals = ReflectionUtils.getAccessibleField(CommandNode.class, true, "literals");
+            this.fArguments = ReflectionUtils.getAccessibleField(CommandNode.class, true, "arguments");
+        }
+        catch (NoSuchFieldException e)
+        {
+            throw new IllegalStateException(generateFailedMessage("Failed to get brigadier field(s)."), e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void removeCommandFromNode(CommandNode<?> commandNode, String commandName)
+    {
+        try
+        {
+            CommandNode<?> child = commandNode.getChild(commandName);
+            if (child == null)
+                return;
+
+            if (child instanceof LiteralCommandNode)
+                ((Map<String, LiteralCommandNode<?>>) this.fLiterals.get(commandNode))
+                        .remove(commandName);
+            else if (child instanceof ArgumentCommandNode)
+                ((Map<String, ArgumentCommandNode<?, ?>>) this.fArguments.get(commandNode))
+                        .remove(commandName);
+
+            ((Map<String, CommandNode<?>>) this.fChildren.get(commandNode)).remove(commandName);
+        }
+        catch (IllegalAccessException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -213,7 +258,7 @@ public class CommandsPatcher
 
     public void unWrapCommand(String command)
     {
-        this.iBrigadierCommandDispatcher.getRoot().removeCommand(command);
+        this.removeCommandFromNode(this.iBrigadierCommandDispatcher.getRoot(), command);
     }
 
     /**
