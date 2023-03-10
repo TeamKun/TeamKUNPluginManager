@@ -1,4 +1,4 @@
-package org.kunlab.kpm.task;
+package org.kunlab.kpm.task.loader;
 
 import com.mojang.brigadier.CommandDispatcher;
 import lombok.SneakyThrows;

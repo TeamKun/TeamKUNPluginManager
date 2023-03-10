@@ -29,7 +29,7 @@ import org.kunlab.kpm.resolver.impl.github.BruteforceGitHubResolver;
 import org.kunlab.kpm.resolver.impl.github.GitHubURLResolver;
 import org.kunlab.kpm.resolver.impl.github.OmittedGitHubResolver;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
-import org.kunlab.kpm.task.PluginLoaderImpl;
+import org.kunlab.kpm.task.loader.PluginLoaderImpl;
 import org.kunlab.kpm.utils.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 

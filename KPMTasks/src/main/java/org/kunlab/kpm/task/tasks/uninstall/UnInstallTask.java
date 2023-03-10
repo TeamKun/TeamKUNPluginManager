@@ -23,7 +23,7 @@ import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.task.CommandsPatcher;
+import org.kunlab.kpm.task.loader.CommandsPatcher;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginDisablingSignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
