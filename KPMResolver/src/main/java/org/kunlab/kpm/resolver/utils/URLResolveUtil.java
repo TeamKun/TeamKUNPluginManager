@@ -18,6 +18,9 @@ public class URLResolveUtil
 {
     public static ErrorResult processErrorResponse(URLResolver resolver, HTTPResponse response, ResolveResult.Source source)
     {
+        if (!response.isError())
+            return null;
+
         switch (response.getStatus())
         {
             case URL_MALFORMED:
