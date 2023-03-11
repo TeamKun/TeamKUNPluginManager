@@ -69,3 +69,4 @@ exclude:
   - name: All
     paths:
       - KPMPlugin/src/main/java/org/kunlab/kpm/commands/debug
+      - KPMCommon/src/main/java/org/kunlab/kpm/utils/ReflectionUtils.java
