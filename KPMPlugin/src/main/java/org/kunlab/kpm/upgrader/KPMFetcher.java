@@ -53,7 +53,7 @@ public class KPMFetcher
         ResolveResult result = registry.getPluginResolver().resolve(upgraderQuery);
 
         if (result instanceof MultiResult)
-            result = result.getResolver().autoPickOnePlugin((MultiResultImpl) result);
+            result = result.getResolver().autoPickOnePlugin((MultiResult) result);
 
         if (result instanceof ErrorResult)
             throw new IllegalStateException("Unable to fetch upgrader jar file: " + ((ErrorResult) result).getMessage());
