@@ -96,7 +96,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
             jsonReader.beginObject();
             while (jsonReader.hasNext())
             {
-                if (jsonReader.peek().equals(JsonToken.END_OBJECT))
+                if (jsonReader.peek() == JsonToken.END_OBJECT)
                     break;
 
                 String aliasName = jsonReader.nextName();
