@@ -70,7 +70,7 @@ public class TokenGenerateSignalHandler
 
         this.terminal.successImplicit(LangProvider.get(
                 "tasks.gen_token.verify.verify_link",
-                MsgArgs.of("url", verificationUrl)
+                MsgArgs.of("link", verificationUrl)
         ));
         this.terminal.successImplicit(LangProvider.get(
                 "tasks.gen_token.verify.code",
