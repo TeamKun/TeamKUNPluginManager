@@ -174,7 +174,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     @SneakyThrows(InterruptedException.class)
     private void randomSleep(long interval)
     {
-        long sleepTime = interval + (long) (Math.random() * TIME_WAIT_THRESHOLD);
+        long sleepTime = Math.round(interval + (Math.random() * TIME_WAIT_THRESHOLD));
         Thread.sleep(sleepTime);
     }
 
