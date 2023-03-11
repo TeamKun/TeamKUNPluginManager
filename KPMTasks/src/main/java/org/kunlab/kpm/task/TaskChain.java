@@ -47,7 +47,7 @@ public class TaskChain<
     private TaskChain<?, IS, ?, ?, ?> next;
 
     @Nullable
-    private Function<PR, ? extends TA> argumentBuilder;
+    private Function<? super PR, ? extends TA> argumentBuilder;
 
     /**
      * {@link TaskChain} を生成します。
@@ -102,7 +102,7 @@ public class TaskChain<
      * @param argumentBuilder 前のタスクの {@link TaskResult} を引数にして、次のタスクの引数を生成する関数
      * @return この{@link TaskChain}
      */
-    public TaskChain<TA, IS, R, PR, T> bridgeArgument(@NotNull Function<PR, ? extends TA> argumentBuilder)
+    public TaskChain<TA, IS, R, PR, T> bridgeArgument(@NotNull Function<? super PR, ? extends TA> argumentBuilder)
     {
         this.argumentBuilder = argumentBuilder;
         return this;

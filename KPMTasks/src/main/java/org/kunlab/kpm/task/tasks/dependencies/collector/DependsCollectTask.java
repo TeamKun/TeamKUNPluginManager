@@ -190,7 +190,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
 
     private void collectDependsDepends(@NotNull Map<String, DependencyElement> dependencies,
                                        @NotNull List<String> alreadyCollectedPlugins,
-                                       @NotNull Map<String, QueryContext> parentSources)
+                                       @NotNull Map<String, ? extends QueryContext> parentSources)
     {
         List<String> alreadyCollected = new ArrayList<>(alreadyCollectedPlugins);
 
@@ -315,7 +315,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                 .runTask(resolveArgument);
     }
 
-    private Map<String, ResolveResult> resolveDepends(@NotNull Map<String, QueryContext> dependencies,
+    private Map<String, ResolveResult> resolveDepends(@NotNull Map<String, ? extends QueryContext> dependencies,
                                                       @NotNull List<String> alreadyInstalledPlugins)
     {
         Map<String, ResolveResult> resolveResults = new HashMap<>(dependencies.entrySet().stream()

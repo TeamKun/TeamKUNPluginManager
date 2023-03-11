@@ -764,7 +764,7 @@ public class Transaction implements AutoCloseable
          * @param max          最大件数
          * @return 変換されたList
          */
-        public List<T> mapToList(Function<ResultRow, ? extends T> resultMapper, long max)
+        public List<T> mapToList(Function<? super ResultRow, ? extends T> resultMapper, long max)
         {
             List<T> list = new ArrayList<>();
 

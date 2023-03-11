@@ -120,7 +120,7 @@ public class PluginResolverImpl implements PluginResolver
         return multiResult.getResolver().autoPickOnePlugin(multiResult);
     }
 
-    private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
+    private ResolveResult actuallyResolve(List<? extends BaseResolver> resolvers, QueryContext queryContext)
     {
         ResolveResult result = this.resolves(resolvers, queryContext);
 

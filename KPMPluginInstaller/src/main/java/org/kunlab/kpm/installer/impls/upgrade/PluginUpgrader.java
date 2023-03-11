@@ -148,7 +148,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return this.modifyPlugins(targetPlugins, resolveResults);
     }
 
-    private InstallResult<UpgradeTasks> modifyPlugins(List<Plugin> targetPlugins, Map<Plugin, SuccessResult> resolveResults)
+    private InstallResult<UpgradeTasks> modifyPlugins(List<Plugin> targetPlugins, Map<? extends Plugin, ? extends SuccessResult> resolveResults)
     {
         Map<PluginDescriptionFile, Path> unloadedPlugins;
         // region Uninstall plugins
@@ -261,7 +261,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return result;
     }
 
-    private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, Path> unloadedPlugins)
+    private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, ? extends Path> unloadedPlugins)
     {
         List<DependencyElement> dependencyElements = unloadedPlugins.entrySet().stream()
                 .map(entry -> {
