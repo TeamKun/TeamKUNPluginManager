@@ -34,7 +34,7 @@ public class DependsComputeOrderTask extends AbstractInstallTask<DependsComputeO
         this.state = DependsComputeOrderState.INITIALIZED;
     }
 
-    private static DependencyElement get(String name, List<DependencyElement> plugins)
+    private static DependencyElement get(String name, List<? extends DependencyElement> plugins)
     {
         return plugins.stream().parallel()
                 .filter(plugin -> plugin.getPluginDescription().getName().equals(name))

@@ -28,7 +28,7 @@ public class DependsLoadOrderComputingSignal extends Signal
      */
     public static class Pre extends DependsLoadOrderComputingSignal
     {
-        public Pre(final List<DependencyElement> dependencies)
+        public Pre(final List<? extends DependencyElement> dependencies)
         {
             super(Collections.unmodifiableList(dependencies));
         }

@@ -217,7 +217,7 @@ public class Requests
         return connection;
     }
 
-    private static HashMap<String, String> buildHeaders(Map<String, List<String>> originalHeaders)
+    private static HashMap<String, String> buildHeaders(Map<String, ? extends List<String>> originalHeaders)
     {
         return originalHeaders.entrySet().stream().parallel()
                 .map(stringListEntry -> Pair.of(
@@ -261,7 +261,7 @@ public class Requests
      * @throws IOException ダウンロードに失敗した場合
      */
     public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
-                                    @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
+                                    @NotNull Path path, @Nullable Consumer<? super DownloadProgress> onProgress) throws IOException
     {
         RequestContext.RequestContextBuilder context = RequestContext.builder()
                 .url(url)

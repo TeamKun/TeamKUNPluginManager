@@ -20,7 +20,7 @@ public class UninstallReadySignalHandler
         this.terminal = terminal;
     }
 
-    private void printUninstallInfo(List<Plugin> uninstallTargets)
+    private void printUninstallInfo(List<? extends Plugin> uninstallTargets)
     {
         this.terminal.successImplicit(LangProvider.get("installer.uninstall.ready"));
         this.terminal.writeLine("  " + uninstallTargets.stream()

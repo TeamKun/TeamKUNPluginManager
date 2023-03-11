@@ -70,7 +70,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         this.state = PluginsInstallState.INITIALIZED;
     }
 
-    private void patchPluginCommands(List<Plugin> targets)
+    private void patchPluginCommands(List<? extends Plugin> targets)
     {
         targets.forEach(plugin -> this.commandsPatcher.patchCommand(plugin, false));
 

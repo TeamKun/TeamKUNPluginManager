@@ -135,7 +135,7 @@ public class PluginResolverImpl implements PluginResolver
         return result;
     }
 
-    private ResolveResult resolves(List<BaseResolver> resolvers, QueryContext queryContext)
+    private ResolveResult resolves(List<? extends BaseResolver> resolvers, QueryContext queryContext)
     {
         List<BaseResolver> finishedResolvers = new ArrayList<>();
 
