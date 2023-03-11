@@ -12,6 +12,7 @@ import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,18 +36,8 @@ public class PluginResolverImpl implements PluginResolver
 
     private static boolean isValidURLResolver(URL url, URLResolver resolver)
     {
-        String[] hosts = resolver.getHosts();
-
-        if (hosts.length == 0)
-            return true;
-
-        for (String host : hosts)
-        {
-            if (url.getHost().equalsIgnoreCase(host))
-                return true;
-        }
-
-        return false;
+        return Arrays.stream(resolver.getHosts()).parallel()
+                .anyMatch(host -> url.getHost().equalsIgnoreCase(host));
     }
 
     private static URL toURL(String url)
