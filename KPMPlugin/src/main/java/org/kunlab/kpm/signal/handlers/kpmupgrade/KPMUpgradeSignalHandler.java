@@ -91,8 +91,8 @@ public class KPMUpgradeSignalHandler
 
         this.terminal.info(LangProvider.get(
                 "kpm_upgrade.upgrade.ready",
-                MsgArgs.of("from", from)
-                        .add("to", to)
+                MsgArgs.of("old", from)
+                        .add("new", to)
         ));
 
         this.terminal.warn(LangProvider.get("kpm_upgrade.upgrade.ready.warn"));
