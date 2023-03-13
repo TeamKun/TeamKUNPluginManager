@@ -59,7 +59,7 @@ public class Version implements Comparable<Version>
                 rawVersion,
                 new VersionElement(major),
                 new VersionElement(minor),
-                new VersionElement(patch),
+                preRelease == null ? new VersionElement("0"): new VersionElement(patch),
                 preRelease == null ? null: new VersionElement(preRelease),
                 buildMetadata == null ? null: new VersionElement(buildMetadata)
         );
