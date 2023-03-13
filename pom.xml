@@ -6,7 +6,7 @@
 
     <groupId>org.kunlab.kpm</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
