@@ -41,7 +41,7 @@ public class DependsComputeOrderTask extends AbstractInstallTask<DependsComputeO
                 .findFirst().orElse(null);
     }
 
-    private static boolean contains(String name, List<DependencyElement> plugins)
+    private static boolean contains(String name, List<? extends DependencyElement> plugins)
     {
         return get(name, plugins) != null;
     }
