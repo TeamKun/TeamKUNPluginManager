@@ -68,8 +68,11 @@ include:
 exclude:
   - name: All
     paths:
-      - KPMPlugin/src/main/java/org/kunlab/kpm/commands/debug
-      - KPMCommon/src/main/java/org/kunlab/kpm/utils/ReflectionUtils.java
-  - name: FieldMayBeStatic  # Due to lombok's @Builder.Default behavior
-  - name: NonStaticFinalLogger  # Due to dependency injection
+      - KPMPlugin/src/main/java/org/kunlab/kpm/commands/debug  # Debug commands.
+      - KPMCommon/src/main/java/org/kunlab/kpm/utils/ReflectionUtils.java  # This class is copied from public domain.
+  - name: FieldMayBeStatic  # Due to lombok's @Builder.Default behavior.
+  - name: NonStaticFinalLogger  # Due to dependency injection.
   - name: InterfaceMayBeAnnotatedFunctional  # Interfaces with only one method are most often not allowed to be used as lambdas.
+  - name: AbstractClassNeverImplemented
+    paths:
+      - KPMHooks/src/main/java/org/kunlab/kpm/hook/KPMHookRecipientBase.java  # This class is published as an API.
