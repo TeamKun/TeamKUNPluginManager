@@ -3,8 +3,8 @@ package org.kunlab.kpm.task.tasks.dependencies.computer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
 import org.kunlab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
@@ -27,7 +27,7 @@ public class DependsComputeOrderTask extends AbstractInstallTask<DependsComputeO
 {
     private DependsComputeOrderState state;
 
-    public DependsComputeOrderTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public DependsComputeOrderTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

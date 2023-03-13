@@ -12,8 +12,8 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.hooks.PluginInstalledHook;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.meta.InstallOperator;
@@ -53,7 +53,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
     private final PluginMetaProvider pluginMetaProvider;
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public PluginsInstallTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

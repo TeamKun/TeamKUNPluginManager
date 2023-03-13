@@ -5,8 +5,8 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.InstallResultImpl;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -29,7 +29,7 @@ public class GarbageCleanSucceedResult extends InstallResultImpl<CleanTasks>
     @NotNull
     List<Path> deleteFailedFiles;
 
-    public GarbageCleanSucceedResult(InstallProgress<CleanTasks, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, CleanTasks>> progress,
+    public GarbageCleanSucceedResult(InstallProgress<CleanTasks, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, CleanTasks>> progress,
                                      @NotNull List<Path> deletedFiles, @NotNull List<Path> deleteFailedFiles)
     {
         super(true, progress);

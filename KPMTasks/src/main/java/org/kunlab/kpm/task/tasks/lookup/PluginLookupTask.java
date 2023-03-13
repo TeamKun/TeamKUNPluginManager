@@ -4,8 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.utils.KPMCollectors;
@@ -24,7 +24,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
 {
     private LookupState state;
 
-    public PluginLookupTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public PluginLookupTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

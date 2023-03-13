@@ -6,8 +6,8 @@ import com.google.gson.stream.JsonToken;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.alias.interfaces.AliasUpdater;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.alias.update.signals.AliasUpdateSignal;
@@ -32,7 +32,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
 
     private UpdateAliasesState status;
 
-    public UpdateAliasesTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public UpdateAliasesTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.registry = installer.getRegistry();

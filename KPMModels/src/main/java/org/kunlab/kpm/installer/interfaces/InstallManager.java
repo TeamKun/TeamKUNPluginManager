@@ -28,7 +28,7 @@ public interface InstallManager
      * @param <I>        インストーラの型
      * @return インストールの結果
      */
-    <A extends InstallerArgument, T extends Enum<T>, I extends PluginInstaller<A, ?, T>> InstallProgress<T, I> runInstallerAsync(
+    <A extends InstallerArgument, T extends Enum<T>, I extends Installer<A, ?, T>> InstallProgress<T, I> runInstallerAsync(
             @NotNull I installer,
             @NotNull A arguments,
             @Nullable Consumer<InstallResult<T>> onFinished

@@ -2,8 +2,8 @@ package org.kunlab.kpm.task.tasks.alias.source.download;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.alias.source.download.signals.MalformedURLSignal;
 import org.kunlab.kpm.task.tasks.alias.source.download.signals.SourceDownloadFailedSignal;
@@ -26,7 +26,7 @@ public class SourceDownloadTask extends AbstractInstallTask<SourceDownloadArgume
 {
     private SourceDownloadState status;
 
-    public SourceDownloadTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public SourceDownloadTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.ExceptionHandler;
 import org.kunlab.kpm.hook.hooks.PluginUninstallHook;
 import org.kunlab.kpm.hook.hooks.RecipesUnregisteringHook;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.task.AbstractInstallTask;
@@ -100,7 +100,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
 
     private UninstallState taskState;
 
-    public UnInstallTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public UnInstallTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

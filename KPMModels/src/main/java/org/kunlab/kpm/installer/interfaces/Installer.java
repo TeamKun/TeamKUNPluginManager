@@ -9,7 +9,7 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
  * @param <E> インストールのタスクの列挙型
  * @param <P> インストールのタスクの引数の型
  */
-public interface PluginInstaller<A extends InstallerArgument, E extends Enum<E>, P extends Enum<P>>
+public interface Installer<A extends InstallerArgument, E extends Enum<E>, P extends Enum<P>>
 {
     /**
      * インストーラを実行します。
@@ -21,5 +21,5 @@ public interface PluginInstaller<A extends InstallerArgument, E extends Enum<E>,
 
     KPMRegistry getRegistry();
 
-    InstallProgress<P, PluginInstaller<A, E, P>> getProgress();
+    InstallProgress<P, Installer<A, E, P>> getProgress();
 }

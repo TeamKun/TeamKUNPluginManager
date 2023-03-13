@@ -4,8 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.installer.signals.InvalidKPMInfoFileSignal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.InvalidInformationFileException;
@@ -64,7 +64,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
 
     private DependsCollectState taskState;
 
-    public DependsCollectTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public DependsCollectTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

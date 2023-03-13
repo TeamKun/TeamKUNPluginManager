@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
 import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectStatus;
 
@@ -30,7 +30,7 @@ public class DependsCollectStatusImpl implements DependsCollectStatus
     @NotNull
     private String pluginName;
 
-    public DependsCollectStatusImpl(InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> progress)
+    public DependsCollectStatusImpl(InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> progress)
     {
         this.installId = progress.getInstallActionID();
         this.enumeratedDependencies = new HashMap<>();

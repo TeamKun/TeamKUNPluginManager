@@ -1,8 +1,8 @@
 package org.kunlab.kpm.task.tasks.garbage.search;
 
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.garbage.search.signals.GarbageSearchingSignal;
 
@@ -20,7 +20,7 @@ public class GarbageSearchTask extends AbstractInstallTask<GarbageSearchArgument
 {
     private GarbageSearchState status;
 
-    public GarbageSearchTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public GarbageSearchTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

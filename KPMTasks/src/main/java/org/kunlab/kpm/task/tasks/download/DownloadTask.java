@@ -4,8 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.http.DownloadProgress;
 import org.kunlab.kpm.http.RequestMethod;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.download.signals.DownloadErrorSignal;
 import org.kunlab.kpm.task.tasks.download.signals.DownloadProgressSignal;
@@ -26,7 +26,7 @@ public class DownloadTask extends AbstractInstallTask<DownloadArgument, Download
 
     private DownloadState taskState;
 
-    public DownloadTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public DownloadTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 

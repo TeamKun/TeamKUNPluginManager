@@ -8,8 +8,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.installer.signals.PluginModifiedSignal;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectStatus;
@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class InstallProgressImpl<T extends Enum<T>, I extends PluginInstaller<?, ?, T>> implements InstallProgress<T, I>
+public class InstallProgressImpl<T extends Enum<T>, I extends Installer<?, ?, T>> implements InstallProgress<T, I>
 {
     @Getter(AccessLevel.NONE)
-    private static final HashMap<String, InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>> PROGRESS_CACHES;
+    private static final HashMap<String, InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>> PROGRESS_CACHES;
 
     static
     {
@@ -84,15 +84,15 @@ public class InstallProgressImpl<T extends Enum<T>, I extends PluginInstaller<?,
                 this.getInstallActionID()
         );
 
-        this.dependsCollectStatus = new DependsCollectStatusImpl((InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
+        this.dependsCollectStatus = new DependsCollectStatusImpl((InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
 
         this.finished = false;
 
-        PROGRESS_CACHES.put(this.getInstallActionID(), (InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
+        PROGRESS_CACHES.put(this.getInstallActionID(), (InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>>) this);
     }
 
     @SuppressWarnings("unchecked")
-    public static <P extends Enum<P>, PI extends PluginInstaller<?, ?, P>> InstallProgress<P, PI> of(
+    public static <P extends Enum<P>, PI extends Installer<?, ?, P>> InstallProgress<P, PI> of(
             @NotNull PI installer,
             @NotNull SignalHandleManager signalHandler,
             @Nullable String id)
