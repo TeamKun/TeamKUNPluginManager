@@ -15,7 +15,6 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -33,21 +32,26 @@ public class TokenStore
     private static final String SALT = "TeamKunPluginManager>114514";
     private static final String SECONDARY_KEY = "KPM>Origin>114514";
 
+    private static final int ALGO_KEY_SIZE = 256;
+    private static final int ALGO_KEY_ITERATION = 65536;
+
     private final Path tokenPath;
 
     private final byte[] key;
+    private final ExceptionHandler exceptionHandler;
     private final SecretKeySpec SECONDARY_KEY_SPEC;
 
     private String tokenCache;
 
     @SneakyThrows(IOException.class)
-    public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath)
+    public TokenStore(@NotNull Path tokenPath, @NotNull Path keyPath, @NotNull ExceptionHandler exceptionHandler)
     {
         if (Files.isDirectory(tokenPath) || Files.isDirectory(keyPath))
             throw new IllegalArgumentException("Path must be a file");
 
         this.tokenPath = tokenPath;
         this.key = this.getkey(keyPath);
+        this.exceptionHandler = exceptionHandler;
         this.SECONDARY_KEY_SPEC = getKeySpec(SECONDARY_KEY);
     }
 
@@ -55,7 +59,7 @@ public class TokenStore
     private static SecretKeySpec getKeySpec(String key)
     {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), 65536, 256);
+        KeySpec spec = new PBEKeySpec(key.toCharArray(), SALT.getBytes(), ALGO_KEY_ITERATION, ALGO_KEY_SIZE);
         return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
     }
 
@@ -73,7 +77,7 @@ public class TokenStore
             Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-------"));
     }
 
-    private static boolean isTokenAlive(String token)
+    private boolean isTokenAlive(String token)
     {
         try (HTTPResponse apiResponse = Requests.request(RequestContext.builder()
                 .url("https://api.github.com/rate_limit")
@@ -85,7 +89,7 @@ public class TokenStore
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.report(e);
             return false;
         }
     }
@@ -135,7 +139,7 @@ public class TokenStore
         try
         {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-            keyGenerator.init(256);
+            keyGenerator.init(ALGO_KEY_SIZE);
             SecretKey key = keyGenerator.generateKey();
             byte[] keyBytes = key.getEncoded();
             Files.write(keyPath, keyBytes);
@@ -158,7 +162,7 @@ public class TokenStore
      */
     public void storeToken(String token, boolean checkLiving) throws IOException
     {
-        if (checkLiving && !isTokenAlive(token))
+        if (checkLiving && !this.isTokenAlive(token))
             throw new IllegalStateException("Token is not available.");
 
         byte[] tokenBytes = this.encryptToken(token);
@@ -247,8 +251,7 @@ public class TokenStore
             }
             catch (IOException e)
             {
-                System.out.println("Failed to load token.");
-                throw new UncheckedIOException(e);
+                this.exceptionHandler.report(e);
             }
         }
         return this.tokenCache;
@@ -272,6 +275,6 @@ public class TokenStore
         if (this.tokenCache == null)
             return false;
 
-        return isTokenAlive(this.tokenCache);
+        return this.isTokenAlive(this.tokenCache);
     }
 }

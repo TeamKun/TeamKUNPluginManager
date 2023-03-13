@@ -4,8 +4,8 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 /**
  * インストールに失敗したことを表すインストール結果です。
@@ -35,7 +35,7 @@ public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S 
     @Nullable
     private final S taskStatus;
 
-    public InstallFailedInstallResult(@NotNull InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @Nullable T reason, @NotNull S taskStatus)
+    public InstallFailedInstallResult(@NotNull InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @Nullable T reason, @NotNull S taskStatus)
     {
         super(false, progress);
         this.exception = null;
@@ -43,7 +43,7 @@ public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S 
         this.taskStatus = taskStatus;
     }
 
-    public InstallFailedInstallResult(InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @Nullable T reason)
+    public InstallFailedInstallResult(InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @Nullable T reason)
     {
         super(false, progress);
         this.exception = null;
@@ -51,7 +51,7 @@ public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S 
         this.taskStatus = null;
     }
 
-    public InstallFailedInstallResult(@NotNull InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @NotNull Exception exception)
+    public InstallFailedInstallResult(@NotNull InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> progress, @NotNull Exception exception)
     {
         super(false, progress);
         this.exception = exception;
@@ -60,7 +60,7 @@ public class InstallFailedInstallResult<P extends Enum<P>, T extends Enum<T>, S 
     }
 
     @Override
-    public InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> getProgress()
+    public InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> getProgress()
     {
         return super.getProgress();
     }

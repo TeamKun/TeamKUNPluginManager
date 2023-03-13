@@ -6,8 +6,8 @@ import com.google.gson.stream.JsonToken;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.alias.interfaces.AliasUpdater;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.alias.update.signals.AliasUpdateSignal;
@@ -32,7 +32,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
 
     private UpdateAliasesState status;
 
-    public UpdateAliasesTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public UpdateAliasesTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.registry = installer.getRegistry();
@@ -43,9 +43,9 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
     @Override
     public @NotNull UpdateAliasesResult runTask(@NotNull UpdateAliasesArgument arguments)
     {
-        HashMap<String, Pair<URI, Path>> sources = arguments.getSources();
+        Map<String, Pair<URI, Path>> sources = arguments.getSources();
 
-        HashMap<String, Long> aliasesOfSources = new HashMap<>();
+        Map<String, Long> aliasesOfSources = new HashMap<>();
         long total = 0;
 
         boolean isWarn = false;
@@ -96,7 +96,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
             jsonReader.beginObject();
             while (jsonReader.hasNext())
             {
-                if (jsonReader.peek().equals(JsonToken.END_OBJECT))
+                if (jsonReader.peek() == JsonToken.END_OBJECT)
                     break;
 
                 String aliasName = jsonReader.nextName();
@@ -127,7 +127,7 @@ public class UpdateAliasesTask extends AbstractInstallTask<UpdateAliasesArgument
             this.postSignal(new InvalidSourceSignal(sourceName, source,
                     uri.toString(), InvalidSourceSignal.ErrorCause.IO_ERROR
             ));
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             updater.cancel();
             return -1;
         }

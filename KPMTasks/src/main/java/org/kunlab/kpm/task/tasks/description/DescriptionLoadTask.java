@@ -3,8 +3,8 @@ package org.kunlab.kpm.task.tasks.description;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.description.signals.LoadPluginDescriptionSignal;
 import org.kunlab.kpm.utils.PluginUtil;
@@ -19,7 +19,7 @@ public class DescriptionLoadTask extends AbstractInstallTask<DescriptionLoadArgu
 {
     private DescriptionLoadState taskState;
 
-    public DescriptionLoadTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public DescriptionLoadTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.taskState = DescriptionLoadState.INITIALIZED;
@@ -47,7 +47,7 @@ public class DescriptionLoadTask extends AbstractInstallTask<DescriptionLoadArgu
                 );
             else
             {
-                e.printStackTrace();
+                this.progress.getInstaller().getRegistry().getExceptionHandler().report(e);
                 return new DescriptionLoadResult(false, this.taskState,
                         DescriptionLoadErrorCause.INVALID_DESCRIPTION, pluginFile, null
                 );
@@ -55,7 +55,7 @@ public class DescriptionLoadTask extends AbstractInstallTask<DescriptionLoadArgu
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.progress.getInstaller().getRegistry().getExceptionHandler().report(e);
             return new DescriptionLoadResult(false, this.taskState,
                     DescriptionLoadErrorCause.IO_EXCEPTION, pluginFile, null
             );

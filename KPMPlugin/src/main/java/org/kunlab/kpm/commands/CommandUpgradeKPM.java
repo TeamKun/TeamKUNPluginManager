@@ -56,7 +56,7 @@ public class CommandUpgradeKPM extends CommandBase
         }
 
         SignalHandleManager signalHandleManager = new SignalHandleManager();
-        HeadSignalHandlers.getKPMUpgraderHandlers(terminal)
+        HeadSignalHandlers.getKPMUpgraderHandlers(this.plugin.getDaemon(), terminal)
                 .forEach(signalHandleManager::register);
 
         Runner.runAsync(() ->

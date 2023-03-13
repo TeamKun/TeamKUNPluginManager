@@ -40,11 +40,11 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
                                           List<String> softDependencies,
                                           List<String> loadBefore)
     {
-        System.out.println("Saving plugin relational data for " + name);
-        System.out.println("Authors: " + String.join(", ", authors));
-        System.out.println("Dependencies: " + String.join(", ", dependencies));
-        System.out.println("Soft Dependencies: " + String.join(", ", softDependencies));
-        System.out.println("Load Before: " + String.join(", ", loadBefore));
+        DebugConstants.debugLog("Saving plugin relational data for " + name);
+        DebugConstants.debugLog("Authors: " + String.join(", ", authors));
+        DebugConstants.debugLog("Dependencies: " + String.join(", ", dependencies));
+        DebugConstants.debugLog("Soft Dependencies: " + String.join(", ", softDependencies));
+        DebugConstants.debugLog("Load Before: " + String.join(", ", loadBefore));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
         }
         catch (SQLException e)
         {
-            e.printStackTrace();
+            DebugConstants.onException(e);
             return false;
         }
     }
@@ -304,17 +304,14 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
 
         PluginDescriptionFile description = plugin.getDescription();
 
-        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
-        {
-            System.out.println("Saving plugin meta for " + plugin.getName());
-            System.out.println("Version: " + description.getVersion());
-            System.out.println("Load Timing: " + description.getLoad().name());
-            System.out.println("Installed at: " + installedAt);
-            System.out.println("Installed by: " + installedBy.name());
-            System.out.println("Resolve Query: " + resolveQuery);
-            System.out.println("Is Dependency: " + isDependency);
-            System.out.println("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]");
-        }
+        DebugConstants.debugLog("Saving plugin meta for " + plugin.getName(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Version: " + description.getVersion(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Load Timing: " + description.getLoad().name(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Installed at: " + installedAt, DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Installed by: " + installedBy.name(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Resolve Query: " + resolveQuery, DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Is Dependency: " + isDependency, DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]", DebugConstants.PLUGIN_META_OPERATION_TRACE);
 
         Transaction.create(
                         this.db,
@@ -334,17 +331,15 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     @Override
     public void savePluginMeta(@NotNull PluginMeta meta)
     {
-        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
-        {
-            System.out.println("Saving plugin meta for " + meta.getName());
-            System.out.println("Version: " + meta.getVersion());
-            System.out.println("Load Timing: " + meta.getLoadTiming().name());
-            System.out.println("Installed at: " + meta.getInstalledAt());
-            System.out.println("Installed by: " + meta.getInstalledBy().name());
-            System.out.println("Resolve Query: " + meta.getResolveQuery());
-            System.out.println("Is Dependency: " + meta.isDependency());
-            System.out.println("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]");
-        }
+        DebugConstants.debugLog("Saving plugin meta for " + meta.getName(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Version: " + meta.getVersion(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Load Timing: " + meta.getLoadTiming().name(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Installed at: " + meta.getInstalledAt(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Installed by: " + meta.getInstalledBy().name(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Resolve Query: " + meta.getResolveQuery(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("Is Dependency: " + meta.isDependency(), DebugConstants.PLUGIN_META_OPERATION_TRACE);
+        DebugConstants.debugLog("[RELATIONAL DATA WILL BE SAVED BEFORE TRANSACTION COMMIT]", DebugConstants.PLUGIN_META_OPERATION_TRACE);
+
 
         Transaction.create(
                         this.db,
@@ -382,8 +377,10 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     @Override
     public void removePluginRelationalData(Connection connection, String pluginName) throws SQLException
     {
-        if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
-            System.out.println("Removing relational data for " + pluginName);
+        DebugConstants.debugLog(
+                "Removing relational data for " + pluginName,
+                DebugConstants.PLUGIN_META_OPERATION_TRACE
+        );
 
         PreparedStatement statement =
                 connection.prepareStatement("DELETE FROM plugin_author WHERE name = ?");
@@ -482,12 +479,10 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
 
         for (DependencyNode node : dependencyNodes)
         {
-            if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
-            {
-                System.out.println("Saving dependency tree for " + node.getPlugin());
-                System.out.println("Depends on: " + node.getDependsOn());
-                System.out.println("Dependency type: " + node.getDependType().name());
-            }
+            DebugConstants.debugLog("Saving dependency tree for " + node.getPlugin(), DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE);
+            DebugConstants.debugLog("Depends on: " + node.getDependsOn(), DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE);
+            DebugConstants.debugLog("Dependency type: " + node.getDependType().name(), DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE);
+
 
             transaction
                     .set(1, node.getPlugin())
@@ -515,8 +510,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
         dependencies.addAll(softDependencies);
         dependencies.addAll(loadBefore);
 
-        if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
-            System.out.println("Building dependency tree for " + pluginName);
+        DebugConstants.debugLog("Building dependency tree for " + pluginName, DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE);
 
         this.saveDependencyTree(dependencies);
     }
@@ -524,8 +518,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     @Override
     public void deleteFromDependencyTree(@NotNull String pluginName)
     {
-        if (DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE)
-            System.out.println("Deleting dependency tree for " + pluginName);
+        DebugConstants.debugLog("Deleting dependency tree for " + pluginName, DebugConstants.PLUGIN_META_DEPENDENCY_TREE_TRACE);
 
         Transaction.create(this.db, "DELETE FROM dependency_tree WHERE name = ?")
                 .set(1, pluginName)

@@ -87,7 +87,7 @@ public class DownloadingSignalHandler
             return;
 
         double percent = (double) signal.getDownloaded() / signal.getTotalSize();
-        this.downloadProgressBar.setProgress((int) (percent * 100));  // max 100
+        this.downloadProgressBar.setProgress(Double.valueOf(percent * 100).intValue());  // max 100
     }
 
     @SignalHandler

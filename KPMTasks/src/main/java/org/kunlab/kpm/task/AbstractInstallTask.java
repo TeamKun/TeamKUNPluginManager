@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.signal.Signal;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.interfaces.InstallTask;
@@ -22,7 +22,7 @@ public abstract class AbstractInstallTask<A extends TaskArgument, R extends Task
 {
 
     @NotNull
-    protected final InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> progress;
+    protected final InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> progress;
 
     @NotNull
     private final SignalHandleManager signalHandler;

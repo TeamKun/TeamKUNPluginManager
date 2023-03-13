@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 
 /**
@@ -39,7 +40,7 @@ public class HTTPResponse implements AutoCloseable
     /**
      * HTTP ステータスコードです。
      */
-    private final int statusCode;
+    private final StatusCode statusCode;
 
     /**
      * HTTP ヘッダーです。
@@ -64,7 +65,9 @@ public class HTTPResponse implements AutoCloseable
      */
     public static HTTPResponse error(@NotNull RequestContext request, @NotNull RequestStatus status)
     {
-        return new HTTPResponse(status, request, null, null, -1, null, null);
+        return new HTTPResponse(status, request, null, null,
+                StatusCode.UNKNOWN, null, null
+        );
     }
 
     /**
@@ -81,16 +84,16 @@ public class HTTPResponse implements AutoCloseable
 
         StringBuilder sb = new StringBuilder();
 
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[Requests.HTTP_BUFFER_SIZE];
         int len;
         try
         {
             while ((len = this.inputStream.read(buffer)) != -1)
                 sb.append(new String(buffer, 0, len));
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            e.printStackTrace();
+            throw new UncheckedIOException(e);
         }
 
         this.bodyCache = sb.toString();
@@ -159,7 +162,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isSuccessful()
     {
-        return this.statusCode >= 200 && this.statusCode < 300;
+        return this.statusCode.isSuccess();
     }
 
     /**
@@ -169,7 +172,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isRedirect()
     {
-        return this.statusCode >= 300 && this.statusCode < 400;
+        return this.statusCode.isRedirect();
     }
 
     /**
@@ -179,7 +182,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isClientError()
     {
-        return this.statusCode >= 400 && this.statusCode < 500;
+        return this.statusCode.isClientError();
     }
 
     /**
@@ -189,7 +192,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isServerError()
     {
-        return this.statusCode >= 500 && this.statusCode < 600;
+        return this.statusCode.isServerError();
     }
 
     /**
@@ -211,7 +214,7 @@ public class HTTPResponse implements AutoCloseable
      */
     public boolean isOK()
     {
-        return this.statusCode == 200;
+        return this.statusCode == StatusCode.OK;
     }
 
     /**

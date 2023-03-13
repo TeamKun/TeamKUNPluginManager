@@ -1,5 +1,6 @@
 package org.kunlab.kpm.interfaces;
 
+import org.kunlab.kpm.ExceptionHandler;
 import org.kunlab.kpm.TokenStore;
 import org.kunlab.kpm.alias.interfaces.AliasProvider;
 import org.kunlab.kpm.hook.interfaces.HookExecutor;
@@ -77,6 +78,11 @@ public interface KPMRegistry
      * サーバの状態を取得するクラスです。
      */
     ServerConditionChecker getServerConditionChecker();
+
+    /**
+     * 発生した例外をハンドリングするクラスです。
+     */
+    ExceptionHandler getExceptionHandler();
 
     /**
      * デーモンを終了します。

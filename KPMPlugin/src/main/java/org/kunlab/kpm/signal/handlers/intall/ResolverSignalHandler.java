@@ -4,6 +4,7 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
+import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.ErrorCause;
@@ -13,6 +14,7 @@ import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
+import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -26,10 +28,12 @@ import java.util.stream.Collectors;
  */
 public class ResolverSignalHandler
 {
+    private final KPMRegistry registry;
     private final Terminal terminal;
 
-    public ResolverSignalHandler(Terminal terminal)
+    public ResolverSignalHandler(KPMRegistry registry, Terminal terminal)
     {
+        this.registry = registry;
         this.terminal = terminal;
     }
 
@@ -109,17 +113,17 @@ public class ResolverSignalHandler
 
         AtomicLong index = new AtomicLong(0);
 
-        LinkedHashMap<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
+        Map<String, SuccessResult> keywordToResolveResult = Arrays.stream(signal.getResults().getResults())
                 .filter(r -> r instanceof AbstractSuccessResult)
                 .map(r -> (SuccessResult) r)
                 .collect(Collectors.toMap(r -> String.valueOf(index.getAndIncrement()), r -> r, (a, b) -> a, LinkedHashMap::new));
-        LinkedHashMap<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
+        Map<String, String> keywordToTitle = keywordToResolveResult.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
                                 e.getKey(),
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
+                .collect(KPMCollectors.toMap(LinkedHashMap::new));
         keywordToTitle.put("a", LangProvider.get("tasks.resolve.multi.choices.auto"));
 
         try
@@ -152,7 +156,7 @@ public class ResolverSignalHandler
         }
         catch (InterruptedException ex)
         {
-            ex.printStackTrace();
+            this.registry.getExceptionHandler().report(ex);
         }
     }
 }

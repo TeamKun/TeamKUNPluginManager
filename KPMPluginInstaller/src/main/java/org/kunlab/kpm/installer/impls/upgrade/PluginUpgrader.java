@@ -30,9 +30,9 @@ import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.TaskFailedException;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
-import org.kunlab.kpm.task.interfaces.dependencies.DependencyElementImpl;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderArgument;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderTask;
+import org.kunlab.kpm.task.tasks.dependencies.DependencyElementImpl;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import org.kunlab.kpm.task.tasks.install.PluginsInstallArgument;
 import org.kunlab.kpm.task.tasks.install.PluginsInstallTask;
 import org.kunlab.kpm.task.tasks.lookup.LookupArgument;
@@ -101,7 +101,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         Map<Plugin, String> updateQueries;
         // region Retrieve update queries
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_METADATA);
-        HashMap<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
+        Map<Plugin, PluginMeta> pluginMetas = this.retrievePluginMetadata(targetPlugins);
         this.progress.setCurrentTask(UpgradeTasks.RETRIEVING_UPDATE_QUERY);
 
         updateQueries = this.retrieveUpdateQuery(pluginMetas);
@@ -148,7 +148,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return this.modifyPlugins(targetPlugins, resolveResults);
     }
 
-    private InstallResult<UpgradeTasks> modifyPlugins(List<Plugin> targetPlugins, Map<Plugin, SuccessResult> resolveResults)
+    private InstallResult<UpgradeTasks> modifyPlugins(List<Plugin> targetPlugins, Map<? extends Plugin, ? extends SuccessResult> resolveResults)
     {
         Map<PluginDescriptionFile, Path> unloadedPlugins;
         // region Uninstall plugins
@@ -162,7 +162,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return this.error(UpgradeErrorCause.UNINSTALLER_INSTANTIATION_FAILED);
         }
         // endregion
@@ -185,7 +185,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                this.registry.getExceptionHandler().report(e);
                 return this.error(UpgradeErrorCause.INSTALLER_INSTANTIATION_FAILED);
             }
 
@@ -236,7 +236,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return uninstallSucceedResult.getResult().getUnloadedPlugins();
     }
 
-    private Map<Plugin, String> retrieveUpdateQuery(HashMap<Plugin, PluginMeta> pluginMetas)
+    private Map<Plugin, String> retrieveUpdateQuery(Map<Plugin, PluginMeta> pluginMetas)
     {
         Map<Plugin, String> result = new HashMap<>();
 
@@ -261,7 +261,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return result;
     }
 
-    private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, Path> unloadedPlugins)
+    private UpgradeErrorCause restoreUnloadedPlugin(Map<PluginDescriptionFile, ? extends Path> unloadedPlugins)
     {
         List<DependencyElement> dependencyElements = unloadedPlugins.entrySet().stream()
                 .map(entry -> {
@@ -375,7 +375,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
                 .collect(KPMCollectors.toPairHashMap());
     }
 
-    private HashMap<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
+    private Map<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
     {
         PluginMetaProvider metaProvider = this.registry.getPluginMetaManager().getProvider();
         return targets.stream()
@@ -392,8 +392,10 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         LookupResult lookupResult = this.submitter(UpgradeTasks.SEARCHING_PLUGIN, new PluginLookupTask(this))
                 .submitAll(new LookupArgument(targets.toArray(new String[0])));
 
-        HashMap<String, Plugin> foundPlugins = lookupResult.getPlugins();
-        assert foundPlugins != null;
+        assert lookupResult.getPlugins() != null;
+        Map<String, Plugin> foundPlugins = lookupResult.getPlugins().entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(KPMCollectors.toHashMap());
 
         targets.removeAll(foundPlugins.keySet());
 

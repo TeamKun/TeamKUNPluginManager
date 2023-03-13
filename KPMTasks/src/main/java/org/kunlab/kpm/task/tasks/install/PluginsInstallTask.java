@@ -12,16 +12,16 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.hooks.PluginInstalledHook;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.meta.InstallOperator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.task.CommandsPatcher;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
+import org.kunlab.kpm.task.loader.CommandsPatcher;
 import org.kunlab.kpm.task.tasks.install.signals.PluginEnablingSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginInstallingSignal;
@@ -53,7 +53,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
     private final PluginMetaProvider pluginMetaProvider;
     private PluginsInstallState state;
 
-    public PluginsInstallTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public PluginsInstallTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
@@ -70,7 +70,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         this.state = PluginsInstallState.INITIALIZED;
     }
 
-    private void patchPluginCommands(List<Plugin> targets)
+    private void patchPluginCommands(List<? extends Plugin> targets)
     {
         targets.forEach(plugin -> this.commandsPatcher.patchCommand(plugin, false));
 
@@ -173,6 +173,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
                     installedPlugins
             );
 
+        KPMRegistry registry = this.progress.getInstaller().getRegistry();
         Plugin target;
         try
         {
@@ -193,17 +194,17 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (InvalidDescriptionException e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN_DESCRIPTION);
         }
         catch (InvalidPluginException e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.INVALID_PLUGIN);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.EXCEPTION_OCCURRED);
         }
 
@@ -283,28 +284,28 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
     @Nullable
     private PluginsInstallResult movePlugin(@NotNull Path source, @NotNull Path target)
     {
+        KPMRegistry registry = this.progress.getInstaller().getRegistry();
+
         PluginRelocatingSignal signal = new PluginRelocatingSignal(source, target);
         this.postSignal(signal);
 
-        target = signal.getTarget(); // May be changed by signal
+        Path actualTarget = signal.getTarget(); // May be changed by signal
 
         try
         {
-            if (!this.moveFile(source, target, false))
+            if (!this.moveFile(source, actualTarget, false))
                 return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
             else
                 return null;
         }
         catch (IOException e)
         {
-            e.printStackTrace();
-
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.IO_EXCEPTION_OCCURRED);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-
+            registry.getExceptionHandler().report(e);
             return new PluginsInstallResult(false, this.state, PluginsInstallErrorCause.RELOCATE_FAILED);
         }
     }

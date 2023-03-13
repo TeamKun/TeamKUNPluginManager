@@ -10,6 +10,7 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 
 public class LangProvider
@@ -20,6 +21,7 @@ public class LangProvider
     private final KPMRegistry registry;
     private final LangLoader loader;
 
+    @Getter
     @Setter
     private String currentLanguage;
     private Properties currentLanguageMessages;
@@ -51,7 +53,7 @@ public class LangProvider
 
     public static void buildCache()
     {
-        Properties current = INSTANCE.currentLanguageMessages;
+        Map<Object, Object> current = INSTANCE.currentLanguageMessages;
         Properties cache = new Properties();
         current.keySet().stream().parallel()
                 .map(Object::toString)

@@ -3,6 +3,7 @@ package org.kunlab.kpm.signal.handlers.uninstall;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
+import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.meta.DependType;
@@ -12,16 +13,19 @@ import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.utils.Utils;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PluginIsDependencySignalHandler
 {
+    private final KPMRegistry registry;
     private final Terminal terminal;
 
     private PluginIsDependencySignal.Operation lastOperation;
 
-    public PluginIsDependencySignalHandler(Terminal terminal)
+    public PluginIsDependencySignalHandler(KPMRegistry registry, Terminal terminal)
     {
+        this.registry = registry;
         this.terminal = terminal;
     }
 
@@ -54,7 +58,7 @@ public class PluginIsDependencySignalHandler
         if (this.lastOperation != null)  // This is not the first time to ask so auto select the last operation
             return this.lastOperation;
 
-        HashMap<String, PluginIsDependencySignal.Operation> optionSelection = new HashMap<>();
+        Map<String, PluginIsDependencySignal.Operation> optionSelection = new HashMap<>();
         optionSelection.put("u", PluginIsDependencySignal.Operation.UNINSTALL);
         optionSelection.put("d", PluginIsDependencySignal.Operation.DISABLE);
         optionSelection.put("i", PluginIsDependencySignal.Operation.IGNORE);
@@ -80,7 +84,7 @@ public class PluginIsDependencySignalHandler
         }
         catch (InterruptedException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             this.terminal.error(LangProvider.get(
                     "tasks.uninstall.dependency.error",
                     MsgArgs.of("error", e.getMessage())

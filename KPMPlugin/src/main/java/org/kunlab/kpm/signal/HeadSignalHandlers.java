@@ -2,6 +2,7 @@ package org.kunlab.kpm.signal;
 
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.signal.handlers.autoremove.AutoRemoveFinishedSignalHandler;
 import org.kunlab.kpm.signal.handlers.autoremove.AutoRemoveReadySignalHandler;
 import org.kunlab.kpm.signal.handlers.clean.GarbageCleanFinishedSignalHandler;
@@ -69,11 +70,11 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getInstallHandlers(@NotNull Terminal terminal, boolean handleFinish)
+    public static List<Object> getInstallHandlers(@NotNull KPMRegistry registry, @NotNull Terminal terminal, boolean handleFinish)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
-                new ResolverSignalHandler(terminal),
+                new ResolverSignalHandler(registry, terminal),
                 new DownloadingSignalHandler(terminal),
                 new CheckEnvSignalHandler(terminal),
                 new DependenciesSignalHandler(terminal),
@@ -82,25 +83,27 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getInstallHandlers(@NotNull Terminal terminal)
+    public static List<Object> getInstallHandlers(@NotNull KPMRegistry registry, @NotNull Terminal terminal)
     {
-        return getInstallHandlers(terminal, true);
+        return getInstallHandlers(registry, terminal, true);
     }
 
-    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal, boolean handleFinish)
+    public static List<Object> getUninstallHandlers(@NotNull KPMRegistry registry,
+                                                    @NotNull Terminal terminal,
+                                                    boolean handleFinish)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
                 new UninstallerSignalHandler(terminal),
-                new PluginIsDependencySignalHandler(terminal),
+                new PluginIsDependencySignalHandler(registry, terminal),
                 new UninstallReadySignalHandler(terminal),
                 handleFinish ? new UninstallFinishedSignalHandler(terminal): null
         );
     }
 
-    public static List<Object> getUninstallHandlers(@NotNull Terminal terminal)
+    public static List<Object> getUninstallHandlers(@NotNull KPMRegistry registry, @NotNull Terminal terminal)
     {
-        return getUninstallHandlers(terminal, true);
+        return getUninstallHandlers(registry, terminal, true);
     }
 
     public static List<Object> getUpdateHandlers(@NotNull Terminal terminal)
@@ -140,7 +143,7 @@ public class HeadSignalHandlers
         );
     }
 
-    public static List<Object> getUpgraderHandlers(Terminal terminal, boolean isAuto)
+    public static List<Object> getUpgraderHandlers(@NotNull KPMRegistry registry, @NotNull Terminal terminal, boolean isAuto)
     {
         return createHandlersList(
                 getCommonHandlers(terminal),
@@ -149,14 +152,14 @@ public class HeadSignalHandlers
                         new UpgradeFinishedSignalHandler(terminal),
                         new UninstallerSignalHandler(terminal)
                 ),
-                getInstallHandlers(terminal, false)
+                getInstallHandlers(registry, terminal, false)
         );
     }
 
-    public static List<Object> getKPMUpgraderHandlers(Terminal terminal)
+    public static List<Object> getKPMUpgraderHandlers(KPMRegistry registry, Terminal terminal)
     {
         return createHandlersList(
-                new ResolverSignalHandler(terminal),
+                new ResolverSignalHandler(registry, terminal),
                 new KPMUpgradeSignalHandler(terminal)
         );
     }

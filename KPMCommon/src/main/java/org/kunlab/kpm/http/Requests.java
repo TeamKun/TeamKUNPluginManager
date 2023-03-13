@@ -31,18 +31,22 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class Requests
 {
+
+    static final int HTTP_BUFFER_SIZE = 1024;
+    private static final int REDIRECT_LIMIT_DEFAULT = 15;
+    private static final int CONNECT_TIMEOUT_DEFAULT = 10000;
+
+    @Getter
+    @NotNull
+    private static final Map<String, String> extraHeaders;
     @Setter
     private static TokenStore tokenStore;
     @Getter
-    @NotNull
-    private static Map<String, String> extraHeaders;
-
+    @Setter
+    private static int redirectLimit = REDIRECT_LIMIT_DEFAULT;
     @Getter
     @Setter
-    private static int redirectLimit = 15;
-    @Getter
-    @Setter
-    private static int connectTimeout = 10000;
+    private static int connectTimeout = CONNECT_TIMEOUT_DEFAULT;
 
     static
     {
@@ -63,8 +67,10 @@ public class Requests
         if (redirectCount > redirectLimit)
             return HTTPResponse.error(request, HTTPResponse.RequestStatus.REDIRECT_LIMIT_EXCEED);
 
-        if (DebugConstants.HTTP_REDIRECT_TRACE)
-            System.out.println("Redirecting from " + request.getUrl() + " to " + location + " (count: " + redirectCount + ")");
+        DebugConstants.debugLog(
+                "Redirecting from " + request.getUrl() + " to " + location + " (count: " + redirectCount + ")",
+                DebugConstants.HTTP_REDIRECT_TRACE
+        );
 
         HTTPResponse newResponse = request(RequestContext.builder()
                 .cacheable(request.isCacheable())
@@ -82,7 +88,7 @@ public class Requests
     @NotNull
     private static Map<String, String> setupDefaultHeaders(@NotNull String host, @NotNull Map<String, String> currentHeaders)
     {
-        HashMap<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
 
         if (host.equalsIgnoreCase("github.com") ||
                 StringUtils.endsWithIgnoreCase(host, ".github.com") ||
@@ -119,13 +125,16 @@ public class Requests
         if (context.getUrl() == null)
             throw new IllegalArgumentException("URL is null");
 
-        if (DebugConstants.HTTP_REQUEST_TRACE)
-        {
-            System.out.println("Requesting " + context.getMethod() + " " + context.getUrl());
-            System.out.println("Headers:" + context.getExtraHeaders().entrySet().stream()
-                    .map(e -> e.getKey() + ": " + e.getValue())
-                    .collect(Collectors.joining(", ")));
-        }
+        DebugConstants.debugLog(
+                "Requesting " + context.getMethod() + " " + context.getUrl(),
+                DebugConstants.HTTP_REQUEST_TRACE
+        );
+        DebugConstants.debugLog(
+                "Headers:" + context.getExtraHeaders().entrySet().stream()
+                        .map(e -> e.getKey() + ": " + e.getValue())
+                        .collect(Collectors.joining(", ")),
+                DebugConstants.HTTP_REQUEST_TRACE
+        );
 
         try
         {
@@ -138,30 +147,32 @@ public class Requests
                     outputStream.write(context.getBody());
                 }
 
-            int responseCode = connection.getResponseCode();
+            StatusCode responseCode = StatusCode.valueOf(connection.getResponseCode());
 
             HashMap<String, String> serverHeaders = buildHeaders(connection.getHeaderFields());
             Pair<String, String> serverProtocol = retrieveProtocol(serverHeaders);  // serverHeaders will be modified in this method
 
             HTTPResponse.RequestStatus status = HTTPResponse.RequestStatus.OK;
-            if (responseCode >= 500)
+            if (responseCode.isServerError())
                 status = HTTPResponse.RequestStatus.SERVER_ERROR;
-            else if (responseCode >= 400)
+            else if (responseCode.isClientError())
                 status = HTTPResponse.RequestStatus.CLIENT_ERROR;
 
             HTTPResponse response = new HTTPResponse(status,
                     context, serverProtocol.getLeft(), serverProtocol.getRight(), responseCode, serverHeaders,
-                    responseCode >= 400 ? connection.getErrorStream(): connection.getInputStream()
+                    responseCode.isError() ? connection.getErrorStream(): connection.getInputStream()
             );
 
-            if (DebugConstants.HTTP_REQUEST_TRACE)
-            {
-                System.out.println("Response from " + context.getUrl() + ": " + responseCode + " " + response.getStatus());
-                System.out.println("Headers:" + response.getHeaders().entrySet().stream()
-                        .map(e -> e.getKey() + ": " + e.getValue())
-                        .collect(Collectors.joining(", ")));
-
-            }
+            DebugConstants.debugLog(
+                    "Response from " + context.getUrl() + ": " + responseCode.getCode() + " " + response.getStatus(),
+                    DebugConstants.HTTP_REQUEST_TRACE
+            );
+            DebugConstants.debugLog(
+                    "Headers:" + response.getHeaders().entrySet().stream()
+                            .map(e -> e.getKey() + ": " + e.getValue())
+                            .collect(Collectors.joining(", ")),
+                    DebugConstants.HTTP_REQUEST_TRACE
+            );
 
             if (context.isFollowRedirects())
                 return doRedirect(response, 0);
@@ -190,7 +201,7 @@ public class Requests
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(context.getMethod().name());
         connection.setUseCaches(false);
-        connection.setConnectTimeout(10000);
+        connection.setConnectTimeout(connectTimeout);
 
         if (context.getTimeout() > 0)
             connection.setReadTimeout(context.getTimeout());
@@ -206,7 +217,7 @@ public class Requests
         return connection;
     }
 
-    private static HashMap<String, String> buildHeaders(Map<String, List<String>> originalHeaders)
+    private static HashMap<String, String> buildHeaders(Map<String, ? extends List<String>> originalHeaders)
     {
         return originalHeaders.entrySet().stream().parallel()
                 .map(stringListEntry -> Pair.of(
@@ -250,7 +261,7 @@ public class Requests
      * @throws IOException ダウンロードに失敗した場合
      */
     public static long downloadFile(@NotNull RequestMethod method, @NotNull String url,
-                                    @NotNull Path path, @Nullable Consumer<DownloadProgress> onProgress) throws IOException
+                                    @NotNull Path path, @Nullable Consumer<? super DownloadProgress> onProgress) throws IOException
     {
         RequestContext.RequestContextBuilder context = RequestContext.builder()
                 .url(url)
@@ -263,7 +274,7 @@ public class Requests
         try (HTTPResponse response = request(context.build());
              OutputStream output = Files.newOutputStream(path))
         {
-            if (response.getStatusCode() < 200 || response.getStatusCode() >= 300)
+            if (response.getStatusCode().isError())
                 throw new IOException("HTTP error " + response.getStatusCode());
             else if (response.getInputStream() == null)
                 throw new IOException("No response body was returned");
@@ -273,7 +284,7 @@ public class Requests
             long size = contentLength != null ? Long.parseLong(contentLength): -1;
 
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[HTTP_BUFFER_SIZE];
 
             int read;
             long downloaded = 0;
@@ -287,7 +298,7 @@ public class Requests
 
                 int progress;
                 if (downloaded != 0 && size != 0)
-                    progress = (int) (downloaded * 100 / size);
+                    progress = Math.toIntExact(downloaded * 100 / size);
                 else
                     progress = 0;
 

@@ -1,6 +1,7 @@
 package org.kunlab.kpm.interfaces;
 
 import org.bukkit.plugin.Plugin;
+import org.kunlab.kpm.ExceptionHandler;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -77,4 +78,9 @@ public interface KPMEnvironment
      * HTTP リクエストのリダイレクト回数です。
      */
     int getHTTPMaxRedirects();
+
+    /**
+     * 例外をキャッチしたときに呼び出されるハンドラです。
+     */
+    ExceptionHandler getExceptionHandler();
 }

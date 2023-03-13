@@ -15,14 +15,15 @@ import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.ExceptionHandler;
 import org.kunlab.kpm.hook.hooks.PluginUninstallHook;
 import org.kunlab.kpm.hook.hooks.RecipesUnregisteringHook;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.task.CommandsPatcher;
+import org.kunlab.kpm.task.loader.CommandsPatcher;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginDisablingSignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
@@ -39,6 +40,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,6 +53,8 @@ import java.util.Map;
  */
 public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInstallResult>
 {
+    private static final long DELETE_DELAY = 20L; // tick
+
     private static final PluginManager PLUGIN_MANAGER;
     private static final CommandsPatcher COMMANDS_PATCHER;
 
@@ -89,17 +93,19 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
     }
 
     private final KPMRegistry registry;
+    private final ExceptionHandler exceptionHandler;
     private final List<PluginDescriptionFile> uninstalledPlugins;
     private final List<PluginDescriptionFile> disabledDependencyPlugins;
     private final Map<PluginDescriptionFile, Path> unloadedPlugins;
 
     private UninstallState taskState;
 
-    public UnInstallTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public UnInstallTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.registry = installer.getRegistry();
+        this.exceptionHandler = this.registry.getExceptionHandler();
         this.uninstalledPlugins = new ArrayList<>();
         this.disabledDependencyPlugins = new ArrayList<>();
         this.unloadedPlugins = new HashMap<>();
@@ -165,7 +171,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
             File pluginFile = PluginUtil.getFile(plugin);
             if (isFileDel && pluginFile.exists())
                 pluginFile.delete();
-        }), 20L);
+        }), DELETE_DELAY);
 
         orderedUninstallTargets.stream()
                 .map(Plugin::getDescription)
@@ -223,13 +229,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
             }
             catch (IllegalAccessException e)
             {
-                e.printStackTrace();
+                this.exceptionHandler.report(e);
             }
             catch (IllegalStateException e)
             {
                 if (!e.getMessage().equals("zip file closed"))
                 {
-                    e.printStackTrace();
+                    this.exceptionHandler.report(e);
                     continue;
                 }
 
@@ -257,7 +263,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            this.exceptionHandler.report(ex);
             return UninstallErrorCause.INTERNAL_PLUGIN_DISABLE_FAILED;
         }
 
@@ -336,13 +342,13 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
         catch (IllegalAccessException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.report(e);
             this.registry.getLogger().warning("Unable to unload classes of plugin " + plugin.getName());
             return false;
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.exceptionHandler.report(e);
             this.registry.getLogger().warning("Unable to close class loader of plugin " +
                     plugin.getName());
             return false;
@@ -353,7 +359,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
 
     private void unregisterRecipes(@NotNull Plugin plugin, @Nullable KPMInformationFile kpmInfo)
     {
-        ArrayList<String> targetNamespaces =
+        List<String> targetNamespaces =
                 new ArrayList<>(Collections.singletonList(plugin.getName().toLowerCase(Locale.ROOT)));
         if (kpmInfo != null)
         {
@@ -395,7 +401,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
         }
     }
 
-    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull ArrayList<String> targetNamespaces, @NotNull Recipe recipe)
+    private boolean isRecipeRemoveTarget(@NotNull Plugin plugin, @NotNull Collection<String> targetNamespaces, @NotNull Recipe recipe)
     {
         if (!(recipe instanceof Keyed))
             return false;

@@ -20,7 +20,7 @@ public enum PluginLoadResult
      */
     FILE_NOT_FOUND,
     /**
-     * <code>plugin.yml</code> が不適切
+     * {@code plugin.yml} が不適切
      */
     INVALID_PLUGIN_DESCRIPTION,
     /**

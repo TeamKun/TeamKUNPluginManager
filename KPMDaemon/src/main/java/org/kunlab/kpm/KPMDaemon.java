@@ -16,7 +16,6 @@ import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
 import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInfoManagerImpl;
-import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
 import org.kunlab.kpm.meta.PluginMetaManagerImpl;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
@@ -29,12 +28,14 @@ import org.kunlab.kpm.resolver.impl.github.BruteforceGitHubResolver;
 import org.kunlab.kpm.resolver.impl.github.GitHubURLResolver;
 import org.kunlab.kpm.resolver.impl.github.OmittedGitHubResolver;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
-import org.kunlab.kpm.task.PluginLoaderImpl;
+import org.kunlab.kpm.task.loader.PluginLoaderImpl;
 import org.kunlab.kpm.utils.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,7 @@ import java.util.logging.Logger;
 public class KPMDaemon implements KPMRegistry
 {
     private final Logger logger;
+    private final ExceptionHandler exceptionHandler;
     private final KPMEnvironment environment;
     private final AliasProvider aliasProvider;
     private final PluginMetaManager pluginMetaManager;
@@ -60,6 +62,8 @@ public class KPMDaemon implements KPMRegistry
     {
         this.logger = env.getLogger();
         this.environment = env;
+        this.exceptionHandler = env.getExceptionHandler();
+
         this.pluginMetaManager = new PluginMetaManagerImpl(
                 this,
                 env.getMetadataDBPath(),
@@ -68,7 +72,7 @@ public class KPMDaemon implements KPMRegistry
         this.aliasProvider = new AliasProviderImpl(env.getAliasesDBPath());
         this.kpmInfoManager = new KPMInfoManagerImpl(this);
         this.hookExecutor = new HookExecutorImpl(this);
-        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath());
+        this.tokenStore = new TokenStore(env.getTokenPath(), env.getTokenKeyPath(), this.exceptionHandler);
         this.installManager = new InstallManagerImpl(this.tokenStore);
         this.pluginLoader = new PluginLoaderImpl(this);
         this.pluginResolver = new PluginResolverImpl();
@@ -84,9 +88,8 @@ public class KPMDaemon implements KPMRegistry
         this.initializeRequests();
         this.loadKPMInformationFromPlugins();
 
-        Runner.runLater(() -> {
-            this.getPluginMetaManager().crawlAll();
-        }, 1L);  // Crawl all plugins metadata after the server is fully loaded.
+        // サーバが全て読み込まれた後にプラグインをクロールする。
+        Runner.runLater(() -> this.getPluginMetaManager().crawlAll(), 1L);
     }
 
     private void loadKPMInformationFromPlugins()
@@ -98,13 +101,10 @@ public class KPMDaemon implements KPMRegistry
             KPMInfoManager kpmInfoManager = this.getKpmInfoManager();
             Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 
-            int loaded = 0;
-            for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
-            {
-                KPMInformationFile info = kpmInfoManager.getOrLoadInfo(plugin);
-                if (info != null)
-                    loaded++;
-            }
+            long loaded = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                    .map(kpmInfoManager::getOrLoadInfo)
+                    .filter(Objects::nonNull)
+                    .count();
 
             this.logger.log(Level.INFO, "Loaded {0} KPM information from {1} plugins.", new Object[]{loaded, plugins.length});
         }, 1L);
@@ -142,7 +142,7 @@ public class KPMDaemon implements KPMRegistry
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.getExceptionHandler().report(e);
             this.logger.log(Level.WARNING, "Failed to load token.");
         }
 
@@ -175,6 +175,4 @@ public class KPMDaemon implements KPMRegistry
     {
         return Version.of(this.getEnvironment().getPlugin().getDescription().getVersion());
     }
-
-
 }

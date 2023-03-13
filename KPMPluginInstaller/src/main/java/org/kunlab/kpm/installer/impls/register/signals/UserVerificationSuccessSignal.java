@@ -19,7 +19,7 @@ public class UserVerificationSuccessSignal extends Signal
     String accessToken;
 
     /**
-     * トークンのタイプです。(例：<code>Bearer</code>)
+     * トークンのタイプです。(例：{@code Bearer})
      */
     @NotNull
     String tokenType;

@@ -48,8 +48,10 @@ public class PluginMetaManagerImpl implements PluginMetaManager
         {
             if (!this.exceptedPluginModifications.contains(pluginName))
             {
-                if (DebugConstants.PLUGIN_META_OPERATION_TRACE)
-                    System.out.println("The plugin " + pluginName + " is will be modified.");
+                DebugConstants.debugLog(
+                        "The plugin " + pluginName + " is will be modified.",
+                        DebugConstants.PLUGIN_META_OPERATION_TRACE
+                );
 
                 this.exceptedPluginModifications.add(pluginName);
             }
@@ -153,7 +155,7 @@ public class PluginMetaManagerImpl implements PluginMetaManager
         this.crawlAddedPlugins(plugins);
     }
 
-    private void crawlRemovedPlugins(List<Plugin> plugins)
+    private void crawlRemovedPlugins(List<? extends Plugin> plugins)
     {
         List<String> pluginNames = plugins.stream().parallel()
                 .map(Plugin::getName)
@@ -178,7 +180,7 @@ public class PluginMetaManagerImpl implements PluginMetaManager
         }
     }
 
-    private void crawlAddedPlugins(List<Plugin> plugins)
+    private void crawlAddedPlugins(List<? extends Plugin> plugins)
     {
         for (Plugin plugin : plugins)
         {

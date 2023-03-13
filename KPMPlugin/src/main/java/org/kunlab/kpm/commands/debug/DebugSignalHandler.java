@@ -10,8 +10,8 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import org.kunlab.kpm.signal.Signal;
 import org.kunlab.kpm.signal.SignalHandleManager;
@@ -246,7 +246,7 @@ public class DebugSignalHandler
     }
 
     @SignalHandler
-    public void handleAll(@NotNull InstallProgress<? extends Enum<?>, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> installProgress, Signal signal)
+    public void handleAll(@NotNull InstallProgress<? extends Enum<?>, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>>> installProgress, Signal signal)
     {
         if (!(signal instanceof DownloadProgressSignal))
             printSignal(signal, this.terminal);

@@ -6,17 +6,18 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -100,11 +101,17 @@ public class SpigotMCResolver implements URLResolver
 
         if (version == null)
         {
-            List<SpigotMCSuccessResult> results = new ArrayList<>();
-            for (long v : versions)
-                results.add(new SpigotMCSuccessResult(this, String.valueOf(v), name, id, description, testedVersions));
-
-            return new MultiResultImpl(this, results.toArray(new SpigotMCSuccessResult[0]));
+            return new MultiResultImpl(this, Arrays.stream(versions)
+                    .mapToObj(v -> new SpigotMCSuccessResult(
+                            this,
+                            String.valueOf(v),
+                            name,
+                            id,
+                            description,
+                            testedVersions
+                    ))
+                    .toArray(SpigotMCSuccessResult[]::new)
+            );
         }
 
         for (long v : versions)
@@ -124,8 +131,7 @@ public class SpigotMCResolver implements URLResolver
         }
         catch (IllegalArgumentException e)
         {
-            e.printStackTrace();
-
+            LoggerFactory.getLogger(SpigotMCResolver.class).error("Failed to decode Base64 string.", e);
             return "Failed to decode Base64 string.";
         }
     }

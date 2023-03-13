@@ -5,8 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.installer.signals.InstallFinishedSignal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.signal.Signal;
@@ -27,12 +27,12 @@ import java.io.IOException;
  * @param <E> インストールのタスクの列挙型
  * @param <P> インストールのタスクの引数の型
  */
-public abstract class AbstractInstaller<A extends InstallerArgument, E extends Enum<E>, P extends Enum<P>> implements PluginInstaller<A, E, P>
+public abstract class AbstractInstaller<A extends InstallerArgument, E extends Enum<E>, P extends Enum<P>> implements Installer<A, E, P>
 {
     @Getter
     protected final KPMRegistry registry;
     @Getter
-    protected final InstallProgress<P, PluginInstaller<A, E, P>> progress;
+    protected final InstallProgress<P, Installer<A, E, P>> progress;
     protected final SignalHandleManager signalHandler;
 
     public AbstractInstaller(@NotNull KPMRegistry registry, @NotNull SignalHandleManager signalHandler) throws IOException
@@ -86,7 +86,7 @@ public abstract class AbstractInstaller<A extends InstallerArgument, E extends E
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             InstallFailedInstallResult<P, ?, ?> result = new InstallFailedInstallResult<>(this.progress, e);
             this.postSignal(new InstallFinishedSignal(result));
 
@@ -214,7 +214,7 @@ public abstract class AbstractInstaller<A extends InstallerArgument, E extends E
         }
         catch (SecurityException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return false;
         }
     }

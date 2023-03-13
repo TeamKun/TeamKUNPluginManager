@@ -17,10 +17,10 @@ import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.TaskFailedException;
 import org.kunlab.kpm.task.interfaces.TaskResult;
-import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectArgument;
-import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectTask;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderArgument;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderTask;
+import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectArgument;
+import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectTask;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import org.kunlab.kpm.task.tasks.description.DescriptionLoadArgument;
 import org.kunlab.kpm.task.tasks.description.DescriptionLoadResult;
 import org.kunlab.kpm.task.tasks.description.DescriptionLoadTask;
@@ -181,7 +181,7 @@ public class PluginInstaller extends AbstractInstaller<InstallArgument, InstallE
                         pluginDescription,
                         finalKpmInfo,
                         result.getOrder(),
-                        argument.isOnyLocate()
+                        argument.isOnlyLocate()
                 ))
                 .submitAll(new DependsCollectArgument(
                         pluginDescription,

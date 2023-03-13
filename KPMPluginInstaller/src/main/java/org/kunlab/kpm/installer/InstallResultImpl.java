@@ -9,8 +9,8 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 
 public class InstallResultImpl<P extends Enum<P>> implements InstallResult<P>
 {
@@ -20,9 +20,9 @@ public class InstallResultImpl<P extends Enum<P>> implements InstallResult<P>
     private final boolean success;
 
     @Getter
-    private final InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> progress;
+    private final InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> progress;
 
-    public InstallResultImpl(boolean success, InstallProgress<P, ? extends PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, P>> progress)
+    public InstallResultImpl(boolean success, InstallProgress<P, ? extends Installer<? extends InstallerArgument, ? extends Enum<?>, P>> progress)
     {
         progress.finish();
         this.success = success;

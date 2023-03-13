@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.signal.Signal;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自動削除するプラグインが列挙された場合に送信されるシグナルです。
@@ -19,7 +19,7 @@ public class PluginEnumeratedSignal extends Signal
      * このリストを変更すると、自動削除の対象を変更できます。
      */
     @NotNull
-    private final ArrayList<String> targetPlugins;
+    private final List<String> targetPlugins;
 
     /**
      * 自動削除をキャンセルするかどうかを示すフラグです。
@@ -27,7 +27,7 @@ public class PluginEnumeratedSignal extends Signal
      */
     private boolean cancel;
 
-    public PluginEnumeratedSignal(@NotNull ArrayList<String> targetPlugins)
+    public PluginEnumeratedSignal(@NotNull List<String> targetPlugins)
     {
         this.targetPlugins = targetPlugins;
         this.cancel = false;

@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,6 +29,9 @@ import java.util.stream.StreamSupport;
  */
 public class Transaction implements AutoCloseable
 {
+    private static final int MAX_POOL_SIZE = 20;
+    private static final long CONN_LEAK_DETECT_THRESHOLD = 300000L;
+
     /**
      * Dbのコネクションです。
      */
@@ -134,8 +138,8 @@ public class Transaction implements AutoCloseable
         config.setDriverClassName("org.sqlite.JDBC");
         config.setJdbcUrl("jdbc:sqlite:" + databasePath);
 
-        config.setMaximumPoolSize(20);
-        config.setLeakDetectionThreshold(300000);
+        config.setMaximumPoolSize(MAX_POOL_SIZE);
+        config.setLeakDetectionThreshold(CONN_LEAK_DETECT_THRESHOLD);
         config.setAutoCommit(false);
 
         return new HikariDataSource(config);
@@ -158,7 +162,7 @@ public class Transaction implements AutoCloseable
             caller = stack[i + 1];
             if (!caller.getClassName().equals(this.getClass().getName()))
             {
-                System.out.println("Transaction(" + this.connection.hashCode() +
+                DebugConstants.debugLog("Transaction(" + this.connection.hashCode() +
                         ") created by " + caller.getClassName() + "#" + caller.getMethodName() + " at " +
                         caller.getFileName() + ":" + caller.getLineNumber());
                 break;
@@ -646,8 +650,10 @@ public class Transaction implements AutoCloseable
             if (!this.connection.isClosed())
                 this.connection.close();
 
-            if (DebugConstants.DB_CONNECTION_TRACE)
-                System.out.println("Transaction(" + this.connection.hashCode() + ") is closed.");
+            DebugConstants.debugLog(
+                    "Transaction(" + this.connection.hashCode() + ") is closed.",
+                    DebugConstants.DB_CONNECTION_TRACE
+            );
         }
         catch (SQLException ignored)
         {
@@ -695,9 +701,8 @@ public class Transaction implements AutoCloseable
                     {
                         this.result.getStatement().getConnection().close();
                     }
-                    catch (SQLException e1)
+                    catch (SQLException ignored)
                     {
-                        e1.printStackTrace();
                     }
                 }
                 throw new IllegalStateException(e);
@@ -759,9 +764,9 @@ public class Transaction implements AutoCloseable
          * @param max          最大件数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper, long max)
+        public List<T> mapToList(Function<? super ResultRow, ? extends T> resultMapper, long max)
         {
-            ArrayList<T> list = new ArrayList<>();
+            List<T> list = new ArrayList<>();
 
             try
             {
@@ -782,7 +787,7 @@ public class Transaction implements AutoCloseable
          * @param resultMapper マッピング関数
          * @return 変換されたList
          */
-        public ArrayList<T> mapToList(Function<ResultRow, T> resultMapper)
+        public List<T> mapToList(Function<ResultRow, T> resultMapper)
         {
             return this.mapToList(resultMapper, -1);
         }

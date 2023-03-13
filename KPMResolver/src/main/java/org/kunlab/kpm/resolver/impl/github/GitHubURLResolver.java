@@ -8,13 +8,13 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.impl.GitHubSuccessResult;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
-import org.kunlab.kpm.resolver.impl.GitHubSuccessResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
@@ -29,6 +29,13 @@ public class GitHubURLResolver implements URLResolver
 {
     private static final String GITHUB_REPO_RELEASES_URL = "https://api.github.com/repos/%s/releases";
     private static final String GITHUB_REPO_RELEASE_NAME_URL = GITHUB_REPO_RELEASES_URL + "/tags/%s";
+    private static final long BIAS_VERSION_MAJOR = 1000L;
+    private static final long BIAS_VERSION_MINOR = 100L;
+    private static final long BIAS_VERSION_PATCH = 10L;
+    private static final long BIAS_FILENAME_CONTAINS_JAR = 1000L;
+    private static final long BIAS_FILENAME_CONTAINS_PLUGIN_JAR = 500L;
+    private static final long BIAS_FILENAME_CONTAINS_API_JAR = -5000L;
+    private static final long BIAS_PRE_RELEASE = -1000L;
 
     private static boolean endsWithIgn(String str, String suffix)
     {
@@ -56,23 +63,23 @@ public class GitHubURLResolver implements URLResolver
         else
             versionObj = Version.of("0.0.0");
 
-        reputation += versionObj.getMajor().getIntValue() * 1000L;
-        reputation += versionObj.getMinor().getIntValue() * 100L;
-        reputation += versionObj.getPatch().getIntValue() * 10L;
+        reputation += versionObj.getMajor().getIntValue() * BIAS_VERSION_MAJOR;
+        reputation += versionObj.getMinor().getIntValue() * BIAS_VERSION_MINOR;
+        reputation += versionObj.getPatch().getIntValue() * BIAS_VERSION_PATCH;
         if (versionObj.getPreRelease() != null)
             reputation -= versionObj.getPreRelease().getRawValue().chars().sum();
 
         if (endsWithIgn(fileName, ".jar", ".zip"))
-            reputation += 1000L;
+            reputation += BIAS_FILENAME_CONTAINS_JAR;
 
         if (endsWithIgn(fileName, ".plugin.jar", ".plugin.zip"))
-            reputation += 500L;
+            reputation += BIAS_FILENAME_CONTAINS_PLUGIN_JAR;
         else if (endsWithIgn(fileName, ".api.jar", ".api.zip"))
-            reputation -= 5000L;
+            reputation -= BIAS_FILENAME_CONTAINS_API_JAR;
 
         if (isPreRelease && !versionObj.isPreRelease())
             // isPreRelease is given by GitHub API, but versionObj.isPreRelease() is contained in version string
-            reputation -= 500L;
+            reputation -= BIAS_PRE_RELEASE;
 
         return reputation;
     }
@@ -116,7 +123,7 @@ public class GitHubURLResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        HashMap<Long, ResolveResult> map = new HashMap<>();
+        Map<Long, ResolveResult> map = new HashMap<>();
         ErrorResult firstError = null;
         for (ResolveResult result : multiResult.getResults())
         {

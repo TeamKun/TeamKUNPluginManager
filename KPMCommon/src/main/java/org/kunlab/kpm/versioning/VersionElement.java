@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * バージョンの要素を表すクラスです。
@@ -73,5 +74,22 @@ public class VersionElement implements Comparable<VersionElement>
     public String toString()
     {
         return this.rawValue;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+            return true;
+        if (!(o instanceof VersionElement))
+            return false;
+        VersionElement that = (VersionElement) o;
+        return this.intValue == that.intValue && this.rawValue.equals(that.rawValue);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.rawValue, this.intValue);
     }
 }

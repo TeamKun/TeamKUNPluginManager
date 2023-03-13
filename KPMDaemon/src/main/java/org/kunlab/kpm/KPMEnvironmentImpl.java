@@ -56,6 +56,9 @@ public class KPMEnvironmentImpl implements KPMEnvironment
     private final int HTTPTimeout;
     private final int HTTPMaxRedirects;
 
+    @NotNull
+    private final ExceptionHandler exceptionHandler;
+
     public static KPMEnvironmentImplBuilder builder(@NotNull Plugin plugin, @NotNull Logger logger, @NotNull Path dataDirPath)
     {
         return new KPMEnvironmentImplBuilder()
@@ -63,7 +66,8 @@ public class KPMEnvironmentImpl implements KPMEnvironment
                 .logger(logger)
                 .dataDirPath(dataDirPath)
                 .excludePlugin("TeamKunPluginManager")
-                .excludePlugin("bStats");
+                .excludePlugin("bStats")
+                .exceptionHandler(new BasicExceptionHandler(logger));
     }
 
     public static KPMEnvironmentImplBuilder builder(@NotNull Plugin plugin)

@@ -14,9 +14,9 @@ import org.kunlab.kpm.meta.DependencyNode;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.TaskFailedException;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
-import org.kunlab.kpm.task.interfaces.dependencies.DependencyElementImpl;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderArgument;
-import org.kunlab.kpm.task.interfaces.dependencies.computer.DependsComputeOrderTask;
+import org.kunlab.kpm.task.tasks.dependencies.DependencyElementImpl;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderArgument;
+import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import org.kunlab.kpm.task.tasks.uninstall.UnInstallResult;
 import org.kunlab.kpm.task.tasks.uninstall.UnInstallTask;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
@@ -198,9 +198,9 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
     {
         SearchingPluginSignal searchingPluginSignal = new SearchingPluginSignal(query);
         this.postSignal(searchingPluginSignal);
-        query = searchingPluginSignal.getQuery(); // May be changed by signal handler
+        String modifiedQuery = searchingPluginSignal.getQuery(); // May be changed by signal handler
 
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(query);
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(modifiedQuery);
 
         if (!PluginUtil.isPluginLoaded(plugin))
             return null;
@@ -208,9 +208,9 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
         return plugin;
     }
 
-    private ArrayList<DependencyNode> getDependenciesRecursive(Plugin target)
+    private List<DependencyNode> getDependenciesRecursive(Plugin target)
     {
-        ArrayList<DependencyNode> dependencyPlugins = new ArrayList<>();
+        List<DependencyNode> dependencyPlugins = new ArrayList<>();
 
         // Retrieve plugins that depends on target plugin.
         List<DependencyNode> dependencies =

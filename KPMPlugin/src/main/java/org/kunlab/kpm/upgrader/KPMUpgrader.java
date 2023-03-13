@@ -62,7 +62,7 @@ public class KPMUpgrader
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return;
         }
 
@@ -93,7 +93,7 @@ public class KPMUpgrader
         }
         catch (IllegalStateException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
 
             signalHandleManager.handleSignal(new LatestFetchSignal.Error(this.currentKPMVersion, e.getMessage()));
             return false;
@@ -124,7 +124,7 @@ public class KPMUpgrader
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
 
             signalHandleManager.handleSignal(
                     new UpgraderDeploySignal.Error(UpgraderDeploySignal.Error.ErrorCause.DEPLOYER_NOT_EXISTS)

@@ -4,8 +4,8 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.utils.KPMCollectors;
@@ -13,6 +13,7 @@ import org.kunlab.kpm.versioning.Version;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,14 +24,14 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
 {
     private LookupState state;
 
-    public PluginLookupTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public PluginLookupTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.state = LookupState.INITIALIZED;
     }
 
-    private static LinkedHashMap<String, Plugin> lookupAll(QueryContext[] queries, String[] queryStrings)
+    private static Map<String, Plugin> lookupAll(QueryContext[] queries, String[] queryStrings)
     {
         AtomicInteger count = new AtomicInteger(0);
         return Arrays.stream(queries)
@@ -86,7 +87,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
             return new LookupResult(false, this.state, LookupErrorCause.INVALID_QUERY);
 
         this.state = LookupState.PLUGIN_LOOKUP;
-        LinkedHashMap<String, Plugin> result = lookupAll(queries, queryStrs);
+        Map<String, Plugin> result = lookupAll(queries, queryStrs);
 
         return new LookupResult(true, this.state, result);
     }

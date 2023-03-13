@@ -2,8 +2,8 @@ package org.kunlab.kpm.task.tasks.resolve;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
@@ -23,7 +23,7 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
 
     private PluginResolveState taskState;
 
-    public PluginResolveTask(@NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
+    public PluginResolveTask(@NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, ? extends Enum<?>> installer)
     {
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
         this.resolver = installer.getRegistry().getPluginResolver();

@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @param <T> インストーラの状態の型
  */
-public interface InstallProgress<T extends Enum<T>, I extends PluginInstaller<?, ?, T>>
+public interface InstallProgress<T extends Enum<T>, I extends Installer<?, ?, T>>
 {
     /**
      * プラグインがアップグレードされたとしてマークします。

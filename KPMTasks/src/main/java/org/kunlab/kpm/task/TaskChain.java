@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.installer.interfaces.PluginInstaller;
 import org.kunlab.kpm.task.interfaces.InstallTask;
 import org.kunlab.kpm.task.interfaces.TaskArgument;
 import org.kunlab.kpm.task.interfaces.TaskResult;
@@ -37,7 +37,7 @@ public class TaskChain<
     private final IS installerState;
 
     @NotNull
-    private final PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, IS> installer;
+    private final Installer<? extends InstallerArgument, ? extends Enum<?>, IS> installer;
 
     @Nullable
     @Setter(AccessLevel.NONE)
@@ -47,7 +47,7 @@ public class TaskChain<
     private TaskChain<?, IS, ?, ?, ?> next;
 
     @Nullable
-    private Function<PR, TA> argumentBuilder;
+    private Function<? super PR, ? extends TA> argumentBuilder;
 
     /**
      * {@link TaskChain} を生成します。
@@ -58,7 +58,7 @@ public class TaskChain<
      * @param installer      インストーラ
      */
     public TaskChain(@NotNull T task, @NotNull IS installerState, @Nullable TaskChain<?, IS, ?, ?, ?> first,
-                     @NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, IS> installer)
+                     @NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, IS> installer)
     {
         this.task = task;
         this.installerState = installerState;
@@ -73,7 +73,7 @@ public class TaskChain<
      * @param installerState 設定するインストーラの状態
      * @param installer      インストーラ
      */
-    public TaskChain(@NotNull T task, @NotNull IS installerState, @NotNull PluginInstaller<? extends InstallerArgument, ? extends Enum<?>, IS> installer)
+    public TaskChain(@NotNull T task, @NotNull IS installerState, @NotNull Installer<? extends InstallerArgument, ? extends Enum<?>, IS> installer)
     {
         this(task, installerState, null, installer);
         this.first = this;
@@ -102,7 +102,7 @@ public class TaskChain<
      * @param argumentBuilder 前のタスクの {@link TaskResult} を引数にして、次のタスクの引数を生成する関数
      * @return この{@link TaskChain}
      */
-    public TaskChain<TA, IS, R, PR, T> bridgeArgument(@NotNull Function<PR, TA> argumentBuilder)
+    public TaskChain<TA, IS, R, PR, T> bridgeArgument(@NotNull Function<? super PR, ? extends TA> argumentBuilder)
     {
         this.argumentBuilder = argumentBuilder;
         return this;

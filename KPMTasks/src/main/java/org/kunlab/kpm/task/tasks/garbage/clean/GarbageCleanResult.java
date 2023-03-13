@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.task.AbstractTaskResult;
 
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 不要なデータの削除を行うタスクの結果です。
@@ -19,9 +19,9 @@ public class GarbageCleanResult extends AbstractTaskResult<GarbageCleanState, Ga
     /**
      * 削除の結果と不要なデータのパスです。
      */
-    HashMap<Path, Boolean> deletedGarbage;
+    Map<Path, Boolean> deletedGarbage;
 
-    public GarbageCleanResult(boolean success, @NotNull GarbageCleanState state, @Nullable GarbageCleanErrorCause errorCause, HashMap<Path, Boolean> deletedGarbage)
+    public GarbageCleanResult(boolean success, @NotNull GarbageCleanState state, @Nullable GarbageCleanErrorCause errorCause, Map<Path, Boolean> deletedGarbage)
     {
         super(success, state, errorCause);
         this.deletedGarbage = deletedGarbage;

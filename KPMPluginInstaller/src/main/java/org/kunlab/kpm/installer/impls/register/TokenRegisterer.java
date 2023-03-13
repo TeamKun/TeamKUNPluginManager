@@ -50,6 +50,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     private static final String VERIFICATION_CODE_REQUEST_PARM = "client_id=%s&scope=%s";
     private static final String VERIFICATION_POLLING_BODY_PARM =
             "client_id=%s&device_code=%s&grant_type=urn%%3Aietf%%3Aparams%%3Aoauth%%3Agrant-type%%3Adevice_code";
+    private static final long TIME_WAIT_THRESHOLD = 500L;
 
     public TokenRegisterer(@NotNull KPMRegistry registry, @NotNull SignalHandleManager signalHandler) throws IOException
     {
@@ -136,7 +137,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
             if (!response.isSuccessful())
             {
                 String errorMessage = this.getErrorMessage(response);
-                int errorCode = response.getStatusCode();
+                int errorCode = response.getStatusCode().getCode();
                 this.postSignal(new VerificationCodeRequestFailedSignal(
                         errorCode,
                         errorMessage
@@ -149,7 +150,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return null;
         }
     }
@@ -173,7 +174,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
     @SneakyThrows(InterruptedException.class)
     private void randomSleep(long interval)
     {
-        long sleepTime = interval + (long) (Math.random() * 500);
+        long sleepTime = Math.round(interval + (Math.random() * TIME_WAIT_THRESHOLD));
         Thread.sleep(sleepTime);
     }
 
@@ -246,7 +247,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                this.registry.getExceptionHandler().report(e);
                 return null;
             }
 
@@ -294,7 +295,7 @@ public class TokenRegisterer extends AbstractInstaller<RegisterArgument, Registe
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.registry.getExceptionHandler().report(e);
             return false;
         }
         catch (IllegalStateException e)

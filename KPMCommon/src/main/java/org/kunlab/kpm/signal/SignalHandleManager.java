@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class SignalHandleManager
 {
-    private final ArrayList<SignalHandlerList<? extends Signal>> handlerLists;
+    private final List<SignalHandlerList<? extends Signal>> handlerLists;
 
     public SignalHandleManager()
     {

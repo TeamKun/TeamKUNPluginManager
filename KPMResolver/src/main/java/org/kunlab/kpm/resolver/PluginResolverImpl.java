@@ -12,16 +12,18 @@ import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * プラグインを解決するクラスです。
  */
 public class PluginResolverImpl implements PluginResolver
 {
-    private final HashMap<String, List<BaseResolver>> resolvers;
+    private final Map<String, List<BaseResolver>> resolvers;
     private final List<BaseResolver> fallbackResolvers;
     private final List<BaseResolver> allResolvers;
 
@@ -34,18 +36,8 @@ public class PluginResolverImpl implements PluginResolver
 
     private static boolean isValidURLResolver(URL url, URLResolver resolver)
     {
-        String[] hosts = resolver.getHosts();
-
-        if (hosts.length == 0)
-            return true;
-
-        for (String host : hosts)
-        {
-            if (url.getHost().equalsIgnoreCase(host))
-                return true;
-        }
-
-        return false;
+        return Arrays.stream(resolver.getHosts()).parallel()
+                .anyMatch(host -> url.getHost().equalsIgnoreCase(host));
     }
 
     private static URL toURL(String url)
@@ -128,7 +120,7 @@ public class PluginResolverImpl implements PluginResolver
         return multiResult.getResolver().autoPickOnePlugin(multiResult);
     }
 
-    private ResolveResult actuallyResolve(List<BaseResolver> resolvers, QueryContext queryContext)
+    private ResolveResult actuallyResolve(List<? extends BaseResolver> resolvers, QueryContext queryContext)
     {
         ResolveResult result = this.resolves(resolvers, queryContext);
 
@@ -143,7 +135,7 @@ public class PluginResolverImpl implements PluginResolver
         return result;
     }
 
-    private ResolveResult resolves(List<BaseResolver> resolvers, QueryContext queryContext)
+    private ResolveResult resolves(List<? extends BaseResolver> resolvers, QueryContext queryContext)
     {
         List<BaseResolver> finishedResolvers = new ArrayList<>();
 

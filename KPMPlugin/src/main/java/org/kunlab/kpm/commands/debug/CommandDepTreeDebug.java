@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class CommandDepTreeDebug extends SubCommandWith
 {
-    private final HashMap<String, CommandBase> COMMANDS;
+    private final Map<String, CommandBase> COMMANDS;
 
     public CommandDepTreeDebug(PluginMetaManager manager)
     {

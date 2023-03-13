@@ -29,11 +29,11 @@ import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.upgrader.KPMUpgrader;
+import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -76,15 +76,15 @@ public final class TeamKunPluginManager extends JavaPlugin
                 .build();
     }
 
-    private static HashMap<String, String> setupSources(FileConfiguration config)
+    private static Map<String, String> setupSources(FileConfiguration config)
     {
         List<Map<?, ?>> aliasSources = config.getMapList("resolve.aliases.sources");
 
         @SuppressWarnings("unchecked")
-        HashMap<String, String> aliasMap = aliasSources.stream()
+        Map<String, String> aliasMap = aliasSources.stream()
                 .map(map -> (Map<String, ?>) map)
-                .map(map -> new Pair<>((String) map.get("name"), (String) map.get("url")))
-                .collect(HashMap::new, (map, pair) -> map.put(pair.getLeft(), pair.getRight()), HashMap::putAll);
+                .map(map -> Pair.of((String) map.get("name"), (String) map.get("url")))
+                .collect(KPMCollectors.toPairHashMap());
 
         return aliasMap;
     }

@@ -6,9 +6,12 @@ import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Notices
 {
+    private static final long TOKEN_CACHE_SECONDS = TimeUnit.MINUTES.toSeconds(15);
+
     private static long LAST_TOKEN_FETCH = 0;
     private static boolean LAST_TOKEN_FETCH_RESULT = false;  // true if the token is alive.
 
@@ -20,7 +23,8 @@ public class Notices
         print = printTokenUnset(registry, terminal);
         if (print)
             terminal.writeLine("");
-        print = printTokenDead(registry, terminal);
+        /* print =*/
+        printTokenDead(registry, terminal);
     }
 
     public static boolean printAutoRemovable(KPMRegistry registry, Terminal terminal)
@@ -61,7 +65,7 @@ public class Notices
     {
         long currentTime = System.currentTimeMillis();
         boolean isTokenAlive;
-        if (currentTime - LAST_TOKEN_FETCH > 1000 * 60 * 15)  // Token alive cache expires in 15 minutes.
+        if (currentTime - LAST_TOKEN_FETCH > TOKEN_CACHE_SECONDS)
         {  // Fetch token
             LAST_TOKEN_FETCH = currentTime;
             isTokenAlive = LAST_TOKEN_FETCH_RESULT = registry.getTokenStore().isTokenAlive();
