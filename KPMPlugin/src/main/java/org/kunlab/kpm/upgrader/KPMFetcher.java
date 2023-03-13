@@ -8,8 +8,6 @@ import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
-import org.kunlab.kpm.resolver.result.ErrorResultImpl;
-import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.versioning.Version;
 
 @UtilityClass
@@ -26,9 +24,9 @@ public class KPMFetcher
         PluginResolver resolver = registry.getPluginResolver();
         ResolveResult resolveResult = resolver.resolve("github>" + KPM_REPO_URL);
 
-        if (resolveResult instanceof MultiResultImpl)
-            resolveResult = resolveResult.getResolver().autoPickOnePlugin((MultiResultImpl) resolveResult);
-        if (resolveResult instanceof ErrorResultImpl)
+        if (resolveResult instanceof MultiResult)
+            resolveResult = resolveResult.getResolver().autoPickOnePlugin((MultiResult) resolveResult);
+        if (resolveResult instanceof ErrorResult)
         {
             ErrorResult errorResult = (ErrorResult) resolveResult;
             throw new IllegalStateException("Unable to fetch latest KPM version: " + errorResult.getMessage());
