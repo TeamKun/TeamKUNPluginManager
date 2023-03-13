@@ -23,7 +23,8 @@ public class Notices
         print = printTokenUnset(registry, terminal);
         if (print)
             terminal.writeLine("");
-        print = printTokenDead(registry, terminal);
+        /* print =*/
+        printTokenDead(registry, terminal);
     }
 
     public static boolean printAutoRemovable(KPMRegistry registry, Terminal terminal)
