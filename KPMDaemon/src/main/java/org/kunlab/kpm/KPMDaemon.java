@@ -16,7 +16,6 @@ import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
 import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInfoManagerImpl;
-import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
 import org.kunlab.kpm.meta.PluginMetaManagerImpl;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
@@ -34,7 +33,9 @@ import org.kunlab.kpm.utils.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -100,13 +101,10 @@ public class KPMDaemon implements KPMRegistry
             KPMInfoManager kpmInfoManager = this.getKpmInfoManager();
             Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 
-            int loaded = 0;
-            for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
-            {
-                KPMInformationFile info = kpmInfoManager.getOrLoadInfo(plugin);
-                if (info != null)
-                    loaded++;
-            }
+            long loaded = Arrays.stream(Bukkit.getPluginManager().getPlugins()).parallel()
+                    .map(kpmInfoManager::getOrLoadInfo)
+                    .filter(Objects::nonNull)
+                    .count();
 
             this.logger.log(Level.INFO, "Loaded {0} KPM information from {1} plugins.", new Object[]{loaded, plugins.length});
         }, 1L);

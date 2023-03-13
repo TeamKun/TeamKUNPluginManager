@@ -73,13 +73,10 @@ public class PluginUtil
 
         try (ZipFile zip = new ZipFile(file))
         {
-            ZipEntry entry = null;
-            for (ZipEntry ent : Collections.list(zip.entries()))
-                if (ent.getName().equals("plugin.yml"))
-                {
-                    entry = ent;
-                    break;
-                }
+            ZipEntry entry = Collections.list(zip.entries()).stream()
+                    .filter(ent -> ent.getName().equals("plugin.yml"))
+                    .findFirst()
+                    .orElse(null);
 
             if (entry == null)
                 throw new InvalidDescriptionException("This file isn't plugin.");
