@@ -83,7 +83,7 @@ public class DownloadTask extends AbstractInstallTask<DownloadArgument, Download
             if (e.getMessage().startsWith("HTTP error "))
             {
                 cause = DownloadErrorCause.ILLEGAL_HTTP_RESPONSE;
-                signalValue = e.getMessage().substring(11);
+                signalValue = e.getMessage().substring("HTTP error ".length());
             }
             else if (e.getMessage().startsWith("No response body was returned"))
             {
