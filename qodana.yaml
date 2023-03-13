@@ -70,3 +70,6 @@ exclude:
     paths:
       - KPMPlugin/src/main/java/org/kunlab/kpm/commands/debug
       - KPMCommon/src/main/java/org/kunlab/kpm/utils/ReflectionUtils.java
+  - name: FieldMayBeStatic  # Due to lombok's @Builder.Default behavior
+  - name: NonStaticFinalLogger  # Due to dependency injection
+  - name: InterfaceMayBeAnnotatedFunctional  # Interfaces with only one method are most often not allowed to be used as lambdas.
