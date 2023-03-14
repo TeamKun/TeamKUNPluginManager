@@ -73,6 +73,22 @@ public class VersionTest
     }
 
     @Test
+    void patchバージョンの省略記法が正しく動作するか()
+    {
+        Version basis = createVersion("1.0.0");
+        Version test = createVersion("1.0");
+        testSame(basis, test);
+
+        basis = createVersion("1.0.0-pre1");
+        test = createVersion("1.0-pre1");
+        testSame(basis, test);
+
+        basis = createVersion("1.0.0+build1");
+        test = createVersion("1.0+build1");
+        testSame(basis, test);
+    }
+
+    @Test
     void preがつくほうが古い判定になるか()
     {
         Version basis = createVersion("1.0.0");
