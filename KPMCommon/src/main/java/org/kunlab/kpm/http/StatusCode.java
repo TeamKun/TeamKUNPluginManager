@@ -128,6 +128,7 @@ public enum StatusCode
     {
         return Arrays.stream(values()).parallel()
                 .filter(v -> v.code == code)
+                .filter(v -> !v.name().startsWith("RANGE_"))
                 .findFirst()
                 .orElse(UNKNOWN);
     }
