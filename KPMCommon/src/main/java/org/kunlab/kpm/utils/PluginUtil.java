@@ -9,11 +9,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -24,6 +29,7 @@ public class PluginUtil
 {
 
     private static final Method pluginGetFile;
+    private static final int HASH_BUFFER_SIZE = 1024;
 
     static
     {
@@ -92,4 +98,37 @@ public class PluginUtil
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
+    public static String getHash(Path path, String algo)
+    {
+        MessageDigest md;
+        try
+        {
+            md = MessageDigest.getInstance(algo);
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            return "<No such algorithm: " + algo + ">";
+        }
+
+        try (FileInputStream fis = new FileInputStream(path.toFile());
+             DigestInputStream dis = new DigestInputStream(fis, md))
+        {
+            byte[] buffer = new byte[HASH_BUFFER_SIZE];
+            while (dis.read(buffer) != -1)
+            {
+            }
+
+            byte[] digest = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest)
+                sb.append(String.format("%02x", b));
+
+            return sb.toString();
+        }
+        catch (IOException e)
+        {
+            return "<IOException thrown: " + e.getMessage() + ">";
+        }
+    }
 }

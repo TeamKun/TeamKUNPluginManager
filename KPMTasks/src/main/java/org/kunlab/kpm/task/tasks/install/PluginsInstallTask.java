@@ -2,7 +2,6 @@ package org.kunlab.kpm.task.tasks.install;
 
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.libs.org.apache.commons.codec.digest.DigestUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
@@ -28,10 +27,9 @@ import org.kunlab.kpm.task.tasks.install.signals.PluginInstallingSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginLoadSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginOnLoadRunningSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginRelocatingSignal;
+import org.kunlab.kpm.utils.PluginUtil;
 import org.kunlab.kpm.versioning.Version;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -242,19 +240,6 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         return new PluginsInstallResult(true, this.state, null, null, target, installedPlugins);
     }
 
-    @Nullable
-    private String generateSHA1(@NotNull Path path) throws IOException
-    {
-        try (FileInputStream inputStream = new FileInputStream(path.toFile()))
-        {
-            return DigestUtils.sha1Hex(inputStream);
-        }
-        catch (FileNotFoundException e)
-        {
-            return null;
-        }
-    }
-
     private boolean moveFile(@NotNull Path source, @NotNull Path target, boolean overwrite) throws IOException
     {
         try
@@ -268,11 +253,8 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
         }
         catch (FileAlreadyExistsException e)
         {
-            String sourceHash = this.generateSHA1(source);
-            String targetHash = this.generateSHA1(target);
-
-            if (sourceHash == null || targetHash == null)
-                return false;
+            String sourceHash = PluginUtil.getHash(source, "SHA-1");
+            String targetHash = PluginUtil.getHash(target, "SHA-1");
 
             if (sourceHash.equals(targetHash))
                 return true;

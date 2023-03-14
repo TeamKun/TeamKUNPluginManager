@@ -1,6 +1,5 @@
 package org.kunlab.kpm.task.tasks.garbage.clean;
 
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
@@ -11,10 +10,13 @@ import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.InvalidIntegritySignal;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * 不要なデータの削除を行うタスクです。
@@ -28,6 +30,27 @@ public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, 
         super(installer.getProgress(), installer.getProgress().getSignalHandler());
 
         this.status = GarbageCleanState.INITIALIZED;
+    }
+
+    private static void forceDelete(Path path) throws IOException
+    {
+        if (Files.isDirectory(path))
+        {
+            try (Stream<Path> stream = Files.list(path))
+            {
+                stream.forEach(p -> {
+                    try
+                    {
+                        forceDelete(p);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+        Files.delete(path);
     }
 
     @Override
@@ -91,7 +114,7 @@ public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, 
 
         try
         {
-            FileUtils.forceDelete(path.toFile());
+            forceDelete(path);
 
             this.postSignal(new GarbageDeletingSignal.Post(path));
             return 0;
