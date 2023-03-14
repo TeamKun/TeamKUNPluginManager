@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -130,5 +132,26 @@ public class PluginUtil
         {
             return "<IOException thrown: " + e.getMessage() + ">";
         }
+    }
+
+    public static void forceDelete(Path path) throws IOException
+    {
+        if (Files.isDirectory(path))
+        {
+            try (Stream<Path> stream = Files.list(path))
+            {
+                stream.forEach(p -> {
+                    try
+                    {
+                        forceDelete(p);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+        Files.delete(path);
     }
 }
