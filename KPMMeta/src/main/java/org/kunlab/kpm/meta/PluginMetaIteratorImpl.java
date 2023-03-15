@@ -5,6 +5,7 @@ import org.bukkit.plugin.PluginLoadOrder;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.db.Transaction;
 import org.kunlab.kpm.meta.interfaces.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaIterator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PluginMetaIteratorImpl implements PluginMetaIterator
+class PluginMetaIteratorImpl implements PluginMetaIterator
 {
     private final PluginMetaProvider provider;
     private final Transaction transaction;
@@ -47,7 +48,7 @@ public class PluginMetaIteratorImpl implements PluginMetaIterator
                     dependedBy.addAll(metaProvider.getLoadBeforeBy(name));
                     dependsOn.addAll(metaProvider.getLoadBefore(name));
 
-                    return new PluginMeta(
+                    return new PluginMetaImpl(
                             name,
                             version,
                             loadTiming,

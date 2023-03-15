@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.db.Transaction;
 import org.kunlab.kpm.meta.InstallOperator;
-import org.kunlab.kpm.meta.PluginMeta;
 
 import java.sql.Connection;
 import java.sql.SQLException;
