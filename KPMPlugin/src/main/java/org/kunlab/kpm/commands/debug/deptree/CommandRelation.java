@@ -11,8 +11,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.meta.DependType;
-import org.kunlab.kpm.meta.DependencyNode;
-import org.kunlab.kpm.meta.PluginMeta;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public class CommandRelation extends CommandBase
 
         if (addMode)
         {
-            meta.getDependsOn().add(new DependencyNode(pluginName, targetPluginName, type.get()));
+            meta.getDependsOn().add(new DependencyNodeMock(pluginName, targetPluginName, type.get()));
             terminal.success("Added dependency " + targetPluginName + " to " + pluginName + " with type " + type.get());
 
             this.provider.savePluginMeta(meta);

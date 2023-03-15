@@ -7,7 +7,7 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.meta.DependType;
-import org.kunlab.kpm.meta.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.utils.Utils;

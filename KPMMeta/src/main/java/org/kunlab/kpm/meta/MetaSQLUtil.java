@@ -1,6 +1,7 @@
 package org.kunlab.kpm.meta;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

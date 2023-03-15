@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.db.Transaction;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.meta.interfaces.PluginMetaIterator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 import org.slf4j.LoggerFactory;
@@ -677,11 +678,11 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
 
         if (baseReversed)
             return depString.stream()
-                    .map(item -> new DependencyNode(item, name, type))
+                    .map(item -> new DependencyNodeImpl(item, name, type))
                     .collect(Collectors.toList());
         else
             return depString.stream()
-                    .map(item -> new DependencyNode(name, item, type))
+                    .map(item -> new DependencyNodeImpl(name, item, type))
                     .collect(Collectors.toList());
 
     }

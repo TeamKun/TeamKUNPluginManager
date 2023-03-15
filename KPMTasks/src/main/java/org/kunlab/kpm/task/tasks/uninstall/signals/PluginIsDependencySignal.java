@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.kunlab.kpm.meta.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.signal.Signal;
 
 import java.util.List;
