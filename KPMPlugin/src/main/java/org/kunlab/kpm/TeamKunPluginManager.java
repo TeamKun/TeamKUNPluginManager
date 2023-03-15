@@ -10,7 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.commands.CommandAutoRemove;
 import org.kunlab.kpm.commands.CommandClean;
@@ -31,6 +33,7 @@ import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.upgrader.KPMUpgrader;
 import org.kunlab.kpm.utils.KPMCollectors;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,7 +43,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 @Getter
-public final class TeamKunPluginManager extends JavaPlugin
+public class TeamKunPluginManager extends JavaPlugin
 {
     @Getter
     private static TeamKunPluginManager plugin;
@@ -51,6 +54,14 @@ public final class TeamKunPluginManager extends JavaPlugin
 
     private HeadInstallers headInstallers;
     private KPMUpgrader upgrader;
+
+    protected TeamKunPluginManager(JavaPluginLoader loader,
+                                   PluginDescriptionFile descriptionFile,
+                                   File dataFolder,
+                                   File file)
+    {
+        super(loader, descriptionFile, dataFolder, file);
+    }
 
     @NotNull
     private static String getStringNonNull(FileConfiguration config, String name)
