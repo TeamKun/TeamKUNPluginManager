@@ -21,6 +21,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -137,21 +138,12 @@ public class PluginUtil
     public static void forceDelete(Path path) throws IOException
     {
         if (Files.isDirectory(path))
-        {
             try (Stream<Path> stream = Files.list(path))
             {
-                stream.forEach(p -> {
-                    try
-                    {
-                        forceDelete(p);
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                });
+                Iterator<Path> iterator = stream.iterator();
+                while (iterator.hasNext())
+                    forceDelete(iterator.next());
             }
-        }
         Files.delete(path);
     }
 }
