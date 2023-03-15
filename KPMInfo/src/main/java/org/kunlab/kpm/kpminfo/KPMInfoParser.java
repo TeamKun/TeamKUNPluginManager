@@ -32,7 +32,7 @@ public class KPMInfoParser
     }
 
     @NotNull
-    private static KPMInformationFile loadFromMap(@NotNull KPMRegistry registry, Map<?, ?> map) throws InvalidInformationFileException
+    public static KPMInformationFile loadFromMap(@NotNull KPMRegistry registry, Map<?, ?> map) throws InvalidInformationFileException
     {
         if (map == null)
             throw new InvalidInformationFileException("Information file is empty.");
