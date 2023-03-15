@@ -4,7 +4,7 @@ import org.kunlab.kpm.hook.HookListener;
 import org.kunlab.kpm.hook.interfaces.HookRecipientList;
 import org.kunlab.kpm.hook.interfaces.KPMHook;
 import org.kunlab.kpm.hook.interfaces.KPMHookRecipient;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 
 import java.util.Map;

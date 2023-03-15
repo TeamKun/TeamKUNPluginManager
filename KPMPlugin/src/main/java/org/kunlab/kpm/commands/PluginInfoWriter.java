@@ -22,7 +22,7 @@ import org.kunlab.kpm.meta.InstallOperator;
 import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.utils.PluginUtil;
 import org.kunlab.kpm.utils.TerminalWriter;
 

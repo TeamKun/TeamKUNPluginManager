@@ -2,6 +2,7 @@ package org.kunlab.kpm.resolver;
 
 import org.kunlab.kpm.resolver.interfaces.BaseResolver;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
@@ -97,7 +98,7 @@ public class PluginResolverImpl implements PluginResolver
     @Override
     public ResolveResult resolve(String query)
     {
-        QueryContext context = QueryContext.fromString(query);
+        QueryContext context = QueryContextParser.fromString(query);
 
         if (context.getResolverName() == null)
             return this.actuallyResolve(this.allResolvers, context);

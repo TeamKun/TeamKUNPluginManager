@@ -46,6 +46,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.kunlab.kpm</groupId>
+            <artifactId>KPMResolver</artifactId>
+            <version>3.0.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>brigadier</artifactId>
             <version>1.0.500</version>

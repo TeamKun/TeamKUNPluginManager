@@ -6,7 +6,7 @@ import lombok.Value;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.interfaces.HookRecipientList;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 
 import java.util.Map;

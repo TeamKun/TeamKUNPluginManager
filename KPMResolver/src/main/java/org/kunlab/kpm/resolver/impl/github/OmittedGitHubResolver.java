@@ -2,11 +2,11 @@ package org.kunlab.kpm.resolver.impl.github;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.kunlab.kpm.resolver.ErrorCause;
 import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 
