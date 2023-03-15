@@ -3,8 +3,8 @@ package org.kunlab.kpm.kpminfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.HookRecipientListImpl;
-import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.hook.interfaces.HookRecipientList;
+import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 import org.yaml.snakeyaml.Yaml;
@@ -44,7 +44,7 @@ public class KPMInfoParser
         boolean allowManuallyInstall = parseAllowManuallyInstall(map); // Parse allowManuallyInstall [optional: true]
 
 
-        return new KPMInformationFile(version, updateQuery, hooks, recipes, dependencies, allowManuallyInstall);
+        return new KPMInformationFileImpl(version, updateQuery, hooks, recipes, dependencies, allowManuallyInstall);
     }
 
     @NotNull
