@@ -6,7 +6,7 @@ import lombok.Value;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.task.interfaces.TaskArgument;
 
 import java.util.Arrays;

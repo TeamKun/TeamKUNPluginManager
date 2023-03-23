@@ -10,7 +10,7 @@ import org.kunlab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.meta.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.TaskFailedException;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;

@@ -10,7 +10,8 @@ import org.kunlab.kpm.installer.signals.InvalidKPMInfoFileSignal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.InvalidInformationFileException;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.QueryContextParser;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.task.AbstractInstallTask;
@@ -85,7 +86,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                     .filter(entry -> entry.getKey().equalsIgnoreCase(dependencyName))
                     .map(Map.Entry::getValue)
                     .findFirst()
-                    .orElse(QueryContext.fromString(dependencyName));
+                    .orElse(QueryContextParser.fromString(dependencyName));
             results.put(dependencyName, context);
         }
 

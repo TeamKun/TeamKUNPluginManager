@@ -1,7 +1,5 @@
 package org.kunlab.kpm.resolver.interfaces;
 
-import org.kunlab.kpm.resolver.QueryContext;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;

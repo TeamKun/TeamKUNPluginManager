@@ -4,11 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.alias.interfaces.Alias;
 import org.kunlab.kpm.alias.interfaces.AliasProvider;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.resolver.ErrorCause;
 import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.result.PipeResult;
 

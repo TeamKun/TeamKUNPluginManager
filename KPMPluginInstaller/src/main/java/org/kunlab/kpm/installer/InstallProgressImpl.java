@@ -3,7 +3,6 @@ package org.kunlab.kpm.installer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +13,7 @@ import org.kunlab.kpm.installer.signals.PluginModifiedSignal;
 import org.kunlab.kpm.signal.SignalHandleManager;
 import org.kunlab.kpm.task.interfaces.dependencies.collector.DependsCollectStatus;
 import org.kunlab.kpm.task.tasks.dependencies.collector.DependsCollectStatusImpl;
+import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -197,7 +197,7 @@ public class InstallProgressImpl<T extends Enum<T>, I extends Installer<?, ?, T>
     {
         try
         {
-            FileUtils.forceDelete(this.installTempDir.toFile());
+            PluginUtil.forceDelete(this.installTempDir);
         }
         catch (IOException e)
         {

@@ -3,7 +3,7 @@ package org.kunlab.kpm.task.tasks.dependencies.collector.signals;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.signal.Signal;
 
 import java.util.List;

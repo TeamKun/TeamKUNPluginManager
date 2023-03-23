@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaIterator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 import org.kunlab.kpm.utils.ServerConditionChecker;

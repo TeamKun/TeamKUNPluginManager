@@ -1,9 +1,9 @@
 package org.kunlab.kpm.resolver.impl;
 
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 
 public class RawURLResolver implements URLResolver

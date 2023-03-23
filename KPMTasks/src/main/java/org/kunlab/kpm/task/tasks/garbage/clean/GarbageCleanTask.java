@@ -1,6 +1,5 @@
 package org.kunlab.kpm.task.tasks.garbage.clean;
 
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
@@ -9,6 +8,7 @@ import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageDeleteSkippedSignal
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageDeletingSignal;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.InvalidIntegritySignal;
+import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -91,7 +91,7 @@ public class GarbageCleanTask extends AbstractInstallTask<GarbageCleanArgument, 
 
         try
         {
-            FileUtils.forceDelete(path.toFile());
+            PluginUtil.forceDelete(path);
 
             this.postSignal(new GarbageDeletingSignal.Post(path));
             return 0;

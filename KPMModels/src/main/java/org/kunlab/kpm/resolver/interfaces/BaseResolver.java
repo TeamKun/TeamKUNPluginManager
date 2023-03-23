@@ -1,6 +1,5 @@
 package org.kunlab.kpm.resolver.interfaces;
 
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 

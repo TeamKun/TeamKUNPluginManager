@@ -47,12 +47,13 @@ public class InstallManagerImpl implements InstallManager
     public <A extends InstallerArgument, T extends Enum<T>, I extends Installer<A, ?, T>> InstallProgress<T, I> runInstallerAsync(
             @NotNull I installer,
             @NotNull A arguments,
+            boolean tokenRequired,
             @Nullable Consumer<? super InstallResult<T>> onFinished
     )
     {
         if (this.isRunning())
             throw new InstallerRunningException("Install is already running.");
-        if (!this.tokenStore.isTokenAvailable())
+        if (tokenRequired && !this.tokenStore.isTokenAvailable())
             throw new TokenNotAvailableException("Token is not available.");
 
         this.runningInstall = installer.getProgress();

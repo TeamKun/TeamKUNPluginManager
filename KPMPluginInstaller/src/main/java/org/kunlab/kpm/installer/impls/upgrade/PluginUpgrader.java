@@ -23,7 +23,7 @@ import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
-import org.kunlab.kpm.meta.PluginMeta;
+import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;

@@ -110,7 +110,6 @@ public class TokenGenerateSignalHandler
         if (!this.terminal.isPlayer())
             return;
         this.progressbar.hide();
-        this.terminal.removeProgressbar("codeExpire");
     }
 
     @SignalHandler
@@ -132,7 +131,6 @@ public class TokenGenerateSignalHandler
             return;
 
         this.progressbar.hide();
-        this.terminal.removeProgressbar("codeExpire");
     }
 
     @SignalHandler
@@ -144,6 +142,5 @@ public class TokenGenerateSignalHandler
             return;
 
         this.progressbar.hide();
-        this.terminal.removeProgressbar("codeExpire");
     }
 }

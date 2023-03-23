@@ -2,10 +2,10 @@ package org.kunlab.kpm.resolver.result;
 
 import lombok.Value;
 import org.jetbrains.annotations.NotNull;
-import org.kunlab.kpm.resolver.interfaces.BaseResolver;
-import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.PluginResolverImpl;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.BaseResolver;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 
 /**
  * 他のリゾルバに解決を委譲することを表す解決結果です。

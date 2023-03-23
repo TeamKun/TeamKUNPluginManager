@@ -3,9 +3,10 @@ package org.kunlab.kpm.kpminfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.HookRecipientListImpl;
-import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.hook.interfaces.HookRecipientList;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.resolver.QueryContextParser;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.versioning.Version;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -44,7 +45,7 @@ public class KPMInfoParser
         boolean allowManuallyInstall = parseAllowManuallyInstall(map); // Parse allowManuallyInstall [optional: true]
 
 
-        return new KPMInformationFile(version, updateQuery, hooks, recipes, dependencies, allowManuallyInstall);
+        return new KPMInformationFileImpl(version, updateQuery, hooks, recipes, dependencies, allowManuallyInstall);
     }
 
     @NotNull
@@ -72,7 +73,7 @@ public class KPMInfoParser
         if (updateQuery.isEmpty())
             throw new InvalidInformationFileException("Update query is empty.");
 
-        return QueryContext.fromString(updateQuery);
+        return QueryContextParser.fromString(updateQuery);
     }
 
     @NotNull
@@ -146,7 +147,7 @@ public class KPMInfoParser
             String value = (String) entry.getValue();
             try
             {
-                result.put(key, QueryContext.fromString(value));
+                result.put(key, QueryContextParser.fromString(value));
             }
             catch (IllegalArgumentException e)
             {

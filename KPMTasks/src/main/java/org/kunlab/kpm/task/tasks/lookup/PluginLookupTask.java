@@ -6,7 +6,8 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.QueryContextParser;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.utils.KPMCollectors;
 import org.kunlab.kpm.versioning.Version;
@@ -65,7 +66,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
         try
         {
             QueryContext[] result = Arrays.stream(queries)
-                    .map(QueryContext::fromString)
+                    .map(QueryContextParser::fromString)
                     .toArray(QueryContext[]::new);
 
             return result.length == queries.length ? result: null;

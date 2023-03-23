@@ -9,12 +9,12 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.http.HTTPResponse;
 import org.kunlab.kpm.http.RequestContext;
 import org.kunlab.kpm.http.Requests;
+import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.URLResolver;
 import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
-import org.kunlab.kpm.resolver.ErrorCause;
-import org.kunlab.kpm.resolver.QueryContext;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
 

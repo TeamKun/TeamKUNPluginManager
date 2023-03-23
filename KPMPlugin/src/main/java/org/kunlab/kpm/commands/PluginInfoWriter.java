@@ -18,11 +18,11 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
 import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.meta.DependencyNode;
 import org.kunlab.kpm.meta.InstallOperator;
-import org.kunlab.kpm.meta.PluginMeta;
+import org.kunlab.kpm.meta.interfaces.DependencyNode;
+import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
-import org.kunlab.kpm.resolver.QueryContext;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.utils.PluginUtil;
 import org.kunlab.kpm.utils.TerminalWriter;
 
@@ -169,9 +169,9 @@ public class PluginInfoWriter extends TerminalWriter
         this.printString("command.info.file.last_modified", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date(pluginPath.toFile().lastModified())));
 
         this.printString("command.info.file.hash", "");
-        this.printString("command.info.file.hash.sha1", Utils.getHash(pluginPath, "SHA-1"));
-        this.printStringFull("command.info.file.hash.sha256", Utils.getHash(pluginPath, "SHA-256"));
-        this.printString("command.info.file.hash.md5", Utils.getHash(pluginPath, "MD5"));
+        this.printString("command.info.file.hash.sha1", PluginUtil.getHash(pluginPath, "SHA-1"));
+        this.printStringFull("command.info.file.hash.sha256", PluginUtil.getHash(pluginPath, "SHA-256"));
+        this.printString("command.info.file.hash.md5", PluginUtil.getHash(pluginPath, "MD5"));
 
     }
 
