@@ -29,12 +29,18 @@ public class TokenRegisterSignalHandler extends InstallFinishedSignalBase
     @Override
     protected void onSuccess(InstallResult<? extends Enum<?>> result)
     {
+        if (this.terminal.isPlayer())
+            this.terminal.removeProgressbar("codeExpire");
+
         this.terminal.success("トークンの登録に成功しました。");
     }
 
     @Override
     protected void onFail(InstallFailedInstallResult<?, ?, ?> result)
     {
+        if (this.terminal.isPlayer())
+            this.terminal.removeProgressbar("codeExpire");
+
         if (!(result.getProgress().getCurrentTask() instanceof RegisterTasks))
             return;
 
