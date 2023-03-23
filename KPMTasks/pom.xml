@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.kunlab.kpm</groupId>
         <artifactId>TeamKunPluginManager</artifactId>
-        <version>3.0.3</version>
+        <version>3.0.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -30,25 +30,25 @@
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMHooks</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMResolver</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
