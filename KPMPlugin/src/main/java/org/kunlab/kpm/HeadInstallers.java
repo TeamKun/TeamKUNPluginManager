@@ -140,10 +140,10 @@ public class HeadInstallers
         SignalHandleManager handleManager = new SignalHandleManager();
         HeadSignalHandlers.getTokenRegistererHandlers(terminal).forEach(handleManager::register);
 
-        TokenRegisterer register;
+        TokenRegisterer registerer;
         try
         {
-            register = new TokenRegisterer(this.registry, handleManager);
+            registerer = new TokenRegisterer(this.registry, handleManager);
         }
         catch (IOException e)
         {
@@ -152,7 +152,7 @@ public class HeadInstallers
             return;
         }
 
-        this.headRun(terminal, register, argument);
+        this.headRun(terminal, registerer, false, argument);
     }
 
     public void runUpgrade(@NotNull Terminal terminal, @NotNull UpgradeArgument argument) throws IllegalStateException
@@ -181,6 +181,7 @@ public class HeadInstallers
     private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
             @NotNull Terminal terminal,
             @NotNull I installer,
+            boolean tokenRequired,
             @NotNull A arguments
     )
     {
@@ -189,6 +190,7 @@ public class HeadInstallers
             this.registry.getInstallManager().runInstallerAsync(
                     installer,
                     arguments,
+                    tokenRequired,
                     new InstallCallbackRecipient<>(this.registry, terminal)
             );
         }
@@ -200,6 +202,15 @@ public class HeadInstallers
         {
             Notices.printTokenUnset(this.registry, terminal);
         }
+    }
+
+    private <A extends InstallerArgument, T extends Enum<T>, I extends AbstractInstaller<A, ?, T>> void headRun(
+            @NotNull Terminal terminal,
+            @NotNull I installer,
+            @NotNull A arguments
+    )
+    {
+        this.headRun(terminal, installer, true, arguments);
     }
 
     @AllArgsConstructor
