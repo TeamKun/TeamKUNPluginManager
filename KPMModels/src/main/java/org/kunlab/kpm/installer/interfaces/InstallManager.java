@@ -31,6 +31,7 @@ public interface InstallManager
     <A extends InstallerArgument, T extends Enum<T>, I extends Installer<A, ?, T>> InstallProgress<T, I> runInstallerAsync(
             @NotNull I installer,
             @NotNull A arguments,
+            boolean tokenRequired,
             @Nullable Consumer<? super InstallResult<T>> onFinished
     );
 }
