@@ -1,9 +1,9 @@
 package org.kunlab.kpm.signal.handlers.intall;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.signals.InvalidKPMInfoFileSignal;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.install.signals.PluginEnablingSignal;

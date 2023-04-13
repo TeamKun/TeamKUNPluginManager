@@ -1,12 +1,12 @@
 package org.kunlab.kpm.signal.handlers.uninstall;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.uninstall.UnInstallErrorCause;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 import org.kunlab.kpm.task.tasks.uninstall.UninstallErrorCause;
 

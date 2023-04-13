@@ -1,12 +1,12 @@
 package org.kunlab.kpm.signal.handlers.common;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.install.signals.AlreadyInstalledPluginSignal;
 import org.kunlab.kpm.installer.signals.assertion.IgnoredPluginSignal;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;

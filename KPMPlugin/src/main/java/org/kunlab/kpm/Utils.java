@@ -1,10 +1,10 @@
 package org.kunlab.kpm;
 
 import lombok.experimental.UtilityClass;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 
 @UtilityClass
 public class Utils

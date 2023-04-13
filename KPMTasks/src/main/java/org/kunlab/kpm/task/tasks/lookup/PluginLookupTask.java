@@ -1,5 +1,6 @@
 package org.kunlab.kpm.task.tasks.lookup;
 
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -9,7 +10,6 @@ import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.resolver.QueryContextParser;
 import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.utils.KPMCollectors;
 import org.kunlab.kpm.versioning.Version;
 
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class PluginLookupTask extends AbstractInstallTask<LookupArgument, Lookup
         AtomicInteger count = new AtomicInteger(0);
         return Arrays.stream(queries)
                 .map(query -> Pair.of(queryStrings[count.getAndIncrement()], lookupOne(query)))
-                .collect(KPMCollectors.toPairMap(LinkedHashMap::new));
+                .collect(ExCollectors.toPairMap(LinkedHashMap::new));
     }
 
     private static Plugin lookupOne(QueryContext query)

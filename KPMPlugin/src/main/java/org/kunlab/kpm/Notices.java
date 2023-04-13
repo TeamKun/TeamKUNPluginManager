@@ -1,9 +1,9 @@
 package org.kunlab.kpm;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

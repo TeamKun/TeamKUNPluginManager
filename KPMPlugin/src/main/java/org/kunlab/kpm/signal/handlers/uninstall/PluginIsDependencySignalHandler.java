@@ -1,11 +1,11 @@
 package org.kunlab.kpm.signal.handlers.uninstall;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.meta.DependType;
 import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.signal.SignalHandler;

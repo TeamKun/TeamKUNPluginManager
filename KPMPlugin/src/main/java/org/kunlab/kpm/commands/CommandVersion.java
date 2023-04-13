@@ -1,8 +1,11 @@
 package org.kunlab.kpm.commands;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
+import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -11,8 +14,6 @@ import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.Notices;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 
 import java.io.InputStream;
 import java.util.List;
@@ -139,7 +140,7 @@ public class CommandVersion extends CommandBase
     @Override
     public net.kyori.adventure.text.TextComponent getHelpOneLine()
     {
-        return LangProvider.getComponent("command.version");
+        return (TextComponent) LangProvider.getComponent("command.version");
     }
 
     @Override

@@ -1,12 +1,13 @@
 package org.kunlab.kpm.signal.handlers.intall;
 
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.ErrorCause;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
@@ -14,7 +15,6 @@ import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
-import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -123,7 +123,7 @@ public class ResolverSignalHandler
                                 e.getValue().getFileName() + "(" + e.getValue().getVersion() + ")"
                         )
                 )
-                .collect(KPMCollectors.toMap(LinkedHashMap::new));
+                .collect(ExCollectors.toMap(LinkedHashMap::new));
         keywordToTitle.put("a", LangProvider.get("tasks.resolve.multi.choices.auto"));
 
         try

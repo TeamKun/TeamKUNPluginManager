@@ -1,10 +1,10 @@
 package org.kunlab.kpm.signal.handlers.uninstall;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.plugin.Plugin;
 import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.installer.impls.uninstall.signals.UninstallReadySignal;
-import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 
