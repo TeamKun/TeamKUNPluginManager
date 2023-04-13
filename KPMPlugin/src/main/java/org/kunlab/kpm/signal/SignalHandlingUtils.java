@@ -1,9 +1,9 @@
 package org.kunlab.kpm.signal;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.kunlab.kpm.lang.LangProvider;
 
 public class SignalHandlingUtils
 {

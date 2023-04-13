@@ -1,13 +1,13 @@
 package org.kunlab.kpm.signal.handlers.intall;
 
 import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionAttribute;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.QuestionResult;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.ErrorCause;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;

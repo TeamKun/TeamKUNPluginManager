@@ -1,6 +1,7 @@
 package org.kunlab.kpm.commands;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -12,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.uninstall.UninstallArgument;
-import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +58,7 @@ public class CommandUninstall extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return LangProvider.getComponent("command.uninstall");
+        return (TextComponent) LangProvider.getComponent("command.uninstall");
     }
 
     @Override

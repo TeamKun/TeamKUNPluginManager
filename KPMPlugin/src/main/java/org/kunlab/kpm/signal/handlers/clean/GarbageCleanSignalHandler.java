@@ -1,7 +1,7 @@
 package org.kunlab.kpm.signal.handlers.clean;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 import org.kunlab.kpm.task.tasks.garbage.clean.signal.GarbageEnumeratedSignal;
