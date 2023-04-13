@@ -107,9 +107,7 @@ public class TokenGenerateSignalHandler
                 MsgArgs.of("command", "/kpm register")
         ));
 
-        if (!this.terminal.isPlayer())
-            return;
-        this.progressbar.hide();
+        this.hideUI();
     }
 
     @SignalHandler
@@ -127,10 +125,7 @@ public class TokenGenerateSignalHandler
                 MsgArgs.of("reason", "%%tasks.gen_token.verify.fail.denied")
         ));
 
-        if (!this.terminal.isPlayer())
-            return;
-
-        this.progressbar.hide();
+        this.hideUI();
     }
 
     @SignalHandler
@@ -138,9 +133,14 @@ public class TokenGenerateSignalHandler
     {
         this.terminal.success(LangProvider.get("tasks.gen_token.verify.success"));
 
-        if (!this.terminal.isPlayer())
-            return;
+        this.hideUI();
+    }
 
-        this.progressbar.hide();
+    private void hideUI()
+    {
+        if (this.terminal.isPlayer())
+            this.progressbar.hide();
+
+        this.terminal.clearNotification();
     }
 }
