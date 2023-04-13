@@ -2,6 +2,7 @@ package org.kunlab.kpm;
 
 import lombok.Getter;
 import net.kunmc.lab.peyangpaperutils.PeyangPaperUtils;
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandManager;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminals;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
@@ -29,7 +30,6 @@ import org.kunlab.kpm.interfaces.KPMEnvironment;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.upgrader.KPMUpgrader;
-import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -84,7 +84,7 @@ public final class TeamKunPluginManager extends JavaPlugin
         Map<String, String> aliasMap = aliasSources.stream()
                 .map(map -> (Map<String, ?>) map)
                 .map(map -> Pair.of((String) map.get("name"), (String) map.get("url")))
-                .collect(KPMCollectors.toPairHashMap());
+                .collect(ExCollectors.toPairHashMap());
 
         return aliasMap;
     }

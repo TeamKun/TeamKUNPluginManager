@@ -1,5 +1,6 @@
 package org.kunlab.kpm.installer.impls.upgrade;
 
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -42,7 +43,6 @@ import org.kunlab.kpm.task.tasks.resolve.PluginResolveArgument;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveResult;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveTask;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
-import org.kunlab.kpm.utils.KPMCollectors;
 import org.kunlab.kpm.versioning.Version;
 
 import java.io.IOException;
@@ -372,7 +372,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return resolvedSignal.getPlugins().stream().parallel()
                 .filter(UpgradeReadySignal.ResolvedPluginElement::isContinueUpgrade)
                 .map(element -> Pair.of(element.getPlugin(), element.getResolveResult()))
-                .collect(KPMCollectors.toPairHashMap());
+                .collect(ExCollectors.toPairHashMap());
     }
 
     private Map<Plugin, PluginMeta> retrievePluginMetadata(@NotNull List<Plugin> targets)
@@ -381,7 +381,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         return targets.stream()
                 .filter(metaProvider::isPluginMetaExists)
                 .map(plugin -> Pair.of(plugin, metaProvider.getPluginMeta(plugin.getName())))
-                .collect(KPMCollectors.toPairHashMap());
+                .collect(ExCollectors.toPairHashMap());
     }
 
     private List<Plugin> searchPlugin(@Nullable List<String> targets) throws TaskFailedException
@@ -395,7 +395,7 @@ public class PluginUpgrader extends AbstractInstaller<UpgradeArgument, UpgradeEr
         assert lookupResult.getPlugins() != null;
         Map<String, Plugin> foundPlugins = lookupResult.getPlugins().entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
-                .collect(KPMCollectors.toHashMap());
+                .collect(ExCollectors.toHashMap());
 
         targets.removeAll(foundPlugins.keySet());
 

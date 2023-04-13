@@ -1,5 +1,6 @@
 package org.kunlab.kpm.installer.impls.uninstall;
 
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -20,7 +21,6 @@ import org.kunlab.kpm.task.tasks.dependencies.computer.DependsComputeOrderTask;
 import org.kunlab.kpm.task.tasks.uninstall.UnInstallResult;
 import org.kunlab.kpm.task.tasks.uninstall.UnInstallTask;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
-import org.kunlab.kpm.utils.KPMCollectors;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.IOException;
@@ -184,7 +184,7 @@ public class PluginUninstaller extends AbstractInstaller<UninstallArgument, UnIn
                     List<DependencyElement> ordered = computeResult.getOrder();
                     List<Plugin> orderedPlugins = ordered.stream()
                             .map(element -> namePluginMap.get(element.getPluginName()))
-                            .collect(KPMCollectors.toReversedList()); // Convert load order to unload order.
+                            .collect(ExCollectors.toReversedList()); // Convert load order to unload order.
 
                     return new org.kunlab.kpm.task.tasks.uninstall.UninstallArgument(orderedPlugins, uninstallDependencies, finalDependencyBehavior);
                 })

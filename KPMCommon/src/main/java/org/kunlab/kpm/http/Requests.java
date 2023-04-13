@@ -3,13 +3,13 @@ package org.kunlab.kpm.http;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.DebugConstants;
 import org.kunlab.kpm.TokenStore;
-import org.kunlab.kpm.utils.KPMCollectors;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -224,7 +224,7 @@ public class Requests
                         stringListEntry.getKey() == null ? null: stringListEntry.getKey().toLowerCase(),
                         String.join(" ", stringListEntry.getValue())
                 ))
-                .collect(KPMCollectors.toPairHashMap());
+                .collect(ExCollectors.toPairHashMap());
     }
 
     private static Pair<String, String> retrieveProtocol(Map<String, String> serverHeaders)
