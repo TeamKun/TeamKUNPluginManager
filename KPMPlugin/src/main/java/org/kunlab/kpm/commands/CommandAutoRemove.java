@@ -1,6 +1,7 @@
 package org.kunlab.kpm.commands;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
@@ -10,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.TeamKunPluginManager;
 import org.kunlab.kpm.installer.impls.autoremove.AutoRemoveArgument;
-import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class CommandAutoRemove extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return LangProvider.getComponent("command.autoremove");
+        return (TextComponent) LangProvider.getComponent("command.autoremove");
     }
 
     @Override

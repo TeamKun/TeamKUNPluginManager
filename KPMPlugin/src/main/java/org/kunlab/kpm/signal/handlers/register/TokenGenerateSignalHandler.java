@@ -1,5 +1,7 @@
 package org.kunlab.kpm.signal.handlers.register;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Progressbar;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.impls.register.signals.TokenGenerateStartingSignal;
@@ -10,8 +12,6 @@ import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeExpiredSi
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeReceivedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestFailedSignal;
 import org.kunlab.kpm.installer.impls.register.signals.VerificationCodeRequestingSignal;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.SignalHandlingUtils;
 
@@ -107,9 +107,7 @@ public class TokenGenerateSignalHandler
                 MsgArgs.of("command", "/kpm register")
         ));
 
-        if (!this.terminal.isPlayer())
-            return;
-        this.progressbar.hide();
+        this.hideUI();
     }
 
     @SignalHandler
@@ -127,10 +125,7 @@ public class TokenGenerateSignalHandler
                 MsgArgs.of("reason", "%%tasks.gen_token.verify.fail.denied")
         ));
 
-        if (!this.terminal.isPlayer())
-            return;
-
-        this.progressbar.hide();
+        this.hideUI();
     }
 
     @SignalHandler
@@ -138,9 +133,14 @@ public class TokenGenerateSignalHandler
     {
         this.terminal.success(LangProvider.get("tasks.gen_token.verify.success"));
 
-        if (!this.terminal.isPlayer())
-            return;
+        this.hideUI();
+    }
 
-        this.progressbar.hide();
+    private void hideUI()
+    {
+        if (this.terminal.isPlayer())
+            this.progressbar.hide();
+
+        this.terminal.clearNotification();
     }
 }

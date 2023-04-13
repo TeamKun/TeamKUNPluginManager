@@ -1,5 +1,6 @@
 package org.kunlab.kpm.commands;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.TextComponent;
@@ -9,7 +10,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +61,7 @@ public class CommandInfo extends CommandBase
     @Override
     public TextComponent getHelpOneLine()
     {
-        return LangProvider.getComponent("command.info");
+        return (TextComponent) LangProvider.getComponent("command.info");
     }
 
     @Override

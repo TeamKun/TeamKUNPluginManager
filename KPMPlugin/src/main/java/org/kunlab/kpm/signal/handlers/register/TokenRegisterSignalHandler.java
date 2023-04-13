@@ -1,5 +1,7 @@
 package org.kunlab.kpm.signal.handlers.register;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.impls.register.RegisterErrorCause;
@@ -7,8 +9,6 @@ import org.kunlab.kpm.installer.impls.register.RegisterTasks;
 import org.kunlab.kpm.installer.impls.register.signals.TokenCheckingSignal;
 import org.kunlab.kpm.installer.impls.register.signals.TokenStoredSignal;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.signal.handlers.common.InstallFinishedSignalBase;
 

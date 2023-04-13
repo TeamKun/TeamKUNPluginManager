@@ -2,13 +2,13 @@ package org.kunlab.kpm.signal.handlers.common;
 
 import lombok.AccessLevel;
 import lombok.Setter;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.installer.InstallFailedInstallResult;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.installer.signals.InstallFinishedSignal;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.SignalHandler;
 
 /**

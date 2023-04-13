@@ -1,5 +1,7 @@
 package org.kunlab.kpm.signal.handlers.upgrade;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -11,8 +13,6 @@ import org.kunlab.kpm.installer.impls.upgrade.signals.InvalidPluginVersionSignal
 import org.kunlab.kpm.installer.impls.upgrade.signals.PluginNotFoundSignal;
 import org.kunlab.kpm.installer.impls.upgrade.signals.ResolveFailedSignal;
 import org.kunlab.kpm.installer.impls.upgrade.signals.UpgradeReadySignal;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.signal.SignalHandler;

@@ -1,6 +1,8 @@
 package org.kunlab.kpm;
 
 import lombok.AllArgsConstructor;
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.AbstractInstaller;
@@ -23,8 +25,6 @@ import org.kunlab.kpm.installer.impls.upgrade.UpgradeArgument;
 import org.kunlab.kpm.installer.interfaces.InstallResult;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
-import org.kunlab.kpm.lang.LangProvider;
-import org.kunlab.kpm.lang.MsgArgs;
 import org.kunlab.kpm.signal.HeadSignalHandlers;
 import org.kunlab.kpm.signal.SignalHandleManager;
 

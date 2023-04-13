@@ -1,5 +1,6 @@
 package org.kunlab.kpm.commands;
 
+import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
@@ -17,7 +18,6 @@ import org.kunlab.kpm.Utils;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
-import org.kunlab.kpm.lang.LangProvider;
 import org.kunlab.kpm.meta.InstallOperator;
 import org.kunlab.kpm.meta.interfaces.DependencyNode;
 import org.kunlab.kpm.meta.interfaces.PluginMeta;

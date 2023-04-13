@@ -1,5 +1,6 @@
 package org.kunlab.kpm.task.tasks.dependencies.collector;
 
+import net.kunmc.lab.peyangpaperutils.collectors.ExCollectors;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,6 @@ import org.kunlab.kpm.task.tasks.download.DownloadTask;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveArgument;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveResult;
 import org.kunlab.kpm.task.tasks.resolve.PluginResolveTask;
-import org.kunlab.kpm.utils.KPMCollectors;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.FileNotFoundException;
@@ -325,7 +325,7 @@ public class DependsCollectTask extends AbstractInstallTask<DependsCollectArgume
                         dependency.getKey(),
                         this.passResolver(dependency.getValue()).getResolveResult()
                 ))
-                .collect(KPMCollectors.toPairHashMap()));
+                .collect(ExCollectors.toPairHashMap()));
 
         resolveResults.entrySet().stream()
                 .filter(entry -> !(entry.getValue() instanceof SuccessResult))
