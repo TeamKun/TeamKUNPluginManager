@@ -197,7 +197,7 @@ public interface PluginMetaProvider
      *
      * @param dependencyNodes 依存関係ツリー
      */
-    void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes);
+    void saveDependencyTree(@NotNull List<? extends DependencyNode> dependencyNodes);
 
     /**
      * 依存関係ツリーを構築します。
