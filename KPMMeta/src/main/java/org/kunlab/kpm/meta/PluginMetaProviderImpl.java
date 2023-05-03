@@ -472,7 +472,7 @@ public class PluginMetaProviderImpl implements PluginMetaProvider
     }
 
     @Override
-    public void saveDependencyTree(@NotNull List<DependencyNode> dependencyNodes)
+    public void saveDependencyTree(@NotNull List<? extends DependencyNode> dependencyNodes)
     {
         Transaction transaction = Transaction.create(
                 this.db,

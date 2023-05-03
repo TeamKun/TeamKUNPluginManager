@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 class MetaSQLUtil
 {
-    static List<String> getStringDependsOn(List<DependencyNode> nodes, DependType type)
+    static List<String> getStringDependsOn(List<? extends DependencyNode> nodes, DependType type)
     {
         return nodes.stream().parallel()
                 .filter(node -> node.getDependType() == type)
