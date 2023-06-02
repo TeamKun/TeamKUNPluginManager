@@ -471,10 +471,9 @@ public final class ReflectionUtils
      * @author DarkBlade12
      * @since 1.0
      */
-    public enum PackageType
-    {
-        MINECRAFT_SERVER("net.minecraft.server." + getServerVersion()),
-        CRAFTBUKKIT("org.bukkit.craftbukkit." + getServerVersion()),
+    public enum PackageType {
+        MINECRAFT_SERVER(getNMSPackage("net.minecraft.server")),
+        CRAFTBUKKIT(getNMSPackage("org.bukkit.craftbukkit")),
         CRAFTBUKKIT_BLOCK(CRAFTBUKKIT, "block"),
         CRAFTBUKKIT_CHUNKIO(CRAFTBUKKIT, "chunkio"),
         CRAFTBUKKIT_COMMAND(CRAFTBUKKIT, "command"),
@@ -518,13 +517,30 @@ public final class ReflectionUtils
         }
 
         /**
-         * Returns the version of your server
+         * Returns the full package name of the package type.
+         * If the server version is lower than 1.19, the package name will be &lt;base>.v1_&lt;version>.
+         * Otherwise it will be &lt;base> (e.g. org.bukkit.craftbukkit.v1_8_R3 -> org.bukkit.craftbukkit)
+         * due to the fucking refactoring by Mojang.
          *
          * @return The server version
          */
-        public static String getServerVersion()
-        {
-            return Bukkit.getServer().getClass().getPackage().getName().substring(23);
+        public static String getNMSPackage(String base) {
+            if (isNewerThan1_17())
+                return base;
+
+            String versionedPackage = Bukkit.getServer().getClass().getPackage().getName().substring(23);
+            return base + "." + versionedPackage;
+        }
+
+        private static boolean isNewerThan1_17() {
+            try {
+                // Axolotl is added in 1.17 update.
+                Class.forName("org.bukkit.entity.Axolotl");
+
+                return true;
+            } catch (ClassNotFoundException ignored) {
+                return false;
+            }
         }
 
         /**
@@ -532,8 +548,7 @@ public final class ReflectionUtils
          *
          * @return The path
          */
-        public String getPath()
-        {
+        public String getPath() {
             return this.path;
         }
 
