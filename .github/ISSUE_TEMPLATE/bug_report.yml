@@ -2,7 +2,7 @@ name: バグレポート
 description: なにかよくないバグを発見した場合はこちら
 title: "【バグ】"
 labels: ["Type: Bug"]
-assignees: ["peyang-Celeron"]
+assignees: [ "PeyaPeyaPeyang" ]
 body:
   - type: markdown
     attributes:
