@@ -22,10 +22,16 @@ import org.kunlab.kpm.installer.interfaces.Installer;
 import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
-import org.kunlab.kpm.nms.v1_16_5.task.CommandsPatcherImpl;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.interfaces.CommandsPatcher;
-import org.kunlab.kpm.task.tasks.uninstall.signals.*;
+import org.kunlab.kpm.task.loader.CommandsPatcherBridge;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginDisablingSignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginUninstallErrorSignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginUninstallingSignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.PluginUnloadingSignal;
+import org.kunlab.kpm.task.tasks.uninstall.signals.StartingGCSignal;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.File;
@@ -33,7 +39,15 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * プラグインをアンインストールするタスクです。
@@ -53,7 +67,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
     static
     {
         PLUGIN_MANAGER = Bukkit.getPluginManager();
-        COMMANDS_PATCHER = new CommandsPatcherImpl();
+        COMMANDS_PATCHER = new CommandsPatcherBridge();
 
         try
         {

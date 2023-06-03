@@ -21,6 +21,7 @@
         <module>KPMTasks</module>
 
         <module>nms_v1_16_5</module>
+        <module>nms_v1_19_4</module>
     </modules>
     <packaging>pom</packaging>
 
