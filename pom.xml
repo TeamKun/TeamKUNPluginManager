@@ -19,6 +19,8 @@
         <module>KPMHooks</module>
         <module>KPMPluginInstaller</module>
         <module>KPMTasks</module>
+
+        <module>nms_v1_16_5</module>
     </modules>
     <packaging>pom</packaging>
 

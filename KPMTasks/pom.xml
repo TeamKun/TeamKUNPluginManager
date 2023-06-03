@@ -10,6 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>KPMTasks</artifactId>
 
     <properties>
@@ -55,6 +56,13 @@
             <groupId>com.mojang</groupId>
             <artifactId>brigadier</artifactId>
             <version>1.0.500</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kunlab.kpm.nms</groupId>
+            <artifactId>v1_16_5</artifactId>
+            <version>3.0.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

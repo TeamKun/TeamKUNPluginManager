@@ -10,12 +10,7 @@ import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
 import org.kunlab.kpm.task.tasks.dependencies.computer.signals.DependsLoadOrderComputingSignal;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 依存関係の読み込み順序を計算するタスクです。

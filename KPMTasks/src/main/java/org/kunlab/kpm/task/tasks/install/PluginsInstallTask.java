@@ -3,11 +3,7 @@ package org.kunlab.kpm.task.tasks.install;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kunlab.kpm.hook.hooks.PluginInstalledHook;
@@ -18,15 +14,11 @@ import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.meta.InstallOperator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
+import org.kunlab.kpm.nms.v1_16_5.task.CommandsPatcherImpl;
 import org.kunlab.kpm.task.AbstractInstallTask;
+import org.kunlab.kpm.task.interfaces.CommandsPatcher;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
-import org.kunlab.kpm.task.loader.CommandsPatcher;
-import org.kunlab.kpm.task.tasks.install.signals.PluginEnablingSignal;
-import org.kunlab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
-import org.kunlab.kpm.task.tasks.install.signals.PluginInstallingSignal;
-import org.kunlab.kpm.task.tasks.install.signals.PluginLoadSignal;
-import org.kunlab.kpm.task.tasks.install.signals.PluginOnLoadRunningSignal;
-import org.kunlab.kpm.task.tasks.install.signals.PluginRelocatingSignal;
+import org.kunlab.kpm.task.tasks.install.signals.*;
 import org.kunlab.kpm.utils.PluginUtil;
 import org.kunlab.kpm.versioning.Version;
 
@@ -59,7 +51,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
 
         this.pluginDir = registry.getEnvironment().getDataDirPath().getParent();
         this.pluginManager = Bukkit.getPluginManager();
-        this.commandsPatcher = new CommandsPatcher();
+        this.commandsPatcher = new CommandsPatcherImpl();
 
         PluginMetaManager pluginMetaManager = registry.getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;

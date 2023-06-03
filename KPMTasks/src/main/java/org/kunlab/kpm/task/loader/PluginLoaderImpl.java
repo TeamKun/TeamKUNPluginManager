@@ -9,28 +9,21 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.InvalidPluginException;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.UnknownDependencyException;
+import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
 import org.kunlab.kpm.interfaces.KPMRegistry;
+import org.kunlab.kpm.nms.v1_16_5.task.CommandsPatcherImpl;
 import org.kunlab.kpm.pluginloader.PluginLoadResult;
+import org.kunlab.kpm.task.interfaces.CommandsPatcher;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * プラグインを読み込むためのクラスです。
@@ -51,7 +44,7 @@ public class PluginLoaderImpl implements PluginLoader
     {
         this.registry = registry;
         this.pluginManager = Bukkit.getPluginManager();
-        this.commandsPatcher = new CommandsPatcher();
+        this.commandsPatcher = new CommandsPatcherImpl();
 
         this.initReflections();
     }
