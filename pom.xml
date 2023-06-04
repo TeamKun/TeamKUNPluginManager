@@ -20,8 +20,8 @@
         <module>KPMPluginInstaller</module>
         <module>KPMTasks</module>
 
-        <module>nms_v1_16_5</module>
-        <module>nms_v1_19_4</module>
+        <module>nms_v1_16</module>
+        <module>nms_v1_19</module>
     </modules>
     <packaging>pom</packaging>
 

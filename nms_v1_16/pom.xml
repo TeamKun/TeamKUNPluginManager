@@ -12,11 +12,11 @@
     </parent>
 
     <groupId>org.kunlab.kpm.nms</groupId>
-    <artifactId>v1_19_4</artifactId>
+    <artifactId>v1_16</artifactId>
     <version>3.0.5</version>
     <packaging>jar</packaging>
 
-    <name>v1_19_4</name>
+    <name>v1_16_</name>
 
     <build>
         <plugins>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>

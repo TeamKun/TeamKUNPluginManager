@@ -471,9 +471,10 @@ public final class ReflectionUtils
      * @author DarkBlade12
      * @since 1.0
      */
-    public enum PackageType {
+    public enum PackageType
+    {
         MINECRAFT_SERVER(getNMSPackage("net.minecraft.server")),
-        CRAFTBUKKIT(getNMSPackage("org.bukkit.craftbukkit")),
+        CRAFTBUKKIT(getVersionedNMSPackage("org.bukkit.craftbukkit")),
         CRAFTBUKKIT_BLOCK(CRAFTBUKKIT, "block"),
         CRAFTBUKKIT_CHUNKIO(CRAFTBUKKIT, "chunkio"),
         CRAFTBUKKIT_COMMAND(CRAFTBUKKIT, "command"),
@@ -524,16 +525,24 @@ public final class ReflectionUtils
          *
          * @return The server version
          */
-        public static String getNMSPackage(String base) {
+        public static String getNMSPackage(String base)
+        {
             if (isNewerThan1_17())
                 return base;
+            else
+                return getVersionedNMSPackage(base);
+        }
 
+        private static String getVersionedNMSPackage(String base)
+        {
             String versionedPackage = Bukkit.getServer().getClass().getPackage().getName().substring(23);
             return base + "." + versionedPackage;
         }
 
-        private static boolean isNewerThan1_17() {
-            try {
+        private static boolean isNewerThan1_17()
+        {
+            try
+            {
                 // Axolotl is added in 1.17 update.
                 Class.forName("org.bukkit.entity.Axolotl");
 

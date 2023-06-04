@@ -61,13 +61,13 @@
 
         <dependency>
             <groupId>org.kunlab.kpm.nms</groupId>
-            <artifactId>v1_16_5</artifactId>
+            <artifactId>v1_16</artifactId>
             <version>3.0.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm.nms</groupId>
-            <artifactId>v1_19_4</artifactId>
+            <artifactId>v1_19</artifactId>
             <version>3.0.5</version>
             <scope>compile</scope>
         </dependency>

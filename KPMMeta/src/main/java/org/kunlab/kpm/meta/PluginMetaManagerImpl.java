@@ -14,7 +14,7 @@ import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.meta.interfaces.PluginMeta;
 import org.kunlab.kpm.meta.interfaces.PluginMetaIterator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
-import org.kunlab.kpm.utils.ServerConditionChecker;
+import org.kunlab.kpm.utils.interfaces.ServerConditionChecker;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
