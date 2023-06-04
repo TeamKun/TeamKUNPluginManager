@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.kunlab.kpm</groupId>
         <artifactId>TeamKunPluginManager</artifactId>
-        <version>3.0.5</version>
+        <version>3.1.0-pre1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kunlab.kpm.nms</groupId>
     <artifactId>v1_16</artifactId>
-    <version>3.0.5</version>
+    <version>3.1.0-pre1</version>
     <packaging>jar</packaging>
 
     <name>v1_16_</name>
@@ -40,12 +40,12 @@
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
-            <version>3.0.5</version>
+            <version>3.1.0-pre1</version>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
-            <version>3.0.5</version>
+            <version>3.1.0-pre1</version>
         </dependency>
     </dependencies>
 </project>
