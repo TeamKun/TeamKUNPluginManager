@@ -19,8 +19,9 @@ import org.kunlab.kpm.meta.InstallOperator;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 import org.kunlab.kpm.meta.interfaces.PluginMetaProvider;
 import org.kunlab.kpm.task.AbstractInstallTask;
+import org.kunlab.kpm.task.interfaces.CommandsPatcher;
 import org.kunlab.kpm.task.interfaces.dependencies.DependencyElement;
-import org.kunlab.kpm.task.loader.CommandsPatcher;
+import org.kunlab.kpm.task.loader.CommandsPatcherBridge;
 import org.kunlab.kpm.task.tasks.install.signals.PluginEnablingSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginIncompatibleWithKPMSignal;
 import org.kunlab.kpm.task.tasks.install.signals.PluginInstallingSignal;
@@ -59,7 +60,7 @@ public class PluginsInstallTask extends AbstractInstallTask<PluginsInstallArgume
 
         this.pluginDir = registry.getEnvironment().getDataDirPath().getParent();
         this.pluginManager = Bukkit.getPluginManager();
-        this.commandsPatcher = new CommandsPatcher();
+        this.commandsPatcher = new CommandsPatcherBridge();
 
         PluginMetaManager pluginMetaManager = registry.getPluginMetaManager();
         this.pluginMetaManager = pluginMetaManager;

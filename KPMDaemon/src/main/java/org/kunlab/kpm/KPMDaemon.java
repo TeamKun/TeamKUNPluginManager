@@ -1,6 +1,5 @@
 package org.kunlab.kpm;
 
-import lombok.Getter;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -29,7 +28,8 @@ import org.kunlab.kpm.resolver.impl.github.GitHubURLResolver;
 import org.kunlab.kpm.resolver.impl.github.OmittedGitHubResolver;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
 import org.kunlab.kpm.task.loader.PluginLoaderImpl;
-import org.kunlab.kpm.utils.ServerConditionChecker;
+import org.kunlab.kpm.utils.APIUtils;
+import org.kunlab.kpm.utils.interfaces.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 
 import java.io.IOException;
@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 /**
  * KPMのデーモンです。
  */
-@Getter
 public class KPMDaemon implements KPMRegistry
 {
     private final Logger logger;
@@ -76,9 +75,22 @@ public class KPMDaemon implements KPMRegistry
         this.installManager = new InstallManagerImpl(this.tokenStore);
         this.pluginLoader = new PluginLoaderImpl(this);
         this.pluginResolver = new PluginResolverImpl();
-        this.serverConditionChecker = new ServerConditionChecker();
+        this.serverConditionChecker = getServerConditionChecker(APIUtils.getAPIVersion());
 
         this.setupDaemon(env.getOrganizations());
+    }
+
+    private static ServerConditionChecker getServerConditionChecker(String apiVersion)
+    {
+        switch (apiVersion)
+        {
+            case "1.16":
+                return new org.kunlab.kpm.nms.v1_16.utils.ServerConditionCheckerImpl();
+            case "1.19":
+                return new org.kunlab.kpm.nms.v1_19.utils.ServerConditionCheckerImpl();
+        }
+
+        throw new IllegalStateException("Unsupported API version: " + apiVersion);
     }
 
     public void setupDaemon(@NotNull List<String> organizationNames)
@@ -174,5 +186,65 @@ public class KPMDaemon implements KPMRegistry
     public Version getVersion()
     {
         return Version.of(this.getEnvironment().getPlugin().getDescription().getVersion());
+    }
+
+    public Logger getLogger()
+    {
+        return this.logger;
+    }
+
+    public ExceptionHandler getExceptionHandler()
+    {
+        return this.exceptionHandler;
+    }
+
+    public KPMEnvironment getEnvironment()
+    {
+        return this.environment;
+    }
+
+    public AliasProvider getAliasProvider()
+    {
+        return this.aliasProvider;
+    }
+
+    public PluginMetaManager getPluginMetaManager()
+    {
+        return this.pluginMetaManager;
+    }
+
+    public KPMInfoManager getKpmInfoManager()
+    {
+        return this.kpmInfoManager;
+    }
+
+    public HookExecutor getHookExecutor()
+    {
+        return this.hookExecutor;
+    }
+
+    public TokenStore getTokenStore()
+    {
+        return this.tokenStore;
+    }
+
+    public InstallManager getInstallManager()
+    {
+        return this.installManager;
+    }
+
+    public PluginLoader getPluginLoader()
+    {
+        return this.pluginLoader;
+    }
+
+    public PluginResolver getPluginResolver()
+    {
+        return this.pluginResolver;
+    }
+
+    public ServerConditionChecker getServerConditionChecker()
+    {
+        return this.serverConditionChecker;
     }
 }

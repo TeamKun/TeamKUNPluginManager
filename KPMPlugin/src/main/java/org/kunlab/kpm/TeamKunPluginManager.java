@@ -10,7 +10,6 @@ import net.kunmc.lab.peyangpaperutils.lib.utils.Pair;
 import net.kunmc.lab.peyangpaperutils.lib.utils.Runner;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 @Getter
 public final class TeamKunPluginManager extends JavaPlugin
@@ -129,7 +129,25 @@ public final class TeamKunPluginManager extends JavaPlugin
                 this.getLogger().log(Level.WARNING, "Failed to create caches directory.", e);
             }
 
-        Runner.run(() -> FileUtils.cleanDirectory(cacheParent.toFile()), ((e, bukkitTask) -> this.getLogger().log(Level.WARNING, "Failed to clear caches.", e)));
+        Runner.run(() -> {
+            try (Stream<Path> caches = Files.walk(cacheParent))
+            {
+                caches.forEach(path -> {
+                    try
+                    {
+                        Files.deleteIfExists(path);
+                    }
+                    catch (IOException e)
+                    {
+                        this.getLogger().log(Level.WARNING, "Failed to delete cache file: " + path, e);
+                    }
+                });
+            }
+            catch (IOException e)
+            {
+                this.getLogger().log(Level.WARNING, "Failed to list cache files.", e);
+            }
+        }, ((e, bukkitTask) -> this.getLogger().log(Level.WARNING, "Failed to clear caches.", e)));
     }
 
     private void uninstallUpgraderIfExists()

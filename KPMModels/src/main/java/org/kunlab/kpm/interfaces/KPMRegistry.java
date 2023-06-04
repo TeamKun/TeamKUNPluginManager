@@ -9,7 +9,7 @@ import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
 import org.kunlab.kpm.kpminfo.interfaces.KPMInfoManager;
 import org.kunlab.kpm.meta.interfaces.PluginMetaManager;
 import org.kunlab.kpm.resolver.interfaces.PluginResolver;
-import org.kunlab.kpm.utils.ServerConditionChecker;
+import org.kunlab.kpm.utils.interfaces.ServerConditionChecker;
 import org.kunlab.kpm.versioning.Version;
 
 import java.util.logging.Logger;

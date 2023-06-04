@@ -2,7 +2,7 @@ name: 機能リクエスト
 description: なにかよくないバグを発見した場合はこちら
 title: "【機能】"
 labels: ["Type: Enchantment"]
-assignees: ["peyang-Celeron"]
+assignees: [ "PeyaPeyaPeyang" ]
 body:
   - type: markdown
     attributes:

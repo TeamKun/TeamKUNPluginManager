@@ -40,6 +40,16 @@ KPM は、以下の言語に対応しています。
 
 * [こちら](https://kpm.kunlab.org) を参照してください。
 
+## バージョン  のサポート (Version Support)
+
+| バージョン (Version) | サポート状況 (Support)   |
+|:----------------|:-------------------|
+| 1.16.x          | :white_check_mark: |
+| 1.19.x          | :warning:          |          
+
+In 1.19.x, the plugin will work and can install/remove plugins, but the UI will not work properly due to the changes in
+the API.
+
 ## スクリーンショット (Screenshots)
 
 <img src="images/pl-install.png" width="350px" alt="Install feature">

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.loader.PluginLoader;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.pluginloader.PluginLoadResult;
+import org.kunlab.kpm.task.interfaces.CommandsPatcher;
 import org.kunlab.kpm.utils.PluginUtil;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class PluginLoaderImpl implements PluginLoader
     {
         this.registry = registry;
         this.pluginManager = Bukkit.getPluginManager();
-        this.commandsPatcher = new CommandsPatcher();
+        this.commandsPatcher = new CommandsPatcherBridge();
 
         this.initReflections();
     }

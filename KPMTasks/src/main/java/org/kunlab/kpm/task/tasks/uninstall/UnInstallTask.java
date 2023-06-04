@@ -23,7 +23,8 @@ import org.kunlab.kpm.installer.interfaces.InstallerArgument;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.kpminfo.KPMInformationFile;
 import org.kunlab.kpm.task.AbstractInstallTask;
-import org.kunlab.kpm.task.loader.CommandsPatcher;
+import org.kunlab.kpm.task.interfaces.CommandsPatcher;
+import org.kunlab.kpm.task.loader.CommandsPatcherBridge;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginDisablingSignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginIsDependencySignal;
 import org.kunlab.kpm.task.tasks.uninstall.signals.PluginRegisteredRecipeSignal;
@@ -66,7 +67,7 @@ public class UnInstallTask extends AbstractInstallTask<UninstallArgument, UnInst
     static
     {
         PLUGIN_MANAGER = Bukkit.getPluginManager();
-        COMMANDS_PATCHER = new CommandsPatcher();
+        COMMANDS_PATCHER = new CommandsPatcherBridge();
 
         try
         {

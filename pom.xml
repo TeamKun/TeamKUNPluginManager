@@ -6,7 +6,7 @@
 
     <groupId>org.kunlab.kpm</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>3.0.5</version>
+    <version>3.1.0-pre1</version>
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
@@ -19,6 +19,9 @@
         <module>KPMHooks</module>
         <module>KPMPluginInstaller</module>
         <module>KPMTasks</module>
+
+        <module>nms_v1_16</module>
+        <module>nms_v1_19</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -83,19 +86,19 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.26</version>
+            <version>1.18.28</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.2</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

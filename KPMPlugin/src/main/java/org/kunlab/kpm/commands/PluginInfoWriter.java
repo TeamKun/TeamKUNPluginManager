@@ -219,7 +219,7 @@ public class PluginInfoWriter extends TerminalWriter
         );
     }
 
-    private TextComponent getDependencyComponents(List<DependencyNode> dependencies, boolean direction)
+    private TextComponent getDependencyComponents(List<? extends DependencyNode> dependencies, boolean direction)
     {
         ComponentBuilder<TextComponent, ?> builder = Component.text();
 
