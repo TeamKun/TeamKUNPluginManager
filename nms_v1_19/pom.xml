@@ -16,7 +16,8 @@
     <version>3.1.0-pre1</version>
     <packaging>jar</packaging>
 
-    <name>v1_19</name>
+    <name>NMS patch for 1.19</name>
+
 
     <build>
         <plugins>
