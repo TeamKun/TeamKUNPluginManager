@@ -11,16 +11,29 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
+        id: sj
         uses: actions/setup-java@v3
         with:
           distribution: "zulu"
           java-version: 17
+          cache: maven
+      - uses: derongan/nmsaction@v1
+        if: "steps.sj.outputs.cache-hit != 'true'"
+        with:
+          rev: 1.16.5
+      - uses: derongan/nmsaction@v1
+        if: "steps.sj.outputs.cache-hit != 'true'"
+        with:
+          rev: 1.19.4
+      - name: Install nms into m2
+        if: "steps.sj.outputs.cache-hit != 'true'"
+        run: |
+          mkdir -p $HOME/.m2/repository
+          cp -a nms-build/.m2/repository/. $HOME/.m2/repository
       - uses: actions/cache@v1
         with:
           path: ~/.m2/repository
