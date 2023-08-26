@@ -42,7 +42,7 @@ jobs:
       - uses: PeyaPeyaPeyang/nmsaction@v2
         if: "steps.sj.outputs.cache-hit != 'true'"
         with:
-          rev: 1.19.4
+          rev: 1.19
       - name: Install nms into m2
         if: "steps.sj.outputs.cache-hit != 'true'"
         run: |
