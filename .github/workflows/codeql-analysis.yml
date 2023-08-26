@@ -52,7 +52,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: java
-      - name: Build with Maven # AutoBuild は動かない  \ ばーん！ /
+      - name: Build with Maven # AutoBuild は動かない   \ ばーん！ /
         run: mvn -B package --file pom.xml
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
