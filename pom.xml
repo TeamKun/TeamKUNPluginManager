@@ -47,7 +47,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <pyglib.version>2.2.0</pyglib.version>
+        <pyglib.version>2.2.1</pyglib.version>
     </properties>
     <url>https://kunmc.net/</url>
   
