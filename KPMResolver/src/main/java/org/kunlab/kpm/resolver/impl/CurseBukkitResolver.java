@@ -3,6 +3,7 @@ package org.kunlab.kpm.resolver.impl;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Nullable;
@@ -16,8 +17,12 @@ import org.kunlab.kpm.resolver.interfaces.result.ErrorResult;
 import org.kunlab.kpm.resolver.interfaces.result.MultiResult;
 import org.kunlab.kpm.resolver.interfaces.result.ResolveResult;
 import org.kunlab.kpm.resolver.result.ErrorResultImpl;
+import org.kunlab.kpm.resolver.result.MultiResultImpl;
 import org.kunlab.kpm.resolver.utils.URLResolveUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,22 +42,36 @@ public class CurseBukkitResolver implements URLResolver
         BUKKIT_API_VERSION = baseVersion;
     }
 
-    private static JsonObject pickUpValidVersion(JsonArray versions, @Nullable String version)
+    private ResolveResult processFiles(String slug, String name, long projectId, String version, ResolveResult.Source source)
     {
-        JsonObject file = null;
+        HTTPResponse response = Requests.request(RequestContext.builder()
+                .url("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId)
+                .build());
 
-        for (JsonElement projectFile : versions)
-        {
-            JsonObject projectFileObject = projectFile.getAsJsonObject();
+        ErrorResult mayError = URLResolveUtil.processErrorResponse(this, response, source);
+        if (mayError != null)
+            return mayError;
 
-            if (version != null && projectFileObject.get("fileUrl").getAsString().endsWith(version))
-                return projectFileObject;
+        JsonElement json = response.getAsJson();
+        if (!json.isJsonArray())
+            return new ErrorResultImpl(this, ErrorCause.SERVER_RESPONSE_MALFORMED, source);
 
-            if (projectFileObject.get("gameVersion").getAsString().contains(BUKKIT_API_VERSION))
-                file = projectFileObject;
-        }
+        JsonArray projectFilesResult = (JsonArray) json;
+        if (projectFilesResult.size() == 0)
+            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND, source);
 
-        return file;
+        JsonObject[] pickedPlugins = pickUpCompatibleVersions(projectFilesResult, version);
+        if (pickedPlugins.length == 0)
+            return new ErrorResultImpl(this, ErrorCause.VERSION_MISMATCH, source);
+        else if (pickedPlugins.length > 1)
+            return new MultiResultImpl(
+                    this,
+                    Arrays.stream(pickedPlugins)
+                            .map(plugin -> this.createResult(slug, name, projectId, source, plugin))
+                            .toArray(ResolveResult[]::new)
+            );
+        else
+            return this.createResult(slug, name, projectId, source, pickedPlugins[0]);
     }
 
     @Override
@@ -121,28 +140,9 @@ public class CurseBukkitResolver implements URLResolver
         return this.processFiles(slug, name, projectId, version, errorSource);
     }
 
-    private ResolveResult processFiles(String slug, String name, long projectId, String version, ResolveResult.Source source)
+    @Nonnull
+    private CurseBukkitSuccessResult createResult(String slug, String name, long projectId, ResolveResult.Source source, JsonObject pickedPlugin)
     {
-        HTTPResponse response = Requests.request(RequestContext.builder()
-                .url("https://servermods.forgesvc.net/servermods/files?projectIds=" + projectId)
-                .build());
-
-        ErrorResult mayError = URLResolveUtil.processErrorResponse(this, response, source);
-        if (mayError != null)
-            return mayError;
-
-        JsonElement json = response.getAsJson();
-        if (!json.isJsonArray())
-            return new ErrorResultImpl(this, ErrorCause.SERVER_RESPONSE_MALFORMED, source);
-
-        JsonArray projectFilesResult = (JsonArray) json;
-        if (projectFilesResult.size() == 0)
-            return new ErrorResultImpl(this, ErrorCause.ASSET_NOT_FOUND, source);
-
-        JsonObject pickedPlugin = pickUpValidVersion(projectFilesResult, version);
-        if (pickedPlugin == null)
-            return new ErrorResultImpl(this, ErrorCause.VERSION_MISMATCH, source);
-
         String downloadUrl = pickedPlugin.get("downloadUrl").getAsString();
         String fileName = pickedPlugin.get("fileName").getAsString();
         String versionName = pickedPlugin.get("name").getAsString();
@@ -153,7 +153,24 @@ public class CurseBukkitResolver implements URLResolver
     @Override
     public ResolveResult autoPickOnePlugin(MultiResult multiResult)
     {
-        return null;
+        return multiResult.getResults()[0];
+    }
+
+    private static JsonObject[] pickUpCompatibleVersions(JsonArray versions, @Nullable String version)
+    {
+        List<JsonObject> list = new ArrayList<>();
+        for (JsonElement projectFile : versions)
+        {
+            JsonObject projectFileObject = projectFile.getAsJsonObject();
+
+            if (version != null && projectFileObject.get("fileUrl").getAsString().endsWith(version))
+                return new JsonObject[]{projectFileObject};  // return immediately if the version is equal
+
+            if (projectFileObject.get("gameVersion").getAsString().contains(BUKKIT_API_VERSION))
+                list.add(projectFileObject);
+        }
+
+        return list.toArray(new JsonObject[0]);
     }
 
     @Override

@@ -17,6 +17,11 @@ public interface QueryContext
     String versionEqualQuerySeparator = "==";
 
     /**
+     * バージョンを指定する指定子です。
+     */
+    String versionChooseSpecifier = "?";
+
+    /**
      * 指定するリゾルバの名前を取得します。
      *
      * @return リゾルバの名前
@@ -57,4 +62,11 @@ public interface QueryContext
      * @param version バージョン
      */
     void setVersion(Version version);
+
+    /**
+     * バージョンを選択するかどうかを取得します。
+     *
+     * @return バージョンを選択するかどうか
+     */
+    boolean isChooseVersion();
 }

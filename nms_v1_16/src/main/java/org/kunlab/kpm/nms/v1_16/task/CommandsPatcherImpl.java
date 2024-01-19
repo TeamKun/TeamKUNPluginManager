@@ -40,7 +40,16 @@ public class CommandsPatcherImpl implements CommandsPatcher {
 
         // Get command related fields
         try {
-            this.fCommandMap = ReflectionUtils.getAccessibleField(SimpleCommandMap.class, true, "commandMap");
+            Field fCommandMap;
+            try
+            {
+                fCommandMap = ReflectionUtils.getAccessibleField(SimpleCommandMap.class, true, "commandMap");
+            }
+            catch (NoSuchFieldException e)
+            {
+                fCommandMap = ReflectionUtils.getAccessibleField(SimpleCommandMap.class, true, "knownCommands");
+            }
+            this.fCommandMap = fCommandMap;
             this.fOwningPlugin = ReflectionUtils.getAccessibleField(PluginCommand.class, true, "owningPlugin");
         } catch (NoSuchFieldException e) {
             throw new IllegalStateException(

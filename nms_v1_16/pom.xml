@@ -7,16 +7,16 @@
     <parent>
         <groupId>org.kunlab.kpm</groupId>
         <artifactId>TeamKunPluginManager</artifactId>
-        <version>3.1.0-pre1</version>
+        <version>3.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kunlab.kpm.nms</groupId>
     <artifactId>v1_16</artifactId>
-    <version>3.1.0-pre1</version>
+    <version>3.1.0</version>
     <packaging>jar</packaging>
 
-    <name>v1_16_</name>
+    <name>NMS patch for 1.16</name>
 
     <build>
         <plugins>
@@ -36,16 +36,17 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
-            <version>3.1.0-pre1</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
-            <version>3.1.0-pre1</version>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
 </project>

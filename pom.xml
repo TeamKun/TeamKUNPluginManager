@@ -6,7 +6,7 @@
 
     <groupId>org.kunlab.kpm</groupId>
     <artifactId>TeamKunPluginManager</artifactId>
-    <version>3.1.0-pre1</version>
+    <version>3.1.0</version>
     <modules>
         <module>KPMDaemon</module>
         <module>KPMPlugin</module>
@@ -47,7 +47,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <pyglib.version>2.2.0</pyglib.version>
+        <pyglib.version>2.2.1</pyglib.version>
     </properties>
     <url>https://kunmc.net/</url>
   
@@ -64,10 +64,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
-            <id>tunnel</id>
-            <url>https://repo.mikeprimm.com/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -78,27 +74,21 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.28</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

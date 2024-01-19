@@ -220,7 +220,13 @@ public class GitHubURLResolver implements URLResolver
     {
         List<GitHubSuccessResult> results = new ArrayList<>();
 
-        String releaseName = object.get("name").getAsString();
+        String releaseName;
+        JsonElement jsonName = object.get("name");
+        if (jsonName.isJsonNull())
+            releaseName = null;
+        else
+            releaseName = jsonName.getAsString();
+
         String body = object.get("body").getAsString();
         String version = object.get("tag_name").getAsString();
         long releaseId = object.get("id").getAsLong();

@@ -9,6 +9,8 @@ import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.attributes.AttributeChoice;
 import org.kunlab.kpm.interfaces.KPMRegistry;
 import org.kunlab.kpm.resolver.ErrorCause;
+import org.kunlab.kpm.resolver.QueryContextParser;
+import org.kunlab.kpm.resolver.interfaces.QueryContext;
 import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.signal.SignalHandler;
@@ -107,9 +109,11 @@ public class ResolverSignalHandler
                                 .add("version", specifiedResult.getVersion())
                 ));
             }
-
             return;
         }
+
+        if (shouldResolveAutomatically(signal))
+            return;  // Auto resolve
 
         AtomicLong index = new AtomicLong(0);
 
@@ -158,5 +162,12 @@ public class ResolverSignalHandler
         {
             this.registry.getExceptionHandler().report(ex);
         }
+    }
+
+    private static boolean shouldResolveAutomatically(MultiplePluginResolvedSignal signal)
+    {
+        String queryStr = signal.getQuery();
+        QueryContext query = QueryContextParser.fromString(queryStr);
+        return !query.isChooseVersion();
     }
 }
