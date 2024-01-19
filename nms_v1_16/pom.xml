@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.kunlab.kpm</groupId>
         <artifactId>TeamKunPluginManager</artifactId>
-        <version>3.1.0-pre1</version>
+        <version>3.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.kunlab.kpm.nms</groupId>
     <artifactId>v1_16</artifactId>
-    <version>3.1.0-pre1</version>
+    <version>3.1.0</version>
     <packaging>jar</packaging>
 
     <name>NMS patch for 1.16</name>
@@ -41,12 +41,12 @@
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMCommon</artifactId>
-            <version>3.1.0-pre1</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.kunlab.kpm</groupId>
             <artifactId>KPMModels</artifactId>
-            <version>3.1.0-pre1</version>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
 </project>
