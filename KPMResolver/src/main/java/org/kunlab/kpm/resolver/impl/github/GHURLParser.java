@@ -19,15 +19,8 @@ public class GHURLParser
             "(?:/(?:tags|releases(?:/(?:tag/(?<tag>[^/]+)/?$|download/(?<downloadTag>[^/]+)/" +
             "(?<fileName>[^/]+)))?))?/?$");
 
-    /**
-     * GitHub の URL をパースします。
-     *
-     * @param url パースする URL
-     * @return パース結果
-     * @throws IllegalArgumentException URL が不正な場合
-     */
     @NotNull
-    public static GHURLParseResult parse(@NotNull String url)
+    /* non-public */ static GHURLParseResult parse(@NotNull String url)
     {
         URL urlObj;
         try
