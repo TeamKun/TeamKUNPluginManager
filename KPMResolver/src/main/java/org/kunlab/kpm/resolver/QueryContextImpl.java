@@ -17,6 +17,7 @@ class QueryContextImpl implements QueryContext
     String query;
     @Nullable
     Version version;
+    boolean chooseVersion;
 
     @Override
     public String toString()

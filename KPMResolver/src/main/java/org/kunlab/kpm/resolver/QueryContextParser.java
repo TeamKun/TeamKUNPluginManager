@@ -31,18 +31,24 @@ public class QueryContextParser
 
         String versionStr = null;
         Version version = null;
+        boolean chooseVersion = false;
         if (versionSeparatorIndex != -1)
         {
             versionStr = bodyAndVersion.substring(versionSeparatorIndex + 2);
-            if (!Version.isValidVersionString(versionStr))
-                throw new IllegalArgumentException("Invalid version string: " + versionStr);
-            version = Version.of(versionStr);
+            if (versionStr.equals(QueryContext.versionChooseSpecifier))
+                chooseVersion = true;
+            else
+            {
+                if (!Version.isValidVersionString(versionStr))
+                    throw new IllegalArgumentException("Invalid version string: " + versionStr);
+                version = Version.of(versionStr);
+            }
         }
 
         String plainQuery = bodyAndVersion;
         if (versionStr != null)
             plainQuery = bodyAndVersion.substring(0, versionSeparatorIndex);
 
-        return new QueryContextImpl(resolverName, plainQuery, version);
+        return new QueryContextImpl(resolverName, plainQuery, version, chooseVersion);
     }
 }
