@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -132,16 +133,18 @@ public final class TeamKunPluginManager extends JavaPlugin
         Runner.run(() -> {
             try (Stream<Path> caches = Files.walk(cacheParent))
             {
-                caches.forEach(path -> {
-                    try
-                    {
-                        Files.deleteIfExists(path);
-                    }
-                    catch (IOException e)
-                    {
-                        this.getLogger().log(Level.WARNING, "Failed to delete cache file: " + path, e);
-                    }
-                });
+                caches.map(Path::toFile)
+                        .sorted(Comparator.reverseOrder())
+                        .forEach(f -> {
+                            try
+                            {
+                                Files.delete(f.toPath());
+                            }
+                            catch (IOException e)
+                            {
+                                this.getLogger().log(Level.WARNING, "Failed to delete cache file.", e);
+                            }
+                        });
             }
             catch (IOException e)
             {
