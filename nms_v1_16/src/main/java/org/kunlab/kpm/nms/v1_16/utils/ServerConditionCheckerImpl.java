@@ -18,7 +18,7 @@ public class ServerConditionCheckerImpl implements ServerConditionChecker
     @Override
     public boolean isStopping()
     {
-        return this.craftServer.getServer().isRunning();
+        return !this.craftServer.getServer().isRunning();
     }
 
     @Override
