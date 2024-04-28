@@ -16,6 +16,7 @@ import org.kunlab.kpm.resolver.result.AbstractSuccessResult;
 import org.kunlab.kpm.signal.SignalHandler;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
+import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvedSuccessfulSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
 
 import java.util.AbstractMap;
@@ -99,18 +100,7 @@ public class ResolverSignalHandler
         ));
 
         if (signal.getSpecifiedResult() != null)
-        {
-            if (signal.getSpecifiedResult() instanceof AbstractSuccessResult)
-            {
-                SuccessResult specifiedResult = (SuccessResult) signal.getSpecifiedResult();
-                this.terminal.info(LangProvider.get(
-                        "tasks.resolve.multi.specified",
-                        MsgArgs.of("name", specifiedResult.getFileName())
-                                .add("version", specifiedResult.getVersion())
-                ));
-            }
             return;
-        }
 
         if (shouldResolveAutomatically(signal))
             return;  // Auto resolve
@@ -150,18 +140,23 @@ public class ResolverSignalHandler
             SuccessResult selected = keywordToResolveResult.get(result.getRawAnswer());
             assert selected != null;
 
-            this.terminal.info(LangProvider.get(
-                    "tasks.resolve.multi.specified",
-                    MsgArgs.of("name", selected.getFileName())
-                            .add("version", selected.getVersion())
-            ));
-
             signal.setSpecifiedResult(selected);
         }
         catch (InterruptedException ex)
         {
             this.registry.getExceptionHandler().report(ex);
         }
+    }
+
+    @SignalHandler
+    public void onPluginResolved(PluginResolvedSuccessfulSignal signal)
+    {
+        SuccessResult result = signal.getResolvedPlugin();
+        this.terminal.info(LangProvider.get(
+                "tasks.resolve.resolved",
+                MsgArgs.of("name", result.getFileName())
+                        .add("version", result.getVersion())
+        ));
     }
 
     private static boolean shouldResolveAutomatically(MultiplePluginResolvedSignal signal)

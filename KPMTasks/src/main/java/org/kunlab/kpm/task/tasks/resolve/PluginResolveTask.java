@@ -12,6 +12,7 @@ import org.kunlab.kpm.resolver.interfaces.result.SuccessResult;
 import org.kunlab.kpm.task.AbstractInstallTask;
 import org.kunlab.kpm.task.tasks.resolve.signals.MultiplePluginResolvedSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolveErrorSignal;
+import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvedSuccessfulSignal;
 import org.kunlab.kpm.task.tasks.resolve.signals.PluginResolvingSignal;
 
 /**
@@ -106,6 +107,11 @@ public class PluginResolveTask extends AbstractInstallTask<PluginResolveArgument
 
         if (!(queryResolveResult instanceof SuccessResult))
             return new PluginResolveResult(false, this.taskState, PluginResolveErrorCause.ILLEGAL_INTERNAL_STATE, null);
+
+        PluginResolvedSuccessfulSignal resolvedSuccessfulSignal =
+                new PluginResolvedSuccessfulSignal((SuccessResult) queryResolveResult);
+        this.postSignal(resolvedSuccessfulSignal);
+        queryResolveResult = resolvedSuccessfulSignal.getResolvedPlugin();
 
         return new PluginResolveResult(true, this.taskState, (SuccessResult) queryResolveResult);
     }

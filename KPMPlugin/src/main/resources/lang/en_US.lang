@@ -218,6 +218,7 @@ installer.uninstall.ready=%%installer.operation.remove%%
 installer.uninstall.success=%%general.success%%
 
 tasks.resolve.resolving=Resolving %%query%%...
+tasks.resolve.resolved=Plugin %%name%%(%%version%%) has been resolved.
 tasks.resolve.failed=Failed to resolve %%query%%: %%cause%%: %%message%%
 tasks.resolve.failed.not_found=Plugin not found.
 tasks.resolve.failed.asset_not_found=Plugin JAR file not found.
@@ -226,7 +227,6 @@ tasks.resolve.failed.server_error=Invalid response received from server: %%messa
 tasks.resolve.failed.wrong_token=Incorrect token may be set.
 tasks.resolve.failed.wrong_token.suggest=To reset the token, use the command %%command%%.
 tasks.resolve.multi=Multiple plugins found.
-tasks.resolve.multi.specified=Plugin %%name%%(%%version%%) has been selected.
 tasks.resolve.multi.choice=Please choose a plugin to use.
 tasks.resolve.multi.choices.auto=Automatically select the best plugin.
 tasks.resolve.multi.cancel=%%general.cancelled%%
