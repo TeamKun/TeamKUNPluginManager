@@ -3,10 +3,10 @@ package org.kunlab.kpm.utils;
 import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -64,26 +64,24 @@ public abstract class TerminalWriter
     protected void printStringFull(String key, String value, ClickEvent.Action action, String content)
     {
         this.terminal.write(
-                Component.text(
+                Text.of(
                         LangProvider.get(
                                 "general.chat.writer.key_value",
                                 MsgArgs.of("key", "%%" + key + "%%").add("value", value)
                         )
-                ).clickEvent(ClickEvent.clickEvent(action, content))
+                ).clickAction(action, content)
         );
     }
 
-    protected <T> void printStringFull(String key, String value, ClickEvent.Action action, String clickContent,
-                                       HoverEvent.Action<T> hoverAction, T hoverContent)
+    protected void printStringFull(String key, String value, ClickEvent.Action clickAction, String clickContent,
+                                   HoverEvent.Action hoverAction, Text hoverContent)
     {
-        this.terminal.write(
-                Component.text(
-                                LangProvider.get(
+        this.terminal.write(Text.of(LangProvider.get(
                                         "general.chat.writer.key_value",
                                         MsgArgs.of("key", "%%" + key + "%%").add("value", value)
                                 )
-                        ).clickEvent(ClickEvent.clickEvent(action, clickContent))
-                        .hoverEvent(HoverEvent.hoverEvent(hoverAction, hoverContent))
+                        ).clickAction(clickAction, clickContent)
+                        .hoverAction(hoverAction, hoverContent)
         );
     }
 
@@ -91,7 +89,7 @@ public abstract class TerminalWriter
                                    String hoverText)
     {
         this.printStringFull(key, value, action, clickContent,
-                HoverEvent.Action.SHOW_TEXT, Component.text(hoverText)
+                HoverEvent.Action.SHOW_TEXT, Text.of(hoverText)
         );
     }
 
@@ -143,7 +141,7 @@ public abstract class TerminalWriter
     }
 
     protected <T> void printString(String key, @NotNull String value, ClickEvent.Action action, String clickContent,
-                                   HoverEvent.Action<T> hoverAction, T hoverContent)
+                                   HoverEvent.Action hoverAction, Text hoverContent)
     {
         String croppedValue = value.substring(0, Math.min(value.length(), MAX_LENGTH));
         if (croppedValue.length() == MAX_LENGTH)

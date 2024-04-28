@@ -78,6 +78,8 @@ public class InstallProgressImpl<T extends Enum<T>, I extends Installer<?, ?, T>
             this.installActionID = id;
 
         Path cacheDir = installer.getRegistry().getEnvironment().getDataDirPath().resolve(".caches");
+        if (!Files.exists(cacheDir))
+            Files.createDirectories(cacheDir);
 
         this.installTempDir = Files.createTempDirectory(
                 cacheDir,

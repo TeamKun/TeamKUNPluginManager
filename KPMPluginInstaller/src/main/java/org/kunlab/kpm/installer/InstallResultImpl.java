@@ -1,10 +1,8 @@
 package org.kunlab.kpm.installer;
 
 import lombok.Getter;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.kunlab.kpm.installer.interfaces.InstallProgress;
@@ -29,22 +27,19 @@ public class InstallResultImpl<P extends Enum<P>> implements InstallResult<P>
         this.progress = progress;
     }
 
-    private static TextComponent getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)
+    @Override
+    public void printResultStatus(@NotNull Terminal terminal)
     {
-        StringBuilder builder = new StringBuilder();
+        terminal.write(Text.empty()
+                .append(Text.of("アップグレード：")
+                        .append(getResultStatusComponent(this.getUpgraded(), "アップグレードされたプラグイン")))
+                .append(Text.of("、インストール：")
+                        .append(getResultStatusComponent(this.getInstalled(), "インストールされたプラグイン")))
+                .append(Text.of("、削除：")
+                        .append(getResultStatusComponent(this.getRemoved(), "削除されたプラグイン")))
+                .append(Text.of("、保留：")
+                        .append(getResultStatusComponent(this.getPending(), "保留されたプラグイン"))));
 
-        for (int i = 0; i < components.length; i++)
-        {
-            if (i % MAX_RESULT_HOVER_ONE_LINE == 0)
-                builder.append("\n");
-
-            builder.append(ChatColor.AQUA)
-                    .append("- ")
-                    .append(components[i]);
-        }
-
-        return Component.text(" " + components.length + "個")
-                .hoverEvent(HoverEvent.showText(Component.text(hoverPrefix + "\n" + builder)));
     }
 
     @Override
@@ -95,19 +90,18 @@ public class InstallResultImpl<P extends Enum<P>> implements InstallResult<P>
         return this.progress.getPending().toArray(new String[0]);
     }
 
-    @Override
-    public void printResultStatus(@NotNull Terminal terminal)
+    private static Text getResultStatusComponent(@NotNull String[] components, @NotNull String hoverPrefix)
     {
-        TextComponent component = Component.text("")
-                .append(Component.text("アップグレード：")
-                        .append(getResultStatusComponent(this.getUpgraded(), "アップグレードされたプラグイン")))
-                .append(Component.text("、インストール：")
-                        .append(getResultStatusComponent(this.getInstalled(), "インストールされたプラグイン")))
-                .append(Component.text("、削除：")
-                        .append(getResultStatusComponent(this.getRemoved(), "削除されたプラグイン")))
-                .append(Component.text("、保留：")
-                        .append(getResultStatusComponent(this.getPending(), "保留されたプラグイン")));
+        Text text = Text.empty();
+        for (int i = 0; i < components.length; i++)
+        {
+            if (i % MAX_RESULT_HOVER_ONE_LINE == 0)
+                text.append("\n");
 
-        terminal.write(component);
+            text.append("- " + components[i]).color(ChatColor.AQUA);
+        }
+
+        return text.append(" " + components.length + "個")
+                .hoverText(Text.of(hoverPrefix + "\n").append(text));
     }
 }
