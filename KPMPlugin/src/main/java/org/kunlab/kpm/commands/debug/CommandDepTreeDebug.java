@@ -2,7 +2,7 @@ package org.kunlab.kpm.commands.debug;
 
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
 import net.kunmc.lab.peyangpaperutils.lib.command.SubCommandWith;
-import net.kyori.adventure.text.TextComponent;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ public class CommandDepTreeDebug extends SubCommandWith
     }
 
     @Override
-    public TextComponent getHelpOneLine()
+    public Text getHelpOneLine()
     {
         return of("依存関係ツリーのデバッグコマンドです。");
     }

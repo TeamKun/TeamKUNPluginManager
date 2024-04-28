@@ -1,12 +1,9 @@
 package org.kunlab.kpm.commands;
 
 import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -206,36 +203,35 @@ public class PluginInfoWriter extends TerminalWriter
         if (meta == null)
             throw new IllegalStateException("Unable to find the plugin meta for " + this.plugin.getName());
 
-        this.terminal.write(
-                Component.text(ChatColor.GREEN + LangProvider.get("command.info.meta.dependency") +
-                                ChatColor.WHITE + "：")
-                        .append(this.getDependencyComponents(meta.getDependedBy(), true))
-        );
 
-        this.terminal.write(
-                Component.text(ChatColor.GREEN + LangProvider.get("command.info.meta.depended") +
-                                ChatColor.WHITE + "：")
-                        .append(this.getDependencyComponents(meta.getDependsOn(), false))
-        );
+        this.terminal.write(Text.of(LangProvider.get("command.info.meta.dependency"))
+                .color(ChatColor.GREEN)
+                .append("：")
+                .color(ChatColor.WHITE)
+                .append(this.getDependencyComponents(meta.getDependedBy(), false)));
+
+
+        this.terminal.write(Text.of(LangProvider.get("command.info.meta.depended"))
+                .color(ChatColor.GREEN)
+                .append("：")
+                .color(ChatColor.WHITE)
+                .append(this.getDependencyComponents(meta.getDependsOn(), false)));
     }
 
-    private TextComponent getDependencyComponents(List<? extends DependencyNode> dependencies, boolean direction)
+    private Text getDependencyComponents(List<? extends DependencyNode> dependencies, boolean direction)
     {
-        ComponentBuilder<TextComponent, ?> builder = Component.text();
-
+        Text text = Text.empty();
         if (dependencies.isEmpty())
-            builder.append(Component.text(LangProvider.get("general.none")));
-
+            text.append(Text.ofTranslatable("general.none"));
+        
         for (DependencyNode dependency : dependencies)
-            builder.append(this.getDependencyComponent(dependency, direction)).append(Component.text("  "));
+            text.append(this.getDependencyComponent(dependency, direction)).append("  ");
 
-        return builder.build();
+        return text;
     }
 
-    private TextComponent getDependencyComponent(DependencyNode dependency, boolean direction)
+    private Text getDependencyComponent(DependencyNode dependency, boolean direction)
     {
-        ComponentBuilder<TextComponent, ?> builder = Component.text();
-
         ChatColor color;
         switch (dependency.getDependType())
         {
@@ -252,14 +248,11 @@ public class PluginInfoWriter extends TerminalWriter
                 color = ChatColor.GRAY;
         }
 
-        builder.append(
-                Component.text(color + (direction ? dependency.getPlugin(): dependency.getDependsOn()))
-                        .hoverEvent(HoverEvent.showText(Component.text("クリックして詳細を表示")))
-                        .clickEvent(ClickEvent.runCommand("/kpm info " +
-                                (direction ? dependency.getPlugin(): dependency.getDependsOn()))
-                        )
-        );
-
-        return builder.build();
+        return Text.of(direction ? dependency.getPlugin(): dependency.getDependsOn())
+                .color(color)
+                .hoverText(Text.of("クリックして詳細を表示"))
+                .runCommandOnClick("/kpm info " +
+                        (direction ? dependency.getPlugin(): dependency.getDependsOn())
+                );
     }
 }

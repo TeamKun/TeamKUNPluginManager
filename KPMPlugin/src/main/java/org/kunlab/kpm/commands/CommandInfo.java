@@ -2,8 +2,8 @@ package org.kunlab.kpm.commands;
 
 import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -59,9 +59,9 @@ public class CommandInfo extends CommandBase
     }
 
     @Override
-    public TextComponent getHelpOneLine()
+    public Text getHelpOneLine()
     {
-        return (TextComponent) LangProvider.getComponent("command.info");
+        return of(LangProvider.get("command.info"));
     }
 
     @Override

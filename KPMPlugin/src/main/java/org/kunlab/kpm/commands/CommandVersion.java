@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import net.kunmc.lab.peyangpaperutils.lang.LangProvider;
 import net.kunmc.lab.peyangpaperutils.lang.MsgArgs;
 import net.kunmc.lab.peyangpaperutils.lib.command.CommandBase;
+import net.kunmc.lab.peyangpaperutils.lib.components.Text;
 import net.kunmc.lab.peyangpaperutils.lib.terminal.Terminal;
-import net.kyori.adventure.text.TextComponent;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -84,14 +84,10 @@ public class CommandVersion extends CommandBase
         terminal.writeLine("");
     }
 
-    private static void printLicenses(@NotNull Terminal terminal)
+    @Override
+    public Text getHelpOneLine()
     {
-        terminal.writeLine(LangProvider.get("command.version.license.1"));
-        terminal.write(LangProvider.getComponent("command.version.license.2"));
-        terminal.writeLine(LangProvider.get("command.version.license.3"));
-        terminal.writeLine(LangProvider.get("command.version.license.4"));
-        terminal.write(LangProvider.getComponent("command.version.license.bugs"));
-        terminal.writeLine("");
+        return of(LangProvider.get("command.version"));
     }
 
     private static void printStatus(@NotNull Terminal terminal, @NotNull KPMRegistry registry)
@@ -137,10 +133,14 @@ public class CommandVersion extends CommandBase
         return "kpm.version";
     }
 
-    @Override
-    public net.kyori.adventure.text.TextComponent getHelpOneLine()
+    private static void printLicenses(@NotNull Terminal terminal)
     {
-        return (TextComponent) LangProvider.getComponent("command.version");
+        terminal.writeLine(LangProvider.get("command.version.license.1"));
+        terminal.write(Text.ofTranslatable("command.version.license.2"));
+        terminal.writeLine(LangProvider.get("command.version.license.3"));
+        terminal.writeLine(LangProvider.get("command.version.license.4"));
+        terminal.write(Text.ofTranslatable("command.version.license.bugs"));
+        terminal.writeLine("");
     }
 
     @Override
